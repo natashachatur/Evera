@@ -1230,6 +1230,28 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.8.0', date:'2026-09-02',
+    title:'Per-event RSVP: guests can now RSVP separately to each event, with per-person invite control',
+    items:[
+      'For weddings with multiple events, each family or guest can now RSVP separately per event, instead of one holistic yes/no for the whole wedding. Their overall RSVP status is worked out automatically from their event-by-event answers.',
+      'Within a household, you can now include or exclude specific people from a specific event — e.g. only some of a family invited to the shower — right from that family\'s RSVP-by-Event section.',
+      'Guest Management now shows an "RSVPs by Event" breakdown (confirmed/pending/declined per event) whenever your wedding has more than one event.',
+      'Each event\'s detail page now also shows Pending and Declined counts alongside Invited and Confirmed, for weddings with multiple events.',
+      'Weddings with a single event are unaffected — RSVP still works exactly as one yes/no per family, just as before.'
+    ]
+  },
+  {
+    version:'1.7.0', date:'2026-09-02',
+    title:'Guest Management cleanup, category management in Settings, and a tidier Home',
+    items:[
+      '"Add a Family, Party, or Guest" is now a single button on Guest Management — click it to expand the name/category form, instead of it always taking up space on the page.',
+      'Guest categories can now be renamed or removed from a new "Guest Categories" card in Settings, in addition to adding a new one on the fly while adding a guest in Guest Management.',
+      'Moved "Personalize Your Space" (couple photo and Wedding Logo / Monogram) from Home to Settings, since it\'s a one-time setup step rather than something you need to see every time you check your dashboard.',
+      'Removed the "Planning Progress" donut card from Home — that percentage already appears in the Quick Stats row at the top, so it was showing up twice.',
+      'Tightened the landing page\'s sub-headline to read more like a single confident statement.'
+    ]
+  },
+  {
     version:'1.6.0', date:'2026-09-02',
     title:'Per-event colour palettes & sub-budgets, task dependencies, and a round of polish across the app',
     items:[
@@ -2317,6 +2339,14 @@ function normalizeDashboardData(d){
     if(h.address.country===undefined) h.address.country = '';
     if(h.songRequest===undefined) h.songRequest = '';
     if(!Array.isArray(h.invitedEvents)) h.invitedEvents = [];
+    if(!h.eventRsvp || typeof h.eventRsvp !== 'object') h.eventRsvp = {};
+    if(!h.memberEventExclusions || typeof h.memberEventExclusions !== 'object') h.memberEventExclusions = {};
+    // seed per-event RSVP from the legacy holistic status for any invited event that doesn't have one yet,
+    // so existing/sample data shows sensible per-event statuses the first time chunk-2 UI renders.
+    (Array.isArray(d.events) ? d.events : []).forEach(ev=>{
+      const invitedToThis = !h.invitedEvents.length || h.invitedEvents.includes(ev.id);
+      if(invitedToThis && h.eventRsvp[ev.id]===undefined) h.eventRsvp[ev.id] = h.rsvpStatus || 'pending';
+    });
     if(!Array.isArray(h.members)) h.members = [];
     h.members.forEach(m=>{
       if(m.salutation===undefined) m.salutation = '';
@@ -2795,7 +2825,7 @@ function renderRoute(key){
     guidesView = 'list'; selectedArticleId = null; guidesCategory = 'All';
     document.getElementById('content').innerHTML = renderGuidesModule();
   } else if(key==='guests'){
-    guestsFilterRsvp = 'all'; guestsFilterTier = 'all'; guestsFilterCategory = 'all'; guestsFilterEvent = 'all'; guestsGroupBy = 'family';
+    guestsFilterRsvp = 'all'; guestsFilterTier = 'all'; guestsFilterCategory = 'all'; guestsFilterEvent = 'all'; guestsGroupBy = 'family'; guestAddFormOpen = false;
     document.getElementById('content').innerHTML = renderGuestsModule();
   } else if(key==='vendors'){
     document.getElementById('content').innerHTML = renderVendorsModule();
@@ -2878,8 +2908,6 @@ function renderHome(){
   const totalSpent = d.budgetBreakdown.reduce((s,c)=>s+categorySpent(c),0);
   const donutSegs = donutGradient(d.budgetBreakdown.map(c=>({planned:categoryPlanned(c), color:c.color})), totalPlanned);
   const rsvpPct = d.rsvp.invited ? Math.round(d.rsvp.responded/d.rsvp.invited*100) : 0;
-  const circumference = 2*Math.PI*38;
-  const dashOffset = circumference - (d.planningProgress/100)*circumference;
 
   return `
     ${renderQuickStats()}
@@ -2889,34 +2917,6 @@ function renderHome(){
         <div><h2>${d.healthStatus} <span style="font-family:'Inter'; font-size:12px; font-weight:700; letter-spacing:0.04em; color:var(--champagne-light); margin-left:8px;">WEDDING HEALTH</span></h2><p>${d.healthNote}</p></div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="toggleAssistant()">Ask Evera What's Next</button>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><h4>Personalize Your Space</h4><span class="d-sub">Just for you — never shown to guests</span></div>
-      <div class="personalize-row">
-        <div class="personalize-slot">
-          <div class="personalize-preview">${d.couplePhoto ? `<img src="${d.couplePhoto}" alt="Couple photo">` : `<span class="pp-placeholder">📷</span>`}</div>
-          <div>
-            <div class="pp-label">Couple Photo</div>
-            <div class="pp-actions">
-              <label class="btn btn-outline btn-sm" for="couplePhotoInput">${d.couplePhoto?'Change':'Upload'} Photo</label>
-              <input type="file" id="couplePhotoInput" accept="image/*" style="display:none;" onchange="handleCouplePhotoUpload(event)">
-              ${d.couplePhoto ? `<a href="#" class="danger-link" onclick="removeCouplePhoto(); return false;">Remove</a>` : ''}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="personalize-logo-block">
-        <div class="personalize-preview-logo-large">${d.coupleLogo ? `<img src="${d.coupleLogo}" alt="Wedding logo">` : `<span class="pp-placeholder-lg">✨</span>`}</div>
-        <div class="pp-label" style="text-align:center; margin-top:14px;">Wedding Logo / Monogram</div>
-        <div class="pp-actions" style="justify-content:center; margin-top:8px;">
-          <label class="btn btn-outline btn-sm" for="coupleLogoInput">${d.coupleLogo?'Change':'Upload'} Logo</label>
-          <input type="file" id="coupleLogoInput" accept="image/*" style="display:none;" onchange="handleCoupleLogoUpload(event)">
-          <button type="button" class="btn btn-outline btn-sm" onclick="openLogoBuilder()">🎨 Design Your Own</button>
-          ${d.coupleLogo ? `<a href="#" class="danger-link" onclick="removeCoupleLogo(); return false;">Remove</a>` : ''}
-        </div>
-        ${(d.logoVersions||[]).length ? `<div class="d-sub" style="margin-top:8px; text-align:center;">${d.logoVersions.length} saved logo version${d.logoVersions.length===1?'':'s'}</div>` : ''}
-      </div>
     </div>
 
     <div class="card">
@@ -2971,21 +2971,9 @@ function renderHome(){
       ${d.aiSuggestions.map(s=>`<div class="ai-item"><div class="ai-ico"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px; stroke:#fff;">${ICONS.assistant}</svg></div><div><p>${s.text}</p><div class="ai-why">${s.why}</div></div></div>`).join('')}
     </div>
 
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-head"><h4>Upcoming Deadlines &amp; Payments</h4></div>
-        ${d.deadlines.map(dl=>`<div class="deadline-row"><div><div class="d-title">${dl.title}</div><div class="d-sub">${dl.sub}</div></div><div class="d-date">${dl.date}</div><div class="d-amt">${dl.amount}</div></div>`).join('')}
-      </div>
-      <div class="card progress-card">
-        <div class="progress-ring">
-          <svg width="88" height="88">
-            <circle cx="44" cy="44" r="38" fill="none" stroke="var(--line-soft)" stroke-width="8"/>
-            <circle cx="44" cy="44" r="38" fill="none" stroke="var(--green)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"/>
-          </svg>
-          <div class="pr-label">${d.planningProgress}%</div>
-        </div>
-        <div><h4 style="font-size:17px;">Planning Progress</h4><p style="font-size:13px; color:var(--charcoal-soft); margin-top:6px; line-height:1.6;">You're moving steadily through your roadmap. Evera will keep this updated as you complete tasks.</p></div>
-      </div>
+    <div class="card">
+      <div class="card-head"><h4>Upcoming Deadlines &amp; Payments</h4></div>
+      ${d.deadlines.map(dl=>`<div class="deadline-row"><div><div class="d-title">${dl.title}</div><div class="d-sub">${dl.sub}</div></div><div class="d-date">${dl.date}</div><div class="d-amt">${dl.amount}</div></div>`).join('')}
     </div>
   `;
 }
@@ -4678,6 +4666,34 @@ function renderSettingsModule(){
     </div>
 
     <div class="card">
+      <div class="card-head"><h4>Personalize Your Space</h4><span class="d-sub">Just for you — never shown to guests</span></div>
+      <div class="personalize-row">
+        <div class="personalize-slot">
+          <div class="personalize-preview">${d.couplePhoto ? `<img src="${d.couplePhoto}" alt="Couple photo">` : `<span class="pp-placeholder">📷</span>`}</div>
+          <div>
+            <div class="pp-label">Couple Photo</div>
+            <div class="pp-actions">
+              <label class="btn btn-outline btn-sm" for="couplePhotoInput">${d.couplePhoto?'Change':'Upload'} Photo</label>
+              <input type="file" id="couplePhotoInput" accept="image/*" style="display:none;" onchange="handleCouplePhotoUpload(event)">
+              ${d.couplePhoto ? `<a href="#" class="danger-link" onclick="removeCouplePhoto(); return false;">Remove</a>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="personalize-logo-block">
+        <div class="personalize-preview-logo-large">${d.coupleLogo ? `<img src="${d.coupleLogo}" alt="Wedding logo">` : `<span class="pp-placeholder-lg">✨</span>`}</div>
+        <div class="pp-label" style="text-align:center; margin-top:14px;">Wedding Logo / Monogram</div>
+        <div class="pp-actions" style="justify-content:center; margin-top:8px;">
+          <label class="btn btn-outline btn-sm" for="coupleLogoInput">${d.coupleLogo?'Change':'Upload'} Logo</label>
+          <input type="file" id="coupleLogoInput" accept="image/*" style="display:none;" onchange="handleCoupleLogoUpload(event)">
+          <button type="button" class="btn btn-outline btn-sm" onclick="openLogoBuilder()">🎨 Design Your Own</button>
+          ${d.coupleLogo ? `<a href="#" class="danger-link" onclick="removeCoupleLogo(); return false;">Remove</a>` : ''}
+        </div>
+        ${(d.logoVersions||[]).length ? `<div class="d-sub" style="margin-top:8px; text-align:center;">${d.logoVersions.length} saved logo version${d.logoVersions.length===1?'':'s'}</div>` : ''}
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-head"><h4>Notification Preferences</h4></div>
       ${[
         ['emailDigest','Weekly email digest'],
@@ -4690,6 +4706,22 @@ function renderSettingsModule(){
     <div class="card">
       <div class="card-head"><div><h4>Evera Assistant</h4><span class="d-sub">The floating help panel with proactive planning tips</span></div></div>
       <div class="event-mini-row"><div class="em-name">Show the Evera Assistant</div><input type="checkbox" style="width:16px;height:16px;" ${d.assistantEnabled!==false?'checked':''} onchange="toggleAssistantEnabled(this.checked)"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h4>Guest Categories</h4><span class="d-sub">Rename or remove the categories available in Guest Management</span></div></div>
+      <div class="budget-items" style="padding-left:0;">
+        ${(d.guestCategories||[]).map(cat=>`
+          <div class="budget-item-row" style="grid-template-columns:1fr 0.4fr;">
+            <input type="text" class="select-field-sm" value="${escapeAttr(cat)}" onchange="renameGuestCategory('${escapeAttr(cat)}', this.value)">
+            <a href="#" class="danger-link" onclick="removeGuestCategory('${escapeAttr(cat)}'); return false;">✕</a>
+          </div>`).join('') || `<p style="font-size:13px;color:var(--charcoal-faint);">No categories yet — add one below.</p>`}
+      </div>
+      <div class="custom-add-row" style="margin-top:12px;">
+        <input type="text" id="newSettingsCategoryLabel" placeholder="New category (e.g. Colleagues, Dance Friends)">
+        <button class="btn btn-outline btn-sm" onclick="addGuestCategoryFromSettings()">+ Add Category</button>
+      </div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">You can also add a new category on the fly from Guest Management while adding a guest.</p>
     </div>
 
     <div class="card">
@@ -6750,6 +6782,7 @@ let guestsFilterRsvp = 'all';
 let guestsFilterTier = 'all';
 let guestsFilterCategory = 'all';
 let guestsFilterEvent = 'all';
+let guestAddFormOpen = false;
 let householdDetailId = null; // household id whose drill-in detail is open, if any
 function householdPartySize(h){ return (h.members||[]).filter(m=>m.attending!==false).length; }
 function guestOverallStats(){
@@ -6789,6 +6822,89 @@ function tierPill(tier){
   const cls = tier==='A' ? 'pill-ok' : tier==='B' ? 'pill-warn' : 'pill-neutral';
   return `<span class="pill ${cls}">Tier ${tier}</span>`;
 }
+function hasMultipleEvents(){ return (dashboardData.events||[]).length > 1; }
+function householdInvitedEventIds(h){
+  const d = dashboardData;
+  const allIds = (d.events||[]).map(e=>e.id);
+  if(!h.invitedEvents || !h.invitedEvents.length) return allIds;
+  return h.invitedEvents.filter(id=>allIds.includes(id));
+}
+function getEventRsvpStatus(h, eventId){
+  if(!h.eventRsvp) return 'pending';
+  return h.eventRsvp[eventId] || 'pending';
+}
+function isMemberExcludedFromEvent(h, memberId, eventId){
+  return !!(h.memberEventExclusions && h.memberEventExclusions[eventId] && h.memberEventExclusions[eventId].includes(memberId));
+}
+function memberIsInvitedToEvent(h, m, eventId){
+  const invitedIds = householdInvitedEventIds(h);
+  if(!invitedIds.includes(eventId)) return false;
+  return !isMemberExcludedFromEvent(h, m.id, eventId);
+}
+function recomputeHouseholdRsvpStatus(h){
+  const invitedIds = householdInvitedEventIds(h);
+  if(!invitedIds.length){ h.rsvpStatus = h.rsvpStatus || 'pending'; return; }
+  const statuses = invitedIds.map(eid => getEventRsvpStatus(h, eid));
+  if(statuses.every(s=>s==='confirmed')) h.rsvpStatus = 'confirmed';
+  else if(statuses.every(s=>s==='declined')) h.rsvpStatus = 'declined';
+  else h.rsvpStatus = 'pending';
+  if(h.rsvpStatus!=='confirmed'){ (h.members||[]).forEach(m=>{ m.seating = {}; }); }
+}
+function setHouseholdEventRsvp(householdId, eventId, status){
+  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+  if(!h) return;
+  if(!h.eventRsvp) h.eventRsvp = {};
+  h.eventRsvp[eventId] = status;
+  recomputeHouseholdRsvpStatus(h);
+  refreshGuestsBackground();
+  refreshHouseholdDetail();
+}
+function toggleMemberEventExclusion(householdId, memberId, eventId){
+  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+  if(!h) return;
+  if(!h.memberEventExclusions) h.memberEventExclusions = {};
+  if(!Array.isArray(h.memberEventExclusions[eventId])) h.memberEventExclusions[eventId] = [];
+  const list = h.memberEventExclusions[eventId];
+  const idx = list.indexOf(memberId);
+  if(idx>-1) list.splice(idx,1); else list.push(memberId);
+  refreshGuestsBackground();
+  refreshHouseholdDetail();
+}
+function eventRsvpBreakdown(){
+  const d = dashboardData;
+  return (d.events||[]).map(e=>{
+    let confirmed=0, pending=0, declined=0;
+    (d.guestHouseholds||[]).forEach(h=>{
+      const invitedIds = householdInvitedEventIds(h);
+      if(!invitedIds.includes(e.id)) return;
+      const members = (h.members||[]).filter(m=>!isMemberExcludedFromEvent(h, m.id, e.id));
+      const status = getEventRsvpStatus(h, e.id);
+      if(status==='confirmed') confirmed += members.filter(m=>m.attending!==false).length;
+      else if(status==='declined') declined += members.length;
+      else pending += members.length;
+    });
+    return {event:e, confirmed, pending, declined};
+  });
+}
+function renderEventRsvpBreakdownCard(){
+  if(!hasMultipleEvents()) return '';
+  const rows = eventRsvpBreakdown();
+  return `
+    <div class="card">
+      <div class="card-head"><h4>RSVPs by Event</h4><span class="d-sub">Since your wedding has multiple events, guests can RSVP separately for each</span></div>
+      <div class="budget-items" style="padding-left:0;">
+        <div class="budget-items-head" style="grid-template-columns:1.4fr 0.8fr 0.8fr 0.8fr;"><span>Event</span><span>Confirmed</span><span>Pending</span><span>Declined</span></div>
+        ${rows.map(r=>`
+          <div class="budget-item-row" style="grid-template-columns:1.4fr 0.8fr 0.8fr 0.8fr;">
+            <span class="readonly-cell">${escapeHtml(r.event.name)}</span>
+            <span style="color:var(--ok); font-weight:600;">${r.confirmed}</span>
+            <span style="color:var(--amber); font-weight:600;">${r.pending}</span>
+            <span style="color:var(--terracotta); font-weight:600;">${r.declined}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  `;
+}
 function householdEventChips(h){
   const d = dashboardData;
   if(!h.invitedEvents || !h.invitedEvents.length) return '<span class="d-sub">All events</span>';
@@ -6803,6 +6919,13 @@ function filteredHouseholds(){
     if(guestsFilterEvent!=='all' && (h.invitedEvents||[]).length && !h.invitedEvents.includes(guestsFilterEvent)) return false;
     return true;
   });
+}
+function toggleGuestAddForm(){
+  guestAddFormOpen = !guestAddFormOpen;
+  document.getElementById('content').innerHTML = renderGuestsModule();
+  if(guestAddFormOpen){
+    setTimeout(()=>{ const el=document.getElementById('newHouseholdLabel'); if(el) el.focus(); },0);
+  }
 }
 function switchGuestsGroupBy(g){ guestsGroupBy = g; document.getElementById('content').innerHTML = renderGuestsModule(); }
 function switchGuestsRsvpFilter(f){ guestsFilterRsvp = f; document.getElementById('content').innerHTML = renderGuestsModule(); }
@@ -6860,9 +6983,10 @@ function renderGuestsModule(){
     </div>
     ${d.guestCount ? `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:-10px;">You've added ${stats.totalIndividuals} of your estimated ${d.guestCount} guests individually — add the rest as you collect names and RSVPs.</p>` : ''}
     <div class="card">
+      ${guestAddFormOpen ? `
       <div class="card-head">
         <h4>Add a Family, Party, or Guest</h4>
-        <button class="btn btn-solid btn-sm" onclick="document.getElementById('newHouseholdLabel').focus()">+ Add Family or Guest</button>
+        <button class="btn btn-outline btn-sm" onclick="toggleGuestAddForm()">Done</button>
       </div>
       <div class="custom-add-row">
         <input type="text" id="newHouseholdLabel" placeholder="e.g. The Cesario Family, or a single guest's name">
@@ -6875,7 +6999,14 @@ function renderGuestsModule(){
         <input type="text" id="newCategoryLabel" placeholder="New category (e.g. Colleagues, Dance Friends)">
         <button class="btn btn-outline btn-sm" onclick="addGuestCategory()">+ Add Category</button>
       </div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Manage or remove existing categories any time in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Settings →</span></p>
+      ` : `
+      <div style="display:flex; justify-content:center;">
+        <button class="btn btn-solid btn-sm" onclick="toggleGuestAddForm()">+ Add a Family, Party, or Guest</button>
+      </div>
+      `}
     </div>
+    ${renderEventRsvpBreakdownCard()}
     ${renderNeedsSeatCard()}
     <div class="card">
       <div class="card-head">
@@ -7048,6 +7179,40 @@ function closeHouseholdDetail(){
   householdDetailId = null;
   document.getElementById('householdOverlay').classList.remove('open');
 }
+function renderHouseholdEventRsvpSection(h){
+  if(!hasMultipleEvents()) return '';
+  const d = dashboardData;
+  const invitedIds = householdInvitedEventIds(h);
+  const events = d.events.filter(e=>invitedIds.includes(e.id));
+  if(!events.length) return '';
+  const multiMember = (h.members||[]).length > 1;
+  return `
+    <div class="detail-section" style="margin-top:14px; padding-top:14px;">
+      <div class="detail-section-head"><h4 style="margin:0;">RSVP by Event</h4><span class="d-sub">Since this wedding has multiple events, ${escapeHtml(h.label)} can RSVP separately for each</span></div>
+      ${events.map(e=>`
+        <div style="padding:10px 0; border-bottom:1px solid var(--line-soft);">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+            <div style="font-weight:600; font-size:13.5px;">${escapeHtml(e.name)}</div>
+            <select class="select-field-sm" style="width:auto;" onchange="setHouseholdEventRsvp('${h.id}','${e.id}',this.value)">
+              <option value="pending" ${getEventRsvpStatus(h,e.id)==='pending'?'selected':''}>Pending</option>
+              <option value="confirmed" ${getEventRsvpStatus(h,e.id)==='confirmed'?'selected':''}>Confirmed</option>
+              <option value="declined" ${getEventRsvpStatus(h,e.id)==='declined'?'selected':''}>Declined</option>
+            </select>
+          </div>
+          ${multiMember ? `
+          <div class="chip-grid" style="margin-top:8px; gap:6px;">
+            ${(h.members||[]).map(m=>{
+              const invited = !isMemberExcludedFromEvent(h, m.id, e.id);
+              return `<span class="attach-chip" style="cursor:pointer; ${invited?'background:var(--green-tint);border-color:var(--green-mid);':'opacity:0.55;'}" title="Click to ${invited?'exclude from':'include in'} this event" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}')">${escapeHtml(memberDisplayName(m))}${invited?' ✓':' (not invited)'}</span>`;
+            }).join('')}
+          </div>
+          <p class="detail-hint" style="margin-top:4px;">Click a name to include or exclude just that person from this event — e.g. only some of a household invited to a shower.</p>
+          ` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
 function renderHouseholdDetailModal(householdId){
   const d = dashboardData;
   const h = d.guestHouseholds.find(x=>x.id===householdId);
@@ -7061,11 +7226,15 @@ function renderHouseholdDetailModal(householdId){
       <div class="detail-section-head" style="margin-top:8px;">
         <input type="text" class="budget-detail-title" style="font-size:19px;" value="${escapeAttr(h.label)}" onchange="updateHouseholdField('${h.id}','label',this.value)">
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          ${hasMultipleEvents() ? `
+            <span title="Computed from this family's RSVP for each event they're invited to — set those below.">${guestRsvpPill(h.rsvpStatus)} <span class="d-sub" style="margin-left:2px;">Overall</span></span>
+          ` : `
           <select class="select-field-sm" style="width:auto;" onchange="updateHouseholdField('${h.id}','rsvpStatus',this.value)">
             <option value="pending" ${h.rsvpStatus==='pending'?'selected':''}>Pending</option>
             <option value="confirmed" ${h.rsvpStatus==='confirmed'?'selected':''}>Confirmed</option>
             <option value="declined" ${h.rsvpStatus==='declined'?'selected':''}>Declined</option>
           </select>
+          `}
           <select class="select-field-sm" style="width:auto;" onchange="updateHouseholdField('${h.id}','tier',this.value)">
             <option value="A" ${h.tier==='A'?'selected':''}>Tier A</option>
             <option value="B" ${h.tier==='B'?'selected':''}>Tier B</option>
@@ -7095,6 +7264,7 @@ function renderHouseholdDetailModal(householdId){
           ${d.events.filter(e=>!(h.invitedEvents||[]).includes(e.id)).map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
         </select>
       </div>
+      ${renderHouseholdEventRsvpSection(h)}
       <div class="budget-items" style="padding-left:0; margin-top:14px;">
         <div class="budget-items-head" style="grid-template-columns:0.7fr 1fr 1fr 0.9fr 0.6fr 0.9fr 1.1fr 1.1fr 0.5fr;"><span>Salutation</span><span>First</span><span>Last</span><span>Relation</span><span>Attending</span><span>Meal</span><span>Dietary</span><span>Accessibility</span><span></span></div>
         ${(h.members||[]).map(m=>`
@@ -7133,8 +7303,10 @@ function updateHouseholdField(householdId, field, val){
   if(!h) return;
   h[field] = val;
   // if a household is no longer a confirmed "yes", every member instantly loses any seat assignment on every chart
-  if(field==='rsvpStatus' && val!=='confirmed'){
-    (h.members||[]).forEach(m=>{ m.seating = {}; });
+  if(field==='rsvpStatus'){
+    // keep per-event RSVP data (chunk 2) in sync with the single holistic dropdown, still used for single-event weddings
+    (householdInvitedEventIds(h)||[]).forEach(eid=>{ if(!h.eventRsvp) h.eventRsvp={}; h.eventRsvp[eid] = val; });
+    if(val!=='confirmed'){ (h.members||[]).forEach(m=>{ m.seating = {}; }); }
   }
   refreshGuestsBackground();
   refreshHouseholdDetail();
@@ -7160,6 +7332,8 @@ function addHouseholdEvent(householdId, eventId){
   const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
   if(!h) return;
   if(!h.invitedEvents.includes(eventId)) h.invitedEvents.push(eventId);
+  if(!h.eventRsvp) h.eventRsvp = {};
+  if(h.eventRsvp[eventId]===undefined) h.eventRsvp[eventId] = 'pending';
   refreshGuestsBackground();
   refreshHouseholdDetail();
 }
@@ -7193,12 +7367,16 @@ function addHousehold(){
   const label = (labelEl.value||'').trim();
   if(!label) return;
   const id = 'hh-'+Date.now().toString(36);
-  dashboardData.guestHouseholds.push({
+  const newHousehold = {
     id, label, categories: catEl && catEl.value ? [catEl.value] : [], tier:'A', rsvpStatus:'pending',
     email:'', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:[],
+    eventRsvp:{}, memberEventExclusions:{},
     members:[{id:id+'-m1', salutation:'', firstName:'', lastName:'', attending:true, mealChoice:'', dietaryRestrictions:'', accessibilityNeeds:'', tableId:null, relationship:'', seating:{}}]
-  });
+  };
+  (dashboardData.events||[]).forEach(ev=>{ newHousehold.eventRsvp[ev.id] = 'pending'; });
+  dashboardData.guestHouseholds.push(newHousehold);
   refreshGuestsBackground();
+  setTimeout(()=>{ const el=document.getElementById('newHouseholdLabel'); if(el) el.focus(); },0);
 }
 function removeHousehold(householdId){
   dashboardData.guestHouseholds = dashboardData.guestHouseholds.filter(h=>h.id!==householdId);
@@ -7211,6 +7389,39 @@ function addGuestCategory(){
   if(!label) return;
   if(!dashboardData.guestCategories.includes(label)) dashboardData.guestCategories.push(label);
   document.getElementById('content').innerHTML = renderGuestsModule();
+  const catEl = document.getElementById('newHouseholdCategory');
+  if(catEl) catEl.value = label;
+  const labelEl = document.getElementById('newHouseholdLabel');
+  if(labelEl) labelEl.focus();
+}
+function renameGuestCategory(oldLabel, newLabel){
+  newLabel = (newLabel||'').trim();
+  if(!newLabel || newLabel===oldLabel) { document.getElementById('content').innerHTML = renderSettingsModule(); return; }
+  const d = dashboardData;
+  if(!d.guestCategories.includes(newLabel)){
+    const idx = d.guestCategories.indexOf(oldLabel);
+    if(idx>-1) d.guestCategories[idx] = newLabel;
+  } else {
+    d.guestCategories = d.guestCategories.filter(c=>c!==oldLabel);
+  }
+  (d.guestHouseholds||[]).forEach(h=>{
+    h.categories = Array.from(new Set((h.categories||[]).map(c=>c===oldLabel?newLabel:c)));
+  });
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function removeGuestCategory(label){
+  const d = dashboardData;
+  d.guestCategories = d.guestCategories.filter(c=>c!==label);
+  (d.guestHouseholds||[]).forEach(h=>{ h.categories = (h.categories||[]).filter(c=>c!==label); });
+  if(guestsFilterCategory===label) guestsFilterCategory = 'all';
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function addGuestCategoryFromSettings(){
+  const el = document.getElementById('newSettingsCategoryLabel');
+  const label = (el.value||'').trim();
+  if(!label) return;
+  if(!dashboardData.guestCategories.includes(label)) dashboardData.guestCategories.push(label);
+  document.getElementById('content').innerHTML = renderSettingsModule();
 }
 /* ---- mail-merge-style mailing list export (structured addresses + salutations) ---- */
 function csvEscape(val){
@@ -7414,8 +7625,12 @@ function renderEventDetail(id){
         <div class="field-mini"><label>Estimated Guests</label><span style="font-size:17px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',serif;">${e.guestCount||0}</span></div>
         <div class="field-mini"><label>Invited (from Guest List)</label><span style="font-size:17px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',serif;">${eventGuestStats(e).invited}</span></div>
         <div class="field-mini"><label>Confirmed (RSVP'd Yes)</label><span style="font-size:17px;font-weight:700;color:var(--ok); font-family:'Cormorant Garamond',serif;">${eventGuestStats(e).confirmed}</span></div>
+        ${hasMultipleEvents() ? `
+        <div class="field-mini"><label>Pending</label><span style="font-size:17px;font-weight:700;color:var(--amber); font-family:'Cormorant Garamond',serif;">${eventGuestStats(e).pending}</span></div>
+        <div class="field-mini"><label>Declined</label><span style="font-size:17px;font-weight:700;color:var(--terracotta); font-family:'Cormorant Garamond',serif;">${eventGuestStats(e).declined}</span></div>
+        ` : ''}
       </div>
-      <p class="detail-hint">"Invited" and "Confirmed" are computed live from your Guests household list (see Guests); "Estimated Guests" is your own manual planning number from onboarding.</p>
+      <p class="detail-hint">"Invited" and "Confirmed" are computed live from your Guests household list${hasMultipleEvents() ? ", with RSVP tracked per event" : ''} (see Guests); "Estimated Guests" is your own manual planning number from onboarding.</p>
       ${renderDressCodeVisual(e.dressCode)}
     </div>
 
@@ -7470,14 +7685,18 @@ function updateEventField(id, field, value){
 }
 function eventGuestStats(e){
   const d = dashboardData;
-  let invited = 0, confirmed = 0;
+  let invited = 0, confirmed = 0, pending = 0, declined = 0;
   (d.guestHouseholds||[]).forEach(h=>{
-    const included = !h.invitedEvents || !h.invitedEvents.length || h.invitedEvents.includes(e.id);
-    if(!included) return;
-    invited += (h.members||[]).length;
-    if(h.rsvpStatus==='confirmed') confirmed += (h.members||[]).filter(m=>m.attending!==false).length;
+    const invitedIds = householdInvitedEventIds(h);
+    if(!invitedIds.includes(e.id)) return;
+    const members = (h.members||[]).filter(m=>!isMemberExcludedFromEvent(h, m.id, e.id));
+    invited += members.length;
+    const status = getEventRsvpStatus(h, e.id);
+    if(status==='confirmed') confirmed += members.filter(m=>m.attending!==false).length;
+    else if(status==='declined') declined += members.length;
+    else pending += members.length;
   });
-  return {invited, confirmed};
+  return {invited, confirmed, pending, declined};
 }
 /* ---- Event location lookup (OpenStreetMap/Nominatim — keyless; swap for Google Places or Canada Post AddressComplete once an API key is available) ---- */
 let eventLocationSuggestions = {};
