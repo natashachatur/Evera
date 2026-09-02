@@ -71,7 +71,7 @@ Whenever you (or Claude) have a new version of `index.html`, commit, tag it with
 cd ~/Development/Evera
 git add .
 git commit -m "Describe what changed"
-git tag v1.4.0
+git tag v1.6.0
 git push
 git push --tags
 ```
@@ -100,6 +100,16 @@ The **My Wedding** module (partner names, wedding date, location, guest count es
 - **"See a Sample Wedding"** is still a no-account demo — it shows "Sample mode — not saved" instead of the save indicator, and never touches Firestore.
 
 **Still sample data, not yet saved:** every other module — Guests, Budget, Vendors, Wedding Party, Playbook, Events, etc. — is still in-memory only and resets on reload. Guests is the natural next module to wire up the same way.
+
+## Logo thickness/width controls, cleaner Wedding Party hub, per-event colour & budget, task dependencies, and a round of polish (v1.6.0)
+
+- **Logo design studio**: text, icons, and shapes can now each have their **Thickness** (font weight for text, stroke weight for icons/shapes) and **Width** (independent horizontal stretch) adjusted, alongside the existing Letter Spacing control. The logo preview on Home's Personalize Your Space card is now full-width so the monogram is easier to see clearly.
+- **Wedding Party Hub**: removed the duplicate contacts list — members are now shown once, as cards, instead of listed twice.
+- **"My Wedding" is now called "My Wedding Blueprint"** throughout the app.
+- **Events**: each event can now have its own **Colour Palette** (start from your Master Palette or set an entirely different one) and its own **Sub-Budget Target**, shown alongside how much of that target is planned/spent from linked budget line items. The main Budget module's "By Event" view now shows each event's target next to its actuals.
+- **Plan**: tasks can now have **notes** and a **dependency** on another task — a task can't be checked off while the task it depends on is still open.
+- **Altar Lineup**: fixed a bug where the same person could be added to both sides of the aisle (each side's dropdown now excludes anyone already placed on either side), and straightened out the misaligned/"squiggly" row of names.
+- **Landing page & onboarding polish**: sharper sub-copy, a "One wedding. Every celebration. One plan." tagline, and mood-descriptor words (e.g. "Timeless • Formal • Refined") under each aesthetic style option.
 
 ## Your guest-facing wedding website (v1.5.0)
 
