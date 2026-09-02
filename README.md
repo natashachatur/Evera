@@ -99,6 +99,14 @@ The **My Wedding** module (partner names, wedding date, location, guest count es
 
 **Still sample data, not yet saved:** every other module — Guests, Budget, Vendors, Wedding Party, Playbook, Events, etc. — is still in-memory only and resets on reload. Guests is the natural next module to wire up the same way.
 
+## Partner names, hashtag suggestions & name-change tracking
+
+The Master Record now splits each partner's name into **First** and **Last** name fields (instead of one combined name field per partner) — the rest of the app still displays the combined "First Last" form wherever it showed a partner's name before.
+
+Next to the **Wedding Hashtag** field, an **✨ Suggest** button generates a handful of hashtag ideas from both partners' first/last names and the wedding year (e.g. `#JordanAndSam2027`, `#TheReyeses2027`) — click one to use it.
+
+A new **Name Change** card lets each partner record whether they're keeping their name, taking their partner's last name, hyphenating, or doing something else, plus what their new last name will be. If a partner opts into a name change, once the wedding date has passed a **Name Change Checklist** unlocks for them — a step-by-step walkthrough (marriage certificate copies, Social Security/ID, passport, banks, employer/HR, insurance, voter registration, utilities, online accounts, legal documents) with progress tracking. All of this — first/last names and name-change choices/checklist progress — saves to Firestore the same way the rest of the Master Record does.
+
 No further setup is needed to use any of this — the Firebase project, web app, Email/Password sign-in, Firestore database, and its security rules are all already configured and live.
 
 ## Notes on this version

@@ -1090,6 +1090,7 @@
 <div class="item-overlay" id="budgetItemOverlay" onclick="if(event.target===this) closeBudgetItemDetail();"><!-- injected --></div>
 <div class="item-overlay" id="householdOverlay" onclick="if(event.target===this) closeHouseholdDetail();"><!-- injected --></div>
 <div class="item-overlay" id="vendorBookingOverlay" onclick="if(event.target===this) closeVendorBookingDetail();"><!-- injected --></div>
+<div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
 
 <!-- ============ ASSISTANT ============ -->
@@ -1213,6 +1214,12 @@ function defaultSurveyResponses(){
 function defaultDashboardData(){
   return {
     partner1:'Natasha', partner2:'Matteo',
+    partner1First:'Natasha', partner1Last:'',
+    partner2First:'Matteo', partner2Last:'',
+    nameChange:{
+      partner1:{ choice:'', newLast:'', checklist:{} },
+      partner2:{ choice:'', newLast:'', checklist:{} }
+    },
     couplePhoto:null, coupleLogo:null,
     weddingDateISO:'2027-04-25', weddingDateLabel:'Sunday, April 25, 2027',
     location:'King City & Toronto, ON', guestCount:150, budgetTotal:100000,
@@ -1785,6 +1792,12 @@ function buildFromOnboarding(a){
 
   return {
     partner1:a.partner1 || 'Partner 1', partner2:a.partner2 || 'Partner 2',
+    partner1First:a.partner1 || 'Partner 1', partner1Last:'',
+    partner2First:a.partner2 || 'Partner 2', partner2Last:'',
+    nameChange:{
+      partner1:{ choice:'', newLast:'', checklist:{} },
+      partner2:{ choice:'', newLast:'', checklist:{} }
+    },
     couplePhoto:null, coupleLogo:null,
     weddingDateISO: a.date || null,
     weddingDateLabel: hasDate ? fmtDateLabel(a.date) : 'Date to be decided',
@@ -1957,6 +1970,22 @@ function getWeddingRecordPayload(){
   return {
     partner1: d.partner1 ?? '',
     partner2: d.partner2 ?? '',
+    partner1First: d.partner1First ?? '',
+    partner1Last: d.partner1Last ?? '',
+    partner2First: d.partner2First ?? '',
+    partner2Last: d.partner2Last ?? '',
+    nameChange: {
+      partner1: {
+        choice: d.nameChange?.partner1?.choice || '',
+        newLast: d.nameChange?.partner1?.newLast || '',
+        checklist: d.nameChange?.partner1?.checklist || {}
+      },
+      partner2: {
+        choice: d.nameChange?.partner2?.choice || '',
+        newLast: d.nameChange?.partner2?.newLast || '',
+        checklist: d.nameChange?.partner2?.checklist || {}
+      }
+    },
     weddingDateISO: d.weddingDateISO || null,
     weddingDateLabel: d.weddingDateLabel || '',
     location: d.location ?? '',
@@ -2006,6 +2035,10 @@ async function loadAndApplyWeddingRecord(uid){
     Object.assign(dashboardData, {
       partner1: data.partner1 ?? dashboardData.partner1,
       partner2: data.partner2 ?? dashboardData.partner2,
+      partner1First: data.partner1First ?? dashboardData.partner1First,
+      partner1Last: data.partner1Last ?? dashboardData.partner1Last,
+      partner2First: data.partner2First ?? dashboardData.partner2First,
+      partner2Last: data.partner2Last ?? dashboardData.partner2Last,
       weddingDateISO: data.weddingDateISO ?? dashboardData.weddingDateISO,
       weddingDateLabel: data.weddingDateLabel ?? dashboardData.weddingDateLabel,
       location: data.location ?? dashboardData.location,
@@ -2014,6 +2047,12 @@ async function loadAndApplyWeddingRecord(uid){
     });
     if(data.weddingProfile){
       dashboardData.weddingProfile = Object.assign({}, dashboardData.weddingProfile, data.weddingProfile);
+    }
+    if(data.nameChange){
+      dashboardData.nameChange = {
+        partner1: Object.assign({choice:'',newLast:'',checklist:{}}, dashboardData.nameChange?.partner1, data.nameChange.partner1),
+        partner2: Object.assign({choice:'',newLast:'',checklist:{}}, dashboardData.nameChange?.partner2, data.nameChange.partner2)
+      };
     }
     return true;
   } catch(err){
@@ -2186,6 +2225,21 @@ function normalizeDashboardData(d){
   if(!Array.isArray(d.weddingProfile.colorPalette)) d.weddingProfile.colorPalette = ['#38473B','#C7A467','#CBB2A6','#FAF6EE'];
   if(d.weddingProfile.hashtag===undefined) d.weddingProfile.hashtag = '';
   if(d.weddingProfile.aestheticNotes===undefined) d.weddingProfile.aestheticNotes = '';
+  ['partner1','partner2'].forEach(key=>{
+    if(d[key+'First']===undefined || d[key+'Last']===undefined){
+      const parts = (d[key]||'').trim().split(/\s+/);
+      if(d[key+'First']===undefined) d[key+'First'] = parts[0] || '';
+      if(d[key+'Last']===undefined) d[key+'Last'] = parts.slice(1).join(' ') || '';
+    }
+  });
+  if(!d.nameChange || typeof d.nameChange!=='object') d.nameChange = {};
+  ['partner1','partner2'].forEach(key=>{
+    if(!d.nameChange[key] || typeof d.nameChange[key]!=='object') d.nameChange[key] = {};
+    const nc = d.nameChange[key];
+    if(nc.choice===undefined) nc.choice = '';
+    if(nc.newLast===undefined) nc.newLast = '';
+    if(!nc.checklist || typeof nc.checklist!=='object') nc.checklist = {};
+  });
   if(!Array.isArray(d.collaborators)) d.collaborators = [
     {id:'collab-1', name:d.partner1||'Partner 1', email:'', role:'Couple'},
     {id:'collab-2', name:d.partner2||'Partner 2', email:'', role:'Couple'}
@@ -2724,6 +2778,174 @@ function renderModulePlaceholder(key){
    MY WEDDING — master record
 ================================================================== */
 const TRADITION_PRESETS = ['Western','South Asian / Hindu','Muslim','Sikh','Jewish','Catholic / Christian','Chinese','Korean','Persian','Filipino','Nigerian','Jamaican'];
+const NAME_CHANGE_STEPS = [
+  {id:'certificate', label:'Get certified copies of your marriage certificate', note:'Order 3–5 — most agencies want an original, not a photocopy.'},
+  {id:'ssa', label:'Social Security card (or national ID)', note:'Start here — most other places will ask to see your updated record first.'},
+  {id:'license', label:"Driver's license / state ID"},
+  {id:'passport', label:'Passport'},
+  {id:'bank', label:'Bank accounts & credit cards'},
+  {id:'employer', label:'Employer, payroll & HR records'},
+  {id:'insurance', label:'Health, auto & life insurance'},
+  {id:'voter', label:'Voter registration'},
+  {id:'utilities', label:'Utilities, lease & mortgage'},
+  {id:'accounts', label:'Email, social media & professional accounts (e.g. LinkedIn)'},
+  {id:'legal', label:'Will, beneficiaries & other legal documents'}
+];
+function fullPartnerName(key){
+  const d = dashboardData;
+  return `${d[key+'First']||''} ${d[key+'Last']||''}`.trim() || (key==='partner1'?'Partner 1':'Partner 2');
+}
+function generateHashtagSuggestions(){
+  const d = dashboardData;
+  const clean = s => (s||'').trim().replace(/[^a-zA-Z]/g,'');
+  const F1 = clean(d.partner1First||d.partner1), L1 = clean(d.partner1Last);
+  const F2 = clean(d.partner2First||d.partner2), L2 = clean(d.partner2Last);
+  const year = d.weddingDateISO ? d.weddingDateISO.slice(0,4) : '';
+  const cands = [];
+  if(F1 && F2){
+    cands.push(`#${F1}And${F2}${year}`);
+    cands.push(`#${F1}${F2}${year}`);
+    cands.push(`#${F1}Weds${F2}`);
+    cands.push(`#${F2}And${F1}${year}`);
+  }
+  const pluralize = s => /[sxz]$|[cs]h$/i.test(s) ? s+'es' : s+'s';
+  if(L1 && L2 && L1.toLowerCase()===L2.toLowerCase()){
+    cands.push(`#The${pluralize(L1)}${year}`);
+  } else if(L1 || L2){
+    cands.push(`#The${L1}${L2}${year}`);
+  }
+  if(F1 && F2) cands.push(`#${F1}${F2}IDo`);
+  return [...new Set(cands)].filter(s=>s.length>2).slice(0,6);
+}
+function toggleHashtagSuggestions(){
+  const box = document.getElementById('hashtagSuggestBox');
+  if(!box) return;
+  const showing = box.style.display!=='none';
+  if(showing){ box.style.display='none'; return; }
+  const suggestions = generateHashtagSuggestions();
+  box.innerHTML = suggestions.length ? suggestions.map(s=>`<span class="chip" style="cursor:pointer;" onclick="applyHashtagSuggestion('${s.replace(/'/g,"\\'")}')">${escapeHtml(s)}</span>`).join('') : `<span class="d-sub">Add both partners' first names to get suggestions.</span>`;
+  box.style.display = 'flex';
+}
+function applyHashtagSuggestion(tag){
+  updateWeddingProfileField('hashtag', tag);
+}
+function isPastWeddingDate(){
+  const iso = dashboardData.weddingDateISO;
+  if(!iso) return false;
+  const wd = new Date(iso+'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  return wd < today;
+}
+function updatePartnerNameField(field, val){
+  dashboardData[field] = val;
+  const key = field.startsWith('partner1') ? 'partner1' : 'partner2';
+  dashboardData[key] = fullPartnerName(key);
+  if(currentRouteKey==='my-wedding') document.getElementById('content').innerHTML = renderMyWeddingModule();
+  else if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule();
+  updateChrome();
+  persistWeddingRecord();
+}
+function updateNameChoice(key, choice){
+  dashboardData.nameChange[key].choice = choice;
+  document.getElementById('content').innerHTML = renderMyWeddingModule();
+  persistWeddingRecord();
+}
+function updateNameChangeNewLast(key, val){
+  dashboardData.nameChange[key].newLast = val;
+  persistWeddingRecord();
+}
+function nameChangePlanningPartners(){
+  const d = dashboardData;
+  return ['partner1','partner2'].filter(key=>{
+    const c = d.nameChange[key].choice;
+    return c==='take' || c==='hyphenate' || c==='other';
+  });
+}
+function nameChangeProgress(key){
+  const nc = dashboardData.nameChange[key];
+  const done = NAME_CHANGE_STEPS.filter(s=>nc.checklist[s.id]).length;
+  return Math.round((done/NAME_CHANGE_STEPS.length)*100);
+}
+function renderNameChangeCard(){
+  const d = dashboardData;
+  const nc = d.nameChange;
+  const opts = (key, otherKey) => `
+    <option value="">Not decided yet</option>
+    <option value="keep" ${nc[key].choice==='keep'?'selected':''}>Keeping their name</option>
+    <option value="take" ${nc[key].choice==='take'?'selected':''}>Taking ${escapeHtml(fullPartnerName(otherKey))}'s last name</option>
+    <option value="hyphenate" ${nc[key].choice==='hyphenate'?'selected':''}>Hyphenating</option>
+    <option value="other" ${nc[key].choice==='other'?'selected':''}>Something else</option>
+  `;
+  const partnerBlock = (key, otherKey) => `
+    <div class="field-cell">
+      <label>${escapeHtml(fullPartnerName(key))} is...</label>
+      <select onchange="updateNameChoice('${key}',this.value)">${opts(key, otherKey)}</select>
+    </div>
+    ${['take','hyphenate','other'].includes(nc[key].choice) ? `
+    <div class="field-cell">
+      <label>New last name</label>
+      <input type="text" placeholder="e.g. ${escapeAttr(d[otherKey+'Last']||'')}" value="${escapeAttr(nc[key].newLast)}" onchange="updateNameChangeNewLast('${key}',this.value)">
+    </div>` : ''}
+  `;
+  const planning = nameChangePlanningPartners();
+  const past = isPastWeddingDate();
+  return `
+    <div class="card">
+      <div class="card-head"><div><h4>Name Change</h4><span class="d-sub">Track who's changing their name — Evera walks you through the paperwork after the wedding</span></div></div>
+      <div class="field-grid">
+        ${partnerBlock('partner1','partner2')}
+        ${partnerBlock('partner2','partner1')}
+      </div>
+      ${planning.length ? `
+        <div style="margin-top:16px; padding:14px 16px; background:${past?'var(--green-tint)':'var(--amber-tint)'}; border-radius:var(--radius-sm);">
+          ${past ? `
+            <div style="font-size:13px; color:var(--charcoal); margin-bottom:10px;">Your wedding date has passed — ${planning.map(k=>escapeHtml(fullPartnerName(k))).join(' and ')} can start the formal name-change checklist.</div>
+            ${planning.map(k=>`<button class="btn btn-outline btn-sm" style="margin:2px 6px 2px 0;" onclick="openNameChangeChecklist('${k}')">Open ${escapeHtml(fullPartnerName(k))}'s Checklist (${nameChangeProgress(k)}%)</button>`).join('')}
+          ` : `
+            <div style="font-size:13px; color:var(--charcoal-soft);">${planning.map(k=>escapeHtml(fullPartnerName(k))).join(' and ')} ${planning.length>1?'are':'is'} planning a name change. The step-by-step checklist (Social Security, passport, bank accounts, and more) unlocks once your wedding date has passed.</div>
+          `}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+function openNameChangeChecklist(key){
+  nameChangeChecklistKey = key;
+  document.getElementById('nameChangeOverlay').innerHTML = renderNameChangeChecklistModal(key);
+  document.getElementById('nameChangeOverlay').classList.add('open');
+}
+function closeNameChangeChecklist(){
+  nameChangeChecklistKey = null;
+  document.getElementById('nameChangeOverlay').classList.remove('open');
+}
+function toggleNameChangeStep(key, stepId){
+  const nc = dashboardData.nameChange[key];
+  nc.checklist[stepId] = !nc.checklist[stepId];
+  document.getElementById('nameChangeOverlay').innerHTML = renderNameChangeChecklistModal(key);
+  persistWeddingRecord();
+}
+function renderNameChangeChecklistModal(key){
+  const d = dashboardData;
+  const nc = d.nameChange[key];
+  const pct = nameChangeProgress(key);
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="closeNameChangeChecklist()">✕</button>
+      <div class="detail-section-head" style="margin-top:8px;">
+        <h3 style="margin:0;">${escapeHtml(fullPartnerName(key))}'s Name Change Checklist</h3>
+        <span class="d-sub">${nc.newLast ? `New last name: ${escapeHtml(nc.newLast)}` : 'Track each step as you complete it'}</span>
+      </div>
+      <div class="pm-progress-track" style="margin:10px 0 16px;"><div class="pm-progress-fill" style="width:${pct}%;"></div></div>
+      ${NAME_CHANGE_STEPS.map(s=>`
+        <div class="event-mini-row">
+          <div><div class="em-name">${escapeHtml(s.label)}</div>${s.note?`<div class="em-date">${escapeHtml(s.note)}</div>`:''}</div>
+          <input type="checkbox" style="width:16px;height:16px;" ${nc.checklist[s.id]?'checked':''} onchange="toggleNameChangeStep('${key}','${s.id}')">
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+let nameChangeChecklistKey = null;
 function renderMyWeddingModule(){
   const d = dashboardData;
   const wp = d.weddingProfile;
@@ -2731,16 +2953,27 @@ function renderMyWeddingModule(){
     <div class="card">
       <div class="card-head"><div><h4>The Master Record</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${currentUser?'<span id="weddingSaveStatus" class="save-status"></span>':'<span class="save-status save-status-demo">Sample mode — not saved</span>'}</div>
       <div class="field-grid">
-        <div class="field-cell"><label>Partner 1</label><input type="text" value="${escapeAttr(d.partner1)}" onchange="updateWeddingCoreField('partner1',this.value)"></div>
-        <div class="field-cell"><label>Partner 2</label><input type="text" value="${escapeAttr(d.partner2)}" onchange="updateWeddingCoreField('partner2',this.value)"></div>
+        <div class="field-cell"><label>Partner 1 — First Name</label><input type="text" value="${escapeAttr(d.partner1First)}" onchange="updatePartnerNameField('partner1First',this.value)"></div>
+        <div class="field-cell"><label>Partner 1 — Last Name</label><input type="text" value="${escapeAttr(d.partner1Last)}" onchange="updatePartnerNameField('partner1Last',this.value)"></div>
+        <div class="field-cell"><label>Partner 2 — First Name</label><input type="text" value="${escapeAttr(d.partner2First)}" onchange="updatePartnerNameField('partner2First',this.value)"></div>
+        <div class="field-cell"><label>Partner 2 — Last Name</label><input type="text" value="${escapeAttr(d.partner2Last)}" onchange="updatePartnerNameField('partner2Last',this.value)"></div>
         <div class="field-cell"><label>Wedding Date</label><input type="date" value="${d.weddingDateISO||''}" onchange="updateWeddingCoreField('weddingDateISO',this.value)"></div>
         <div class="field-cell"><label>Location</label><input type="text" value="${escapeAttr(d.location)}" onchange="updateWeddingCoreField('location',this.value)"></div>
         <div class="field-cell"><label>Estimated Guest Count</label><input type="number" min="0" value="${d.guestCount}" onchange="updateWeddingCoreField('guestCount',this.value)"></div>
         <div class="field-cell"><label>Total Budget</label><input type="number" min="0" step="500" value="${d.budgetTotal}" onchange="updateWeddingCoreField('budgetTotal',this.value)"></div>
-        <div class="field-cell"><label>Wedding Hashtag</label><input type="text" placeholder="#YourNames2027" value="${escapeAttr(wp.hashtag)}" onchange="updateWeddingProfileField('hashtag',this.value)"></div>
+        <div class="field-cell">
+          <label>Wedding Hashtag</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" style="flex:1;" placeholder="#YourNames2027" value="${escapeAttr(wp.hashtag)}" onchange="updateWeddingProfileField('hashtag',this.value)">
+            <button type="button" class="btn btn-outline btn-sm" style="white-space:nowrap;" onclick="toggleHashtagSuggestions()">✨ Suggest</button>
+          </div>
+          <div id="hashtagSuggestBox" class="chip-grid" style="display:none; margin-top:8px;"></div>
+        </div>
       </div>
       <p style="font-size:12px;color:var(--charcoal-faint);margin-top:14px;">Guest count and budget here are your overall estimates — actual headcount lives in Guests, and actual spend lives in Budget.</p>
     </div>
+
+    ${renderNameChangeCard()}
 
     <div class="card">
       <div class="card-head"><h4>Traditions &amp; Culture</h4><span class="d-sub">Shapes which events and vendor categories Evera suggests</span></div>
@@ -3317,9 +3550,10 @@ function renderSettingsModule(){
         </div>
       `}
       <div class="field-grid">
-        <div class="field-cell"><label>Your Name</label><input type="text" value="${escapeAttr(d.partner1)}" onchange="updateWeddingCoreField('partner1',this.value)"></div>
-        <div class="field-cell"><label>Partner's Name</label><input type="text" value="${escapeAttr(d.partner2)}" onchange="updateWeddingCoreField('partner2',this.value)"></div>
+        <div class="field-cell"><label>Your Name</label><input type="text" value="${escapeAttr(d.partner1)}" disabled></div>
+        <div class="field-cell"><label>Partner's Name</label><input type="text" value="${escapeAttr(d.partner2)}" disabled></div>
       </div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:10px;">Names are split into first &amp; last name in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('my-wedding')">My Wedding →</span></p>
     </div>
 
     <div class="card">
