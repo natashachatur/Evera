@@ -92,6 +92,11 @@
   .auth-error.show{display:block;}
   .auth-submit{width:100%; justify-content:center; margin-top:6px;}
   .auth-back{display:block; text-align:center; margin-top:20px; font-size:13px; color:var(--charcoal-faint);}
+  .save-status{font-size:12px; font-weight:600; color:var(--charcoal-faint); white-space:nowrap;}
+  .save-status-saving{color:var(--amber);}
+  .save-status-saved{color:var(--ok);}
+  .save-status-error{color:var(--terracotta);}
+  .save-status-demo{color:var(--amber); text-transform:uppercase; letter-spacing:0.04em; font-size:11px;}
   .two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
   @media (max-width:560px){ .two-col{grid-template-columns:1fr;} }
   .check-inline{display:flex; align-items:center; gap:10px; margin-top:14px; font-size:13.5px; color:var(--charcoal-soft);}
@@ -1899,12 +1904,15 @@ async function handleAuthSubmit(event){
   btn.textContent = authMode==='signup' ? 'Creating account…' : 'Signing in…';
   try{
     if(authMode==='signup'){
-      await window.everaFirebase.signUp(email, password);
+      const user = await window.everaFirebase.signUp(email, password);
+      currentUser = user; // set immediately — don't wait on the async onAuthStateChanged listener
       dashboardData = normalizeDashboardData(defaultDashboardData());
       goTo('onboarding');
     } else {
-      await window.everaFirebase.logIn(email, password);
+      const user = await window.everaFirebase.logIn(email, password);
+      currentUser = user;
       dashboardData = normalizeDashboardData(defaultDashboardData());
+      await loadAndApplyWeddingRecord(user.uid);
       goTo('app');
       renderRoute('home');
     }
@@ -1927,13 +1935,90 @@ function onEveraAuthStateChanged(user){
   updateAccountUI();
   if(user && document.getElementById('view-landing').classList.contains('active')){
     dashboardData = normalizeDashboardData(defaultDashboardData());
-    goTo('app');
-    renderRoute('home');
+    loadAndApplyWeddingRecord(user.uid).finally(()=>{
+      goTo('app');
+      renderRoute('home');
+    });
   }
 }
 function updateAccountUI(){
   if(currentRouteKey==='settings'){
     document.getElementById('content').innerHTML = renderSettingsModule();
+  }
+}
+
+/* ==================================================================
+   FIRESTORE — persisting the "My Wedding" master record per account
+   (real database wiring; everything else in dashboardData is still
+   in-memory sample data pending future passes)
+================================================================== */
+function getWeddingRecordPayload(){
+  const d = dashboardData;
+  return {
+    partner1: d.partner1 ?? '',
+    partner2: d.partner2 ?? '',
+    weddingDateISO: d.weddingDateISO || null,
+    weddingDateLabel: d.weddingDateLabel || '',
+    location: d.location ?? '',
+    guestCount: Number(d.guestCount) || 0,
+    budgetTotal: Number(d.budgetTotal) || 0,
+    weddingProfile: {
+      traditions: d.weddingProfile.traditions || [],
+      colorPalette: d.weddingProfile.colorPalette || [],
+      hashtag: d.weddingProfile.hashtag || '',
+      aestheticNotes: d.weddingProfile.aestheticNotes || ''
+    },
+    updatedAt: Date.now()
+  };
+}
+let weddingSaveTimer = null;
+function persistWeddingRecord(){
+  if(!currentUser || !window.everaFirebase) return;
+  setSaveStatus('saving');
+  clearTimeout(weddingSaveTimer);
+  weddingSaveTimer = setTimeout(async ()=>{
+    try{
+      await window.everaFirebase.saveWeddingRecord(currentUser.uid, getWeddingRecordPayload());
+      setSaveStatus('saved');
+    } catch(err){
+      console.error('Failed to save wedding record', err);
+      setSaveStatus('error');
+    }
+  }, 600);
+}
+function setSaveStatus(status){
+  const el = document.getElementById('weddingSaveStatus');
+  if(!el) return;
+  const labels = { saving:'Saving…', saved:'Saved ✓', error:'Couldn\'t save — check your connection' };
+  el.textContent = labels[status] || '';
+  el.className = 'save-status save-status-' + status;
+}
+/* Loads this user's saved wedding record (if any) and merges it onto the
+   current dashboardData. Returns true if a saved record was found. If none
+   exists yet (brand new account, e.g. from before Firestore existed), this
+   silently leaves the default sample data in place and a save will create
+   their record the next time they edit something. */
+async function loadAndApplyWeddingRecord(uid){
+  if(!window.everaFirebase) return false;
+  try{
+    const data = await window.everaFirebase.loadWeddingRecord(uid);
+    if(!data) return false;
+    Object.assign(dashboardData, {
+      partner1: data.partner1 ?? dashboardData.partner1,
+      partner2: data.partner2 ?? dashboardData.partner2,
+      weddingDateISO: data.weddingDateISO ?? dashboardData.weddingDateISO,
+      weddingDateLabel: data.weddingDateLabel ?? dashboardData.weddingDateLabel,
+      location: data.location ?? dashboardData.location,
+      guestCount: data.guestCount ?? dashboardData.guestCount,
+      budgetTotal: data.budgetTotal ?? dashboardData.budgetTotal
+    });
+    if(data.weddingProfile){
+      dashboardData.weddingProfile = Object.assign({}, dashboardData.weddingProfile, data.weddingProfile);
+    }
+    return true;
+  } catch(err){
+    console.error('Failed to load wedding record', err);
+    return false;
   }
 }
 /* Defensively backfills fields added after the original data model was designed,
@@ -2138,6 +2223,7 @@ function normalizeDashboardData(d){
   return d;
 }
 function enterApp(){
+  if(currentUser) persistWeddingRecord(); // creates their initial saved record from onboarding answers
   goTo('app');
   renderRoute('home');
 }
@@ -2643,7 +2729,7 @@ function renderMyWeddingModule(){
   const wp = d.weddingProfile;
   return `
     <div class="card">
-      <div class="card-head"><h4>The Master Record</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>
+      <div class="card-head"><div><h4>The Master Record</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${currentUser?'<span id="weddingSaveStatus" class="save-status"></span>':'<span class="save-status save-status-demo">Sample mode — not saved</span>'}</div>
       <div class="field-grid">
         <div class="field-cell"><label>Partner 1</label><input type="text" value="${escapeAttr(d.partner1)}" onchange="updateWeddingCoreField('partner1',this.value)"></div>
         <div class="field-cell"><label>Partner 2</label><input type="text" value="${escapeAttr(d.partner2)}" onchange="updateWeddingCoreField('partner2',this.value)"></div>
@@ -2712,16 +2798,19 @@ function updateWeddingCoreField(field,val){
   if(currentRouteKey==='my-wedding') document.getElementById('content').innerHTML = renderMyWeddingModule();
   else if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule();
   updateChrome();
+  persistWeddingRecord();
 }
 function updateWeddingProfileField(field,val){
   dashboardData.weddingProfile[field] = val;
   document.getElementById('content').innerHTML = renderMyWeddingModule();
+  persistWeddingRecord();
 }
 function toggleWeddingTradition(name){
   const wp = dashboardData.weddingProfile;
   if(wp.traditions.includes(name)) wp.traditions = wp.traditions.filter(t=>t!==name);
   else wp.traditions.push(name);
   document.getElementById('content').innerHTML = renderMyWeddingModule();
+  persistWeddingRecord();
 }
 function addCustomTradition(){
   const el = document.getElementById('newTraditionInput');
@@ -2731,6 +2820,7 @@ function addCustomTradition(){
   if(!wp.traditions.includes(val)) wp.traditions.push(val);
   el.value='';
   document.getElementById('content').innerHTML = renderMyWeddingModule();
+  persistWeddingRecord();
 }
 function contrastTextColor(hex){
   const h = (hex||'').replace('#','');
@@ -2754,18 +2844,22 @@ function addPaletteColorFromHex(){
   dashboardData.weddingProfile.colorPalette.push(hex);
   el.value='';
   document.getElementById('content').innerHTML = renderMyWeddingModule();
+  persistWeddingRecord();
 }
 function addPaletteColorFromPicker(val){
   dashboardData.weddingProfile.colorPalette.push(val.toUpperCase());
   document.getElementById('content').innerHTML = renderMyWeddingModule();
+  persistWeddingRecord();
 }
 function removePaletteColor(i){
   dashboardData.weddingProfile.colorPalette.splice(i,1);
   document.getElementById('content').innerHTML = renderMyWeddingModule();
+  persistWeddingRecord();
 }
 function updatePaletteColor(i,val){
   dashboardData.weddingProfile.colorPalette[i] = val;
   document.getElementById('content').innerHTML = renderMyWeddingModule();
+  persistWeddingRecord();
 }
 
 /* ==================================================================
@@ -7211,6 +7305,9 @@ updateStepUI();
     getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
     onAuthStateChanged, signOut
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc
+  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   // Public web config for the Evera Firebase project (evera-0824).
   // Firebase web config values are not secret — access is controlled by
@@ -7227,6 +7324,7 @@ updateStepUI();
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
 
   window.everaFirebase = {
     auth,
@@ -7240,6 +7338,16 @@ updateStepUI();
     },
     async signOutUser(){
       await signOut(auth);
+    },
+    // "weddings/{uid}" holds one document per account — the My Wedding master
+    // record. Security rules (set in the Firebase console) restrict each
+    // document to being read/written only by the matching signed-in user.
+    async loadWeddingRecord(uid){
+      const snap = await getDoc(doc(db, 'weddings', uid));
+      return snap.exists() ? snap.data() : null;
+    },
+    async saveWeddingRecord(uid, data){
+      await setDoc(doc(db, 'weddings', uid), data, { merge: true });
     }
   };
 

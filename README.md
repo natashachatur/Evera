@@ -86,9 +86,20 @@ This version connects to a real Firebase project (`evera-0824`) for account crea
 - Once signed in, your session persists — reloading the page (or coming back later) skips straight past the landing page.
 - Settings now shows who's signed in, with a real **Sign Out** button.
 
-**Important — this is sign-in only, not save-your-data yet.** Every signed-in account currently sees the same fictional sample wedding data (Natasha & Matteo). Nothing you edit is saved to a real database yet — that's the next milestone (wiring "My Wedding" and Guests to Firestore, Firebase's database, so changes actually persist per-account). You can check the **Authentication → Users** tab in the [Firebase console](https://console.firebase.google.com/project/evera-0824/authentication/users) to see real accounts being created as people sign up.
+You can check the **Authentication → Users** tab in the [Firebase console](https://console.firebase.google.com/project/evera-0824/authentication/users) to see real accounts being created as people sign up.
 
-No further setup is needed to use this — the Firebase project, web app, and Email/Password sign-in method are already configured and live.
+## Real data persistence (Firestore) — "My Wedding" only, so far
+
+The **My Wedding** module (partner names, wedding date, location, guest count estimate, total budget, traditions, colour palette, hashtag, and aesthetic notes) now actually saves to a real database (Cloud Firestore) per account:
+
+- Editing any of those fields shows a **Saving… / Saved ✓** indicator next to "The Master Record" heading, and the change is written to Firestore about half a second after you stop typing.
+- Signing out and back in (or reloading the page) restores your saved values instead of resetting to sample data.
+- Each account's data lives in its own Firestore document at `weddings/{your-account-id}` — Firestore security rules (set in the Firebase console) enforce that only you can read or write your own document.
+- **"See a Sample Wedding"** is still a no-account demo — it shows "Sample mode — not saved" instead of the save indicator, and never touches Firestore.
+
+**Still sample data, not yet saved:** every other module — Guests, Budget, Vendors, Wedding Party, Playbook, Events, etc. — is still in-memory only and resets on reload. Guests is the natural next module to wire up the same way.
+
+No further setup is needed to use any of this — the Firebase project, web app, Email/Password sign-in, Firestore database, and its security rules are all already configured and live.
 
 ## Notes on this version
 
