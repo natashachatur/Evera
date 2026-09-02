@@ -6,7 +6,7 @@
 <title>Evera — Wedding Planning</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
   :root{
     --ivory:#FAF6EE; --ivory-deep:#F1E9D8; --paper:#FFFDF9;
@@ -277,6 +277,12 @@
   @media (max-width:1000px){ .grid-2, .grid-3{grid-template-columns:1fr;} }
 
   .card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:26px; box-shadow:var(--shadow); margin-bottom:22px;}
+  .quick-stats-bar{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
+  .qs-tile{flex:1 1 150px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; display:flex; flex-direction:column; gap:3px;}
+  .qs-label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint);}
+  .qs-value{font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:600; color:var(--charcoal); line-height:1.1;}
+  .qs-sub{font-size:11px; color:var(--charcoal-faint);}
+  @media (max-width:640px){ .qs-tile{flex:1 1 42%;} }
   .card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px;}
   .card-head h4{font-size:17px; font-family:'Inter'; font-weight:700;}
   .card-head .ch-link{font-size:12px; font-weight:700; color:var(--green); border-bottom:1px solid var(--champagne);}
@@ -396,6 +402,8 @@
   @media (max-width:900px){ .field-grid{grid-template-columns:1fr 1fr;} }
   @media (max-width:560px){ .field-grid{grid-template-columns:1fr;} }
   .field-cell{display:flex; flex-direction:column; gap:5px;}
+  .name-pair{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .name-pair input{min-width:0;}
   .field-cell label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint);}
   .field-cell input, .field-cell select{padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px; color:var(--charcoal);}
   .notes-field{width:100%; min-height:120px; resize:vertical; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-family:'Inter'; font-size:13px; background:var(--ivory); color:var(--charcoal);}
@@ -606,6 +614,25 @@
 
   /* ---- budget item drill-down (large modal variant) ---- */
   .item-modal-lg{max-width:760px; max-height:88vh; overflow-y:auto;}
+  .item-modal-xl{max-width:1080px; max-height:92vh; overflow-y:auto;}
+  .logo-toolbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:14px 0; position:relative;}
+  .logo-picker-pop{position:absolute; top:110%; left:0; z-index:20; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); box-shadow:var(--shadow-lg); padding:8px; display:flex; gap:6px; flex-wrap:wrap; width:220px;}
+  .logo-picker-item{width:36px; height:36px; border:1px solid var(--line); border-radius:8px; background:var(--ivory); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:6px; font-size:16px;}
+  .logo-picker-item svg{width:100%; height:100%; fill:var(--charcoal); stroke:var(--charcoal);}
+  .logo-bg-swatch{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--charcoal-soft); cursor:pointer;}
+  .logo-bg-swatch input{width:26px; height:26px; padding:0; border:none; background:none; cursor:pointer;}
+  .logo-workspace{display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start;}
+  .logo-canvas-wrap{flex:1 1 360px; max-width:420px;}
+  .logo-canvas{width:100%; aspect-ratio:1/1; border:1px solid var(--line); border-radius:var(--radius-sm); touch-action:none; cursor:default; display:block;}
+  .logo-el{cursor:move;}
+  .logo-props-panel{flex:1 1 220px; min-width:220px; display:flex; flex-direction:column; gap:12px;}
+  .logo-layer-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; padding-top:10px; border-top:1px solid var(--line-soft); align-items:center;}
+  .logo-handle{cursor:pointer; fill:#fff; stroke:#4C6355; stroke-width:1.5;}
+  .logo-handle-delete{fill:#B5473A; stroke:#B5473A;}
+  .logo-version-bar{margin-top:20px; padding-top:16px; border-top:1px solid var(--line-soft); display:flex; flex-direction:column; gap:10px;}
+  .logo-version-list{display:flex; gap:8px; flex-wrap:wrap;}
+  .logo-version-actions{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .logo-version-actions input[type=text]{padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px;}
   .budget-detail-title{width:100%; border:none; border-bottom:2px solid var(--line); background:none; font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--charcoal); padding:4px 0 8px; margin-top:6px;}
   .budget-detail-title:focus{outline:none; border-bottom-color:var(--green);}
   .item-modal-lg .field-cell label{white-space:nowrap;}
@@ -986,6 +1013,7 @@
           <input type="range" id="ob-distance" min="5" max="100" step="5" value="40" oninput="document.getElementById('ob-distance-val').textContent=this.value">
           <div class="slider-minmax"><span>5 km</span><span>100+ km</span></div>
         </div>
+        <div class="check-inline" style="margin-top:18px;"><input type="checkbox" id="ob-assistantEnabled" checked><label for="ob-assistantEnabled" style="margin:0; text-transform:none; font-weight:500; letter-spacing:0;">Enable the Evera Assistant — a helpful floating panel with proactive planning tips (you can turn this on or off anytime in Settings)</label></div>
       </div>
     </div>
 
@@ -1064,6 +1092,7 @@
     <div class="sb-nav" id="sbNav"><!-- injected --></div>
     <div class="sb-foot">
       <div class="sb-couple"><div class="sb-avatar" id="sbAvatar">P&amp;J</div><div><div style="font-weight:700; color:#EFE9DA;" id="sbCoupleName">Natasha &amp; Matteo</div><div>Couple Account</div></div><span id="sbLogoChip" class="sb-logo-chip"></span></div>
+      <button type="button" onclick="openChangelog()" style="width:100%; margin-top:12px; background:none; border:1px solid rgba(239,233,218,0.18); color:rgba(239,233,218,0.75); font-size:12px; padding:7px 10px; border-radius:8px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:6px; justify-content:space-between;"><span>🆕 What's New</span><span id="sbVersionTag" style="opacity:0.7;"></span></button>
     </div>
   </nav>
 
@@ -1091,6 +1120,8 @@
 <div class="item-overlay" id="householdOverlay" onclick="if(event.target===this) closeHouseholdDetail();"><!-- injected --></div>
 <div class="item-overlay" id="vendorBookingOverlay" onclick="if(event.target===this) closeVendorBookingDetail();"><!-- injected --></div>
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
+<div class="item-overlay" id="changelogOverlay" onclick="if(event.target===this) closeChangelog();"><!-- injected --></div>
+<div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
 
 <!-- ============ ASSISTANT ============ -->
@@ -1169,6 +1200,113 @@ const MODULE_INFO = {
 };
 
 /* ==================================================================
+   CHANGELOG — "What's New"
+   Newest entry first. Each release is one batch of grouped changes
+   that shipped together, so this should read like a real product
+   changelog, not a raw commit log.
+================================================================== */
+/* Semantic versioning (major.minor.patch):
+     MAJOR — a big milestone or a change that reworks how an existing
+             feature behaves (rare, judgment call)
+     MINOR — a batch of new features/functionality shipped together
+     PATCH — a batch that's only fixes/tweaks to things already shipped,
+             no new capability
+   CURRENT_VERSION always matches CHANGELOG[0].version, which should
+   match the most recent git tag (vX.Y.Z) once that batch is pushed. */
+const CHANGELOG = [
+  {
+    version:'1.5.0', date:'2026-09-02',
+    title:'Your guest-facing wedding website: Our Story, gated event pages, Album, Travel, FAQ builder & RSVP',
+    items:[
+      'Website & RSVP now includes prompt questions to help you write your Our Story (how you met, the proposal, what you\'re looking forward to, a fun fact), plus a milestone-photo gallery you can add to.',
+      'Wedding Party members now have an editable website bio — add a short blurb in their profile and it (plus their photo) is ready to show on your public site.',
+      'Added a Travel section covering shuttle service, flying in, rideshare and public transit, plus Things To Do and Eat & Drink lists you can build out with your own recommendations.',
+      'Added a guided FAQ builder: toggle on the questions that apply to your wedding (RSVP deadline, plus-ones, kids, hotel block, dress code, and more) and Evera drafts an answer you can edit.',
+      'Added an RSVP deadline field that shows the date you choose to guests — automated reminder emails to guests who haven\'t responded yet are still on the roadmap, not built yet.',
+      'Added an Album section: upload event photos and notify your guests when new ones are up.',
+      'Built a real, separate guest-facing wedding website prototype (a new file, wedding-website.html) showing how all of this comes together for guests: Our Story, Wedding Party bios, a schedule with a page per event (each gated so only guests invited to that event can see it), calendar-invite buttons, an illustrated dress-code section with real attire retailer links, an Album, a Travel tab, an FAQ accordion, and an RSVP form.'
+    ]
+  },
+  {
+    version:'1.4.0', date:'2026-09-02',
+    title:'Home quick stats, palette themes, dress-code presets, Assistant toggle & a logo design studio',
+    items:[
+      'Master Record: Partner 1 and Partner 2\'s first/last name fields are now grouped so they can never appear split across a line.',
+      'Master Colour Palette now suggests descriptive theme words and moods (e.g. "Earthy", "Romantic", "Airy") based on your chosen colours and aesthetic notes.',
+      'Home now opens with a Quick Stats row (days to go, budget used, RSVPs in, planning progress, guests attending) — no scrolling needed to see where things stand.',
+      'You can now turn the Evera Assistant on or off during onboarding, and change your mind anytime in Settings.',
+      'Events: Dress Code is now a dropdown of standard categories (Casual, Cocktail, Formal/Black-Tie, Festive & Colourful, etc.) with a short description of what each includes, plus an "Other" option for anything custom.',
+      'Added a full logo design studio: alongside uploading a logo, you can now design one from scratch — add text, icons and shapes; drag, rotate and resize them; pick fonts and colours; layer elements front-to-back; save multiple named versions; and export your finished logo as a PNG or SVG. Your saved versions and the one you set as your official Wedding Logo are kept with your account.'
+    ]
+  },
+  {
+    version:'1.3.0', date:'2026-09-02',
+    title:'Partner identity, hashtag suggestions, name-change checklist & changelog',
+    items:[
+      'The Master Record now has separate First Name and Last Name fields for each partner, instead of one combined name field.',
+      "Added a ✨ Suggest button next to the Wedding Hashtag field that generates hashtag ideas from both partners' names and the wedding year.",
+      "Added a Name Change card: each partner can record whether they're keeping their name, taking their partner's, hyphenating, or something else. If someone opts in, a step-by-step Name Change Checklist (Social Security, passport, banks, employer, and more) unlocks once the wedding date has passed.",
+      "Added this What's New changelog, linked from the sidebar."
+    ]
+  },
+  {
+    version:'1.2.0', date:'2026-09-02',
+    title:'My Wedding now saves for real',
+    items:[
+      'The My Wedding module (names, date, location, guest estimate, budget, traditions, colour palette, hashtag, aesthetic notes) now saves to a real database per account, with a Saving… / Saved indicator.',
+      'Signing out and back in — or reloading the page — restores your saved details instead of resetting to sample data.'
+    ]
+  },
+  {
+    version:'1.1.0', date:'2026-09-02',
+    title:'Real sign-in',
+    items:[
+      'Start Planning and Sign in now create and use a real account (email + password) instead of just jumping into the demo.',
+      "Your session persists — coming back later skips straight past the landing page.",
+      'See a Sample Wedding still works as a no-account demo with fictional data.'
+    ]
+  },
+  {
+    version:'1.0.0', date:'2026-09-02',
+    title:'Evera is live',
+    items:[
+      'The Evera prototype is now hosted at a real, shareable web address.'
+    ]
+  }
+];
+const CURRENT_VERSION = CHANGELOG[0].version;
+function renderChangelogModal(){
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="closeChangelog()">✕</button>
+      <div class="detail-section-head" style="margin-top:8px;">
+        <h3 style="margin:0;">What's New</h3>
+        <span class="d-sub">Everything that's shipped to Evera so far · currently v${escapeHtml(CURRENT_VERSION)}</span>
+      </div>
+      ${CHANGELOG.map(rel=>`
+        <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--line-soft);">
+          <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
+            <span class="chip selected" style="cursor:default;">v${rel.version}</span>
+            <h4 style="margin:0;">${escapeHtml(rel.title)}</h4>
+            <span class="d-sub" style="margin-left:auto;">${escapeHtml(rel.date)}</span>
+          </div>
+          <ul style="margin:10px 0 0; padding-left:20px; font-size:13.5px; color:var(--charcoal-soft); line-height:1.6;">
+            ${rel.items.map(it=>`<li>${escapeHtml(it)}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function openChangelog(){
+  document.getElementById('changelogOverlay').innerHTML = renderChangelogModal();
+  document.getElementById('changelogOverlay').classList.add('open');
+}
+function closeChangelog(){
+  document.getElementById('changelogOverlay').classList.remove('open');
+}
+
+/* ==================================================================
    STATE
 ================================================================== */
 let dashboardData = null;
@@ -1220,6 +1358,7 @@ function defaultDashboardData(){
       partner1:{ choice:'', newLast:'', checklist:{} },
       partner2:{ choice:'', newLast:'', checklist:{} }
     },
+    assistantEnabled:true,
     couplePhoto:null, coupleLogo:null,
     weddingDateISO:'2027-04-25', weddingDateLabel:'Sunday, April 25, 2027',
     location:'King City & Toronto, ON', guestCount:150, budgetTotal:100000,
@@ -1361,7 +1500,7 @@ function defaultDashboardData(){
     ],
     vendorCategoriesSuggested:['Venue','Photography','Catering','Florals','Music/DJ','Hair & Makeup','Mehndi Artist','Officiant'],
     weddingParty:[
-      {id:'amber', name:'Amber Chatur', role:'Maid of Honour', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, events:['Mehndi','Ceremony','Cocktail Hour','Reception'],
+      {id:'amber', name:'Amber Chatur', role:'Maid of Honour', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, bio:"Natasha's younger sister and partner-in-crime since forever. If there's a dance floor, she'll be the first one on it.", events:['Mehndi','Ceremony','Cocktail Hour','Reception'],
         phone:'(647) 555-0131', email:'amber.chatur@gmail.com',
         tasks:[{title:'Confirm Mehndi outfit colour', due:'Completed', done:true},{title:'Coordinate bridesmaids\' hair & makeup schedule', due:'Completed', done:true},{title:'Submit dietary preferences', due:'Completed', done:true},{title:'Finalize Maid of Honour speech', due:'2 weeks before', done:false}],
         attireStatus:'confirmed', outfit:'Champagne Silk Gown', designer:'Aritzia Bridesmaid Collection', swatch:'#C7A467',
@@ -1372,7 +1511,7 @@ function defaultDashboardData(){
           sleevePreference:'Short sleeves', sleeveOther:'', topSize:'M', bottomSize:'8', dressBudget:'$150–200', dressBudgetOther:'', necklinePreference:'Sweetheart', necklineOther:'',
           professionalServices:['Hair','Makeup','',''], avoidDates:'None that I know of yet', bachIdeas:'Something relaxed with good food and wine — a villa or vineyard weekend', bachDestinationRecs:'Prince Edward County or Niagara-on-the-Lake', travelDuration:'A weekend (2–3 days)', travelDurationOther:'', openToJointBach:'No', openToJointBachOther:'', otherNotes:'So excited for you both!',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'michael', name:'Michael Mannarino', role:'Best Man', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, events:['Welcome Dinner','Ceremony','Cocktail Hour','Reception'],
+      {id:'michael', name:'Michael Mannarino', role:'Best Man', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, bio:"Matteo's older brother and roommate through university. Ask him about the time they tried to build a boat.", events:['Welcome Dinner','Ceremony','Cocktail Hour','Reception'],
         phone:'(416) 555-0176', email:'michael.mannarino@gmail.com',
         tasks:[{title:'Plan bachelor party logistics', due:'Completed', done:true},{title:'Confirm hotel dates', due:'Completed', done:true},{title:'Submit measurements for suit fitting', due:'Overdue', done:false},{title:'Prepare Best Man speech', due:'2 weeks before', done:false}],
         attireStatus:'pending', outfit:'Charcoal Three-Piece Suit', designer:'Indochino', swatch:'#3C3A35',
@@ -1383,7 +1522,7 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'$300–400', suitBudgetOther:'', avoidDatesGroom:'The first week of March — I have a work conference', bachDestinationRecsGroom:'Muskoka, or a golf trip somewhere warm', travelDurationGroom:'A weekend (2–3 days)', travelDurationGroomOther:'', openToJointBachGroom:'No', openToJointBachGroomOther:''}},
-      {id:'safa', name:'Safa El Rayyes', role:'Bridesmaid', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, events:['Mehndi','Ceremony','Reception'],
+      {id:'safa', name:'Safa El Rayyes', role:'Bridesmaid', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, bio:"Natasha's college roommate turned lifelong friend. Loves a good spreadsheet almost as much as she loves karaoke.", events:['Mehndi','Ceremony','Reception'],
         phone:'(905) 555-0119', email:'safa.elrayyes@gmail.com',
         tasks:[{title:'RSVP to Mehndi', due:'Completed', done:true},{title:'Submit measurements for bridesmaid dress', due:'Overdue', done:false},{title:'Confirm travel to King City venue', due:'3 weeks before', done:false}],
         attireStatus:'pending', outfit:'Champagne Silk Gown', designer:'Aritzia Bridesmaid Collection', swatch:'#C7A467',
@@ -1394,7 +1533,7 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'arsum', name:'Arsum Nadeem', role:'Groomsman', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, events:['Welcome Dinner','Ceremony','Reception'],
+      {id:'arsum', name:'Arsum Nadeem', role:'Groomsman', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, bio:"Matteo's best friend since high school. The reason Matteo has questionable taste in music.", events:['Welcome Dinner','Ceremony','Reception'],
         phone:'(416) 555-0142x2', email:'arsum.nadeem@gmail.com',
         tasks:[{title:'Confirm groomsmen gift coordination', due:'Completed', done:true},{title:'Submit measurements for suit fitting', due:'Overdue', done:false}],
         attireStatus:'pending', outfit:'Charcoal Three-Piece Suit', designer:'Indochino', swatch:'#3C3A35',
@@ -1405,7 +1544,7 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'melissa', name:'Melissa Cesario', role:'Bridesmaid', side:"Matteo's side", partyGroup:'Bridesmaids', photo:null, events:['Welcome Dinner','Mehndi','Ceremony','Reception'],
+      {id:'melissa', name:'Melissa Cesario', role:'Bridesmaid', side:"Matteo's side", partyGroup:'Bridesmaids', photo:null, bio:"Matteo's sister, and the first person to tell him Natasha was \"the one.\"", events:['Welcome Dinner','Mehndi','Ceremony','Reception'],
         phone:'(416) 555-0199', email:'melissa.cesario@gmail.com',
         tasks:[{title:'RSVP to Mehndi', due:'Completed', done:true},{title:'Submit measurements for bridesmaid dress', due:'Overdue', done:false},{title:'Confirm travel to King City venue', due:'3 weeks before', done:false}],
         attireStatus:'pending', outfit:'Champagne Silk Gown', designer:'Aritzia Bridesmaid Collection', swatch:'#C7A467',
@@ -1798,6 +1937,7 @@ function buildFromOnboarding(a){
       partner1:{ choice:'', newLast:'', checklist:{} },
       partner2:{ choice:'', newLast:'', checklist:{} }
     },
+    assistantEnabled: a.assistantEnabled !== false,
     couplePhoto:null, coupleLogo:null,
     weddingDateISO: a.date || null,
     weddingDateLabel: hasDate ? fmtDateLabel(a.date) : 'Date to be decided',
@@ -1851,6 +1991,7 @@ function skipToDashboard(){
   dashboardData = normalizeDashboardData(defaultDashboardData());
   goTo('app');
   renderRoute('home');
+  applyAssistantVisibility();
 }
 
 /* ==================================================================
@@ -1951,6 +2092,7 @@ function onEveraAuthStateChanged(user){
     loadAndApplyWeddingRecord(user.uid).finally(()=>{
       goTo('app');
       renderRoute('home');
+      applyAssistantVisibility();
     });
   }
 }
@@ -1974,6 +2116,11 @@ function getWeddingRecordPayload(){
     partner1Last: d.partner1Last ?? '',
     partner2First: d.partner2First ?? '',
     partner2Last: d.partner2Last ?? '',
+    assistantEnabled: d.assistantEnabled !== false,
+    logoDraft: d.logoDraft || {elements:[], background:'#FFFFFF'},
+    logoVersions: d.logoVersions || [],
+    logoFinalVersionId: d.logoFinalVersionId || null,
+    coupleLogo: d.coupleLogo || null,
     nameChange: {
       partner1: {
         choice: d.nameChange?.partner1?.choice || '',
@@ -2039,6 +2186,11 @@ async function loadAndApplyWeddingRecord(uid){
       partner1Last: data.partner1Last ?? dashboardData.partner1Last,
       partner2First: data.partner2First ?? dashboardData.partner2First,
       partner2Last: data.partner2Last ?? dashboardData.partner2Last,
+      assistantEnabled: data.assistantEnabled ?? dashboardData.assistantEnabled,
+      logoDraft: data.logoDraft ?? dashboardData.logoDraft,
+      logoVersions: data.logoVersions ?? dashboardData.logoVersions,
+      logoFinalVersionId: data.logoFinalVersionId ?? dashboardData.logoFinalVersionId,
+      coupleLogo: data.coupleLogo ?? dashboardData.coupleLogo,
       weddingDateISO: data.weddingDateISO ?? dashboardData.weddingDateISO,
       weddingDateLabel: data.weddingDateLabel ?? dashboardData.weddingDateLabel,
       location: data.location ?? dashboardData.location,
@@ -2082,6 +2234,7 @@ function normalizeDashboardData(d){
   if(!Array.isArray(d.weddingParty)) d.weddingParty = [];
   d.weddingParty.forEach(m=>{
     if(m.photo===undefined) m.photo = null;
+    if(m.bio===undefined) m.bio = '';
     if(m.partyGroup===undefined) m.partyGroup = /groomsman|best man/i.test(m.role||'') ? 'Groomsmen' : /bridesmaid|maid of honou?r/i.test(m.role||'') ? 'Bridesmaids' : /parent|mother|father/i.test(m.role||'') ? 'Parents' : 'Other';
     if(m.hair===undefined) m.hair = '';
     if(m.hairStatus===undefined) m.hairStatus = 'pending';
@@ -2272,14 +2425,44 @@ function normalizeDashboardData(d){
   if(!d.website.sections) d.website.sections = {ourStory:true, schedule:true, registry:false, travel:false, faq:false};
   if(d.website.ourStoryText===undefined) d.website.ourStoryText = '';
   if(!Array.isArray(d.website.registryLinks)) d.website.registryLinks = [];
+  if(!d.website.ourStoryPrompts || typeof d.website.ourStoryPrompts!=='object') d.website.ourStoryPrompts = {};
+  if(!Array.isArray(d.website.milestonePhotos)) d.website.milestonePhotos = [];
+  if(!d.website.travel || typeof d.website.travel!=='object') d.website.travel = {};
+  if(d.website.travel.shuttle===undefined) d.website.travel.shuttle = '';
+  if(d.website.travel.flying===undefined) d.website.travel.flying = '';
+  if(d.website.travel.rideshare===undefined) d.website.travel.rideshare = '';
+  if(d.website.travel.transit===undefined) d.website.travel.transit = '';
+  if(!Array.isArray(d.website.travel.thingsToDo)) d.website.travel.thingsToDo = [];
+  if(!Array.isArray(d.website.travel.eatDrink)) d.website.travel.eatDrink = [];
+  if(!Array.isArray(d.website.faqSelections)) d.website.faqSelections = [];
+  if(!d.website.faqAnswers || typeof d.website.faqAnswers!=='object') d.website.faqAnswers = {};
+  if(d.website.rsvpDeadlineISO===undefined) d.website.rsvpDeadlineISO = '';
+  if(!Array.isArray(d.website.albumPhotos)) d.website.albumPhotos = [];
+  if(!Array.isArray(d.website.albumNotifications)) d.website.albumNotifications = [];
   if(!d.notificationPrefs) d.notificationPrefs = {emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false};
   d.events.forEach(e=>{ if(e.publicVisibility===undefined) e.publicVisibility = true; });
+  if(d.assistantEnabled===undefined) d.assistantEnabled = true;
+  if(!d.logoDraft || typeof d.logoDraft!=='object') d.logoDraft = {elements:[], background:'#FFFFFF'};
+  if(!Array.isArray(d.logoDraft.elements)) d.logoDraft.elements = [];
+  if(!d.logoDraft.background) d.logoDraft.background = '#FFFFFF';
+  if(!Array.isArray(d.logoVersions)) d.logoVersions = [];
+  if(d.logoFinalVersionId===undefined) d.logoFinalVersionId = null;
   return d;
+}
+function applyAssistantVisibility(){
+  const enabled = dashboardData.assistantEnabled!==false;
+  const fab = document.getElementById('assistantFab');
+  if(fab) fab.style.display = enabled ? '' : 'none';
+  if(!enabled){
+    const panel = document.getElementById('assistantPanel');
+    if(panel) panel.classList.remove('open');
+  }
 }
 function enterApp(){
   if(currentUser) persistWeddingRecord(); // creates their initial saved record from onboarding answers
   goTo('app');
   renderRoute('home');
+  applyAssistantVisibility();
 }
 
 /* ==================================================================
@@ -2287,7 +2470,7 @@ function enterApp(){
 ================================================================== */
 let currentStep = 1;
 const TOTAL_STEPS = 10;
-const onboardAnswers = { partner1:'', partner2:'', date:'', location:'', guests:150, budget:100000, events:DEFAULT_EVENTS.slice(), customEvents:[], approach:'', venue:'progress', style:'', priorities:[], hotel:'', distance:40 };
+const onboardAnswers = { partner1:'', partner2:'', date:'', location:'', guests:150, budget:100000, events:DEFAULT_EVENTS.slice(), customEvents:[], approach:'', venue:'progress', style:'', priorities:[], hotel:'', distance:40, assistantEnabled:true };
 
 /* ---- Events step: quick-add tradition shortcuts + individual event toggles + custom events ---- */
 function isEventSelected(name){ return onboardAnswers.events.includes(name); }
@@ -2385,7 +2568,7 @@ function collectStep(n){
   if(n===4){ onboardAnswers.guests = parseInt(document.getElementById('ob-guests').value,10); }
   if(n===5){ onboardAnswers.budget = parseInt(document.getElementById('ob-budget').value,10); }
   if(n===7){ onboardAnswers.venue = document.getElementById('ob-venue').value; }
-  if(n===10){ onboardAnswers.hotel = document.getElementById('ob-hotel').value.trim(); onboardAnswers.distance = parseInt(document.getElementById('ob-distance').value,10); }
+  if(n===10){ onboardAnswers.hotel = document.getElementById('ob-hotel').value.trim(); onboardAnswers.distance = parseInt(document.getElementById('ob-distance').value,10); onboardAnswers.assistantEnabled = document.getElementById('ob-assistantEnabled').checked; }
 }
 
 function updateStepUI(){
@@ -2456,6 +2639,8 @@ function renderSidebar(active){
     <a href="#" class="sb-item" onclick="toggleAssistant(); return false;">
       <svg class="icon" viewBox="0 0 24 24">${ICONS.assistant}</svg><span>Evera Assistant</span>
     </a>`;
+  const vTag = document.getElementById('sbVersionTag');
+  if(vTag) vTag.textContent = 'v'+CURRENT_VERSION;
 }
 function toggleSidebar(open){
   document.getElementById('sidebar').classList.toggle('open', open);
@@ -2625,6 +2810,30 @@ function eventTimeRangeLabel(e){
   return '';
 }
 
+function daysToWedding(){
+  if(!dashboardData.weddingDateISO) return null;
+  return Math.max(0, Math.round((new Date(dashboardData.weddingDateISO+'T00:00:00') - new Date())/86400000));
+}
+function renderQuickStats(){
+  const d = dashboardData;
+  const totalPlanned = d.budgetBreakdown.reduce((s,c)=>s+categoryPlanned(c),0);
+  const totalSpent = d.budgetBreakdown.reduce((s,c)=>s+categorySpent(c),0);
+  const rsvpPct = d.rsvp.invited ? Math.round(d.rsvp.responded/d.rsvp.invited*100) : 0;
+  const days = daysToWedding();
+  const tiles = [
+    {label:'Days to Go', value: days===null ? '—' : days, sub: days===null ? 'No date set yet' : (d.weddingDateLabel||'')},
+    {label:'Budget Used', value: fmtMoney(totalSpent), sub: `of ${fmtMoney(d.budgetTotal||totalPlanned)}`},
+    {label:'RSVPs In', value: `${rsvpPct}%`, sub: `${d.rsvp.responded} of ${d.rsvp.invited} invited`},
+    {label:'Planning Progress', value: `${d.planningProgress}%`, sub: 'through your roadmap'},
+    {label:'Guests Attending', value: d.rsvp.attending, sub: `of ${d.guestCount} estimated`}
+  ];
+  return `<div class="quick-stats-bar">${tiles.map(t=>`
+    <div class="qs-tile">
+      <span class="qs-label">${escapeHtml(t.label)}</span>
+      <span class="qs-value">${t.value}</span>
+      <span class="qs-sub">${escapeHtml(String(t.sub))}</span>
+    </div>`).join('')}</div>`;
+}
 function renderHome(){
   const d = dashboardData;
   const totalPlanned = d.budgetBreakdown.reduce((s,c)=>s+categoryPlanned(c),0);
@@ -2635,6 +2844,7 @@ function renderHome(){
   const dashOffset = circumference - (d.planningProgress/100)*circumference;
 
   return `
+    ${renderQuickStats()}
     <div class="health-banner">
       <div class="hb-left">
         <div class="hb-icon"><svg class="icon" viewBox="0 0 24 24" style="stroke:#F4EFE3;"><path d="M20 6L9 17l-5-5"/></svg></div>
@@ -2664,8 +2874,10 @@ function renderHome(){
             <div class="pp-actions">
               <label class="btn btn-outline btn-sm" for="coupleLogoInput">${d.coupleLogo?'Change':'Upload'} Logo</label>
               <input type="file" id="coupleLogoInput" accept="image/*" style="display:none;" onchange="handleCoupleLogoUpload(event)">
+              <button type="button" class="btn btn-outline btn-sm" onclick="openLogoBuilder()">🎨 Design Your Own</button>
               ${d.coupleLogo ? `<a href="#" class="danger-link" onclick="removeCoupleLogo(); return false;">Remove</a>` : ''}
             </div>
+            ${(d.logoVersions||[]).length ? `<div class="d-sub" style="margin-top:6px;">${d.logoVersions.length} saved logo version${d.logoVersions.length===1?'':'s'}</div>` : ''}
           </div>
         </div>
       </div>
@@ -2759,6 +2971,406 @@ function toggleAction(i){
   document.querySelector(`.action-item[data-idx="${i}"]`).classList.toggle('done');
 }
 
+/* ==================================================================
+   LOGO BUILDER — freeform SVG canvas editor for the couple's wedding logo
+   (text / icon / shape elements, drag-move / rotate / resize, layering,
+   named versions, export to PNG & SVG, and a "Set as Wedding Logo" action
+   that rasterizes the current design into dashboardData.coupleLogo)
+================================================================== */
+const LOGO_CANVAS_SIZE = 400;
+const LOGO_ICONS = {
+  heart: '<path d="M50 88 C10 62 6 30 28 18 C40 11 48 18 50 28 C52 18 60 11 72 18 C94 30 90 62 50 88 Z"/>',
+  rings: '<circle cx="38" cy="55" r="20" fill="none" stroke-width="7"/><circle cx="62" cy="55" r="20" fill="none" stroke-width="7"/>',
+  laurel: '<path d="M50 12 C46 34 46 66 50 92" fill="none" stroke-width="3"/>' +
+    [18,32,46,60,74].map(y=>`<path d="M50 ${y} Q30 ${y-6} 22 ${y-16} Q42 ${y-10} 50 ${y}" fill="none" stroke-width="3"/><path d="M50 ${y} Q70 ${y-6} 78 ${y-16} Q58 ${y-10} 50 ${y}" fill="none" stroke-width="3"/>`).join(''),
+  infinity: '<path d="M25 50 C25 35 45 35 50 50 C55 65 75 65 75 50 C75 35 55 35 50 50 C45 65 25 65 25 50 Z" fill="none" stroke-width="6"/>',
+  star: '<path d="M50 10 L60 38 L90 38 L65 56 L74 85 L50 67 L26 85 L35 56 L10 38 L40 38 Z"/>',
+  diamond: '<path d="M50 8 L84 40 L50 92 L16 40 Z" fill="none" stroke-width="4"/>',
+  flourish: '<path d="M8 60 Q30 18 50 55 Q70 92 92 50" fill="none" stroke-width="4" stroke-linecap="round"/>',
+  floral: '<circle cx="50" cy="50" r="7"/>' + [0,60,120,180,240,300].map(a=>`<ellipse cx="50" cy="28" rx="7" ry="17" transform="rotate(${a} 50 50)"/>`).join('')
+};
+const LOGO_FONT_OPTIONS = ['Cormorant Garamond','Playfair Display','Great Vibes','Inter'];
+let logoSelectedId = null;
+let logoPickerOpen = null;
+let logoDrag = null;
+let logoElIdCounter = 1;
+
+function ensureLogoDraft(){
+  if(!dashboardData.logoDraft || typeof dashboardData.logoDraft!=='object') dashboardData.logoDraft = {elements:[], background:'#FFFFFF'};
+  if(!Array.isArray(dashboardData.logoDraft.elements)) dashboardData.logoDraft.elements = [];
+  if(!dashboardData.logoDraft.background) dashboardData.logoDraft.background = '#FFFFFF';
+  return dashboardData.logoDraft;
+}
+function logoNewId(){ return 'el'+Date.now().toString(36)+(logoElIdCounter++); }
+function logoAddText(){
+  const draft = ensureLogoDraft();
+  const id = logoNewId();
+  draft.elements.push({id, type:'text', text:'Our Wedding', font:'Cormorant Garamond', size:40, weight:600, italic:false, spacing:0, color:'#232E27', x:LOGO_CANVAS_SIZE/2, y:LOGO_CANVAS_SIZE/2, rotation:0, scale:1});
+  logoSelectedId = id; logoPickerOpen = null;
+  renderLogoBuilderModalInto();
+}
+function logoTogglePicker(kind){
+  logoPickerOpen = logoPickerOpen===kind ? null : kind;
+  renderLogoBuilderModalInto();
+}
+function logoAddIcon(key){
+  const draft = ensureLogoDraft();
+  const id = logoNewId();
+  draft.elements.push({id, type:'icon', icon:key, color:'#C7A467', x:LOGO_CANVAS_SIZE/2, y:LOGO_CANVAS_SIZE/2, rotation:0, scale:1});
+  logoSelectedId = id; logoPickerOpen = null;
+  renderLogoBuilderModalInto();
+}
+function logoAddShape(shape){
+  const draft = ensureLogoDraft();
+  const id = logoNewId();
+  const sizes = {circle:90, ring:90, rect:120, line:140};
+  draft.elements.push({id, type:'shape', shape, color:'#4C6355', filled:shape==='circle', size:sizes[shape]||100, x:LOGO_CANVAS_SIZE/2, y:LOGO_CANVAS_SIZE/2, rotation:0, scale:1});
+  logoSelectedId = id; logoPickerOpen = null;
+  renderLogoBuilderModalInto();
+}
+function logoDeselectAll(){
+  logoSelectedId = null;
+  renderLogoBuilderModalInto();
+}
+function logoDeleteSelected(){
+  if(!logoSelectedId) return;
+  const draft = ensureLogoDraft();
+  draft.elements = draft.elements.filter(e=>e.id!==logoSelectedId);
+  logoSelectedId = null;
+  renderLogoBuilderModalInto();
+  persistWeddingRecord();
+}
+function logoBringForward(){
+  const draft = ensureLogoDraft();
+  const i = draft.elements.findIndex(e=>e.id===logoSelectedId);
+  if(i<0 || i===draft.elements.length-1) return;
+  const tmp = draft.elements[i]; draft.elements[i] = draft.elements[i+1]; draft.elements[i+1] = tmp;
+  renderLogoBuilderModalInto();
+  persistWeddingRecord();
+}
+function logoSendBackward(){
+  const draft = ensureLogoDraft();
+  const i = draft.elements.findIndex(e=>e.id===logoSelectedId);
+  if(i<=0) return;
+  const tmp = draft.elements[i]; draft.elements[i] = draft.elements[i-1]; draft.elements[i-1] = tmp;
+  renderLogoBuilderModalInto();
+  persistWeddingRecord();
+}
+function logoUpdateProp(field, value){
+  const draft = ensureLogoDraft();
+  const el = draft.elements.find(e=>e.id===logoSelectedId);
+  if(!el) return;
+  if(field==='size' || field==='spacing' || field==='weight') value = Number(value);
+  el[field] = value;
+  renderLogoBuilderModalInto();
+  persistWeddingRecord();
+}
+function logoUpdateBackground(color){
+  ensureLogoDraft().background = color;
+  renderLogoBuilderModalInto();
+  persistWeddingRecord();
+}
+function logoApproxBBox(el){
+  if(el.type==='text') return { w: Math.max(50, String(el.text||'').length*el.size*0.56), h: el.size*1.25 };
+  if(el.type==='icon') return { w:100, h:100 };
+  if(el.shape==='rect') return { w: el.size, h: el.size/2 };
+  if(el.shape==='line') return { w: el.size, h: 16 };
+  return { w: el.size, h: el.size };
+}
+function logoElementInnerSVG(el){
+  if(el.type==='text'){
+    return `<text text-anchor="middle" dominant-baseline="middle" font-family="${escapeAttr(el.font)}" font-size="${el.size}" font-weight="${el.weight||500}" font-style="${el.italic?'italic':'normal'}" letter-spacing="${el.spacing||0}" fill="${el.color}">${escapeHtml(el.text||'')}</text>`;
+  }
+  if(el.type==='icon'){
+    return `<g fill="${el.color}" stroke="${el.color}" transform="translate(-50,-50)">${LOGO_ICONS[el.icon]||''}</g>`;
+  }
+  if(el.type==='shape'){
+    const fillColor = el.filled ? el.color : 'none';
+    if(el.shape==='circle') return `<circle r="${el.size/2}" fill="${fillColor}" stroke="${el.color}" stroke-width="3"/>`;
+    if(el.shape==='ring') return `<circle r="${el.size/2}" fill="none" stroke="${el.color}" stroke-width="6"/>`;
+    if(el.shape==='rect') return `<rect x="${-el.size/2}" y="${-el.size/4}" width="${el.size}" height="${el.size/2}" fill="${fillColor}" stroke="${el.color}" stroke-width="3"/>`;
+    if(el.shape==='line') return `<line x1="${-el.size/2}" y1="0" x2="${el.size/2}" y2="0" stroke="${el.color}" stroke-width="4" stroke-linecap="round"/>`;
+  }
+  return '';
+}
+function logoElementGroupSVG(el, selected){
+  return `<g class="logo-el ${selected?'selected':''}" data-id="${el.id}" transform="translate(${el.x},${el.y}) rotate(${el.rotation||0}) scale(${el.scale||1})" onpointerdown="logoElementPointerDown(event,'${el.id}')">${logoElementInnerSVG(el)}</g>`;
+}
+function logoRenderSelectionHandles(el){
+  const bb = logoApproxBBox(el);
+  const hw = bb.w/2+10, hh = bb.h/2+10;
+  return `<g class="logo-handles" data-handles-for="${el.id}" transform="translate(${el.x},${el.y}) rotate(${el.rotation||0}) scale(${el.scale||1})">
+    <rect class="logo-bbox" x="${-hw}" y="${-hh}" width="${hw*2}" height="${hh*2}" fill="none" stroke="#4C6355" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="0" y1="${-hh}" x2="0" y2="${-hh-22}" stroke="#4C6355" stroke-width="1.5"/>
+    <circle class="logo-handle logo-handle-rotate" cx="0" cy="${-hh-22}" r="7" onpointerdown="logoRotatePointerDown(event,'${el.id}')"/>
+    <rect class="logo-handle logo-handle-resize" x="${hw-7}" y="${hh-7}" width="14" height="14" onpointerdown="logoResizePointerDown(event,'${el.id}')"/>
+    <rect class="logo-handle logo-handle-delete" x="${-hw-3}" y="${-hh-3}" width="16" height="16" onpointerdown="event.stopPropagation(); logoDeleteSelected();"/>
+  </g>`;
+}
+function logoSvgPoint(svg, clientX, clientY){
+  const pt = svg.createSVGPoint();
+  pt.x = clientX; pt.y = clientY;
+  const ctm = svg.getScreenCTM();
+  if(!ctm) return {x:0,y:0};
+  const p = pt.matrixTransform(ctm.inverse());
+  return {x:p.x, y:p.y};
+}
+function logoClamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+function logoElementPointerDown(evt, id){
+  evt.stopPropagation();
+  evt.preventDefault();
+  const wasSelected = logoSelectedId===id;
+  logoSelectedId = id;
+  if(!wasSelected) renderLogoBuilderModalInto();
+  const svg = document.getElementById('logoCanvasSvg');
+  if(!svg) return;
+  const p = logoSvgPoint(svg, evt.clientX, evt.clientY);
+  const el = ensureLogoDraft().elements.find(e=>e.id===id);
+  if(!el) return;
+  logoDrag = {mode:'move', id, startPointer:p, startEl:{x:el.x, y:el.y}};
+  window.addEventListener('pointermove', logoPointerMove);
+  window.addEventListener('pointerup', logoPointerUp);
+}
+function logoRotatePointerDown(evt, id){
+  evt.stopPropagation(); evt.preventDefault();
+  const svg = document.getElementById('logoCanvasSvg');
+  if(!svg) return;
+  const p = logoSvgPoint(svg, evt.clientX, evt.clientY);
+  const el = ensureLogoDraft().elements.find(e=>e.id===id);
+  if(!el) return;
+  const startAngle = Math.atan2(p.y-el.y, p.x-el.x)*180/Math.PI;
+  logoDrag = {mode:'rotate', id, startAngle, startRotation: el.rotation||0};
+  window.addEventListener('pointermove', logoPointerMove);
+  window.addEventListener('pointerup', logoPointerUp);
+}
+function logoResizePointerDown(evt, id){
+  evt.stopPropagation(); evt.preventDefault();
+  const svg = document.getElementById('logoCanvasSvg');
+  if(!svg) return;
+  const p = logoSvgPoint(svg, evt.clientX, evt.clientY);
+  const el = ensureLogoDraft().elements.find(e=>e.id===id);
+  if(!el) return;
+  const startDist = Math.hypot(p.x-el.x, p.y-el.y) || 1;
+  logoDrag = {mode:'resize', id, startDist, startScale: el.scale||1};
+  window.addEventListener('pointermove', logoPointerMove);
+  window.addEventListener('pointerup', logoPointerUp);
+}
+function logoPointerMove(evt){
+  if(!logoDrag) return;
+  const svg = document.getElementById('logoCanvasSvg');
+  if(!svg) return;
+  const p = logoSvgPoint(svg, evt.clientX, evt.clientY);
+  const el = ensureLogoDraft().elements.find(e=>e.id===logoDrag.id);
+  if(!el) return;
+  if(logoDrag.mode==='move'){
+    el.x = logoClamp(logoDrag.startEl.x + (p.x-logoDrag.startPointer.x), 0, LOGO_CANVAS_SIZE);
+    el.y = logoClamp(logoDrag.startEl.y + (p.y-logoDrag.startPointer.y), 0, LOGO_CANVAS_SIZE);
+  } else if(logoDrag.mode==='rotate'){
+    const angle = Math.atan2(p.y-el.y, p.x-el.x)*180/Math.PI;
+    el.rotation = Math.round(logoDrag.startRotation + (angle-logoDrag.startAngle));
+  } else if(logoDrag.mode==='resize'){
+    const dist = Math.hypot(p.x-el.x, p.y-el.y) || 1;
+    el.scale = logoClamp(logoDrag.startScale * (dist/logoDrag.startDist), 0.2, 4);
+  }
+  const transform = `translate(${el.x},${el.y}) rotate(${el.rotation||0}) scale(${el.scale||1})`;
+  const g = svg.querySelector(`.logo-el[data-id="${logoDrag.id}"]`);
+  const h = svg.querySelector(`.logo-handles[data-handles-for="${logoDrag.id}"]`);
+  if(g) g.setAttribute('transform', transform);
+  if(h) h.setAttribute('transform', transform);
+}
+function logoPointerUp(){
+  if(!logoDrag) return;
+  logoDrag = null;
+  window.removeEventListener('pointermove', logoPointerMove);
+  window.removeEventListener('pointerup', logoPointerUp);
+  persistWeddingRecord();
+}
+function renderLogoPropsPanel(el){
+  if(el.type==='text'){
+    return `
+      <div class="field-cell"><label>Text</label><input type="text" value="${escapeAttr(el.text)}" onchange="logoUpdateProp('text',this.value)"></div>
+      <div class="field-cell"><label>Font</label>
+        <select onchange="logoUpdateProp('font',this.value)">
+          ${LOGO_FONT_OPTIONS.map(f=>`<option value="${f}" ${el.font===f?'selected':''}>${f}${f==='Great Vibes'?' (script)':''}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-cell"><label>Size</label><input type="range" min="14" max="90" value="${el.size}" oninput="logoUpdateProp('size',this.value)"></div>
+      <div class="field-cell"><label>Letter Spacing</label><input type="range" min="-2" max="14" value="${el.spacing||0}" oninput="logoUpdateProp('spacing',this.value)"></div>
+      <div class="field-cell"><label>Colour</label><input type="color" value="${el.color}" onchange="logoUpdateProp('color',this.value)"></div>
+      <div class="check-inline"><input type="checkbox" id="logoItalic" ${el.italic?'checked':''} onchange="logoUpdateProp('italic',this.checked)"><label for="logoItalic" style="margin:0;text-transform:none;font-weight:500;letter-spacing:0;">Italic</label></div>
+      <div class="check-inline"><input type="checkbox" id="logoBold" ${el.weight>=700?'checked':''} onchange="logoUpdateProp('weight', this.checked?700:500)"><label for="logoBold" style="margin:0;text-transform:none;font-weight:500;letter-spacing:0;">Bold</label></div>
+    `;
+  }
+  if(el.type==='icon'){
+    return `
+      <div class="field-cell"><label>Icon</label>
+        <div class="chip-grid">${Object.keys(LOGO_ICONS).map(k=>`<span class="chip ${el.icon===k?'selected':''}" style="cursor:pointer;padding:6px;" onclick="logoUpdateProp('icon','${k}')"><svg viewBox="0 0 100 100" style="width:20px;height:20px;fill:currentColor;stroke:currentColor;">${LOGO_ICONS[k]}</svg></span>`).join('')}</div>
+      </div>
+      <div class="field-cell"><label>Colour</label><input type="color" value="${el.color}" onchange="logoUpdateProp('color',this.value)"></div>
+    `;
+  }
+  return `
+    <div class="field-cell"><label>Size</label><input type="range" min="20" max="200" value="${el.size}" oninput="logoUpdateProp('size',this.value)"></div>
+    <div class="field-cell"><label>Colour</label><input type="color" value="${el.color}" onchange="logoUpdateProp('color',this.value)"></div>
+    ${el.shape!=='line' ? `<div class="check-inline"><input type="checkbox" id="logoFilled" ${el.filled?'checked':''} onchange="logoUpdateProp('filled',this.checked)"><label for="logoFilled" style="margin:0;text-transform:none;font-weight:500;letter-spacing:0;">Filled</label></div>` : ''}
+  `;
+}
+function renderLogoVersionBar(){
+  const d = dashboardData;
+  const versions = d.logoVersions||[];
+  return `
+    <div class="logo-version-bar">
+      <div class="logo-version-list">
+        ${versions.length ? versions.map(v=>`<span class="chip ${v.id===d.logoFinalVersionId?'selected':''}" style="cursor:pointer;" onclick="logoLoadVersion('${v.id}')" title="${escapeAttr(new Date(v.createdAt).toLocaleString())}">${escapeHtml(v.name)}${v.id===d.logoFinalVersionId?' ★':''}</span>`).join('') : `<span class="d-sub">No saved versions yet — save one below.</span>`}
+      </div>
+      <div class="logo-version-actions">
+        <input type="text" id="logoVersionNameInput" placeholder='Version name (e.g. "Gold monogram")'>
+        <button type="button" class="btn btn-outline btn-sm" onclick="logoSaveVersion()">Save Version</button>
+        <button type="button" class="btn btn-solid btn-sm" onclick="logoSetAsWeddingLogo()">Set as Wedding Logo</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="logoExportPNG()">Export PNG</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="logoExportSVG()">Export SVG</button>
+      </div>
+    </div>
+  `;
+}
+function renderLogoBuilderModal(){
+  const draft = ensureLogoDraft();
+  const sel = draft.elements.find(e=>e.id===logoSelectedId);
+  const isTransparent = draft.background==='transparent';
+  return `
+    <div class="item-modal item-modal-xl logo-builder">
+      <button class="im-close" onclick="closeLogoBuilder()">✕</button>
+      <div class="detail-section-head" style="margin-top:8px;">
+        <h3 style="margin:0;">Design Your Wedding Logo</h3>
+        <span class="d-sub">Add text, icons and shapes — drag to move, the top handle rotates, the corner handle resizes</span>
+      </div>
+      <div class="logo-toolbar">
+        <button type="button" class="btn btn-outline btn-sm" onclick="logoAddText()">+ Text</button>
+        <div style="position:relative;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="logoTogglePicker('icon')">+ Icon ▾</button>
+          ${logoPickerOpen==='icon' ? `<div class="logo-picker-pop">${Object.keys(LOGO_ICONS).map(k=>`<button type="button" class="logo-picker-item" onclick="logoAddIcon('${k}')" title="${k}"><svg viewBox="0 0 100 100">${LOGO_ICONS[k]}</svg></button>`).join('')}</div>` : ''}
+        </div>
+        <div style="position:relative;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="logoTogglePicker('shape')">+ Shape ▾</button>
+          ${logoPickerOpen==='shape' ? `<div class="logo-picker-pop">
+            <button type="button" class="logo-picker-item" onclick="logoAddShape('ring')" title="Ring">○</button>
+            <button type="button" class="logo-picker-item" onclick="logoAddShape('circle')" title="Filled circle">●</button>
+            <button type="button" class="logo-picker-item" onclick="logoAddShape('rect')" title="Rectangle">▭</button>
+            <button type="button" class="logo-picker-item" onclick="logoAddShape('line')" title="Divider line">—</button>
+          </div>` : ''}
+        </div>
+        <label class="logo-bg-swatch">BG <input type="color" value="${isTransparent?'#FFFFFF':draft.background}" onchange="logoUpdateBackground(this.value)"></label>
+        <button type="button" class="btn btn-outline btn-sm" onclick="logoUpdateBackground('transparent')">Transparent</button>
+      </div>
+      <div class="logo-workspace">
+        <div class="logo-canvas-wrap">
+          <svg id="logoCanvasSvg" viewBox="0 0 ${LOGO_CANVAS_SIZE} ${LOGO_CANVAS_SIZE}" class="logo-canvas" style="background:${isTransparent ? 'repeating-conic-gradient(#e7e2d6 0% 25%, #fff 0% 50%) 50% / 16px 16px' : draft.background};" onpointerdown="logoDeselectAll()">
+            ${draft.elements.map(el=>logoElementGroupSVG(el, el.id===logoSelectedId)).join('')}
+            ${sel ? logoRenderSelectionHandles(sel) : ''}
+          </svg>
+        </div>
+        <div class="logo-props-panel">
+          ${sel ? renderLogoPropsPanel(sel) : `<div class="d-sub" style="padding:6px 2px;">Select an element to edit it, or add a new one from the toolbar above.</div>`}
+          ${sel ? `<div class="logo-layer-actions"><button type="button" class="btn-ghost" onclick="logoSendBackward()">Send Backward</button><button type="button" class="btn-ghost" onclick="logoBringForward()">Bring Forward</button><a href="#" class="danger-link" onclick="logoDeleteSelected(); return false;">Delete</a></div>` : ''}
+        </div>
+      </div>
+      ${renderLogoVersionBar()}
+    </div>
+  `;
+}
+function openLogoBuilder(){
+  ensureLogoDraft();
+  logoSelectedId = null;
+  logoPickerOpen = null;
+  document.getElementById('logoBuilderOverlay').innerHTML = renderLogoBuilderModal();
+  document.getElementById('logoBuilderOverlay').classList.add('open');
+}
+function closeLogoBuilder(){
+  document.getElementById('logoBuilderOverlay').classList.remove('open');
+  persistWeddingRecord();
+}
+function renderLogoBuilderModalInto(){
+  const overlay = document.getElementById('logoBuilderOverlay');
+  if(overlay && overlay.classList.contains('open')) overlay.innerHTML = renderLogoBuilderModal();
+}
+function logoSaveVersion(){
+  const nameInput = document.getElementById('logoVersionNameInput');
+  const name = (nameInput && nameInput.value.trim()) || `Version ${(dashboardData.logoVersions||[]).length+1}`;
+  const draft = ensureLogoDraft();
+  const version = { id:'v'+Date.now().toString(36), name, createdAt: Date.now(), elements: JSON.parse(JSON.stringify(draft.elements)), background: draft.background };
+  if(!Array.isArray(dashboardData.logoVersions)) dashboardData.logoVersions = [];
+  dashboardData.logoVersions.push(version);
+  renderLogoBuilderModalInto();
+  persistWeddingRecord();
+}
+function logoLoadVersion(id){
+  const v = (dashboardData.logoVersions||[]).find(x=>x.id===id);
+  if(!v) return;
+  dashboardData.logoDraft = { elements: JSON.parse(JSON.stringify(v.elements)), background: v.background };
+  logoSelectedId = null;
+  renderLogoBuilderModalInto();
+}
+function logoRasterizeToDataURL(svgEl, background, callback){
+  const clone = svgEl.cloneNode(true);
+  clone.querySelectorAll('.logo-handles').forEach(n=>n.remove());
+  clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  clone.removeAttribute('style');
+  const svgStr = new XMLSerializer().serializeToString(clone);
+  const svg64 = btoa(unescape(encodeURIComponent(svgStr)));
+  const img = new Image();
+  img.onload = function(){
+    const canvas = document.createElement('canvas');
+    canvas.width = LOGO_CANVAS_SIZE*2; canvas.height = LOGO_CANVAS_SIZE*2;
+    const ctx = canvas.getContext('2d');
+    if(background && background!=='transparent'){ ctx.fillStyle = background; ctx.fillRect(0,0,canvas.width,canvas.height); }
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    callback(canvas.toDataURL('image/png'));
+  };
+  img.src = 'data:image/svg+xml;base64,'+svg64;
+}
+function logoSetAsWeddingLogo(){
+  const draft = ensureLogoDraft();
+  const nameInput = document.getElementById('logoVersionNameInput');
+  const name = (nameInput && nameInput.value.trim()) || 'Final Logo';
+  const version = { id:'v'+Date.now().toString(36), name, createdAt: Date.now(), elements: JSON.parse(JSON.stringify(draft.elements)), background: draft.background };
+  if(!Array.isArray(dashboardData.logoVersions)) dashboardData.logoVersions = [];
+  dashboardData.logoVersions.push(version);
+  dashboardData.logoFinalVersionId = version.id;
+  const svg = document.getElementById('logoCanvasSvg');
+  logoRasterizeToDataURL(svg, draft.background, (dataUrl)=>{
+    dashboardData.coupleLogo = dataUrl;
+    updateChrome();
+    renderLogoBuilderModalInto();
+    persistWeddingRecord();
+    if(currentRouteKey==='home') document.getElementById('content').innerHTML = renderHome();
+  });
+}
+function logoExportPNG(){
+  const svg = document.getElementById('logoCanvasSvg');
+  const draft = ensureLogoDraft();
+  logoRasterizeToDataURL(svg, draft.background, (dataUrl)=>{
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `Evera-Logo-${dashboardData.partner1}-${dashboardData.partner2}.png`.replace(/\s+/g,'-');
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+}
+function logoExportSVG(){
+  const svg = document.getElementById('logoCanvasSvg');
+  const clone = svg.cloneNode(true);
+  clone.querySelectorAll('.logo-handles').forEach(n=>n.remove());
+  clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  clone.removeAttribute('style');
+  const svgStr = new XMLSerializer().serializeToString(clone);
+  const blob = new Blob([svgStr], {type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Evera-Logo-${dashboardData.partner1}-${dashboardData.partner2}.svg`.replace(/\s+/g,'-');
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+
 function renderModulePlaceholder(key){
   const m = MODULE_INFO[key];
   if(!m) return '';
@@ -2791,6 +3403,72 @@ const NAME_CHANGE_STEPS = [
   {id:'accounts', label:'Email, social media & professional accounts (e.g. LinkedIn)'},
   {id:'legal', label:'Will, beneficiaries & other legal documents'}
 ];
+/* ---- Palette-inspired theme word suggestions ---- */
+function hexToHSL(hex){
+  hex = (hex||'').replace('#','');
+  if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+  if(!/^[0-9a-fA-F]{6}$/.test(hex)) return {h:0,s:0,l:50};
+  let r = parseInt(hex.substring(0,2),16)/255, g = parseInt(hex.substring(2,4),16)/255, b = parseInt(hex.substring(4,6),16)/255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h=0,s=0,l=(max+min)/2;
+  if(max!==min){
+    const d = max-min;
+    s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h=(g-b)/d+(g<b?6:0); break;
+      case g: h=(b-r)/d+2; break;
+      default: h=(r-g)/d+4;
+    }
+    h/=6;
+  }
+  return {h:h*360, s:s*100, l:l*100};
+}
+const HUE_FAMILY_WORDS = {
+  red:['Bold','Passionate'], orange:['Warm','Sun-Kissed'], gold:['Golden-Hour','Warm & Opulent'],
+  'yellow-green':['Fresh','Citrus-Bright'], green:['Earthy','Botanical','Garden-Inspired'],
+  teal:['Coastal','Cool & Fresh'], blue:['Serene','Cool-Toned'], purple:['Regal','Moody-Romantic'],
+  pink:['Romantic','Blush & Soft'], neutral:['Timeless','Understated']
+};
+function hueFamily(h){
+  if(h<15||h>=345) return 'red';
+  if(h<45) return 'orange';
+  if(h<70) return 'gold';
+  if(h<90) return 'yellow-green';
+  if(h<160) return 'green';
+  if(h<195) return 'teal';
+  if(h<250) return 'blue';
+  if(h<290) return 'purple';
+  if(h<345) return 'pink';
+  return 'neutral';
+}
+const AESTHETIC_KEYWORD_WORDS = {
+  rustic:['Rustic','Farmhouse-Chic'], boho:['Bohemian','Free-Spirited'], bohemian:['Bohemian','Free-Spirited'],
+  modern:['Modern','Minimalist'], minimal:['Minimalist','Understated'], vintage:['Vintage-Inspired','Timeless'],
+  glam:['Glamorous','Opulent'], garden:['Garden-Party','Botanical'], beach:['Coastal','Breezy'],
+  classic:['Classic','Timeless'], editorial:['Editorial','Elevated'], romantic:['Romantic','Soft'],
+  moody:['Moody','Dramatic'], industrial:['Industrial-Chic','Modern'], whimsical:['Whimsical','Playful'],
+  elegant:['Elegant','Refined'], tropical:['Tropical','Lush']
+};
+function generateThemeWords(){
+  const wp = dashboardData.weddingProfile;
+  const palette = wp.colorPalette||[];
+  if(!palette.length) return [];
+  const hsls = palette.map(hexToHSL);
+  const words = [];
+  hsls.forEach(c=>{
+    if(c.s>12 && c.l>10 && c.l<92) (HUE_FAMILY_WORDS[hueFamily(c.h)]||[]).forEach(w=>words.push(w));
+  });
+  const avgL = hsls.reduce((s,c)=>s+c.l,0)/hsls.length;
+  const avgS = hsls.reduce((s,c)=>s+c.s,0)/hsls.length;
+  if(avgL>75) words.push('Airy','Light & Bright');
+  else if(avgL<35) words.push('Moody','Dramatic');
+  else words.push('Balanced');
+  if(avgS<25) words.push('Muted','Soft-Spoken');
+  else if(avgS>60) words.push('Vibrant','Rich');
+  const notes = (wp.aestheticNotes||'').toLowerCase();
+  Object.keys(AESTHETIC_KEYWORD_WORDS).forEach(k=>{ if(notes.includes(k)) AESTHETIC_KEYWORD_WORDS[k].forEach(w=>words.push(w)); });
+  return [...new Set(words)].slice(0,8);
+}
 function fullPartnerName(key){
   const d = dashboardData;
   return `${d[key+'First']||''} ${d[key+'Last']||''}`.trim() || (key==='partner1'?'Partner 1':'Partner 2');
@@ -2953,10 +3631,20 @@ function renderMyWeddingModule(){
     <div class="card">
       <div class="card-head"><div><h4>The Master Record</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${currentUser?'<span id="weddingSaveStatus" class="save-status"></span>':'<span class="save-status save-status-demo">Sample mode — not saved</span>'}</div>
       <div class="field-grid">
-        <div class="field-cell"><label>Partner 1 — First Name</label><input type="text" value="${escapeAttr(d.partner1First)}" onchange="updatePartnerNameField('partner1First',this.value)"></div>
-        <div class="field-cell"><label>Partner 1 — Last Name</label><input type="text" value="${escapeAttr(d.partner1Last)}" onchange="updatePartnerNameField('partner1Last',this.value)"></div>
-        <div class="field-cell"><label>Partner 2 — First Name</label><input type="text" value="${escapeAttr(d.partner2First)}" onchange="updatePartnerNameField('partner2First',this.value)"></div>
-        <div class="field-cell"><label>Partner 2 — Last Name</label><input type="text" value="${escapeAttr(d.partner2Last)}" onchange="updatePartnerNameField('partner2Last',this.value)"></div>
+        <div class="field-cell">
+          <label>Partner 1</label>
+          <div class="name-pair">
+            <input type="text" placeholder="First name" value="${escapeAttr(d.partner1First)}" onchange="updatePartnerNameField('partner1First',this.value)">
+            <input type="text" placeholder="Last name" value="${escapeAttr(d.partner1Last)}" onchange="updatePartnerNameField('partner1Last',this.value)">
+          </div>
+        </div>
+        <div class="field-cell">
+          <label>Partner 2</label>
+          <div class="name-pair">
+            <input type="text" placeholder="First name" value="${escapeAttr(d.partner2First)}" onchange="updatePartnerNameField('partner2First',this.value)">
+            <input type="text" placeholder="Last name" value="${escapeAttr(d.partner2Last)}" onchange="updatePartnerNameField('partner2Last',this.value)">
+          </div>
+        </div>
         <div class="field-cell"><label>Wedding Date</label><input type="date" value="${d.weddingDateISO||''}" onchange="updateWeddingCoreField('weddingDateISO',this.value)"></div>
         <div class="field-cell"><label>Location</label><input type="text" value="${escapeAttr(d.location)}" onchange="updateWeddingCoreField('location',this.value)"></div>
         <div class="field-cell"><label>Estimated Guest Count</label><input type="number" min="0" value="${d.guestCount}" onchange="updateWeddingCoreField('guestCount',this.value)"></div>
@@ -3007,6 +3695,11 @@ function renderMyWeddingModule(){
         </label>
         <span id="hexColorError" style="font-size:11.5px;color:var(--terracotta);display:none;">Enter a valid hex code, e.g. #C7A467</span>
       </div>
+      ${(()=>{ const words = generateThemeWords(); return words.length ? `
+      <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft);">
+        <div class="d-sub" style="margin-bottom:8px;">Inspired by your palette${wp.aestheticNotes?' & aesthetic notes':''} — some words and themes to spark ideas</div>
+        <div class="chip-grid">${words.map(w=>`<span class="chip" style="cursor:default;">${escapeHtml(w)}</span>`).join('')}</div>
+      </div>` : ''; })()}
     </div>
 
     <div class="card">
@@ -3454,6 +4147,105 @@ function postThreadMessage(threadId){
 /* ==================================================================
    WEBSITE & RSVP
 ================================================================== */
+const OUR_STORY_PROMPTS = [
+  {id:'howMet', q:'How did you two meet?'},
+  {id:'proposal', q:'How did the proposal happen?'},
+  {id:'lookingForward', q:'What are you most looking forward to on your wedding day?'},
+  {id:'funFact', q:'A fun fact or inside joke your guests might enjoy?'}
+];
+const FAQ_TEMPLATES = [
+  {id:'rsvpDeadline', q:'When is the RSVP deadline?', a:(d)=> d.website.rsvpDeadlineISO ? `Please RSVP by ${fmtDateLabel(d.website.rsvpDeadlineISO)} so we can finalize numbers with our vendors. We're sorry that we won't be able to make exceptions after that date.` : "Please RSVP as soon as you're able so we can finalize numbers with our vendors."},
+  {id:'plusOne', q:'Can I bring a guest?', a:()=>"We're only able to accommodate the guests named on your invitation. If you were given a plus-one, they'll appear when you fill out your RSVP."},
+  {id:'kids', q:'Are kids invited?', a:()=>'We love your little ones, but this will be an adults-only celebration except for children specifically named on your invitation.'},
+  {id:'arrival', q:'When should I arrive?', a:()=>'Please plan to arrive at least 30 minutes before each ceremony so you have time to find your seat before things begin.'},
+  {id:'hotel', q:'Is there a hotel room block?', a:()=>'Yes — see the Travel tab for our room block details, rates, and how to book.'},
+  {id:'accessibility', q:'Are the venues wheelchair accessible?', a:()=>'Yes, every venue on our schedule is wheelchair accessible.'},
+  {id:'dressCode', q:'Is there a dress code?', a:()=>"Yes — each event on our Events pages lists its own dress code with a description, so check there for specifics."},
+  {id:'food', q:'Will there be food at the events?', a:()=>'Absolutely — come hungry! Every event on our schedule includes a meal or substantial food.'},
+  {id:'bar', q:'Will there be an open bar?', a:()=>'Yes, there will be a full open bar at our reception. Please drink responsibly.'},
+  {id:'photos', q:'Can I take photos during the wedding?', a:()=>"We'd love for you to snap and share photos at our other events, but we ask that phones and cameras stay away during the ceremonies themselves."},
+  {id:'contact', q:'Who should I contact with questions?', a:()=>'Reach out to a member of our wedding party — you can find them listed on the Wedding Party page.'}
+];
+function updateOurStoryPrompt(id, val){
+  dashboardData.website.ourStoryPrompts[id] = val;
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function handleMilestonePhotoUpload(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    dashboardData.website.milestonePhotos.push({id:'ms-'+Date.now().toString(36), photo:e.target.result, caption:'', dateLabel:''});
+    document.getElementById('content').innerHTML = renderWebsiteModule();
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+function updateMilestonePhotoField(id, field, val){
+  const m = dashboardData.website.milestonePhotos.find(x=>x.id===id);
+  if(m) m[field] = val;
+}
+function removeMilestonePhoto(id){
+  dashboardData.website.milestonePhotos = dashboardData.website.milestonePhotos.filter(m=>m.id!==id);
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function updateTravelField(field, val){
+  dashboardData.website.travel[field] = val;
+}
+function addThingToDo(){
+  const t = document.getElementById('newThingTitle'), desc = document.getElementById('newThingDesc'), url = document.getElementById('newThingUrl');
+  const title = (t.value||'').trim();
+  if(!title) return;
+  dashboardData.website.travel.thingsToDo.push({id:'ttd-'+Date.now().toString(36), title, description:(desc.value||'').trim(), url:(url.value||'').trim()});
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function removeThingToDo(id){
+  dashboardData.website.travel.thingsToDo = dashboardData.website.travel.thingsToDo.filter(x=>x.id!==id);
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function addEatDrink(){
+  const t = document.getElementById('newEatTitle'), desc = document.getElementById('newEatDesc'), url = document.getElementById('newEatUrl');
+  const title = (t.value||'').trim();
+  if(!title) return;
+  dashboardData.website.travel.eatDrink.push({id:'ed-'+Date.now().toString(36), title, description:(desc.value||'').trim(), url:(url.value||'').trim()});
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function removeEatDrink(id){
+  dashboardData.website.travel.eatDrink = dashboardData.website.travel.eatDrink.filter(x=>x.id!==id);
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function toggleFaqTemplate(id){
+  const sel = dashboardData.website.faqSelections;
+  const i = sel.indexOf(id);
+  if(i>=0) sel.splice(i,1); else sel.push(id);
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function updateFaqAnswer(id, val){
+  dashboardData.website.faqAnswers[id] = val;
+}
+function handleAlbumPhotosUpload(event){
+  const files = Array.from(event.target.files||[]);
+  if(!files.length) return;
+  let remaining = files.length;
+  files.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      dashboardData.website.albumPhotos.push({id:'ap-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), photo:e.target.result, eventId:'', caption:''});
+      remaining--;
+      if(remaining===0) document.getElementById('content').innerHTML = renderWebsiteModule();
+    };
+    reader.readAsDataURL(file);
+  });
+  event.target.value = '';
+}
+function removeAlbumPhoto(id){
+  dashboardData.website.albumPhotos = dashboardData.website.albumPhotos.filter(p=>p.id!==id);
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function notifyGuestsNewPhotos(){
+  dashboardData.website.albumNotifications.push({sentAt: Date.now(), photoCount: dashboardData.website.albumPhotos.length});
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
 function renderWebsiteModule(){
   const d = dashboardData;
   const w = d.website;
@@ -3489,13 +4281,128 @@ function renderWebsiteModule(){
     </div>
 
     <div class="card">
-      <div class="card-head"><h4>Our Story</h4></div>
-      <textarea class="notes-field" placeholder="Tell your guests how you met..." onchange="updateWebsiteField('ourStoryText',this.value)">${escapeHtml(w.ourStoryText)}</textarea>
+      <div class="card-head"><h4>Our Story</h4><span class="d-sub">Answer a few prompts — we'll help you tell it</span></div>
+      ${OUR_STORY_PROMPTS.map(p=>`
+        <div class="field-cell" style="margin-bottom:12px;">
+          <label>${escapeHtml(p.q)}</label>
+          <textarea class="notes-field" style="min-height:64px;" placeholder="Type your answer..." onchange="updateOurStoryPrompt('${p.id}',this.value)">${escapeHtml((w.ourStoryPrompts||{})[p.id]||'')}</textarea>
+        </div>
+      `).join('')}
+      <details style="margin-top:4px;">
+        <summary style="cursor:pointer; font-size:12px; color:var(--charcoal-faint);">Prefer to just write it yourself?</summary>
+        <textarea class="notes-field" style="margin-top:10px;" placeholder="Tell your guests how you met..." onchange="updateWebsiteField('ourStoryText',this.value)">${escapeHtml(w.ourStoryText)}</textarea>
+      </details>
+      <div class="detail-section" style="margin-top:18px; padding-top:14px;">
+        <div class="detail-section-head"><h4 style="margin:0;">Milestone Photos</h4><span class="d-sub">${(w.milestonePhotos||[]).length} photo${(w.milestonePhotos||[]).length===1?'':'s'}</span></div>
+        <div class="photo-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px; margin-top:10px;">
+          ${(w.milestonePhotos||[]).map(m=>`
+            <div class="ms-photo-card" style="border:1px solid var(--line); border-radius:var(--radius-sm); overflow:hidden; background:#fff;">
+              <img src="${m.photo}" style="width:100%; height:110px; object-fit:cover; display:block;">
+              <div style="padding:8px;">
+                <input type="text" placeholder="Caption" value="${escapeAttr(m.caption)}" onchange="updateMilestonePhotoField('${m.id}','caption',this.value)" style="width:100%; font-size:12px; margin-bottom:6px;">
+                <input type="text" placeholder="e.g. Our first date" value="${escapeAttr(m.dateLabel)}" onchange="updateMilestonePhotoField('${m.id}','dateLabel',this.value)" style="width:100%; font-size:12px;">
+                <a href="#" class="danger-link" style="display:inline-block; margin-top:6px; font-size:12px;" onclick="removeMilestonePhoto('${m.id}'); return false;">Remove</a>
+              </div>
+            </div>
+          `).join('')}
+          <label class="ms-photo-upload" style="border:1px dashed var(--line); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; min-height:110px; cursor:pointer; color:var(--charcoal-faint); font-size:13px; text-align:center; padding:8px;">
+            + Add Photo
+            <input type="file" accept="image/*" style="display:none;" onchange="handleMilestonePhotoUpload(event)">
+          </label>
+        </div>
+      </div>
     </div>
 
     <div class="card">
-      <div class="card-head"><h4>Event Visibility</h4><span class="d-sub">Which events appear on the public site</span></div>
+      <div class="card-head"><h4>Wedding Party</h4><span class="d-sub">Bios &amp; photos come straight from your Wedding Party Hub</span></div>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Nothing to configure here — add or edit blurbs and photos in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('wedding-party')">Wedding Party →</span> and they'll appear on the guest-facing site automatically.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>Event Visibility</h4><span class="d-sub">Which events appear on the public site, gated to invited guests</span></div>
       ${d.events.map(e=>`<div class="event-mini-row"><div><div class="em-name">${escapeHtml(e.name)}</div><div class="em-date">${escapeHtml(e.date)}</div></div><input type="checkbox" style="width:16px;height:16px;" ${e.publicVisibility!==false?'checked':''} onchange="toggleEventVisibility('${e.id}')"></div>`).join('')}
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:10px;">Each visible event gets its own page with date, location, calendar-invite buttons, and a dress-code section — set the dress code from the event's detail view in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('events')">Events →</span></p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>Album</h4><span class="d-sub">Photos from your events, shared with guests</span></div>
+      <div class="photo-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px;">
+        ${(w.albumPhotos||[]).map(p=>`
+          <div class="ms-photo-card" style="border:1px solid var(--line); border-radius:var(--radius-sm); overflow:hidden; background:#fff;">
+            <img src="${p.photo}" style="width:100%; height:110px; object-fit:cover; display:block;">
+            <div style="padding:8px;">
+              <select style="width:100%; font-size:12px; margin-bottom:6px;" onchange="updateAlbumPhotoEvent('${p.id}',this.value)">
+                <option value="" ${!p.eventId?'selected':''}>No event tag</option>
+                ${d.events.map(e=>`<option value="${e.id}" ${p.eventId===e.id?'selected':''}>${escapeHtml(e.name)}</option>`).join('')}
+              </select>
+              <a href="#" class="danger-link" style="font-size:12px;" onclick="removeAlbumPhoto('${p.id}'); return false;">Remove</a>
+            </div>
+          </div>
+        `).join('')}
+        <label class="ms-photo-upload" style="border:1px dashed var(--line); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; min-height:110px; cursor:pointer; color:var(--charcoal-faint); font-size:13px; text-align:center; padding:8px;">
+          + Add Photos
+          <input type="file" accept="image/*" multiple style="display:none;" onchange="handleAlbumPhotosUpload(event)">
+        </label>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; margin-top:14px; flex-wrap:wrap;">
+        <button class="btn btn-solid btn-sm" onclick="notifyGuestsNewPhotos()">🔔 Notify guests new photos are up</button>
+        ${(w.albumNotifications||[]).length ? `<span class="d-sub">Last notified ${timeAgoLabel(w.albumNotifications[w.albumNotifications.length-1].sentAt)} · ${w.albumNotifications[w.albumNotifications.length-1].photoCount} photos at the time</span>` : `<span class="d-sub">Guests haven't been notified yet</span>`}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>Travel</h4><span class="d-sub">Getting to, from, and around the wedding</span></div>
+      <div class="field-grid">
+        <div class="field-cell"><label>Shuttle Service</label><textarea class="notes-field" style="min-height:56px;" placeholder="e.g. A shuttle will run between the hotel and venue every 30 minutes." onchange="updateTravelField('shuttle',this.value)">${escapeHtml(w.travel.shuttle)}</textarea></div>
+        <div class="field-cell"><label>Flying In</label><textarea class="notes-field" style="min-height:56px;" placeholder="Nearest airport, tips on booking flights..." onchange="updateTravelField('flying',this.value)">${escapeHtml(w.travel.flying)}</textarea></div>
+        <div class="field-cell"><label>Uber / Taxi</label><textarea class="notes-field" style="min-height:56px;" placeholder="Notes on rideshare availability in the area..." onchange="updateTravelField('rideshare',this.value)">${escapeHtml(w.travel.rideshare)}</textarea></div>
+        <div class="field-cell"><label>Public Transportation</label><textarea class="notes-field" style="min-height:56px;" placeholder="Bus, train, or transit options..." onchange="updateTravelField('transit',this.value)">${escapeHtml(w.travel.transit)}</textarea></div>
+      </div>
+      <div class="detail-section" style="margin-top:16px; padding-top:14px;">
+        <div class="detail-section-head"><h4 style="margin:0;">Things To Do</h4></div>
+        ${(w.travel.thingsToDo||[]).map(t=>`<div class="budget-item-row budget-item-row-clean" style="grid-template-columns:1fr 2fr 1fr 0.3fr;"><span class="readonly-cell">${escapeHtml(t.title)}</span><span class="d-sub">${escapeHtml(t.description)}</span><span class="d-sub">${escapeHtml(t.url)}</span><a href="#" class="danger-link" onclick="removeThingToDo('${t.id}'); return false;">✕</a></div>`).join('')}
+        <div class="custom-add-row" style="margin-top:10px; flex-wrap:wrap;">
+          <input type="text" id="newThingTitle" placeholder="Name (e.g. Old Town Walking Tour)">
+          <input type="text" id="newThingDesc" placeholder="Short description">
+          <input type="text" id="newThingUrl" placeholder="Link (optional)">
+          <button class="btn btn-outline btn-sm" onclick="addThingToDo()">+ Add</button>
+        </div>
+      </div>
+      <div class="detail-section" style="margin-top:16px; padding-top:14px;">
+        <div class="detail-section-head"><h4 style="margin:0;">Eat &amp; Drink</h4></div>
+        ${(w.travel.eatDrink||[]).map(t=>`<div class="budget-item-row budget-item-row-clean" style="grid-template-columns:1fr 2fr 1fr 0.3fr;"><span class="readonly-cell">${escapeHtml(t.title)}</span><span class="d-sub">${escapeHtml(t.description)}</span><span class="d-sub">${escapeHtml(t.url)}</span><a href="#" class="danger-link" onclick="removeEatDrink('${t.id}'); return false;">✕</a></div>`).join('')}
+        <div class="custom-add-row" style="margin-top:10px; flex-wrap:wrap;">
+          <input type="text" id="newEatTitle" placeholder="Name (e.g. The Copper Fork)">
+          <input type="text" id="newEatDesc" placeholder="Short description">
+          <input type="text" id="newEatUrl" placeholder="Link (optional)">
+          <button class="btn btn-outline btn-sm" onclick="addEatDrink()">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>FAQ Builder</h4><span class="d-sub">Toggle the questions that apply — we've drafted the answers for you</span></div>
+      ${FAQ_TEMPLATES.map(t=>{
+        const on = (w.faqSelections||[]).includes(t.id);
+        const answer = (w.faqAnswers && w.faqAnswers[t.id]!==undefined) ? w.faqAnswers[t.id] : t.a(d);
+        return `
+        <div class="event-mini-row" style="align-items:flex-start;">
+          <div style="flex:1;">
+            <div class="em-name">${escapeHtml(t.q)}</div>
+            ${on ? `<textarea class="notes-field" style="min-height:52px; margin-top:6px;" onchange="updateFaqAnswer('${t.id}',this.value)">${escapeHtml(answer)}</textarea>` : ''}
+          </div>
+          <input type="checkbox" style="width:16px;height:16px; margin-top:2px;" ${on?'checked':''} onchange="toggleFaqTemplate('${t.id}')">
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>RSVP Deadline</h4></div>
+      <div class="field-cell" style="max-width:260px;">
+        <label>RSVP by</label>
+        <input type="date" value="${w.rsvpDeadlineISO||''}" onchange="updateWebsiteField('rsvpDeadlineISO',this.value)">
+      </div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:10px;">This date is shown to guests on the RSVP section of your website. Automated reminder emails to guests who haven't responded yet are planned for a future update — not built yet.</p>
     </div>
 
     <div class="card">
@@ -3508,6 +4415,20 @@ function renderWebsiteModule(){
       </div>
     </div>
   `;
+}
+function updateAlbumPhotoEvent(id, eventId){
+  const p = dashboardData.website.albumPhotos.find(x=>x.id===id);
+  if(p) p.eventId = eventId;
+}
+function timeAgoLabel(ts){
+  const diffMs = Date.now() - ts;
+  const mins = Math.round(diffMs/60000);
+  if(mins < 1) return 'just now';
+  if(mins < 60) return `${mins} min${mins===1?'':'s'} ago`;
+  const hrs = Math.round(mins/60);
+  if(hrs < 24) return `${hrs} hour${hrs===1?'':'s'} ago`;
+  const days = Math.round(hrs/24);
+  return `${days} day${days===1?'':'s'} ago`;
 }
 function updateWebsiteField(field,val){ dashboardData.website[field]=val; document.getElementById('content').innerHTML = renderWebsiteModule(); }
 function toggleWebsitePublished(){ dashboardData.website.published = !dashboardData.website.published; document.getElementById('content').innerHTML = renderWebsiteModule(); }
@@ -3564,6 +4485,11 @@ function renderSettingsModule(){
         ['rsvpAlerts','New RSVP alerts'],
         ['vendorMessageAlerts','Vendor message alerts']
       ].map(([key,label])=>`<div class="event-mini-row"><div class="em-name">${label}</div><input type="checkbox" style="width:16px;height:16px;" ${np[key]?'checked':''} onchange="toggleNotificationPref('${key}')"></div>`).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h4>Evera Assistant</h4><span class="d-sub">The floating help panel with proactive planning tips</span></div></div>
+      <div class="event-mini-row"><div class="em-name">Show the Evera Assistant</div><input type="checkbox" style="width:16px;height:16px;" ${d.assistantEnabled!==false?'checked':''} onchange="toggleAssistantEnabled(this.checked)"></div>
     </div>
 
     <div class="card">
@@ -4223,9 +5149,18 @@ function renderPartyMemberDetail(id){
         <p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.7;">${escapeHtml(m.notes)}</p>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-head"><h4>Wedding Website Bio</h4><span class="d-sub">This blurb &amp; their photo appear on the Wedding Party page of your website</span></div>
+      <textarea class="notes-field" placeholder="A short, fun blurb your guests will enjoy..." onchange="updateMemberBio('${m.id}',this.value)">${escapeHtml(m.bio||'')}</textarea>
+    </div>
     ${renderSurveyResponsesCard(m)}
     ${renderMemberBachNote(m)}
   `;
+}
+function updateMemberBio(id, val){
+  const m = dashboardData.weddingParty.find(x=>x.id===id);
+  if(m) m.bio = val;
 }
 function attireMiniPill(status){
   const map = {confirmed:['pill-ok','Confirmed'], pending:['pill-warn','Pending'], ordered:['pill-neutral','Ordered'], 'not-needed':['pill-neutral','N/A']};
@@ -6293,7 +7228,7 @@ function renderEventDetail(id){
           <div class="loc-suggest-attribution">Address search powered by OpenStreetMap — no API key needed. Swap in Google Places or Canada Post AddressComplete once you have one.</div>
         </div>
         <div class="field-cell"><label>Guest Count (Estimate)</label><input type="number" min="0" value="${e.guestCount||0}" onchange="updateEventField('${e.id}','guestCount',Number(this.value)||0)"></div>
-        <div class="field-cell"><label>Dress Code</label><input type="text" value="${escapeAttr(e.dressCode||'')}" placeholder="e.g. Formal, cocktail attire" onchange="updateEventField('${e.id}','dressCode',this.value)"></div>
+        ${renderDressCodeField(e)}
       </div>
       <div class="room-setup-row" style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);">
         <div class="field-mini"><label>Estimated Guests</label><span style="font-size:17px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',serif;">${e.guestCount||0}</span></div>
@@ -6395,6 +7330,46 @@ function pickEventLocation(eventId, idx){
   document.getElementById('content').innerHTML = renderEventDetail(eventId);
 }
 /* ---- Dress code visual (stylized attire moodboard — not photographic, since no image-generation tool is available in this session) ---- */
+const DRESS_CODE_OPTIONS = [
+  {value:'Casual / Brunch', desc:'Relaxed daytime wear — sundresses, chinos, linen shirts. Comfortable shoes recommended.'},
+  {value:'Cocktail / Semi-Formal', desc:'Knee-length dresses or dressy separates; suits without a tie are fine. A step up from business casual.'},
+  {value:'Formal / Black-Tie', desc:'Floor-length gowns, tuxedos or dark formal suits. Avoid casual fabrics like denim or cotton.'},
+  {value:'Festive & Colourful', desc:'Bright, festive colours are encouraged — comfortable seating attire since you may be seated on the floor or low cushions.'},
+  {value:'Bright Colours Encouraged', desc:'Rich jewel tones and bright colour are welcome — please avoid all-white or all-black outfits.'},
+  {value:'__custom__', desc:'Write your own dress code description.'}
+];
+function dressCodeOptionFor(text){
+  const t = (text||'').trim();
+  const known = DRESS_CODE_OPTIONS.find(o=>o.value===t);
+  return known ? known.value : (t ? '__custom__' : '');
+}
+function renderDressCodeField(e){
+  const selected = dressCodeOptionFor(e.dressCode);
+  const isCustom = selected==='__custom__';
+  const matchedDesc = DRESS_CODE_OPTIONS.find(o=>o.value===selected && o.value!=='__custom__');
+  return `
+    <div class="field-cell">
+      <label>Dress Code</label>
+      <select onchange="updateEventDressCodeChoice('${e.id}', this.value)">
+        <option value="" ${selected===''?'selected':''}>Not set yet</option>
+        ${DRESS_CODE_OPTIONS.map(o=>`<option value="${escapeAttr(o.value)}" ${selected===o.value?'selected':''}>${o.value==='__custom__'?'Other (write your own)':escapeHtml(o.value)}</option>`).join('')}
+      </select>
+      ${isCustom ? `<input type="text" style="margin-top:6px;" value="${escapeAttr(e.dressCode||'')}" placeholder="Describe the dress code" onchange="updateEventField('${e.id}','dressCode',this.value)">` : ''}
+      ${matchedDesc ? `<div class="d-sub" style="margin-top:5px; font-size:11.5px; line-height:1.5;">${escapeHtml(matchedDesc.desc)}</div>` : ''}
+    </div>
+  `;
+}
+function updateEventDressCodeChoice(id, value){
+  if(value==='__custom__'){
+    // Switching to Other: keep any existing free text (or clear the preset), then let the
+    // text field (rendered on next paint) hold the real value the guest sees.
+    const e = dashboardData.events.find(x=>x.id===id);
+    const known = DRESS_CODE_OPTIONS.some(o=>o.value===e.dressCode);
+    updateEventField(id, 'dressCode', known ? '' : (e.dressCode||''));
+  } else {
+    updateEventField(id, 'dressCode', value);
+  }
+}
 const DRESS_CODE_VISUALS = [
   {keys:['black-tie','black tie','formal'], label:'Formal / Black-Tie', palette:['#232E27','#38473B','#C7A467','#F4EFE3'], garments:['tuxedo-m','gown-f'], tip:'Floor-length gowns, tuxedos or dark formal suits. Avoid casual fabrics like denim or cotton.'},
   {keys:['cocktail','semi-formal','semi formal'], label:'Cocktail / Semi-Formal', palette:['#4C6355','#CBB2A6','#A8834A','#FAF6EE'], garments:['suit-m','cocktail-f'], tip:'Knee-length dresses or dressy separates; suits without a tie are fine. A step up from business casual.'},
@@ -7516,6 +8491,11 @@ function renderArticleDetail(id){
 /* ==================================================================
    ASSISTANT PANEL
 ================================================================== */
+function toggleAssistantEnabled(checked){
+  dashboardData.assistantEnabled = checked;
+  applyAssistantVisibility();
+  persistWeddingRecord();
+}
 function toggleAssistant(){
   document.getElementById('assistantPanel').classList.toggle('open');
 }

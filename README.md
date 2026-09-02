@@ -65,16 +65,18 @@ That URL is now live and shareable. Anyone with the link can open the prototype 
 
 ## Updating it later
 
-Whenever you (or Claude) have a new version of `index.html`:
+Whenever you (or Claude) have a new version of `index.html`, commit, tag it with the matching version number, and push both:
 
 ```bash
 cd ~/Development/Evera
 git add .
 git commit -m "Describe what changed"
+git tag v1.4.0
 git push
+git push --tags
 ```
 
-GitHub Pages redeploys automatically within a minute or two of the push.
+GitHub Pages redeploys automatically within a minute or two of the push. Claude will give you the exact commit message and tag to use each time, matching the version it just added to the in-app changelog.
 
 ## Real sign-in (Firebase Auth)
 
@@ -99,6 +101,30 @@ The **My Wedding** module (partner names, wedding date, location, guest count es
 
 **Still sample data, not yet saved:** every other module — Guests, Budget, Vendors, Wedding Party, Playbook, Events, etc. — is still in-memory only and resets on reload. Guests is the natural next module to wire up the same way.
 
+## Your guest-facing wedding website (v1.5.0)
+
+Alongside `index.html` (the couple's planning app), this folder now also includes **`wedding-website.html`** — a separate, self-contained prototype of what your guests would actually see. Open it the same way (double-click, or `open wedding-website.html`).
+
+- **Our Story**: written from prompt-question answers (how you met, the proposal, what you're looking forward to, a fun fact) plus a milestone-photo gallery — both configured from the **Website & RSVP** module in the main app.
+- **Wedding Party**: bios and photos, pulled from each person's profile in the **Wedding Party Hub** (there's a new "Wedding Website Bio" field on each member's page).
+- **Events**: a tab per event, each one gated — a guest only sees the events they're actually invited to. Every event page includes a "+ Add to Google Calendar" button and a downloadable `.ics` file, plus a polished dress-code section (an illustrated attire moodboard, matching the same style used in the main app's Events module) with real attire-retailer links.
+- **Album**: event photos, filterable by event, with a "new photos are up" banner the couple can trigger from Website & RSVP.
+- **Travel**: shuttle, flying, rideshare and transit info, plus Things To Do and Eat & Drink recommendation cards.
+- **FAQ**: an accordion built from the couple's guided FAQ Builder selections in Website & RSVP.
+- **RSVP**: shows the couple's chosen RSVP-by date and a simple RSVP form. This is a prototype — responses aren't saved anywhere yet, and automated reminders for guests who haven't responded are a planned future feature, not built yet.
+
+Since there's no real guest sign-in in this prototype, the website has a **"Viewing as"** picker at the top so you can preview it as different guests with different event invitations, to see the per-event gating in action.
+
+All of the content on this page (Our Story, Travel, FAQ, Wedding Party bios) is sample data for now — wiring it up to read live from the couple's actual Website & RSVP settings would be the next step once this prototype direction is approved.
+
+## Home quick stats, palette themes, dress-code presets, Assistant toggle & a logo design studio (v1.4.0)
+
+- **Home** now opens with a Quick Stats row — days to go, budget used, RSVPs in, planning progress, guests attending — visible without scrolling.
+- **Master Record**: Partner 1 and Partner 2's first/last name fields are grouped so they always stay together on screen. The **Master Colour Palette** card now suggests descriptive theme words (e.g. "Earthy", "Romantic", "Airy") based on your chosen colours and aesthetic notes.
+- **Evera Assistant** can be turned on or off during onboarding, and changed anytime in Settings.
+- **Events → Dress Code** is now a dropdown of standard categories (Casual, Cocktail, Formal/Black-Tie, Festive & Colourful, etc.) with a short description of each, plus an "Other" option for anything custom.
+- **Logo design studio**: from Home's Personalize Your Space card, "🎨 Design Your Own" opens a freeform logo editor — add text, icons and shapes; drag to move, use the top handle to rotate and the corner handle to resize; pick fonts (including a script font) and colours; reorder layers; save multiple named versions; and export the finished logo as a PNG or SVG. Whichever version you set as your Wedding Logo is saved to your account and used as your logo everywhere else in the app.
+
 ## Partner names, hashtag suggestions & name-change tracking
 
 The Master Record now splits each partner's name into **First** and **Last** name fields (instead of one combined name field per partner) — the rest of the app still displays the combined "First Last" form wherever it showed a partner's name before.
@@ -108,6 +134,18 @@ Next to the **Wedding Hashtag** field, an **✨ Suggest** button generates a han
 A new **Name Change** card lets each partner record whether they're keeping their name, taking their partner's last name, hyphenating, or doing something else, plus what their new last name will be. If a partner opts into a name change, once the wedding date has passed a **Name Change Checklist** unlocks for them — a step-by-step walkthrough (marriage certificate copies, Social Security/ID, passport, banks, employer/HR, insurance, voter registration, utilities, online accounts, legal documents) with progress tracking. All of this — first/last names and name-change choices/checklist progress — saves to Firestore the same way the rest of the Master Record does.
 
 No further setup is needed to use any of this — the Firebase project, web app, Email/Password sign-in, Firestore database, and its security rules are all already configured and live.
+
+## Changelog ("What's New") & versioning
+
+There's a **🆕 What's New** link at the bottom of the sidebar (it also shows the current version number, e.g. `v1.3.0`). It opens a running changelog of every feature that's shipped to Evera so far, grouped by release (newest first) — this is the same list Claude keeps updated in `CHANGELOG` near the top of `index.html`'s script whenever a batch of changes ships.
+
+Every release is numbered **major.minor.patch** (semantic versioning):
+
+- **Patch** (`1.3.0` → `1.3.1`) — a batch that's only fixes or small tweaks to things already shipped, no new capability.
+- **Minor** (`1.3.0` → `1.4.0`) — a batch that adds new features or functionality (this is the normal case).
+- **Major** (`1.x.x` → `2.0.0`) — a big milestone or a change that reworks how an existing feature behaves. Rare, judgment call.
+
+**How future updates work from here on:** rather than pushing every small change the moment it's built, changes get grouped into batches and pushed together only when you say to push. Each batch becomes one new version-bumped changelog entry, and the git commit for that push gets tagged with the matching version (e.g. `git tag v1.4.0`), so the version number, the changelog, and git history all line up with what's actually live.
 
 ## Notes on this version
 
