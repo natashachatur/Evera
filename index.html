@@ -312,6 +312,71 @@
   .health-banner .btn{border-color:rgba(244,239,227,0.5); color:#fff;}
   .health-banner .btn:hover{background:rgba(244,239,227,0.12);}
 
+  /* ---- Home hero (v1.23.0) — greeting, priority line, small persistent Ask Evera ---- */
+  .home-hero{
+    background:linear-gradient(120deg, var(--green-deep), var(--green)); color:#F4EFE3; border-radius:var(--radius);
+    padding:28px 32px; margin-bottom:22px; box-shadow:var(--shadow-lg); display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  }
+  .home-hero h1{font-family:'Cormorant Garamond',serif; font-weight:600; font-size:26px; color:#fff; margin-bottom:6px;}
+  .home-hero .hh-status{font-size:13.5px; color:var(--champagne-light); font-weight:600;}
+  .home-hero .hh-days{font-size:13.5px; color:#D8D2C0;}
+  .home-hero .hh-priority{font-size:14.5px; color:#F4EFE3; margin-top:12px; max-width:520px; line-height:1.5;}
+  .home-hero .hh-priority b{color:var(--champagne-light);}
+  .home-hero .hh-stats{font-size:12px; color:#B9B2A0; margin-top:14px; letter-spacing:0.01em;}
+  .home-ask-btn{
+    display:inline-flex; align-items:center; gap:7px; background:rgba(244,239,227,0.12); border:1px solid rgba(244,239,227,0.4);
+    color:#fff; font-size:12.5px; font-weight:700; padding:9px 16px; border-radius:999px; white-space:nowrap; flex-shrink:0;
+  }
+  .home-ask-btn:hover{background:rgba(244,239,227,0.2);}
+  .home-ask-btn svg{width:13px; height:13px; stroke:var(--champagne-light); fill:var(--champagne-light);}
+
+  /* ---- Next Up (hero card) ---- */
+  .nextup-card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:8px 26px 20px; box-shadow:var(--shadow); margin-bottom:22px;}
+  .nextup-head{display:flex; align-items:center; justify-content:space-between; padding:18px 0 6px; flex-wrap:wrap; gap:10px;}
+  .nextup-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--champagne-dark);}
+  .nextup-item{display:flex; gap:16px; padding:18px 0; border-top:1px solid var(--line-soft);}
+  .nextup-item:first-child{border-top:none;}
+  .nextup-num{font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; color:var(--champagne); flex-shrink:0; width:34px; line-height:1;}
+  .nextup-body{flex:1; min-width:0;}
+  .nextup-title{font-size:15.5px; font-weight:700; color:var(--charcoal);}
+  .nextup-due{font-size:11.5px; font-weight:700; color:var(--champagne-dark); text-transform:uppercase; letter-spacing:0.03em; margin-top:4px;}
+  .nextup-rationale{font-size:13px; color:var(--charcoal-soft); margin-top:6px; line-height:1.5;}
+  .nextup-cta{display:inline-block; font-size:12.5px; font-weight:700; color:var(--green); border-bottom:1px solid var(--champagne); margin-top:9px; cursor:pointer;}
+  .nextup-viewall{text-align:center; padding-top:14px; border-top:1px solid var(--line-soft); margin-top:4px;}
+
+  /* ---- Wedding Health strip ---- */
+  .health-strip{display:grid; grid-template-columns:repeat(4,1fr); gap:0; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:22px; overflow:hidden;}
+  .hs-row{padding:16px 18px; border-left:1px solid var(--line-soft); cursor:pointer;}
+  .hs-row:first-child{border-left:none;}
+  .hs-row:hover{background:var(--ivory-deep);}
+  .hs-label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); display:block; margin-bottom:6px;}
+  .hs-value{font-size:14.5px; font-weight:700; color:var(--charcoal);}
+  @media (max-width:900px){ .health-strip{grid-template-columns:1fr 1fr;} .hs-row:nth-child(2){border-left:1px solid var(--line-soft);} .hs-row:nth-child(3){border-left:none;} }
+
+  /* ---- Evera Noticed ---- */
+  .notice-card{background:linear-gradient(135deg, var(--ivory-deep), var(--paper)); border:1px solid var(--champagne-light); border-radius:var(--radius); padding:26px; box-shadow:var(--shadow); margin-bottom:22px;}
+  .notice-item{display:flex; gap:14px; padding:15px 0; border-top:1px dashed var(--champagne-light);}
+  .notice-item:first-child{border-top:none; padding-top:2px;}
+  .notice-ico{width:32px; height:32px; border-radius:50%; background:var(--champagne); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .notice-headline{font-size:14.5px; font-weight:700; color:var(--charcoal);}
+  .notice-body{font-size:13px; color:var(--charcoal-soft); margin-top:4px; line-height:1.5;}
+  .notice-cta{display:inline-block; font-size:12px; font-weight:700; color:var(--green); border-bottom:1px solid var(--champagne); margin-top:8px; cursor:pointer;}
+
+  /* ---- Your Celebrations (horizontal) ---- */
+  .celeb-scroll{display:flex; gap:14px; overflow-x:auto; padding-bottom:6px; margin-top:2px;}
+  .celeb-card{flex:0 0 168px; background:var(--ivory-deep); border-radius:var(--radius-sm); padding:16px; scroll-snap-align:start;}
+  .celeb-name{font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:600; color:var(--charcoal);}
+  .celeb-date{font-size:11.5px; color:var(--charcoal-faint); margin-top:5px;}
+  .celeb-guests{font-size:11.5px; color:var(--charcoal-faint); margin-top:2px;}
+
+  /* ---- Coming Up (payments) ---- */
+  .comingup-total{font-size:13px; font-weight:700; color:var(--green); text-align:right; padding-top:12px; border-top:1px solid var(--line-soft); margin-top:2px;}
+
+  /* ---- Your Vision (inspiration teaser) ---- */
+  .vision-swatches{display:flex; gap:6px; margin:12px 0;}
+  .vision-swatch{width:26px; height:26px; border-radius:50%; border:2px solid var(--paper); box-shadow:0 0 0 1px var(--line);}
+  .vision-note{font-size:13px; color:var(--charcoal-soft); line-height:1.55; font-style:italic;}
+
   .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
   .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
   @media (max-width:1000px){ .grid-2, .grid-3{grid-template-columns:1fr;} }
@@ -800,11 +865,26 @@
   .ap-input-row input{flex:1; border:1px solid var(--line); border-radius:999px; padding:10px 16px; font-size:12.5px; background:var(--ivory);}
   .ap-input-row button{width:38px; height:38px; border-radius:50%; background:var(--green); color:#fff; border:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
 
+  /* feedback panel — Feature Requests & Bug Reports, opened from the topbar */
+  .feedback-panel{
+    position:fixed; top:74px; right:34px; z-index:250; width:440px; max-width:calc(100vw - 40px);
+    background:var(--paper); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow-lg);
+    display:none; flex-direction:column; overflow:hidden;
+  }
+  .feedback-panel.open{display:flex;}
+  .fp-head{background:var(--green-deep); color:#F4EFE3; padding:18px 20px; display:flex; align-items:center; gap:10px;}
+  .fp-head .fp-title{font-family:'Cormorant Garamond',serif; font-size:18px;}
+  .fp-head .fp-sub{font-size:11px; color:#B9B2A0;}
+  .fp-close{margin-left:auto; background:none; border:none; color:#F4EFE3; opacity:0.7; cursor:pointer; font-size:15px; line-height:1; padding:6px; flex-shrink:0;}
+  .fp-close:hover{opacity:1;}
+  .fp-body{padding:18px 20px; max-height:min(70vh,520px); overflow-y:auto;}
+
   @media (max-width:900px){
     .sidebar{position:fixed; left:-260px; z-index:300; transition:left .25s ease; box-shadow:var(--shadow-lg);}
     .sidebar.open{left:0;}
     .content{padding:24px 18px 80px;}
     .topbar{padding:16px 18px;}
+    .feedback-panel{top:64px; right:12px;}
     .grid-2, .grid-3{grid-template-columns:1fr;}
     .card-select-grid, .style-grid{grid-template-columns:1fr 1fr;}
   }
@@ -856,6 +936,32 @@
     body.printing #printArea{display:block !important; padding:0.4in;}
     body.printing .floor-table{cursor:default !important;}
     @page{ margin:0.5in; }
+  }
+
+  /* ---- Playbook / Run Book PDF export (v1.23.0) ---- */
+  .pb-export-modal{max-width:720px;}
+  .pb-export-doc{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); padding:26px 30px; margin-top:6px;}
+  .pb-export-print.pb-export-doc{border:none; border-radius:0; padding:0;}
+  .pb-export-header{text-align:center; padding-bottom:16px; border-bottom:2px solid var(--champagne);}
+  .pb-export-brand{font-family:'Cormorant Garamond',serif; font-size:14px; letter-spacing:0.22em; text-transform:uppercase; color:var(--green);}
+  .pb-export-title{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600; font-size:30px; margin-top:6px; color:var(--charcoal);}
+  .pb-export-sub{font-size:12.5px; letter-spacing:0.03em; color:var(--charcoal-soft); margin-top:6px;}
+  .pb-export-role-chip{display:inline-block; margin-top:12px; padding:5px 16px; border-radius:999px; background:var(--green); color:#fff; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;}
+  .pb-export-section-title{font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:600; color:var(--green-deep); margin:26px 0 12px; padding-bottom:6px; border-bottom:1px solid var(--line);}
+  .pb-export-day{margin-top:16px; break-inside:avoid; page-break-inside:avoid;}
+  .pb-export-day-head{background:var(--green-tint); border-left:3px solid var(--green); padding:6px 12px; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--green-deep); margin-bottom:6px; border-radius:0 4px 4px 0;}
+  .pb-export-item{display:flex; gap:14px; padding:6px 4px; border-bottom:1px solid var(--line-soft); font-size:12.5px;}
+  .pb-export-time{width:76px; flex-shrink:0; font-weight:700; color:var(--terracotta); font-variant-numeric:tabular-nums;}
+  .pb-export-item-body{min-width:0;}
+  .pb-export-item-body b{display:block; color:var(--charcoal); font-size:13px; font-weight:600;}
+  .pb-export-item-body span{display:block; color:var(--charcoal-faint); font-size:11.5px; margin-top:1px; line-height:1.4;}
+  .pb-export-contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:2px 22px;}
+  .pb-export-contact-row{display:flex; justify-content:space-between; gap:10px; font-size:12.5px; padding:5px 0; border-bottom:1px dashed var(--line);}
+  .pb-export-notes dt{font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); margin-top:12px;}
+  .pb-export-notes dd{margin:3px 0 0; font-size:12.5px; color:var(--charcoal-soft); line-height:1.55;}
+  .pb-export-foot{margin-top:30px; padding-top:12px; border-top:1px solid var(--line); font-size:11px; font-style:italic; color:var(--charcoal-faint); text-align:center;}
+  @media print{
+    body.printing .pb-export-doc{break-inside:auto;}
   }
 
   /* ---- Event location lookup (OpenStreetMap/Nominatim) ---- */
@@ -911,7 +1017,7 @@
       <button class="btn btn-solid" onclick="showAuth('signup')">Build My Wedding</button>
       <button class="btn btn-outline" onclick="skipToDashboard()">See a Sample Wedding</button>
     </div>
-    <div class="landing-sample-teaser">Peek inside: <strong>Natasha &amp; Matteo</strong> — 150 guests · $100,000 budget · King City &amp; Toronto, ON<br>Welcome Dinner · Mehndi · Ceremony · Cocktail Hour · Reception · Farewell Brunch</div>
+    <div class="landing-sample-teaser">Peek inside: <strong>Natasha &amp; Matteo</strong> — 150 guests · $100,000 budget · King City &amp; Toronto, ON<br>Mehndi · Sangeet · Rehearsal Dinner · Nikkah Ceremony · Church Ceremony · Civil &amp; Reception</div>
     <div class="landing-foot">Already planning with Evera? <a href="#" onclick="showAuth('login'); return false;">Sign in</a></div>
   </div>
 </section>
@@ -1222,12 +1328,13 @@
     <div class="topbar">
       <div style="display:flex; align-items:center; gap:14px;">
         <button class="mobile-sb-toggle" onclick="toggleSidebar(true)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
-        <div class="tb-left"><h3 id="tbTitle">Home</h3><div class="tb-sub" id="tbSub">Welcome back — here's where things stand.</div></div>
+        <div class="tb-left"><h3 id="tbTitle">Home</h3><div class="tb-sub" id="tbSub">What deserves your attention today.</div></div>
       </div>
       <div class="tb-right">
         <div class="countdown-chip"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><b id="tbCountdown">—</b> to go</div>
         <button class="icon-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
-        <div class="sb-avatar" style="background:linear-gradient(150deg,var(--champagne-light),var(--rose)); width:38px; height:38px; font-size:12px;" id="tbAvatar">P&amp;J</div>
+        <button class="icon-btn" onclick="toggleFeedbackPanel()" title="Feature requests &amp; bug reports" aria-label="Feature requests and bug reports"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/></svg></button>
+        <div class="sb-avatar" style="background:linear-gradient(150deg,var(--champagne-light),var(--rose)); width:38px; height:38px; font-size:12px; cursor:pointer;" id="tbAvatar" onclick="renderRoute('settings')" title="Settings" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){renderRoute('settings');}">P&amp;J</div>
       </div>
     </div>
 
@@ -1245,7 +1352,18 @@
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div class="item-overlay" id="calendarItemOverlay" onclick="if(event.target===this) closeCalendarItemDetail();"><!-- injected --></div>
 <div class="item-overlay" id="moodBoardOverlay" onclick="if(event.target===this) closeGeneratedMoodBoard();"><!-- injected --></div>
+<div class="item-overlay" id="playbookExportOverlay" onclick="if(event.target===this) closePlaybookExportPreview();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
+
+<!-- ============ FEEDBACK ============ -->
+<div class="feedback-panel" id="feedbackPanel">
+  <div class="fp-head">
+    <svg class="icon" viewBox="0 0 24 24" style="stroke:var(--champagne);"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/></svg>
+    <div><div class="fp-title">Feedback</div><div class="fp-sub">Request a feature or report a bug</div></div>
+    <button type="button" class="fp-close" onclick="toggleFeedbackPanel(false)" aria-label="Close">✕</button>
+  </div>
+  <div class="fp-body" id="feedbackPanelBody"><!-- injected --></div>
+</div>
 
 <!-- ============ ASSISTANT ============ -->
 <button class="assistant-fab" id="assistantFab" onclick="toggleAssistant()">
@@ -1284,6 +1402,7 @@ const ICONS = {
   guides:'<path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/><path d="M9 7h7M9 11h5"/>',
   assistant:'<path d="M12 2l2.2 5.6L20 10l-5.8 2.4L12 18l-2.2-5.6L4 10l5.8-2.4L12 2z"/>',
   settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>',
+  feedback:'<path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/>',
   check:'<path d="M20 6L9 17l-5-5"/>'
 };
 
@@ -1301,12 +1420,11 @@ const NAV_ITEMS = [
   {key:'website', label:'Website', icon:'website'},
   {key:'playbook', label:'Playbook', icon:'playbook'},
   {key:'documents', label:'Documents', icon:'documents'},
-  {key:'guides', label:'Guides & Tips', icon:'guides'},
-  {key:'settings', label:'Settings', icon:'settings'}
+  {key:'guides', label:'Guides & Tips', icon:'guides'}
 ];
 
 const MODULE_INFO = {
-  'my-wedding':{title:'My Wedding Blueprint', desc:"The master record for your wedding — couple profile, dates, location, traditions, planning style, and overall aesthetic, all in one place.", bullets:['Couple profile & wedding settings','Master color palette & aesthetic','Collaborators & permissions']},
+  'my-wedding':{title:'My Wedding Blueprint', desc:"Your wedding details — couple profile, dates, location, traditions, planning style, and overall aesthetic, all in one place.", bullets:['Couple profile & wedding settings','Master color palette & aesthetic','Collaborators & permissions']},
   'events':{title:'Events', desc:"Every event in your wedding is its own workspace — with its own guests, vendors, budget, timeline, and look & feel.", bullets:['Unlimited custom events','Per-event guest eligibility & RSVP','Per-event budget, vendors & timeline']},
   'guests':{title:'Guests', desc:"Granular guest and household management connected to every event, RSVP, and seating chart.", bullets:['Households & individual guests','Per-event invitation & RSVP status','Dietary, accessibility & travel needs']},
   'wedding-party':{title:'Wedding Party Hub', desc:"A dedicated, reduced-access portal for your wedding party — their events, tasks, attire, and itinerary.", bullets:['Custom roles, not just bridesmaids/groomsmen','Personal itinerary & task list per member','Lookbook, attire & order status']},
@@ -1337,6 +1455,52 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.25.0', date:'2026-09-03',
+    title:'The Run Book, event by event',
+    items:[
+      'Playbook\'s Run Book now has a Per-Event Details section — one card per event pulling together everything specific to that day, so a coordinator or wedding party member can open one event and see the whole picture.',
+      'Each event card shows its own slice of the Timeline, Photo Shot List, Ceremony Processional Order (where it applies), Seating Chart, Budget payments, and tagged Vendors — all read live from where you already manage them, so editing there updates here automatically.',
+      'Four genuinely new pieces are built right into each event card: Music Selection, Reading Selection / Officiant Script, Décor Inventory (with setup & takedown owners), and Menu — plus a Hair & Makeup Schedule and a Flat Lay List for your photographed events.',
+      'Every event starts collapsed, with an Expand All / Collapse All link, so a six-event wedding doesn\'t turn into one very long page.'
+    ]
+  },
+  {
+    version:'1.24.0', date:'2026-09-03',
+    title:'A real, styled PDF for your Playbook',
+    items:[
+      'Export Couple Master, Export Coordinator Sheet, and Export Wedding-Party Guide now produce a genuinely styled, on-brand PDF instead of a plain text file — with a title page, a day-by-day timeline, and each section that role needs.',
+      'Since you told us the Playbook IS the Run Book, the Couple Master export now pulls in the whole thing — your Full Family Contact List, Full Vendor List, Delegate Roles, and Emergency Kit — alongside the day-of timeline and your Special Notes.',
+      'Each export opens in a preview first, so you see exactly what you\'re about to save before printing — click "Print / Save as PDF" from there and choose Save as PDF in your browser\'s print dialog.',
+      'Designed fresh to match Evera\'s own look — the same palette, typography, and section styling used throughout the app — rather than copying an old reference document.'
+    ]
+  },
+  {
+    version:'1.23.0', date:'2026-09-03',
+    title:'A Home that tells you what deserves your attention today',
+    items:[
+      'Home is redesigned around one idea: what needs your attention right now, not a summary of the whole wedding. It opens with a greeting, your current status, days to go, and your single biggest priority.',
+      'Next Up replaces the old task list with your top 3 priorities — each with a recommended date, why it matters, and a direct link to act on it.',
+      'A compact Wedding Health strip (Timeline, Budget, Guests, Vendors) gives an at-a-glance status for each area, without a made-up percentage score — click any of the four to jump straight there.',
+      'Evera Noticed replaces "Evera Recommends" with the same underlying insights, framed as things Evera actually noticed about your wedding, each with a link to act on it.',
+      'Your Celebrations is a new horizontal strip of all your events with their date and guest count — the detail still lives in Events, this is just the reminder that Evera has your whole wedding in view.',
+      'Your Vision brings your colour palette and aesthetic notes onto Home as a small, quiet moment, with a link to keep building your Inspiration board.',
+      'Coming Up surfaces your next upcoming payments and what\'s due in the next 30 days, pulled from your real deadlines.',
+      'The Evera Assistant is less prominent on Home now — a small "Ask Evera" button replaces the larger call-to-action, since Home itself now does the proactive work.',
+      'Your sample wedding\'s events now match a real 6-event, multi-tradition structure — Mehndi, Sangeet, Rehearsal Dinner, Nikkah Ceremony, Church Ceremony, and Civil & Reception — with Budget, Vendors, Wedding Party, the Playbook timeline, and Guest RSVPs all updated to match.',
+      'My Wedding Blueprint\'s "Master Record" is renamed "Your Wedding Details," and the note about guest count and budget estimates now reads a little warmer.',
+      'The Seating Chart can now seat vendors, too — each table has its own "Vendor seating" list (say, your DJ, photographer, or planner) alongside your guests, counted toward that table\'s capacity and included in the printed floor plan and chair-order sheet.'
+    ]
+  },
+  {
+    version:'1.22.0', date:'2026-09-03',
+    title:'Feedback moved to the topbar, Settings moved behind your avatar',
+    items:[
+      'Feature Requests & Bug Reports no longer lives inside Settings — it\'s now its own panel, opened from a new icon in the topbar right next to the notification bell, so it\'s reachable from anywhere in the app.',
+      'Settings is no longer a sidebar item — click your initials in the top-right corner of the screen to open it instead, the same way most apps put account settings behind a profile icon.',
+      'No data or functionality changed — every field, submission, and setting works exactly as before, just relocated.'
+    ]
+  },
   {
     version:'1.21.0', date:'2026-09-03',
     title:'Feature requests & bug reports',
@@ -1615,6 +1779,8 @@ let partyView = 'hub';       // 'hub' | 'timeline' | 'lookbook' | 'bach' | 'deta
 let selectedMemberId = null;
 let playbookRole = 'couple'; // 'couple' | 'coordinator' | 'vendor' | 'weddingparty'
 let playbookVendorCategory = null;
+let playbookExportRole = 'couple';
+let runbookCollapsedEvents = {}; // eventId -> collapsed boolean, defaults to collapsed the first time each event is seen (Run Book Phase 2, v1.25.0)
 let eventsView = 'list';     // 'list' | 'detail'
 let selectedEventId = null;
 let addingEvent = false;
@@ -1672,50 +1838,51 @@ function defaultDashboardData(){
     healthNote:"You're 62% through planning with no urgent risks — just a few things worth your attention this week.",
     planningProgress:62,
     nextActions:[
-      {title:'Finalize your florist', meta:'3 strong matches ready to review', tag:'Vendors', done:false},
-      {title:'Confirm final headcount with Elmsley Estate catering', meta:'Due in 3 weeks', tag:'Budget', done:false},
-      {title:'Follow up with 4 wedding party members on attire', meta:'Measurements still missing', tag:'Wedding Party', done:false}
+      {title:'Finalize your florist', meta:'3 strong matches ready to review', tag:'Vendors', done:false, dueBy:'Recommended by Sep 18', rationale:'Floral orders typically need 6+ months of lead time before your date, and you\'re entering that booking window now.', ctaLabel:'Review vendors', ctaRoute:'vendors', priorityPhrase:'finalizing your florist'},
+      {title:'Confirm final headcount with Elmsley Estate catering', meta:'Due in 3 weeks', tag:'Budget', done:false, dueBy:'Due in 3 weeks', rationale:'Your catering balance and final seating chart both depend on a locked headcount.', ctaLabel:'Review budget', ctaRoute:'budget', priorityPhrase:'confirming your final headcount with catering'},
+      {title:'Follow up with 4 wedding party members on attire', meta:'Measurements still missing', tag:'Wedding Party', done:false, dueBy:'Recommended this week', rationale:'Alterations need lead time — measurements have to be in before dress and suit orders can be finalized.', ctaLabel:'Open Wedding Party', ctaRoute:'wedding-party', priorityPhrase:'following up on wedding party attire'}
     ],
     events:[
-      {id:'ev-welcome', name:'Welcome Dinner', date:'Fri, Apr 23', dateISO:'2027-04-23', startTime:'6:00 PM', endTime:'10:00 PM', accessTime:'4:30 PM (vendor load-in)', location:'The Ivy Room, Toronto', status:'planning', guestCount:80, dressCode:'Cocktail attire, semi-formal', description:'A relaxed welcome dinner the night before Mehndi festivities begin — toasts, good food, and time for both families to connect before the big weekend.', specialRituals:'Optional short toast from each set of parents.', notes:'Casual welcome dinner the night before Mehndi — close family and out-of-town guests.', vendorCategories:['Catering','Photography']},
-      {id:'ev-mehndi', name:'Mehndi', date:'Sat, Apr 24', dateISO:'2027-04-24', startTime:'2:00 PM', endTime:'6:00 PM', accessTime:'11:00 AM (florals & henna station setup)', location:'Hendrick Hall', status:'planning', guestCount:120, dressCode:'Bright colours encouraged — no white or black. Comfortable seating attire.', description:'A traditional henna celebration with a live dhol performance, food stations, and henna artists for the wedding party and guests.', specialRituals:'Henna application for the couple and wedding party; dhol performance; dance floor opens once the couple’s henna is complete.', notes:'Traditional henna celebration with a live dhol performance.', vendorCategories:['Mehndi Artist','Florals','Catering']},
-      {id:'ev-ceremony', name:'Ceremony', date:'Sun, Apr 25', dateISO:'2027-04-25', startTime:'4:00 PM', endTime:'4:30 PM', accessTime:'1:30 PM (wedding party photos begin)', location:'Elmsley Estate — Ceremony Lawn', status:'booked', guestCount:150, dressCode:'Formal / black-tie optional', description:'The ceremony itself — a ~30 minute outdoor service on the Elmsley Estate ceremony lawn, with the indoor conservatory as the rain plan.', specialRituals:'Unity ritual with both families; readings from two close friends.', notes:'~30 minute outdoor ceremony. Indoor conservatory is the rain plan.', vendorCategories:['Venue','Photography','Officiant']},
-      {id:'ev-cocktail', name:'Cocktail Hour', date:'Sun, Apr 25', dateISO:'2027-04-25', startTime:'4:30 PM', endTime:'6:30 PM', accessTime:'Immediately following the Ceremony', location:'Elmsley Estate — Terrace', status:'booked', guestCount:150, dressCode:'Formal / black-tie optional (same as Ceremony)', description:'Passed hors d’oeuvres and a live acoustic set on the Elmsley Estate terrace while the ballroom is flipped for dinner.', specialRituals:'', notes:'Passed hors d’oeuvres and a live acoustic set while the reception room is flipped.', vendorCategories:['Venue','Catering','Music/DJ']},
-      {id:'ev-reception', name:'Reception', date:'Sun, Apr 25', dateISO:'2027-04-25', startTime:'6:30 PM', endTime:'12:00 AM', accessTime:'12:00 PM (florals & décor delivery)', location:'Elmsley Estate — Ballroom', status:'booked', guestCount:150, dressCode:'Formal / black-tie optional', description:'Plated dinner service, speeches, first dance and open dancing in the Elmsley Estate ballroom.', specialRituals:'Speech order: Maid of Honour, Best Man, then open toasts. First dance followed by parent dances.', notes:'Plated dinner, speeches, first dance and open dancing.', vendorCategories:['Venue','Catering','Music/DJ','Photography']},
-      {id:'ev-brunch', name:'Farewell Brunch', date:'Mon, Apr 26', dateISO:'2027-04-26', startTime:'10:00 AM', endTime:'1:00 PM', accessTime:'9:00 AM (venue setup)', location:'Aria Rooftop', status:'planning', guestCount:60, dressCode:'Casual / brunch attire', description:'A casual send-off brunch for out-of-town guests before they head to the airport.', specialRituals:'', notes:'Casual send-off brunch for out-of-town guests before they head to the airport.', vendorCategories:['Catering']}
+      {id:'ev-mehndi', name:'Mehndi', date:'Thu, Apr 22', dateISO:'2027-04-22', startTime:'2:00 PM', endTime:'6:00 PM', accessTime:'11:00 AM (florals & henna station setup)', location:'Hendrick Hall', status:'planning', guestCount:120, dressCode:'Bright colours encouraged — no white or black. Comfortable seating attire.', description:'A traditional henna celebration with a live dhol performance, food stations, and henna artists for the wedding party and guests.', specialRituals:'Henna application for the couple and wedding party; dhol performance; dance floor opens once the couple’s henna is complete.', notes:'Traditional henna celebration with a live dhol performance.', vendorCategories:['Mehndi Artist','Florals','Catering']},
+      {id:'ev-sangeet', name:'Sangeet', date:'Fri, Apr 23', dateISO:'2027-04-23', startTime:'6:30 PM', endTime:'11:00 PM', accessTime:'3:00 PM (stage & AV setup)', location:'Hendrick Hall', status:'planning', guestCount:120, dressCode:'Festive evening wear — bold colours welcome.', description:'An evening of choreographed performances from both families, open dancing, and a live band closing out the night — the last big celebration before the wedding weekend\'s ceremonies begin.', specialRituals:'Choreographed dances from the wedding party and both families; the couple\'s surprise dance closes the night.', notes:'Performance night — bridal party and family dance numbers, then open dancing.', vendorCategories:['Choreographer','Catering','Music/DJ']},
+      {id:'ev-rehearsal', name:'Rehearsal Dinner', date:'Sat, Apr 24', dateISO:'2027-04-24', startTime:'6:00 PM', endTime:'9:30 PM', accessTime:'4:30 PM (vendor load-in)', location:'The Ivy Room, Toronto', status:'planning', guestCount:80, dressCode:'Cocktail attire, semi-formal', description:'A smaller dinner for immediate family and the wedding party the night before the ceremonies — toasts, a run-through of the next day, and a quieter moment together before the big weekend.', specialRituals:'Optional short toast from each set of parents.', notes:'Rehearsal dinner the night before the ceremonies — close family and wedding party.', vendorCategories:['Catering','Photography']},
+      {id:'ev-nikkah', name:'Nikkah Ceremony', date:'Sun, Apr 25', dateISO:'2027-04-25', startTime:'11:00 AM', endTime:'12:00 PM', accessTime:'9:30 AM (wedding party photos begin)', location:'Elmsley Estate — Conservatory', status:'planning', guestCount:100, dressCode:'Modest, formal attire', description:'An intimate Islamic marriage ceremony (Nikkah) with close family, followed by a short reception of sweets and tea before the afternoon\'s Church Ceremony.', specialRituals:'Mahr agreement read aloud; signing of the Nikkahnama by both families\' witnesses.', notes:'Intimate ceremony — Elmsley Estate Conservatory. Close family only.', vendorCategories:['Officiant','Photography']},
+      {id:'ev-church', name:'Church Ceremony', date:'Sun, Apr 25', dateISO:'2027-04-25', startTime:'4:00 PM', endTime:'4:30 PM', accessTime:'1:30 PM (wedding party photos continue)', location:'Elmsley Estate — Ceremony Lawn', status:'booked', guestCount:150, dressCode:'Formal / black-tie optional', description:'The ceremony itself — a ~30 minute outdoor service on the Elmsley Estate ceremony lawn, with the indoor conservatory as the rain plan.', specialRituals:'Unity ritual with both families; readings from two close friends.', notes:'~30 minute outdoor ceremony. Indoor conservatory is the rain plan.', vendorCategories:['Venue','Photography','Officiant']},
+      {id:'ev-reception', name:'Civil & Reception', date:'Sun, Apr 25', dateISO:'2027-04-25', startTime:'4:30 PM', endTime:'12:00 AM', accessTime:'12:00 PM (florals & décor delivery)', location:'Elmsley Estate — Terrace & Ballroom', status:'booked', guestCount:150, dressCode:'Formal / black-tie optional', description:'The legal civil signing on the terrace, followed by cocktail hour, then plated dinner, speeches, first dance and open dancing in the Elmsley Estate ballroom.', specialRituals:'Civil signing witnessed by both sets of parents; speech order: Maid of Honour, Best Man, then open toasts; first dance followed by parent dances.', notes:'Civil signing, cocktail hour, plated dinner, speeches and dancing — one continuous evening.', vendorCategories:['Venue','Catering','Music/DJ','Photography']}
     ],
     budgetBreakdown:[
       {category:'Venue & Catering', color:'#38473B', items:[
-        {id:'bi-venue', name:'Venue Rental (Elmsley Estate)', planned:18000, spent:18000, vendorCategory:'Venue', eventId:'ev-ceremony', vendorName:'Elmsley Estate', paymentFrequency:'deposit+balance', attachmentIds:['doc-venue-contract','doc-venue-invoice1'],
+        {id:'bi-venue', name:'Venue Rental (Elmsley Estate)', planned:18000, spent:18000, vendorCategory:'Venue', eventId:'ev-church', vendorName:'Elmsley Estate', paymentFrequency:'deposit+balance', attachmentIds:['doc-venue-contract','doc-venue-invoice1'],
           paymentSchedule:[{id:'ps-venue-1', label:'Deposit', amount:9000, dueDateISO:'2026-09-15', paid:true},{id:'ps-venue-2', label:'Balance', amount:9000, dueDateISO:'2027-03-15', paid:false}]},
         {id:'bi-catering', name:'Catering & Bar Service', planned:24000, spent:4000, vendorCategory:'Catering', eventId:'ev-reception', vendorName:'Elmsley Estate (in-house)', paymentFrequency:'deposit+balance', attachmentIds:['doc-catering-invoice'],
           paymentSchedule:[{id:'ps-cat-1', label:'Deposit', amount:4000, dueDateISO:'2026-06-01', paid:true},{id:'ps-cat-2', label:'Balance', amount:20000, dueDateISO:'2027-03-01', paid:false}]},
         {id:'bi-cake', name:'Cake & Desserts', planned:3000, spent:0, vendorCategory:'Catering', eventId:'ev-reception'}
       ]},
       {category:'Photography & Video', color:'#C7A467', items:[
-        {id:'bi-photo', name:'Photography Package', planned:8000, spent:6000, vendorCategory:'Photography', eventId:'ev-ceremony', vendorName:'TBD — 2 finalists', paymentFrequency:'installments', attachmentIds:['doc-photo-contract'],
+        {id:'bi-photo', name:'Photography Package', planned:8000, spent:6000, vendorCategory:'Photography', eventId:'ev-church', vendorName:'TBD — 2 finalists', paymentFrequency:'installments', attachmentIds:['doc-photo-contract'],
           multiEvent:true, contractedHours:10, overageRate:250,
-          eventAllocations:[{eventId:'ev-mehndi', hours:1},{eventId:'ev-ceremony', hours:5},{eventId:'ev-reception', hours:4}],
+          eventAllocations:[{eventId:'ev-mehndi', hours:1},{eventId:'ev-nikkah', hours:1},{eventId:'ev-church', hours:4},{eventId:'ev-reception', hours:4}],
           paymentSchedule:[{id:'ps-photo-1', label:'Deposit', amount:2000, dueDateISO:'2026-05-01', paid:true},{id:'ps-photo-2', label:'Second Payment', amount:4000, dueDateISO:'2026-11-01', paid:true},{id:'ps-photo-3', label:'Final Balance', amount:2000, dueDateISO:'2027-04-01', paid:false}]},
         {id:'bi-video', name:'Videography Package', planned:4000, spent:0, vendorCategory:'Photography', eventId:null}
       ]},
       {category:'Florals & Décor', color:'#CBB2A6', items:[
-        {id:'bi-florals-main', name:'Ceremony & Reception Florals', planned:7000, spent:0, vendorCategory:'Florals', eventId:'ev-ceremony'},
+        {id:'bi-florals-main', name:'Church Ceremony & Reception Florals', planned:7000, spent:0, vendorCategory:'Florals', eventId:'ev-church'},
         {id:'bi-florals-mehndi', name:'Mehndi Décor', planned:3000, spent:0, vendorCategory:'Florals', eventId:'ev-mehndi'}
       ]},
       {category:'Attire & Beauty', color:'#4C6355', items:[
-        {id:'bi-gown', name:'Wedding Gown', planned:3200, spent:3200, vendorCategory:null, eventId:'ev-ceremony'},
-        {id:'bi-shoes-bride', name:'Wedding Shoes', planned:400, spent:0, vendorCategory:null, eventId:'ev-ceremony'},
-        {id:'bi-suit-groom', name:"Groom's Suit", planned:1400, spent:0, vendorCategory:null, eventId:'ev-ceremony'},
-        {id:'bi-shoes-groom', name:"Groom's Shoes", planned:300, spent:0, vendorCategory:null, eventId:'ev-ceremony'},
-        {id:'bi-hmu', name:'Hair & Makeup (Trial + Day-Of)', planned:1500, spent:0, vendorCategory:'Hair & Makeup', eventId:'ev-ceremony'},
+        {id:'bi-gown', name:'Wedding Gown', planned:3200, spent:3200, vendorCategory:null, eventId:'ev-church'},
+        {id:'bi-shoes-bride', name:'Wedding Shoes', planned:400, spent:0, vendorCategory:null, eventId:'ev-church'},
+        {id:'bi-suit-groom', name:"Groom's Suit", planned:1400, spent:0, vendorCategory:null, eventId:'ev-church'},
+        {id:'bi-shoes-groom', name:"Groom's Shoes", planned:300, spent:0, vendorCategory:null, eventId:'ev-church'},
+        {id:'bi-hmu', name:'Hair & Makeup (Trial + Day-Of)', planned:1500, spent:0, vendorCategory:'Hair & Makeup', eventId:'ev-church'},
         {id:'bi-alterations', name:'Alterations & Accessories', planned:1200, spent:0, vendorCategory:null, eventId:null}
       ]},
       {category:'Entertainment', color:'#A8834A', items:[
         {id:'bi-dj', name:'DJ & Sound', planned:5000, spent:2000, vendorCategory:'Music/DJ', eventId:'ev-reception', vendorName:'TBD — searching', paymentFrequency:'deposit+balance', attachmentIds:[],
           paymentSchedule:[{id:'ps-dj-1', label:'Deposit', amount:2000, dueDateISO:'2026-10-01', paid:true},{id:'ps-dj-2', label:'Balance', amount:3000, dueDateISO:'2027-04-01', paid:false}]},
         {id:'bi-dhol', name:'Dhol Player (Mehndi)', planned:1500, spent:0, vendorCategory:null, eventId:'ev-mehndi'},
-        {id:'bi-acoustic', name:'Live Acoustic Set (Cocktail Hour)', planned:1500, spent:0, vendorCategory:null, eventId:'ev-cocktail'}
+        {id:'bi-sangeet-choreographer', name:'Sangeet Choreographer', planned:1800, spent:0, vendorCategory:'Choreographer', eventId:'ev-sangeet'},
+        {id:'bi-acoustic', name:'Live Acoustic Set (Reception)', planned:1500, spent:0, vendorCategory:null, eventId:'ev-reception'}
       ]},
       {category:'Planner / Coordinator', color:'#8B8577', items:[
         {id:'bi-coordinator', name:'Wedding Coordinator Fee', planned:5000, spent:5000, vendorCategory:null, eventId:null, vendorName:'Amara Okafor Events', paymentFrequency:'one-time', attachmentIds:['doc-coordinator-contract'],
@@ -1728,7 +1895,7 @@ function defaultDashboardData(){
       ]},
       {category:'Favors & Misc', color:'#AE5B41', items:[
         {id:'bi-favors', name:'Guest Favors', planned:2000, spent:0, vendorCategory:null, eventId:null},
-        {id:'bi-welcomebags', name:'Welcome Bags', planned:2000, spent:0, vendorCategory:null, eventId:'ev-welcome'}
+        {id:'bi-welcomebags', name:'Welcome Bags', planned:2000, spent:0, vendorCategory:null, eventId:'ev-rehearsal'}
       ]},
       {category:'Contingency', color:'#E7DFCF', items:[
         {id:'bi-contingency', name:'General Contingency', planned:5000, spent:0, vendorCategory:null, eventId:null}
@@ -1760,31 +1927,32 @@ function defaultDashboardData(){
         {id:'comm-venue-1', dateISO:'2026-11-02', type:'contract', direction:'outbound', subject:'Signed venue contract returned', notes:'Countersigned copy sent back with the 50% deposit.'},
         {id:'comm-venue-2', dateISO:'2027-02-10', type:'quote', direction:'inbound', subject:'Final walkthrough & floor plan sign-off', notes:'Coordinator confirmed our floor plan and load-in times.'}
       ]},
-      {id:'vb-catering', category:'Catering', role:'', vendorName:'Elmsley Estate (in-house)', status:'booked', contactName:'Natasha Deshmukh', email:'events@elmsleyestate.example', phone:'(416) 555-0134', cost:24000, linkedBudgetItemId:'bi-catering', contractStatus:'signed', notes:'Plated dinner + passed hors d’oeuvres for Cocktail Hour.', eventIds:['ev-cocktail','ev-reception'], communications:[
+      {id:'vb-catering', category:'Catering', role:'', vendorName:'Elmsley Estate (in-house)', status:'booked', contactName:'Natasha Deshmukh', email:'events@elmsleyestate.example', phone:'(416) 555-0134', cost:24000, linkedBudgetItemId:'bi-catering', contractStatus:'signed', notes:'Plated dinner + passed hors d’oeuvres during cocktail hour, plus the Nikkah\'s sweets & tea reception.', eventIds:['ev-nikkah','ev-church','ev-reception'], communications:[
         {id:'comm-cat-1', dateISO:'2026-12-01', type:'quote', direction:'inbound', subject:'Final headcount & menu quote', notes:'Quote locked at 150 guests, plated dinner + bar package.'}
       ]},
-      {id:'vb-photo', category:'Photography', role:'', vendorName:'TBD — 2 finalists', status:'shortlisted', contactName:'', email:'', phone:'', cost:8000, linkedBudgetItemId:'bi-photo', contractStatus:'not-started', notes:'Down to two studios — decision needed by end of month.', eventIds:['ev-ceremony','ev-cocktail','ev-reception'], communications:[
+      {id:'vb-photo', category:'Photography', role:'', vendorName:'TBD — 2 finalists', status:'shortlisted', contactName:'', email:'', phone:'', cost:8000, linkedBudgetItemId:'bi-photo', contractStatus:'not-started', notes:'Down to two studios — decision needed by end of month.', eventIds:['ev-nikkah','ev-church','ev-reception'], communications:[
         {id:'comm-photo-1', dateISO:'2026-09-15', type:'quote', direction:'inbound', subject:'Package quotes received from both finalists', notes:'Both quotes came in within budget — comparing coverage hours.'}
       ]},
-      {id:'vb-officiant', category:'Officiant', role:'', vendorName:'Rev. Alan Whitcombe', status:'booked', contactName:'Rev. Alan Whitcombe', email:'alan.whitcombe@example.com', phone:'(647) 555-0198', cost:600, linkedBudgetItemId:null, contractStatus:'signed', notes:'No Budget line item yet for Officiant — add one in Budget to track this cost.', eventIds:['ev-ceremony'], communications:[
+      {id:'vb-officiant', category:'Officiant', role:'Church Ceremony', vendorName:'Rev. Alan Whitcombe', status:'booked', contactName:'Rev. Alan Whitcombe', email:'alan.whitcombe@example.com', phone:'(647) 555-0198', cost:600, linkedBudgetItemId:null, contractStatus:'signed', notes:'No Budget line item yet for the Church officiant fee — add one in Budget to track this cost.', eventIds:['ev-church'], communications:[
         {id:'comm-off-1', dateISO:'2026-10-05', type:'contract', direction:'outbound', subject:'Signed officiant agreement', notes:''}
       ]},
-      {id:'vb-hmu-bride', category:'Hair & Makeup', role:'Bride', vendorName:'Glow Atelier', status:'booked', contactName:'Nadia (Lead Artist)', email:'hello@glowatelier.example', phone:'(416) 555-0177', cost:1200, linkedBudgetItemId:'bi-hmu', contractStatus:'signed', notes:'Trial completed and loved — booked for wedding morning.', eventIds:['ev-ceremony'], communications:[
+      {id:'vb-nikkah-officiant', category:'Officiant', role:'Nikkah Ceremony', vendorName:'Imam Yusuf Rahman', status:'booked', contactName:'Imam Yusuf Rahman', email:'imam.rahman@example.com', phone:'(647) 555-0121', cost:600, linkedBudgetItemId:null, contractStatus:'signed', notes:'No Budget line item yet for the Nikkah officiant fee — add one in Budget to track this cost (same gap as the Church officiant fee).', eventIds:['ev-nikkah'], communications:[]},
+      {id:'vb-hmu-bride', category:'Hair & Makeup', role:'Bride', vendorName:'Glow Atelier', status:'booked', contactName:'Nadia (Lead Artist)', email:'hello@glowatelier.example', phone:'(416) 555-0177', cost:1200, linkedBudgetItemId:'bi-hmu', contractStatus:'signed', notes:'Trial completed and loved — booked for wedding morning, covering the Nikkah through the Reception.', eventIds:['ev-nikkah','ev-church','ev-reception'], communications:[
         {id:'comm-hmu1-1', dateISO:'2026-08-20', type:'feedback', direction:'outbound', subject:'Trial feedback — loved it, booking confirmed', notes:'Requested slightly softer eye look for the day-of.'}
       ]},
-      {id:'vb-hmu-bridesmaids', category:'Hair & Makeup', role:'Bridesmaids & Mother of the Bride', vendorName:'Vellum Beauty Studio', status:'shortlisted', contactName:'Elena (Studio Manager)', email:'book@vellumbeauty.example', phone:'(905) 555-0142', cost:1900, linkedBudgetItemId:null, contractStatus:'sent', notes:'Separate artist from the bride’s team — covers 3 bridesmaids + mother of the bride. No Budget line item yet for this group—add one to track it separately from the bride’s Hair & Makeup line.', eventIds:['ev-ceremony'], communications:[
+      {id:'vb-hmu-bridesmaids', category:'Hair & Makeup', role:'Bridesmaids & Mother of the Bride', vendorName:'Vellum Beauty Studio', status:'shortlisted', contactName:'Elena (Studio Manager)', email:'book@vellumbeauty.example', phone:'(905) 555-0142', cost:1900, linkedBudgetItemId:null, contractStatus:'sent', notes:'Separate artist from the bride’s team — covers 3 bridesmaids + mother of the bride. No Budget line item yet for this group—add one to track it separately from the bride’s Hair & Makeup line.', eventIds:['ev-nikkah','ev-church','ev-reception'], communications:[
         {id:'comm-hmu2-1', dateISO:'2026-11-18', type:'quote', direction:'inbound', subject:'Group quote for 4 people received', notes:'Quote includes travel fee to the hotel suite.'},
         {id:'comm-hmu2-2', dateISO:'2026-11-20', type:'contract', direction:'outbound', subject:'Contract sent for signature', notes:''}
       ]},
-      {id:'vb-transport-welcome', category:'Transportation', role:'Welcome Dinner shuttle', vendorName:'City Shuttle Co.', status:'booked', contactName:'Dispatch', email:'dispatch@cityshuttle.example', phone:'(416) 555-0110', cost:450, linkedBudgetItemId:null, contractStatus:'signed', notes:'Round-trip shuttle from The Camden Toronto to The Ivy Room, one night only.', eventIds:['ev-welcome'], communications:[]},
-      {id:'vb-transport-weddingday', category:'Transportation', role:'Wedding Day limo & guest shuttle', vendorName:'Elmsley Livery', status:'shortlisted', contactName:'Marco', email:'bookings@elmsleylivery.example', phone:'(905) 555-0166', cost:1100, linkedBudgetItemId:null, contractStatus:'not-started', notes:'A different company from the Welcome Dinner shuttle — covers the couple’s limo plus a guest shuttle loop for Ceremony and Reception.', eventIds:['ev-ceremony','ev-reception'], communications:[
+      {id:'vb-transport-welcome', category:'Transportation', role:'Rehearsal Dinner shuttle', vendorName:'City Shuttle Co.', status:'booked', contactName:'Dispatch', email:'dispatch@cityshuttle.example', phone:'(416) 555-0110', cost:450, linkedBudgetItemId:null, contractStatus:'signed', notes:'Round-trip shuttle from The Camden Toronto to The Ivy Room, one night only.', eventIds:['ev-rehearsal'], communications:[]},
+      {id:'vb-transport-weddingday', category:'Transportation', role:'Wedding Day limo & guest shuttle', vendorName:'Elmsley Livery', status:'shortlisted', contactName:'Marco', email:'bookings@elmsleylivery.example', phone:'(905) 555-0166', cost:1100, linkedBudgetItemId:null, contractStatus:'not-started', notes:'A different company from the Rehearsal Dinner shuttle — covers the couple’s limo plus a guest shuttle loop for the Nikkah, Church Ceremony and Reception.', eventIds:['ev-nikkah','ev-church','ev-reception'], communications:[
         {id:'comm-transport-1', dateISO:'2026-12-12', type:'quote', direction:'inbound', subject:'Quote received for limo + 2 shuttle runs', notes:''}
       ]}
     ],
     aiSuggestions:[
-      {text:"Your florist hasn't been finalized and you're entering the recommended booking window for florals.", why:'Based on your wedding date and typical GTA vendor lead times'},
-      {text:'Four wedding-party members have not completed their attire details yet.', why:'Wedding Party Hub · attire tracker'},
-      {text:'You have $7,200 remaining in your floral & décor allocation — three vendors are strong matches within that range.', why:'Budget + vendor matching'}
+      {headline:"Your florist hasn't been booked yet", text:"You're entering the recommended booking window for florals — most GTA couples lock this in 6–9 months out.", why:'Based on your wedding date and typical GTA vendor lead times', ctaLabel:'Review vendors', ctaRoute:'vendors'},
+      {headline:'Four wedding party members still need to submit attire details', text:'Measurements are missing, and alterations need lead time before your date.', why:'Wedding Party Hub · attire tracker', ctaLabel:'Open Wedding Party', ctaRoute:'wedding-party'},
+      {headline:'You have $7,200 left in Florals & Décor', text:'Three vendors are strong matches within that range.', why:'Budget + vendor matching', ctaLabel:'Review budget', ctaRoute:'budget'}
     ],
     deadlines:[
       {title:'Florist deposit', sub:'To confirm booking', date:'Sep 15, 2026', dateISO:'2026-09-15', amount:'$3,500'},
@@ -1806,7 +1974,7 @@ function defaultDashboardData(){
     ],
     vendorCategoriesSuggested:['Venue','Photography','Catering','Florals','Music/DJ','Hair & Makeup','Mehndi Artist','Officiant'],
     weddingParty:[
-      {id:'amber', name:'Amber Chatur', role:'Maid of Honour', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, bio:"Natasha's younger sister and partner-in-crime since forever. If there's a dance floor, she'll be the first one on it.", events:['Mehndi','Ceremony','Cocktail Hour','Reception'],
+      {id:'amber', name:'Amber Chatur', role:'Maid of Honour', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, bio:"Natasha's younger sister and partner-in-crime since forever. If there's a dance floor, she'll be the first one on it.", events:['Mehndi','Sangeet','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(647) 555-0131', email:'amber.chatur@gmail.com',
         tasks:[{title:'Confirm Mehndi outfit colour', due:'Completed', done:true},{title:'Coordinate bridesmaids\' hair & makeup schedule', due:'Completed', done:true},{title:'Submit dietary preferences', due:'Completed', done:true},{title:'Finalize Maid of Honour speech', due:'2 weeks before', done:false}],
         attireStatus:'confirmed', outfit:'Champagne Silk Gown', designer:'Aritzia Bridesmaid Collection', swatch:'#C7A467',
@@ -1817,7 +1985,7 @@ function defaultDashboardData(){
           sleevePreference:'Short sleeves', sleeveOther:'', topSize:'M', bottomSize:'8', dressBudget:'$150–200', dressBudgetOther:'', necklinePreference:'Sweetheart', necklineOther:'',
           professionalServices:['Hair','Makeup','',''], avoidDates:'None that I know of yet', bachIdeas:'Something relaxed with good food and wine — a villa or vineyard weekend', bachDestinationRecs:'Prince Edward County or Niagara-on-the-Lake', travelDuration:'A weekend (2–3 days)', travelDurationOther:'', openToJointBach:'No', openToJointBachOther:'', otherNotes:'So excited for you both!',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'michael', name:'Michael Mannarino', role:'Best Man', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, bio:"Matteo's older brother and roommate through university. Ask him about the time they tried to build a boat.", events:['Welcome Dinner','Ceremony','Cocktail Hour','Reception'],
+      {id:'michael', name:'Michael Mannarino', role:'Best Man', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, bio:"Matteo's older brother and roommate through university. Ask him about the time they tried to build a boat.", events:['Rehearsal Dinner','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0176', email:'michael.mannarino@gmail.com',
         tasks:[{title:'Plan bachelor party logistics', due:'Completed', done:true},{title:'Confirm hotel dates', due:'Completed', done:true},{title:'Submit measurements for suit fitting', due:'Overdue', done:false},{title:'Prepare Best Man speech', due:'2 weeks before', done:false}],
         attireStatus:'pending', outfit:'Charcoal Three-Piece Suit', designer:'Indochino', swatch:'#3C3A35',
@@ -1828,7 +1996,7 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'$300–400', suitBudgetOther:'', avoidDatesGroom:'The first week of March — I have a work conference', bachDestinationRecsGroom:'Muskoka, or a golf trip somewhere warm', travelDurationGroom:'A weekend (2–3 days)', travelDurationGroomOther:'', openToJointBachGroom:'No', openToJointBachGroomOther:''}},
-      {id:'safa', name:'Safa El Rayyes', role:'Bridesmaid', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, bio:"Natasha's college roommate turned lifelong friend. Loves a good spreadsheet almost as much as she loves karaoke.", events:['Mehndi','Ceremony','Reception'],
+      {id:'safa', name:'Safa El Rayyes', role:'Bridesmaid', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, bio:"Natasha's college roommate turned lifelong friend. Loves a good spreadsheet almost as much as she loves karaoke.", events:['Mehndi','Sangeet','Church Ceremony','Civil & Reception'],
         phone:'(905) 555-0119', email:'safa.elrayyes@gmail.com',
         tasks:[{title:'RSVP to Mehndi', due:'Completed', done:true},{title:'Submit measurements for bridesmaid dress', due:'Overdue', done:false},{title:'Confirm travel to King City venue', due:'3 weeks before', done:false}],
         attireStatus:'pending', outfit:'Champagne Silk Gown', designer:'Aritzia Bridesmaid Collection', swatch:'#C7A467',
@@ -1839,7 +2007,7 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'arsum', name:'Arsum Nadeem', role:'Groomsman', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, bio:"Matteo's best friend since high school. The reason Matteo has questionable taste in music.", events:['Welcome Dinner','Ceremony','Reception'],
+      {id:'arsum', name:'Arsum Nadeem', role:'Groomsman', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, bio:"Matteo's best friend since high school. The reason Matteo has questionable taste in music.", events:['Rehearsal Dinner','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0142x2', email:'arsum.nadeem@gmail.com',
         tasks:[{title:'Confirm groomsmen gift coordination', due:'Completed', done:true},{title:'Submit measurements for suit fitting', due:'Overdue', done:false}],
         attireStatus:'pending', outfit:'Charcoal Three-Piece Suit', designer:'Indochino', swatch:'#3C3A35',
@@ -1850,7 +2018,7 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'melissa', name:'Melissa Cesario', role:'Bridesmaid', side:"Matteo's side", partyGroup:'Bridesmaids', photo:null, bio:"Matteo's sister, and the first person to tell him Natasha was \"the one.\"", events:['Welcome Dinner','Mehndi','Ceremony','Reception'],
+      {id:'melissa', name:'Melissa Cesario', role:'Bridesmaid', side:"Matteo's side", partyGroup:'Bridesmaids', photo:null, bio:"Matteo's sister, and the first person to tell him Natasha was \"the one.\"", events:['Rehearsal Dinner','Mehndi','Sangeet','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0199', email:'melissa.cesario@gmail.com',
         tasks:[{title:'RSVP to Mehndi', due:'Completed', done:true},{title:'Submit measurements for bridesmaid dress', due:'Overdue', done:false},{title:'Confirm travel to King City venue', due:'3 weeks before', done:false}],
         attireStatus:'pending', outfit:'Champagne Silk Gown', designer:'Aritzia Bridesmaid Collection', swatch:'#C7A467',
@@ -1861,7 +2029,7 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'joe', name:'Joe Zita', role:'Groomsman', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, events:['Welcome Dinner','Ceremony','Reception'],
+      {id:'joe', name:'Joe Zita', role:'Groomsman', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, events:['Rehearsal Dinner','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0155', email:'joe.zita@gmail.com',
         tasks:[{title:'Confirm groomsmen gift coordination', due:'Completed', done:true},{title:'Submit measurements for suit fitting', due:'Overdue', done:false}],
         attireStatus:'pending', outfit:'Charcoal Three-Piece Suit', designer:'Indochino', swatch:'#3C3A35',
@@ -1872,7 +2040,7 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'joey', name:'Joey Mannarino', role:'Groomsman', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, events:['Welcome Dinner','Ceremony','Reception'],
+      {id:'joey', name:'Joey Mannarino', role:'Groomsman', side:"Matteo's side", partyGroup:'Groomsmen', photo:null, events:['Rehearsal Dinner','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0166', email:'joey.mannarino@gmail.com',
         tasks:[{title:'Confirm groomsmen gift coordination', due:'Completed', done:true},{title:'Submit measurements for suit fitting', due:'Overdue', done:false}],
         attireStatus:'pending', outfit:'Charcoal Three-Piece Suit', designer:'Indochino', swatch:'#3C3A35',
@@ -1883,7 +2051,7 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'dina', name:'Dina Naji', role:'Bridesmaid', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, events:['Mehndi','Ceremony','Reception'],
+      {id:'dina', name:'Dina Naji', role:'Bridesmaid', side:"Natasha's side", partyGroup:'Bridesmaids', photo:null, events:['Mehndi','Sangeet','Church Ceremony','Civil & Reception'],
         phone:'(647) 555-0164', email:'dina.naji@gmail.com',
         tasks:[{title:'Confirm Mehndi outfit colour', due:'Completed', done:true},{title:'Submit measurements for bridesmaid dress', due:'Overdue', done:false}],
         attireStatus:'pending', outfit:'Champagne Silk Gown', designer:'Aritzia Bridesmaid Collection', swatch:'#C7A467',
@@ -1894,30 +2062,30 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'parent-raj', name:'Asif Chatur', role:'Father of the Bride', side:"Natasha's side", partyGroup:'Parents', photo:null, events:['Welcome Dinner','Mehndi','Ceremony','Cocktail Hour','Reception'],
+      {id:'parent-raj', name:'Asif Chatur', role:'Father of the Bride', side:"Natasha's side", partyGroup:'Parents', photo:null, events:['Rehearsal Dinner','Mehndi','Sangeet','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0102', email:'asif.chatur@gmail.com',
-        tasks:[{title:'Confirm father-daughter dance song', due:'Completed', done:true},{title:'Finalize Welcome Dinner toast', due:'2 weeks before', done:false}],
+        tasks:[{title:'Confirm father-daughter dance song', due:'Completed', done:true},{title:'Finalize Rehearsal Dinner toast', due:'2 weeks before', done:false}],
         attireStatus:'pending', outfit:'Charcoal Bandhgala Suit', designer:'Modern Groom Toronto', swatch:'#3C3A35',
         hair:'Not applicable', hairStatus:'not-needed', makeup:'Not applicable', makeupStatus:'not-needed', shoes:'Black Leather Oxfords', shoesStatus:'confirmed',
-        travel:'Local — no travel needed', hotel:'—', notes:'Walking Natasha down the aisle. Speaking at the Welcome Dinner.', survey:null},
-      {id:'parent-meenal', name:'Amina Shroff', role:'Mother of the Bride', side:"Natasha's side", partyGroup:'Parents', photo:null, events:['Welcome Dinner','Mehndi','Ceremony','Cocktail Hour','Reception'],
+        travel:'Local — no travel needed', hotel:'—', notes:'Walking Natasha down the aisle. Speaking at the Rehearsal Dinner.', survey:null},
+      {id:'parent-meenal', name:'Amina Shroff', role:'Mother of the Bride', side:"Natasha's side", partyGroup:'Parents', photo:null, events:['Rehearsal Dinner','Mehndi','Sangeet','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0103', email:'amina.shroff@example.com',
-        tasks:[{title:'Coordinate with catering on traditional dishes', due:'Completed', done:true},{title:'Confirm Welcome Dinner toast order with the Romanos', due:'1 week before', done:false}],
+        tasks:[{title:'Coordinate with catering on traditional dishes', due:'Completed', done:true},{title:'Confirm Rehearsal Dinner toast order with the Romanos', due:'1 week before', done:false}],
         attireStatus:'pending', outfit:'Emerald Silk Saree', designer:'Devi Boutique', swatch:'#38473B',
         hair:'Updo with fresh florals', hairStatus:'confirmed', makeup:'Soft glam, matching Mehndi look', makeupStatus:'pending', shoes:'Gold Kolhapuri Sandals', shoesStatus:'confirmed',
-        travel:'Local — no travel needed', hotel:'—', notes:'Speaking at the Welcome Dinner alongside Tony & Lisa.', survey:null},
-      {id:'parent-tom', name:'Tony Cesario', role:'Father of the Groom', side:"Matteo's side", partyGroup:'Parents', photo:null, events:['Welcome Dinner','Ceremony','Cocktail Hour','Reception'],
+        travel:'Local — no travel needed', hotel:'—', notes:'Speaking at the Rehearsal Dinner alongside Tony & Lisa.', survey:null},
+      {id:'parent-tom', name:'Tony Cesario', role:'Father of the Groom', side:"Matteo's side", partyGroup:'Parents', photo:null, events:['Rehearsal Dinner','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0177', email:'tony.cesario@example.com',
-        tasks:[{title:'Confirm Welcome Dinner toast order with the Maliks', due:'1 week before', done:false}],
+        tasks:[{title:'Confirm Rehearsal Dinner toast order with the Maliks', due:'1 week before', done:false}],
         attireStatus:'pending', outfit:'Navy Three-Piece Suit', designer:'Indochino', swatch:'#2C3E50',
         hair:'Not applicable', hairStatus:'not-needed', makeup:'Not applicable', makeupStatus:'not-needed', shoes:'Black Oxford Brogues', shoesStatus:'pending',
-        travel:'Flying in Apr 22', hotel:'The Camden Toronto', notes:'Speaking at the Welcome Dinner.', survey:null},
-      {id:'parent-karen', name:'Lisa Cesario', role:'Mother of the Groom', side:"Matteo's side", partyGroup:'Parents', photo:null, events:['Welcome Dinner','Ceremony','Cocktail Hour','Reception'],
+        travel:'Flying in Apr 22', hotel:'The Camden Toronto', notes:'Speaking at the Rehearsal Dinner.', survey:null},
+      {id:'parent-karen', name:'Lisa Cesario', role:'Mother of the Groom', side:"Matteo's side", partyGroup:'Parents', photo:null, events:['Rehearsal Dinner','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0178', email:'lisa.cesario@example.com',
         tasks:[{title:'Coordinate mother-son dance song', due:'Completed', done:true}],
         attireStatus:'pending', outfit:'Champagne Chiffon Gown', designer:'Nordstrom Special Occasion', swatch:'#C7A467',
         hair:'Soft waves, half-up', hairStatus:'pending', makeup:'Classic glam', makeupStatus:'pending', shoes:'Champagne Block Heels', shoesStatus:'confirmed',
-        travel:'Flying in Apr 22', hotel:'The Camden Toronto', notes:'Speaking at the Welcome Dinner.', survey:null}
+        travel:'Flying in Apr 22', hotel:'The Camden Toronto', notes:'Speaking at the Rehearsal Dinner.', survey:null}
     ],
     bachParties:[
       {id:'bachelorette', label:"Natasha's Bachelorette", side:"Natasha's side", dateISO:'2027-02-13', date:'Feb 13, 2027', location:'Prince Edward County, ON', organizer:'Amber Chatur', organizerId:'amber', attendees:['amber','safa','dina','melissa'], status:'planning', budgetPerPerson:'$450/person',
@@ -1933,50 +2101,56 @@ function defaultDashboardData(){
       {date:'Jun 30, 2026', audience:"Natasha's side", message:"Bridesmaids — measurements for your gowns are due by end of July. Aritzia's ordering link is in the group chat!"}
     ],
     playbookTimeline:[
-      {id:'e1', day:'Friday, April 23', time:'5:00 PM', title:'Photographer arrival & candid shots begin', tags:['coordinator','vendor:Photography'], location:'The Ivy Room', notes:'Candid coverage begins as guests start arriving — no formal shot list needed yet.'},
-      {id:'e2', day:'Friday, April 23', time:'6:00 PM', title:'Welcome Dinner — guest arrival, The Ivy Room', tags:['coordinator','weddingparty'], location:'The Ivy Room, Toronto', notes:'Cocktail-style arrival, 45 min before guests are seated.'},
-      {id:'e3', day:'Friday, April 23', time:'7:00 PM', title:'Welcome toasts from both families', tags:['coordinator','weddingparty'], location:'The Ivy Room', notes:'Parents from both sides speaking — mic handoff coordinated by the venue AV team.'},
-      {id:'e4', day:'Friday, April 23', time:'10:00 PM', title:'Welcome Dinner ends, vendor breakdown', tags:['coordinator','vendor:Catering'], location:'The Ivy Room', notes:'Venue breakdown by staff — nothing needed from the wedding party.'},
-      {id:'e5', day:'Saturday, April 24', time:'11:00 AM', title:'Mehndi vendor setup, Hendrick Hall', tags:['coordinator','vendor:Florals'], location:'Hendrick Hall', notes:'Florals, seating cushions and henna stations set up ahead of guest arrival.'},
-      {id:'e6', day:'Saturday, April 24', time:'12:30 PM', title:'Wedding party arrival for henna & hair', tags:['coordinator','weddingparty'], location:'Hendrick Hall — Green Room', notes:'Wedding party arrives 90 min early for henna application and hair touch-ups.'},
-      {id:'e7', day:'Saturday, April 24', time:'2:00 PM', title:'Mehndi — guests arrive', tags:['coordinator','weddingparty'], location:'Hendrick Hall', notes:'Doors open, live dhol performance begins shortly after.'},
-      {id:'e8', day:'Saturday, April 24', time:'6:00 PM', title:'Mehndi ends, vendor breakdown', tags:['coordinator','vendor:Florals'], location:'Hendrick Hall', notes:'Florals team handles teardown; wedding party is free to head back to the hotel.'},
-      {id:'e9', day:'Sunday, April 25', time:'9:00 AM', title:'Hair & makeup begins for wedding party', tags:['coordinator','weddingparty','vendor:Hair & Makeup'], location:'The Camden Toronto — Suite 412', notes:'Staggered start times sent individually to each wedding party member.'},
-      {id:'e10', day:'Sunday, April 25', time:'12:00 PM', title:'Florals & décor delivery, Elmsley Estate', tags:['coordinator','vendor:Florals'], location:'Elmsley Estate', notes:'Ceremony arch, centerpieces and welcome sign delivered and set.'},
-      {id:'e11', day:'Sunday, April 25', time:'1:30 PM', title:'Wedding party photos begin', tags:['coordinator','weddingparty','vendor:Photography'], location:'Elmsley Estate — Garden', notes:'Wedding party & family formal portraits, weather-dependent — indoor conservatory is the backup.'},
-      {id:'e12', day:'Sunday, April 25', time:'3:30 PM', title:'Guest seating begins', tags:['coordinator'], location:'Elmsley Estate — Ceremony Lawn', notes:'Ushers seat guests by side; string quartet begins prelude music.'},
-      {id:'e13', day:'Sunday, April 25', time:'4:00 PM', title:'Ceremony begins', tags:['coordinator','weddingparty','vendor:Photography'], location:'Elmsley Estate — Ceremony Lawn', notes:'~30 minute ceremony. Indoor conservatory is the rain plan.'},
-      {id:'e14', day:'Sunday, April 25', time:'4:30 PM', title:'Cocktail hour, Elmsley Estate terrace', tags:['coordinator','weddingparty','vendor:Catering'], location:'Elmsley Estate — Terrace', notes:'Passed hors d’oeuvres and a live acoustic set while the reception room is flipped.'},
-      {id:'e15', day:'Sunday, April 25', time:'6:30 PM', title:'Reception entrance & dinner service', tags:['coordinator','weddingparty','vendor:Catering'], location:'Elmsley Estate — Ballroom', notes:'Wedding party announced in first, plated dinner service follows.'},
-      {id:'e16', day:'Sunday, April 25', time:'8:00 PM', title:'Speeches — Maid of Honour, Best Man', tags:['coordinator','weddingparty'], location:'Elmsley Estate — Ballroom', notes:'Speech order: Maid of Honour, then Best Man to close it out.'},
-      {id:'e17', day:'Sunday, April 25', time:'9:00 PM', title:'First dance & open dancing', tags:['coordinator','vendor:Music/DJ'], location:'Elmsley Estate — Ballroom', notes:'DJ transitions straight from first dance into open floor.'},
-      {id:'e18', day:'Sunday, April 25', time:'12:00 AM', title:'Reception ends, vendor breakdown', tags:['coordinator','vendor:Catering','vendor:Music/DJ'], location:'Elmsley Estate', notes:'Venue and catering handle breakdown overnight.'},
-      {id:'e19', day:'Monday, April 26', time:'10:00 AM', title:'Farewell Brunch, Aria Rooftop', tags:['coordinator','weddingparty'], location:'Aria Rooftop', notes:'Casual send-off brunch — no formal program.'},
-      {id:'e20', day:'Monday, April 26', time:'1:00 PM', title:'Brunch ends, farewells', tags:['coordinator','weddingparty'], location:'Aria Rooftop', notes:'Wrap-up and goodbyes before out-of-town guests head to the airport.'}
+      {id:'e1', eventId:'ev-mehndi', day:'Thursday, April 22', time:'11:00 AM', title:'Mehndi vendor setup, Hendrick Hall', tags:['coordinator','vendor:Florals'], location:'Hendrick Hall', notes:'Florals, seating cushions and henna stations set up ahead of guest arrival.'},
+      {id:'e2', eventId:'ev-mehndi', day:'Thursday, April 22', time:'12:30 PM', title:'Wedding party arrival for henna & hair', tags:['coordinator','weddingparty'], location:'Hendrick Hall — Green Room', notes:'Wedding party arrives 90 min early for henna application and hair touch-ups.'},
+      {id:'e3', eventId:'ev-mehndi', day:'Thursday, April 22', time:'2:00 PM', title:'Mehndi — guests arrive', tags:['coordinator','weddingparty'], location:'Hendrick Hall', notes:'Doors open, live dhol performance begins shortly after.'},
+      {id:'e4', eventId:'ev-mehndi', day:'Thursday, April 22', time:'6:00 PM', title:'Mehndi ends, vendor breakdown', tags:['coordinator','vendor:Florals'], location:'Hendrick Hall', notes:'Florals team handles teardown; wedding party is free to head back to the hotel.'},
+      {id:'e5', eventId:'ev-sangeet', day:'Friday, April 23', time:'3:00 PM', title:'Sangeet stage, lighting & AV setup, Hendrick Hall', tags:['coordinator','vendor:Music/DJ'], location:'Hendrick Hall', notes:'Stage, lighting and sound checked ahead of the evening\'s performances.'},
+      {id:'e6', eventId:'ev-sangeet', day:'Friday, April 23', time:'5:00 PM', title:'Wedding party & family arrive for a final dance run-through', tags:['coordinator','weddingparty'], location:'Hendrick Hall', notes:'Choreographer runs each family\'s number once before doors open.'},
+      {id:'e7', eventId:'ev-sangeet', day:'Friday, April 23', time:'6:30 PM', title:'Sangeet — guests arrive', tags:['coordinator','weddingparty'], location:'Hendrick Hall', notes:'Doors open with music and a plated dinner service.'},
+      {id:'e8', eventId:'ev-sangeet', day:'Friday, April 23', time:'7:00 PM', title:'Performances begin — family & wedding party dance numbers', tags:['coordinator','weddingparty','vendor:Choreographer'], location:'Hendrick Hall', notes:'Running order confirmed with the choreographer day-of.'},
+      {id:'e9', eventId:'ev-sangeet', day:'Friday, April 23', time:'9:30 PM', title:'Open dancing', tags:['coordinator','vendor:Music/DJ'], location:'Hendrick Hall', notes:'Live band transitions into open floor once performances wrap.'},
+      {id:'e10', eventId:'ev-sangeet', day:'Friday, April 23', time:'11:00 PM', title:'Sangeet ends, vendor breakdown', tags:['coordinator','vendor:Music/DJ'], location:'Hendrick Hall', notes:'Stage and AV teardown handled overnight.'},
+      {id:'e11', eventId:'ev-rehearsal', day:'Saturday, April 24', time:'4:30 PM', title:'Photographer arrival & candid shots begin', tags:['coordinator','vendor:Photography'], location:'The Ivy Room', notes:'Candid coverage begins as guests start arriving — no formal shot list needed yet.'},
+      {id:'e12', eventId:'ev-rehearsal', day:'Saturday, April 24', time:'6:00 PM', title:'Rehearsal Dinner — guest arrival, The Ivy Room', tags:['coordinator','weddingparty'], location:'The Ivy Room, Toronto', notes:'Cocktail-style arrival, 45 min before guests are seated.'},
+      {id:'e13', eventId:'ev-rehearsal', day:'Saturday, April 24', time:'7:00 PM', title:'Welcome toasts from both families', tags:['coordinator','weddingparty'], location:'The Ivy Room', notes:'Parents from both sides speaking — mic handoff coordinated by the venue AV team.'},
+      {id:'e14', eventId:'ev-rehearsal', day:'Saturday, April 24', time:'9:30 PM', title:'Rehearsal Dinner ends, vendor breakdown', tags:['coordinator','vendor:Catering'], location:'The Ivy Room', notes:'Venue breakdown by staff — nothing needed from the wedding party.'},
+      {id:'e15', eventId:'ev-nikkah', day:'Sunday, April 25', time:'9:00 AM', title:'Hair & makeup begins for wedding party', tags:['coordinator','weddingparty','vendor:Hair & Makeup'], location:'The Camden Toronto — Suite 412', notes:'Staggered start times sent individually to each wedding party member.'},
+      {id:'e16', eventId:'ev-nikkah', day:'Sunday, April 25', time:'9:30 AM', title:'Wedding party photos begin', tags:['coordinator','weddingparty','vendor:Photography'], location:'Elmsley Estate — Conservatory Garden', notes:'Wedding party & family formal portraits ahead of the Nikkah.'},
+      {id:'e17', eventId:'ev-nikkah', day:'Sunday, April 25', time:'11:00 AM', title:'Nikkah Ceremony begins', tags:['coordinator','weddingparty'], location:'Elmsley Estate — Conservatory', notes:'Intimate ceremony, close family only. Imam Yusuf Rahman officiating.'},
+      {id:'e18', eventId:'ev-nikkah', day:'Sunday, April 25', time:'12:00 PM', title:'Nikkah ends — sweets & tea reception', tags:['coordinator','vendor:Catering'], location:'Elmsley Estate — Conservatory', notes:'Short informal reception for close family before the afternoon\'s Church Ceremony.'},
+      {id:'e19', eventId:'ev-church', day:'Sunday, April 25', time:'1:30 PM', title:'Florals & décor delivery for the Church Ceremony & Reception, Elmsley Estate', tags:['coordinator','vendor:Florals'], location:'Elmsley Estate', notes:'Ceremony arch, centerpieces and welcome sign delivered and set.'},
+      {id:'e20', eventId:'ev-church', day:'Sunday, April 25', time:'3:30 PM', title:'Guest seating begins', tags:['coordinator'], location:'Elmsley Estate — Ceremony Lawn', notes:'Ushers seat guests by side; string quartet begins prelude music.'},
+      {id:'e21', eventId:'ev-church', day:'Sunday, April 25', time:'4:00 PM', title:'Church Ceremony begins', tags:['coordinator','weddingparty','vendor:Photography'], location:'Elmsley Estate — Ceremony Lawn', notes:'~30 minute ceremony. Indoor conservatory is the rain plan.'},
+      {id:'e22', eventId:'ev-reception', day:'Sunday, April 25', time:'4:30 PM', title:'Civil signing & cocktail hour, Elmsley Estate terrace', tags:['coordinator','weddingparty','vendor:Catering'], location:'Elmsley Estate — Terrace', notes:'Civil signing witnessed by both sets of parents, followed by passed hors d’oeuvres and a live acoustic set while the ballroom is flipped.'},
+      {id:'e23', eventId:'ev-reception', day:'Sunday, April 25', time:'6:30 PM', title:'Reception entrance & dinner service', tags:['coordinator','weddingparty','vendor:Catering'], location:'Elmsley Estate — Ballroom', notes:'Wedding party announced in first, plated dinner service follows.'},
+      {id:'e24', eventId:'ev-reception', day:'Sunday, April 25', time:'8:00 PM', title:'Speeches — Maid of Honour, Best Man', tags:['coordinator','weddingparty'], location:'Elmsley Estate — Ballroom', notes:'Speech order: Maid of Honour, then Best Man to close it out.'},
+      {id:'e25', eventId:'ev-reception', day:'Sunday, April 25', time:'9:00 PM', title:'First dance & open dancing', tags:['coordinator','vendor:Music/DJ'], location:'Elmsley Estate — Ballroom', notes:'DJ transitions straight from first dance into open floor.'},
+      {id:'e26', eventId:'ev-reception', day:'Sunday, April 25', time:'12:00 AM', title:'Reception ends, vendor breakdown', tags:['coordinator','vendor:Catering','vendor:Music/DJ'], location:'Elmsley Estate', notes:'Venue and catering handle breakdown overnight.'}
     ],
     playbookContacts:[
       {name:'Elmsley Estate', role:'Venue & Catering', phone:'(416) 555-0142'},
       {name:'2 Photography Finalists', role:'Photography', phone:'See vendor records'},
-      {name:'Hendrick Hall', role:'Mehndi Venue', phone:'(905) 555-0118'},
-      {name:'The Ivy Room', role:'Welcome Dinner Venue', phone:'(416) 555-0187'},
-      {name:'Aria Rooftop', role:'Farewell Brunch Venue', phone:'(416) 555-0199'}
+      {name:'Hendrick Hall', role:'Mehndi & Sangeet Venue', phone:'(905) 555-0118'},
+      {name:'The Ivy Room', role:'Rehearsal Dinner Venue', phone:'(416) 555-0187'},
+      {name:'Imam Yusuf Rahman', role:'Nikkah Officiant', phone:'(647) 555-0121'}
     ],
     playbookNotes:{
       dietary:'12 guests vegetarian, 4 vegan, 3 gluten-free, 2 nut allergies — full list with seating in Guests.',
       accessibility:'2 guests require step-free access at Elmsley Estate — ramp confirmed at the garden entrance.',
-      rainPlan:"Elmsley Estate's indoor conservatory is the rain plan for the Ceremony — no guest notification needed, same room flow.",
+      rainPlan:"Elmsley Estate's indoor conservatory is the rain plan for the Church Ceremony — no guest notification needed, same room flow.",
       emergency:'On-site venue coordinator: (416) 555-0142 ext. 2. Nearest hospital: Southlake Regional, 12 min from venue.'
     },
     documents:[
-      {id:'doc-venue-contract', name:'Elmsley Estate — Venue Contract.pdf', category:'contract', linkedEventId:'ev-ceremony', linkedVendorCategory:'Venue', dateAdded:'2026-02-10', notes:'Signed venue + catering agreement, deposit paid.'},
-      {id:'doc-venue-invoice1', name:'Elmsley Estate — Deposit Invoice.pdf', category:'invoice', linkedEventId:'ev-ceremony', linkedVendorCategory:'Venue', dateAdded:'2026-02-10', notes:'$18,000 deposit — paid in full.'},
-      {id:'doc-photo-contract', name:'Photography Package — Contract.pdf', category:'contract', linkedEventId:'ev-ceremony', linkedVendorCategory:'Photography', dateAdded:'2026-04-02', notes:'Awaiting final signature from selected finalist.'},
+      {id:'doc-venue-contract', name:'Elmsley Estate — Venue Contract.pdf', category:'contract', linkedEventId:'ev-church', linkedVendorCategory:'Venue', dateAdded:'2026-02-10', notes:'Signed venue + catering agreement, deposit paid.'},
+      {id:'doc-venue-invoice1', name:'Elmsley Estate — Deposit Invoice.pdf', category:'invoice', linkedEventId:'ev-church', linkedVendorCategory:'Venue', dateAdded:'2026-02-10', notes:'$18,000 deposit — paid in full.'},
+      {id:'doc-photo-contract', name:'Photography Package — Contract.pdf', category:'contract', linkedEventId:'ev-church', linkedVendorCategory:'Photography', dateAdded:'2026-04-02', notes:'Awaiting final signature from selected finalist.'},
       {id:'doc-catering-invoice', name:'Catering — Deposit Invoice.pdf', category:'invoice', linkedEventId:'ev-reception', linkedVendorCategory:'Catering', dateAdded:'2026-05-15', notes:'$4,000 deposit paid, balance due 30 days before.'},
       {id:'doc-floorplan-reception', name:'Elmsley Estate — Ballroom Floor Plan.pdf', category:'floorplan', linkedEventId:'ev-reception', linkedVendorCategory:null, dateAdded:'2026-03-01', notes:'Round tables of 10, dance floor centered.'},
       {id:'doc-coordinator-contract', name:'Wedding Coordinator — Service Agreement.pdf', category:'contract', linkedEventId:null, linkedVendorCategory:null, dateAdded:'2026-01-20', notes:''}
     ],
     notes:[
-      {id:'note-1', title:'Rain plan reminder', body:"Confirm with Elmsley Estate two weeks out whether we need to notify guests of the conservatory backup — venue said it's usually a same-day call.", dateISO:'2026-07-02', linkedEventId:'ev-ceremony'},
+      {id:'note-1', title:'Rain plan reminder', body:"Confirm with Elmsley Estate two weeks out whether we need to notify guests of the conservatory backup — venue said it's usually a same-day call.", dateISO:'2026-07-02', linkedEventId:'ev-church'},
       {id:'note-2', title:'Mehndi dhol player — deposit question', body:"Ask if the $1,500 quote includes travel from Brampton or if that's extra. Get it in writing before we send the deposit.", dateISO:'2026-06-18', linkedEventId:'ev-mehndi'},
       {id:'note-3', title:'Seating chart approach', body:"Leaning toward assigned tables but open seating within each table — easier for the venue's day-of team and avoids awkward name-card debates.", dateISO:'2026-05-30', linkedEventId:null}
     ],
@@ -1986,20 +2160,21 @@ function defaultDashboardData(){
       {id:'photog-b', label:'Photographer B', side:'partner2'}
     ],
     shotList:[
-      {id:'shot-1', title:"Bride's full look, solo — dress, shoes, jewelry", groupLabel:'Natasha (solo)', groupIds:[], eventId:'ev-ceremony', priority:'must-have', done:false, photographerId:'photog-a'},
-      {id:'shot-2', title:'Bride with bridesmaids getting ready', groupLabel:"Natasha's Bridesmaids", groupIds:['amber','safa','dina'], eventId:'ev-ceremony', priority:'must-have', done:false, photographerId:'photog-a'},
-      {id:'shot-3', title:'Groom with groomsmen getting ready', groupLabel:"Matteo's Groomsmen", groupIds:['michael','arsum'], eventId:'ev-ceremony', priority:'must-have', done:false, photographerId:'photog-b'},
-      {id:'shot-4', title:'Full wedding party group portrait', groupLabel:'Full Wedding Party', groupIds:['amber','michael','safa','arsum','dina','melissa','joe','joey'], eventId:'ev-ceremony', priority:'must-have', done:false, photographerId:null},
-      {id:'shot-5', title:'Couple exiting the ceremony', groupLabel:'Couple', groupIds:[], eventId:'ev-ceremony', priority:'must-have', done:false, photographerId:null},
-      {id:'shot-6', title:'Parents with the couple, both sides', groupLabel:'Asif & Amina Shroff, Lisa & Tony Cesario', groupIds:['hh-1-m1','hh-1-m2','hh-2-m1','hh-2-m2'], eventId:'ev-ceremony', priority:'must-have', done:false, photographerId:null},
+      {id:'shot-1', title:"Bride's full look, solo — dress, shoes, jewelry", groupLabel:'Natasha (solo)', groupIds:[], eventId:'ev-church', priority:'must-have', done:false, photographerId:'photog-a'},
+      {id:'shot-2', title:'Bride with bridesmaids getting ready', groupLabel:"Natasha's Bridesmaids", groupIds:['amber','safa','dina'], eventId:'ev-church', priority:'must-have', done:false, photographerId:'photog-a'},
+      {id:'shot-3', title:'Groom with groomsmen getting ready', groupLabel:"Matteo's Groomsmen", groupIds:['michael','arsum'], eventId:'ev-church', priority:'must-have', done:false, photographerId:'photog-b'},
+      {id:'shot-4', title:'Full wedding party group portrait', groupLabel:'Full Wedding Party', groupIds:['amber','michael','safa','arsum','dina','melissa','joe','joey'], eventId:'ev-church', priority:'must-have', done:false, photographerId:null},
+      {id:'shot-5', title:'Couple exiting the ceremony', groupLabel:'Couple', groupIds:[], eventId:'ev-church', priority:'must-have', done:false, photographerId:null},
+      {id:'shot-6', title:'Parents with the couple, both sides', groupLabel:'Asif & Amina Shroff, Lisa & Tony Cesario', groupIds:['hh-1-m1','hh-1-m2','hh-2-m1','hh-2-m2'], eventId:'ev-church', priority:'must-have', done:false, photographerId:null},
       {id:'shot-7', title:'Candid henna application close-ups', groupLabel:'Couple + Henna Artist', groupIds:[], eventId:'ev-mehndi', priority:'nice-to-have', done:false, photographerId:null},
       {id:'shot-8', title:'Dhol performance, wide + candid crowd shots', groupLabel:'Guests', groupIds:[], eventId:'ev-mehndi', priority:'nice-to-have', done:false, photographerId:null},
       {id:'shot-9', title:'First dance', groupLabel:'Couple', groupIds:[], eventId:'ev-reception', priority:'must-have', done:false, photographerId:null},
       {id:'shot-10', title:'Speeches — candid reactions from head table', groupLabel:'Wedding Party + Family', groupIds:['amber','michael'], eventId:'ev-reception', priority:'nice-to-have', done:false, photographerId:null},
       {id:'shot-11', title:'Cake cutting', groupLabel:'Couple', groupIds:[], eventId:'ev-reception', priority:'must-have', done:false, photographerId:null},
-      {id:'shot-12', title:'Candid guest shots during cocktail hour', groupLabel:'Guests', groupIds:[], eventId:'ev-cocktail', priority:'nice-to-have', done:false, photographerId:null}
+      {id:'shot-12', title:'Candid guest shots during cocktail hour', groupLabel:'Guests', groupIds:[], eventId:'ev-reception', priority:'nice-to-have', done:false, photographerId:null}
     ],
     ceremonyOrder:{
+      eventId:'ev-church',
       processional:[
         {id:'proc-1', roleText:'Grandparents', personIds:[]},
         {id:'proc-2', roleText:"Groom's Parents", personIds:[]},
@@ -2023,6 +2198,78 @@ function defaultDashboardData(){
         groomSide:['partner2','michael','arsum'],
         brideSide:['partner1','amber','safa','dina']
       }
+    },
+    // Run Book Phase 2 (v1.25.0) — per-event day-of content, keyed by eventId. Not every event gets every
+    // section filled in — only where it genuinely applies (e.g. no Menu for the Mehndi, no Music Selection
+    // for the Nikkah) — matching how a couple would actually fill these in over time, not padded to be even.
+    musicSelections:{
+      'ev-sangeet':[
+        {id:'ms-1', moment:'Opening Number', song:'Kala Chashma', artist:'Amar Arshi, Neha Kakkar, Badshah'},
+        {id:'ms-2', moment:"Couple's Entrance", song:'Ban Ja Rani', artist:'Guru Randhawa'}
+      ],
+      'ev-church':[
+        {id:'ms-3', moment:'Processional', song:'Canon in D', artist:'Pachelbel'},
+        {id:'ms-4', moment:'Signing of the Register', song:'A Thousand Years', artist:'Christina Perri'},
+        {id:'ms-5', moment:'Recessional', song:'Here Comes the Sun', artist:'The Beatles'}
+      ],
+      'ev-reception':[
+        {id:'ms-6', moment:'First Dance', song:'Perfect', artist:'Ed Sheeran'},
+        {id:'ms-7', moment:'Father-Daughter Dance', song:'My Girl', artist:'The Temptations'},
+        {id:'ms-8', moment:'Last Song of the Night', song:"Don't Stop Believin'", artist:'Journey'}
+      ]
+    },
+    ceremonyReadings:{
+      'ev-nikkah':[
+        {id:'cr-1', title:'Nikkah Khutbah', reader:'Imam Yusuf Rahman', notes:'Traditional sermon before the vows, delivered in English and Arabic.'}
+      ],
+      'ev-church':[
+        {id:'cr-2', title:'1 Corinthians 13 — "Love Is Patient"', reader:'Amber Chatur', notes:'Maid of Honour reading.'},
+        {id:'cr-3', title:'The Blessing of the Rings', reader:'Devon John (Officiant)', notes:''}
+      ]
+    },
+    decorPlans:{
+      'ev-mehndi':[
+        {id:'dp-1', item:'Floor cushions & low seating', quantity:'40', setupBy:'Hendrick Hall staff', takedownBy:'Hendrick Hall staff', notes:'Lounge-style seating around the henna stations.'}
+      ],
+      'ev-church':[
+        {id:'dp-2', item:'Ceremony arch with florals', quantity:'1', setupBy:'Florals team', takedownBy:'Florals team', notes:'Delivered 1:30 PM, matches the Reception centerpieces.'},
+        {id:'dp-3', item:'Aisle petals', quantity:'2 baskets', setupBy:'Florals team', takedownBy:'—', notes:''}
+      ],
+      'ev-reception':[
+        {id:'dp-4', item:'Centerpieces', quantity:'18', setupBy:'Florals team', takedownBy:'Couple keeps favourites, rest to venue', notes:''},
+        {id:'dp-5', item:'Welcome sign', quantity:'1', setupBy:'Florals team', takedownBy:'Best Man', notes:'Take home after — a keepsake.'}
+      ]
+    },
+    eventMenus:{
+      'ev-rehearsal':{notes:'Family-style Italian, per Tony\'s request.', courses:[
+        {id:'menu-1', course:'Starter', dish:'Burrata & heirloom tomato'},
+        {id:'menu-2', course:'Main', dish:'Braised short rib + wild mushroom risotto (veg option: risotto only)'},
+        {id:'menu-3', course:'Dessert', dish:'Tiramisu'}
+      ]},
+      'ev-nikkah':{notes:'Light tea reception — no full meal.', courses:[
+        {id:'menu-4', course:'Sweets', dish:'Gulab jamun, barfi, jalebi'},
+        {id:'menu-5', course:'Tea Service', dish:'Chai + coffee station'}
+      ]},
+      'ev-reception':{notes:'Plated dinner — vegetarian/vegan/gluten-free options confirmed with catering, see Guests for the full dietary list.', courses:[
+        {id:'menu-6', course:'Starter', dish:'Roasted beet salad'},
+        {id:'menu-7', course:'Main', dish:'Choice of chicken supreme or vegetable Wellington'},
+        {id:'menu-8', course:'Dessert', dish:'Wedding cake + mini cannoli'}
+      ]}
+    },
+    flatLayLists:{
+      'ev-church':[
+        {id:'fl-1', item:"Bride's rings", owner:'Natasha'},
+        {id:'fl-2', item:'Invitation suite', owner:'Natasha'},
+        {id:'fl-3', item:"Bride's shoes & jewelry", owner:'Natasha'},
+        {id:'fl-4', item:"Groom's cufflinks & watch", owner:'Matteo'}
+      ]
+    },
+    hairMakeupSchedules:{
+      'ev-nikkah':[
+        {id:'hm-1', person:'Natasha (Bride)', time:'9:00 AM', notes:'Full hair + makeup trial look'},
+        {id:'hm-2', person:'Amber (Maid of Honour)', time:'9:00 AM', notes:''},
+        {id:'hm-3', person:'Melissa, Safa, Dina', time:'9:30 AM', notes:'Staggered 20 min apart'}
+      ]
     },
     // Playbook Run Book (v1.19.0) — one-off ceremonial roles not modeled anywhere else (the couple, parents,
     // bridal party and grandparents are already real data in weddingParty/guestHouseholds, so the Run Book's
@@ -2125,7 +2372,7 @@ function defaultDashboardData(){
       {id:'hh-10', label:'Grace Lin', categories:["Matteo's Side",'Friends'], tier:'A', rsvpStatus:'confirmed', email:'grace.lin@example.com', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:[], members:[
         {id:'hh-10-m1', salutation:'Ms.', firstName:'Grace', lastName:'Lin', attending:true, mealChoice:'Vegetarian', dietaryRestrictions:'', accessibilityNeeds:'', tableId:'tbl-5'}
       ]},
-      {id:'hh-11', label:'Fatima Noor', categories:['Friends'], tier:'A', rsvpStatus:'pending', email:'fatima.noor@example.com', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:['ev-ceremony','ev-reception'], members:[
+      {id:'hh-11', label:'Fatima Noor', categories:['Friends'], tier:'A', rsvpStatus:'pending', email:'fatima.noor@example.com', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:['ev-church','ev-reception'], members:[
         {id:'hh-11-m1', salutation:'Ms.', firstName:'Fatima', lastName:'Noor', attending:true, mealChoice:'', dietaryRestrictions:'', accessibilityNeeds:'', tableId:null}
       ]},
       {id:'hh-12', label:'David Chen', categories:['Friends'], tier:'A', rsvpStatus:'declined', email:'', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:[], members:[
@@ -2154,7 +2401,7 @@ function defaultDashboardData(){
     ],
     roomSetup:{width:44, depth:32, shape:'rectangular'},
     weddingProfile:{
-      traditions:["South Asian / Hindu",'Western'],
+      traditions:["South Asian / Hindu",'Muslim','Catholic / Christian','Western'],
       colorPalette:['#38473B','#C7A467','#CBB2A6','#FAF6EE'],
       hashtag:'#NatashaAndMatteo2027',
       aestheticNotes:'Warm, garden-romantic, with South Asian textiles and colour woven through the Western reception traditions.'
@@ -2169,22 +2416,22 @@ function defaultDashboardData(){
       /* -- Foundations: the big early decisions everything else depends on -- */
       {id:'task-f1', title:'Set your overall wedding budget', eventId:null, role:'Couple', priority:'High', done:true, dueDateISO:'2026-05-01', notes:'Landed on a total and how contributions are split.', phase:'foundations', dependsOn:null},
       {id:'task-f2', title:'Choose your wedding date', eventId:null, role:'Couple', priority:'High', done:true, dueDateISO:'2026-05-10', notes:'', phase:'foundations', dependsOn:null},
-      {id:'task-f3', title:'Book venue & sign contract', eventId:'ev-ceremony', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-01', notes:'Elmsley Estate — deposit paid.', phase:'foundations', dependsOn:'task-f2'},
-      {id:'task-f4', title:'Pay venue deposit', eventId:'ev-ceremony', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-05', notes:'', phase:'foundations', dependsOn:'task-f3'},
+      {id:'task-f3', title:'Book venue & sign contract', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-01', notes:'Elmsley Estate — deposit paid.', phase:'foundations', dependsOn:'task-f2'},
+      {id:'task-f4', title:'Pay venue deposit', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-05', notes:'', phase:'foundations', dependsOn:'task-f3'},
       {id:'task-f5', title:'Create the wedding website', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-15', notes:'', phase:'foundations', dependsOn:'task-f2'},
       {id:'task-f6', title:'Choose your wedding party', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-20', notes:'', phase:'foundations', dependsOn:null},
       /* -- 6–9 months out: lock in the major vendors -- */
-      {id:'task-g1', title:'Book officiant', eventId:'ev-ceremony', role:'Couple', priority:'High', done:true, dueDateISO:'2026-07-01', notes:'', phase:'p6to9', dependsOn:'task-f3'},
+      {id:'task-g1', title:'Book officiant', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-07-01', notes:'', phase:'p6to9', dependsOn:'task-f3'},
       {id:'task-g4', title:'Get florist quotes & compare', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-09-01', notes:'', phase:'p6to9', dependsOn:'task-f3'},
       {id:'task-6', title:'Confirm hotel room block', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-01', notes:'', phase:'p6to9', dependsOn:null},
-      {id:'task-7', title:'Book hair & makeup trial', eventId:'ev-ceremony', role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-20', notes:'', phase:'p6to9', dependsOn:null},
+      {id:'task-7', title:'Book hair & makeup trial', eventId:'ev-church', role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-20', notes:'', phase:'p6to9', dependsOn:null},
       {id:'task-3', title:'Send save-the-dates', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-25', notes:'', phase:'p6to9', dependsOn:'task-f3'},
       {id:'task-8', title:'Send Mehndi outfit colour swatches', eventId:'ev-mehndi', role:'Wedding Party', priority:'Low', done:false, dueDateISO:'2026-09-05', notes:'', phase:'p6to9', dependsOn:'task-f6'},
       {id:'task-2', title:'Finalize florist contract', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-09-15', notes:'', phase:'p6to9', dependsOn:'task-g4'},
       {id:'task-g2', title:'Book caterer & schedule tasting', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-09-20', notes:'', phase:'p6to9', dependsOn:'task-f3'},
       {id:'task-g3', title:'Start wedding dress / suit shopping', eventId:null, role:'Couple', priority:'Medium', done:false, dueDateISO:'2026-09-25', notes:'', phase:'p6to9', dependsOn:null},
-      {id:'task-5', title:'Collect wedding party measurements', eventId:'ev-ceremony', role:'Wedding Party', priority:'Medium', done:false, dueDateISO:'2026-09-30', notes:'Aritzia link already shared in the group chat.', phase:'p6to9', dependsOn:'task-f6'},
-      {id:'task-1', title:'Book photography & videography', eventId:'ev-ceremony', role:'Couple', priority:'High', done:true, dueDateISO:'2026-10-01', notes:'Down to 2 finalists — decision needed.', phase:'p6to9', dependsOn:'task-f3'},
+      {id:'task-5', title:'Collect wedding party measurements', eventId:'ev-church', role:'Wedding Party', priority:'Medium', done:false, dueDateISO:'2026-09-30', notes:'Aritzia link already shared in the group chat.', phase:'p6to9', dependsOn:'task-f6'},
+      {id:'task-1', title:'Book photography & videography', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-10-01', notes:'Down to 2 finalists — decision needed.', phase:'p6to9', dependsOn:'task-f3'},
       {id:'task-g5', title:'Book DJ or band', eventId:'ev-reception', role:'Couple', priority:'Medium', done:false, dueDateISO:'2026-10-05', notes:'', phase:'p6to9', dependsOn:'task-f3'},
       /* -- 3–6 months out: guest list, invitations & the details -- */
       {id:'task-h1', title:'Finalize guest list', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-11-01', notes:'', phase:'p3to6', dependsOn:null},
@@ -2193,34 +2440,34 @@ function defaultDashboardData(){
       {id:'task-h4', title:'Cake tasting & finalize dessert design', eventId:'ev-reception', role:'Couple', priority:'Medium', done:false, dueDateISO:'2026-12-10', notes:'', phase:'p3to6', dependsOn:'task-g2'},
       {id:'task-h5', title:'Send wedding invitations', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2027-01-05', notes:'', phase:'p3to6', dependsOn:'task-h2'},
       /* -- 1–3 months out: confirmations & finishing touches -- */
-      {id:'task-9', title:'Confirm officiant script & readings', eventId:'ev-ceremony', role:'Couple', priority:'Medium', done:false, dueDateISO:'2027-02-15', notes:'', phase:'p1to3', dependsOn:'task-g1'},
+      {id:'task-9', title:'Confirm officiant script & readings', eventId:'ev-church', role:'Couple', priority:'Medium', done:false, dueDateISO:'2027-02-15', notes:'', phase:'p1to3', dependsOn:'task-g1'},
       {id:'task-i1', title:'Apply for your marriage licence', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2027-03-15', notes:'', phase:'p1to3', dependsOn:null},
       {id:'task-4', title:'Confirm final headcount with catering', eventId:'ev-reception', role:'Couple', priority:'High', done:false, dueDateISO:'2027-03-01', notes:'Elmsley Estate needs the number 6 weeks out.', phase:'p1to3', dependsOn:'task-h5'},
       {id:'task-11', title:'Confirm DJ song requests & do-not-play list', eventId:'ev-reception', role:'Vendor', priority:'Low', done:false, dueDateISO:'2027-03-10', notes:'', phase:'p1to3', dependsOn:'task-g5'},
-      {id:'task-i2', title:'Final dress / suit fittings', eventId:'ev-ceremony', role:'Wedding Party', priority:'Medium', done:false, dueDateISO:'2027-03-25', notes:'', phase:'p1to3', dependsOn:'task-g3'},
+      {id:'task-i2', title:'Final dress / suit fittings', eventId:'ev-church', role:'Wedding Party', priority:'Medium', done:false, dueDateISO:'2027-03-25', notes:'', phase:'p1to3', dependsOn:'task-g3'},
       {id:'task-10', title:'Finalize seating chart', eventId:'ev-reception', role:'Couple', priority:'High', done:false, dueDateISO:'2027-03-20', notes:'', phase:'p1to3', dependsOn:'task-4'},
       /* -- Final month: last walkthroughs & payments -- */
-      {id:'task-12', title:'Coordinate transportation pickup times', eventId:null, role:'Planner', priority:'Medium', done:false, dueDateISO:'2027-04-01', notes:'Two different companies — Welcome Dinner shuttle and wedding-day livery.', phase:'finalmonth', dependsOn:null},
-      {id:'task-j1', title:'Final venue walkthrough', eventId:'ev-ceremony', role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-05', notes:'', phase:'finalmonth', dependsOn:'task-f3'},
+      {id:'task-12', title:'Coordinate transportation pickup times', eventId:null, role:'Planner', priority:'Medium', done:false, dueDateISO:'2027-04-01', notes:'Two different companies — Rehearsal Dinner shuttle and wedding-day livery.', phase:'finalmonth', dependsOn:null},
+      {id:'task-j1', title:'Final venue walkthrough', eventId:'ev-church', role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-05', notes:'', phase:'finalmonth', dependsOn:'task-f3'},
       {id:'task-j2', title:'Confirm & send final vendor payments', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-10', notes:'', phase:'finalmonth', dependsOn:'task-4'},
       {id:'task-j3', title:'Pack for the honeymoon', eventId:null, role:'Couple', priority:'Low', done:false, dueDateISO:'2027-04-20', notes:'', phase:'finalmonth', dependsOn:null},
       /* -- Week of & day-of: the home stretch -- */
-      {id:'task-k1', title:'Rehearsal run-through', eventId:'ev-welcome', role:'Wedding Party', priority:'High', done:false, dueDateISO:'2027-04-23', notes:'', phase:'weekof', dependsOn:null},
+      {id:'task-k1', title:'Rehearsal run-through', eventId:'ev-rehearsal', role:'Wedding Party', priority:'High', done:false, dueDateISO:'2027-04-23', notes:'', phase:'weekof', dependsOn:null},
       {id:'task-k2', title:'Hand off day-of point-of-contact to your planner', eventId:null, role:'Planner', priority:'Medium', done:false, dueDateISO:'2027-04-23', notes:'', phase:'weekof', dependsOn:null},
       {id:'task-k3', title:'Give final headcount & seating chart to the venue', eventId:'ev-reception', role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-22', notes:'', phase:'weekof', dependsOn:'task-10'},
-      {id:'task-k4', title:'Wedding day! 🎉', eventId:'ev-ceremony', role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-25', notes:'', phase:'weekof', dependsOn:null}
+      {id:'task-k4', title:'Wedding day! 🎉', eventId:'ev-church', role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-25', notes:'', phase:'weekof', dependsOn:null}
     ],
     moodBoards:[
       {id:'mb-reception', eventId:'ev-reception', title:'Reception — Garden Romantic', colorPalette:['#38473B','#C7A467','#E7D9B7','#FAF6EE'], notes:'Warm greenery, brass accents, candlelight. Ties into the Chiavari gold chairs already booked.', images:[]},
       {id:'mb-mehndi', eventId:'ev-mehndi', title:'Mehndi — Bright & Festive', colorPalette:['#AE5B41','#B5793A','#C7A467','#CBB2A6'], notes:'Marigold and terracotta tones, floor cushions, low seating — matches the bright-colours dress code.', images:[]},
-      {id:'mb-ceremony', eventId:'ev-ceremony', title:'Ceremony — Classic & Timeless', colorPalette:['#2B2A26','#38473B','#FAF6EE','#C7A467'], notes:'Black-tie formality with soft greenery on the arch.', images:[]}
+      {id:'mb-ceremony', eventId:'ev-church', title:'Ceremony — Classic & Timeless', colorPalette:['#2B2A26','#38473B','#FAF6EE','#C7A467'], notes:'Black-tie formality with soft greenery on the arch.', images:[]}
     ],
     messageThreads:[
       {id:'thr-1', subject:'Wedding party — attire deadline', participants:'All Wedding Party', messages:[
         {id:'msg-1', dateISO:'2026-06-30', author:'Natasha', body:"Bridesmaids — measurements for your gowns are due by end of July. Aritzia's ordering link is in the group chat!"}
       ]},
       {id:'thr-2', subject:'Parents — welcome dinner toast order', participants:'Both sets of parents', messages:[
-        {id:'msg-2', dateISO:'2026-07-10', author:'Matteo', body:'Would love for both sets of parents to say a few words at the Welcome Dinner — happy to go in whichever order feels right to you both.'},
+        {id:'msg-2', dateISO:'2026-07-10', author:'Matteo', body:'Would love for both sets of parents to say a few words at the Rehearsal Dinner — happy to go in whichever order feels right to you both.'},
         {id:'msg-3', dateISO:'2026-07-12', author:'Amina Shroff', body:"We'd be honoured. Happy to go first if that's easier for timing."}
       ]}
     ],
@@ -2350,17 +2597,17 @@ function buildFromOnboarding(a){
     healthNote:"You're just getting started — here are the first things Evera recommends focusing on.",
     planningProgress:8,
     nextActions:[
-      {title:`Review your ${vendorCats.length} suggested vendor categories`, meta:'Curated to your budget & style', tag:'Vendors', done:false},
-      {title:`Explore your ${a.style||'wedding'} inspiration board`, meta:'AI-curated starting point', tag:'Inspiration', done:false},
-      {title:'Invite your wedding party to Evera', meta:'Give them their own hub', tag:'Wedding Party', done:false}
+      {title:`Review your ${vendorCats.length} suggested vendor categories`, meta:'Curated to your budget & style', tag:'Vendors', done:false, dueBy:'Whenever ready', rationale:'These are matched to your budget and style so you\'re not starting from a blank search.', ctaLabel:'Review vendors', ctaRoute:'vendors', priorityPhrase:'reviewing your suggested vendor categories'},
+      {title:`Explore your ${a.style||'wedding'} inspiration board`, meta:'AI-curated starting point', tag:'Inspiration', done:false, dueBy:'Whenever ready', rationale:'A starting point makes it easier to react and refine than to start from nothing.', ctaLabel:'Open Inspiration', ctaRoute:'inspiration', priorityPhrase:'exploring your inspiration board'},
+      {title:'Invite your wedding party to Evera', meta:'Give them their own hub', tag:'Wedding Party', done:false, dueBy:'Whenever ready', rationale:'The earlier they\'re in, the more they can help with attire, RSVPs and the little day-of jobs.', ctaLabel:'Open Wedding Party', ctaRoute:'wedding-party', priorityPhrase:'inviting your wedding party'}
     ],
     events, budgetBreakdown,
     rsvp:{invited:a.guests, responded:0, attending:0},
     vendors,
     aiSuggestions:[
-      {text: hasDate ? `Your wedding is about ${monthsBetween(today, weddingDate)} months away — most GTA couples start booking photography and florals around now.` : 'Once you set a date, Evera will recommend the ideal vendor booking window.', why:'Based on regional timing benchmarks'},
-      {text:`You told us ${a.priorities[0]||'great photography'} matters most — we've weighted your vendor matches accordingly.`, why:'Your stated priorities'},
-      {text:"You haven't set an RSVP deadline yet — want Evera to suggest one based on your date?", why:'RSVP planning'}
+      {headline: hasDate ? `Your wedding is about ${monthsBetween(today, weddingDate)} months away` : 'You haven\'t set a date yet', text: hasDate ? `Most GTA couples start booking photography and florals around now.` : 'Once you set a date, Evera will recommend the ideal vendor booking window.', why:'Based on regional timing benchmarks', ctaLabel:'Review vendors', ctaRoute:'vendors'},
+      {headline:`${a.priorities[0]||'Great photography'} matters most to you`, text:"We've weighted your vendor matches accordingly.", why:'Your stated priorities', ctaLabel:'Review vendors', ctaRoute:'vendors'},
+      {headline:"You haven't set an RSVP deadline yet", text:'Want Evera to suggest one based on your date?', why:'RSVP planning', ctaLabel:'Open Guests', ctaRoute:'guests'}
     ],
     deadlines: hasDate ? [
       {title:'Book your venue', sub: a.venue==='booked'?'Already booked':'Recommended within 2 months', date:'Upcoming', dateISO: a.venue==='booked'?null:isoFromDate(addMonths(today,2)), amount:'—'},
@@ -2370,7 +2617,8 @@ function buildFromOnboarding(a){
     roadmap, vendorCategoriesSuggested:vendorCats, tasksCount,
     weddingParty:[], bachParties:[], broadcasts:[], unavailability:[], vendorBookings:[],
     keyRoles:[], vendorDirectory:[], delegateRoles:[], emergencyKit:{}, feedbackSubmissions:[],
-    playbookTimeline: evNames.map((name,i)=>({id:'auto'+i, day: hasDate ? 'See your Events workspace for exact timing' : 'Date TBD', time:'—', title:name, tags:['coordinator','weddingparty'], location:'TBD', notes:''})),
+    musicSelections:{}, ceremonyReadings:{}, decorPlans:{}, eventMenus:{}, flatLayLists:{}, hairMakeupSchedules:{},
+    playbookTimeline: evNames.map((name,i)=>({id:'auto'+i, eventId:null, day: hasDate ? 'See your Events workspace for exact timing' : 'Date TBD', time:'—', title:name, tags:['coordinator','weddingparty'], location:'TBD', notes:''})),
     playbookContacts:[],
     playbookNotes:{dietary:'No dietary notes yet — these appear once guests start RSVPing.', accessibility:'No accessibility notes yet.', rainPlan:'No rain plan set yet — add one from your venue\'s indoor options.', emergency:'Add an on-site emergency contact once your venue is booked.'},
     weddingProfile:{ traditions:[], colorPalette:['#38473B','#C7A467','#CBB2A6','#FAF6EE'], hashtag:'', aestheticNotes:'' },
@@ -2666,6 +2914,15 @@ function normalizeDashboardData(d){
   if(!Array.isArray(d.vendorDirectory)) d.vendorDirectory = [];
   if(!Array.isArray(d.delegateRoles)) d.delegateRoles = [];
   if(!d.emergencyKit || typeof d.emergencyKit!=='object') d.emergencyKit = {};
+  // Run Book Phase 2 (v1.25.0) — per-event content, keyed by eventId
+  if(!d.musicSelections || typeof d.musicSelections!=='object') d.musicSelections = {};
+  if(!d.ceremonyReadings || typeof d.ceremonyReadings!=='object') d.ceremonyReadings = {};
+  if(!d.decorPlans || typeof d.decorPlans!=='object') d.decorPlans = {};
+  if(!d.eventMenus || typeof d.eventMenus!=='object') d.eventMenus = {};
+  if(!d.flatLayLists || typeof d.flatLayLists!=='object') d.flatLayLists = {};
+  if(!d.hairMakeupSchedules || typeof d.hairMakeupSchedules!=='object') d.hairMakeupSchedules = {};
+  if(d.ceremonyOrder && d.ceremonyOrder.eventId===undefined) d.ceremonyOrder.eventId = null;
+  (d.playbookTimeline||[]).forEach(item=>{ if(item.eventId===undefined) item.eventId = null; });
   if(!Array.isArray(d.feedbackSubmissions)) d.feedbackSubmissions = [];
   if(!Array.isArray(d.vendors)) d.vendors = [];
   if(!Array.isArray(d.vendorRecommendations)) d.vendorRecommendations = [];
@@ -2750,23 +3007,23 @@ function normalizeDashboardData(d){
      separate Ceremony front-row chart from the Reception chart) and each guest
      can be pinned to a specific seat, not just a table. */
   if(!Array.isArray(d.seatingCharts)){
-    const receptionEvent = d.events.find(e=>e.name==='Reception');
-    const ceremonyEvent = d.events.find(e=>e.name==='Ceremony');
+    const receptionEvent = d.events.find(e=>e.name==='Civil & Reception');
+    const ceremonyEvent = d.events.find(e=>e.name==='Church Ceremony');
     d.seatingCharts = [{
-      id:'sc-reception', label:'Reception Seating', eventId: receptionEvent ? receptionEvent.id : null, isPrimary:true,
+      id:'sc-reception', label:'Civil & Reception Seating', eventId: receptionEvent ? receptionEvent.id : null, isPrimary:true,
       roomSetup: d.roomSetup, decor:[],
-      tables: d.seatingTables.map(t=>({...t, dimension: t.dimension||'', chairStyle: t.chairStyle||''}))
+      tables: d.seatingTables.map(t=>({...t, dimension: t.dimension||'', chairStyle: t.chairStyle||'', vendorIds: []}))
     }];
     if(ceremonyEvent){
       d.seatingCharts.push({
-        id:'sc-ceremony', label:'Ceremony Seating', eventId: ceremonyEvent.id, isPrimary:false,
+        id:'sc-ceremony', label:'Church Ceremony Seating', eventId: ceremonyEvent.id, isPrimary:false,
         roomSetup:{width:40, depth:50, shape:'rectangular'},
         decor:[{id:'decor-altar', type:'altar', label:'Altar / Officiant', posX:50, posY:8, w:20, h:10}],
         tables:[
-          {id:'row-b1', name:"Row 1 — Bride's Side", number:1, shape:'row', dimension:'', chairStyle:'Ceremony Chair — White Wood', capacity:4, posX:26, posY:26},
-          {id:'row-g1', name:"Row 1 — Groom's Side", number:2, shape:'row', dimension:'', chairStyle:'Ceremony Chair — White Wood', capacity:4, posX:74, posY:26},
-          {id:'row-b2', name:"Row 2 — Bride's Side", number:3, shape:'row', dimension:'', chairStyle:'Ceremony Chair — White Wood', capacity:6, posX:26, posY:44},
-          {id:'row-g2', name:"Row 2 — Groom's Side", number:4, shape:'row', dimension:'', chairStyle:'Ceremony Chair — White Wood', capacity:6, posX:74, posY:44}
+          {id:'row-b1', name:"Row 1 — Bride's Side", number:1, shape:'row', dimension:'', chairStyle:'Ceremony Chair — White Wood', capacity:4, posX:26, posY:26, vendorIds:[]},
+          {id:'row-g1', name:"Row 1 — Groom's Side", number:2, shape:'row', dimension:'', chairStyle:'Ceremony Chair — White Wood', capacity:4, posX:74, posY:26, vendorIds:[]},
+          {id:'row-b2', name:"Row 2 — Bride's Side", number:3, shape:'row', dimension:'', chairStyle:'Ceremony Chair — White Wood', capacity:6, posX:26, posY:44, vendorIds:[]},
+          {id:'row-g2', name:"Row 2 — Groom's Side", number:4, shape:'row', dimension:'', chairStyle:'Ceremony Chair — White Wood', capacity:6, posX:74, posY:44, vendorIds:[]}
         ]
       });
     }
@@ -2808,6 +3065,7 @@ function normalizeDashboardData(d){
         if(t.chairStyle===undefined) t.chairStyle = '';
         if(t.posX===undefined) t.posX = 15+(ti%4)*22;
         if(t.posY===undefined) t.posY = 20+Math.floor(ti/4)*32;
+        if(!Array.isArray(t.vendorIds)) t.vendorIds = [];
       });
     });
     d.guestHouseholds.forEach(h=>{ h.members.forEach(m=>{ if(!m.seating || typeof m.seating!=='object') m.seating = {}; }); });
@@ -3245,7 +3503,7 @@ function renderRoute(key){
   updateChrome();
   const titleMap = Object.assign({home:'Home', changelog:"What's New"}, Object.fromEntries(Object.entries(MODULE_INFO).map(([k,v])=>[k,v.title])));
   document.getElementById('tbTitle').textContent = titleMap[key] || 'Home';
-  document.getElementById('tbSub').textContent = key==='home' ? `Welcome back, ${dashboardData.partner1} & ${dashboardData.partner2} — here's where things stand.` : key==='changelog' ? `Everything that's shipped to Evera so far.` : (MODULE_INFO[key]?.desc.split('.')[0]+'.' || '');
+  document.getElementById('tbSub').textContent = key==='home' ? `What deserves your attention today.` : key==='changelog' ? `Everything that's shipped to Evera so far.` : (MODULE_INFO[key]?.desc.split('.')[0]+'.' || '');
   if(key==='home'){
     document.getElementById('content').innerHTML = renderHome();
   } else if(key==='wedding-party'){
@@ -3291,6 +3549,7 @@ function renderRoute(key){
     document.getElementById('content').innerHTML = renderModulePlaceholder(key);
   }
   renderAssistant();
+  renderFeedbackPanel();
 }
 
 function statusPill(status){
@@ -3326,98 +3585,109 @@ function daysToWedding(){
   if(!dashboardData.weddingDateISO) return null;
   return Math.max(0, Math.round((new Date(dashboardData.weddingDateISO+'T00:00:00') - new Date())/86400000));
 }
-function renderQuickStats(){
+function homeGreeting(){
+  const h = new Date().getHours();
+  return h<12 ? 'Good morning' : h<18 ? 'Good afternoon' : 'Good evening';
+}
+function homeStatusSentence(status){
+  const map = {'On Track':"You're on track.", 'Needs Attention':'A few things need your attention.', 'At Risk':"Some things need attention soon."};
+  return map[status] || `${status}.`;
+}
+function parseMoneyAmount(str){
+  if(typeof str !== 'string') return null;
+  const n = Number(str.replace(/[^0-9.]/g,''));
+  return isNaN(n) || !str.match(/[0-9]/) ? null : n;
+}
+function vendorsBookedCount(){
   const d = dashboardData;
-  const totalPlanned = d.budgetBreakdown.reduce((s,c)=>s+categoryPlanned(c),0);
-  const totalSpent = d.budgetBreakdown.reduce((s,c)=>s+categorySpent(c),0);
-  const rsvpPct = d.rsvp.invited ? Math.round(d.rsvp.responded/d.rsvp.invited*100) : 0;
-  const days = daysToWedding();
-  const tiles = [
-    {label:'Days to Go', value: days===null ? '—' : days, sub: days===null ? 'No date set yet' : (d.weddingDateLabel||'')},
-    {label:'RSVPs In', value: `${rsvpPct}%`, sub: `${d.rsvp.responded} of ${d.rsvp.invited} invited`},
-    {label:'Planning Progress', value: `${d.planningProgress}%`, sub: 'through your roadmap'},
-    {label:'Guests Attending', value: d.rsvp.attending, sub: `of ${d.guestCount} estimated`},
-    {label:'Budget Used', value: fmtMoney(totalSpent), sub: `of ${fmtMoney(d.budgetTotal||totalPlanned)}`}
-  ];
-  return `<div class="quick-stats-bar">${tiles.map(t=>`
-    <div class="qs-tile">
-      <span class="qs-label">${escapeHtml(t.label)}</span>
-      <span class="qs-value">${t.value}</span>
-      <span class="qs-sub">${escapeHtml(String(t.sub))}</span>
-    </div>`).join('')}</div>`;
+  const list = d.vendors||[];
+  return {booked: list.filter(v=>v.status==='booked').length, total: list.length};
 }
 function renderHome(){
   const d = dashboardData;
   const totalPlanned = d.budgetBreakdown.reduce((s,c)=>s+categoryPlanned(c),0);
   const totalSpent = d.budgetBreakdown.reduce((s,c)=>s+categorySpent(c),0);
-  const donutSegs = donutGradient(d.budgetBreakdown.map(c=>({planned:categoryPlanned(c), color:c.color})), totalPlanned);
-  const rsvpPct = d.rsvp.invited ? Math.round(d.rsvp.responded/d.rsvp.invited*100) : 0;
+  const days = daysToWedding();
+  const topAction = (d.nextActions||[]).find(a=>!a.done);
+  const nextUp = (d.nextActions||[]).filter(a=>!a.done).slice(0,3);
+  const vb = vendorsBookedCount();
+  const upcomingPayments = (d.deadlines||[])
+    .map(dl=>({...dl, _amt: parseMoneyAmount(dl.amount)}))
+    .filter(dl=>dl._amt!==null && dl.dateISO)
+    .sort((a,b)=> new Date(a.dateISO) - new Date(b.dateISO))
+    .slice(0,3);
+  const now = new Date();
+  const in30 = new Date(now.getTime()+30*86400000);
+  const dueSoonTotal = upcomingPayments.filter(dl=>{ const t=new Date(dl.dateISO+'T00:00:00'); return t>=now && t<=in30; }).reduce((s,dl)=>s+dl._amt,0);
+  const hasInspoImages = hasInspirationImages();
 
   return `
-    ${renderQuickStats()}
-    <div class="health-banner">
-      <div class="hb-left">
-        <div class="hb-icon"><svg class="icon" viewBox="0 0 24 24" style="stroke:#F4EFE3;"><path d="M20 6L9 17l-5-5"/></svg></div>
-        <div><h2>${d.healthStatus} <span style="font-family:'Inter'; font-size:12px; font-weight:700; letter-spacing:0.04em; color:var(--champagne-light); margin-left:8px;">WEDDING HEALTH</span></h2><p>${d.healthNote}</p></div>
+    <div class="home-hero">
+      <div>
+        <h1>${homeGreeting()}, ${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)}</h1>
+        <div class="hh-status">${escapeHtml(homeStatusSentence(d.healthStatus))}${days!==null ? ` <span class="hh-days">· ${days} days to go</span>` : ''}</div>
+        ${topAction ? `<div class="hh-priority">Your biggest priority right now: <b>${escapeHtml(topAction.priorityPhrase || topAction.title.toLowerCase())}</b>.</div>` : ''}
+        <div class="hh-stats">${d.events.length} celebration${d.events.length===1?'':'s'} · ${d.guestCount} guests · ${fmtMoney(d.budgetTotal||totalPlanned)} budget</div>
       </div>
-      <button class="btn btn-outline btn-sm" onclick="toggleAssistant()">Ask Evera What's Next</button>
+      <button class="home-ask-btn" onclick="toggleAssistant()"><svg viewBox="0 0 24 24">${ICONS.assistant}</svg> Ask Evera</button>
     </div>
 
-    <div class="card">
-      <div class="card-head"><h4>Next Best Actions</h4><span class="ch-link">View all tasks</span></div>
-      <div id="actionsList">
-        ${d.nextActions.map((a,i)=>`
-          <div class="action-item" data-idx="${i}">
-            <div class="action-check" onclick="toggleAction(${i})"><svg class="icon" viewBox="0 0 24 24" style="width:12px;height:12px; stroke:#fff;">${ICONS.check}</svg></div>
-            <div><div class="a-title">${a.title}<span class="a-tag">${a.tag}</span></div><div class="a-meta">${a.meta}</div></div>
-          </div>`).join('')}
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-head"><h4>Budget Snapshot</h4><span class="ch-link" onclick="renderRoute('budget')" style="cursor:pointer;">View budget</span></div>
-        <div class="donut-wrap">
-          <svg width="120" height="120" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--line-soft)" stroke-width="16"/>
-            ${donutSegs}
-          </svg>
-          <div class="donut-legend">
-            <div class="legend-row"><span class="lr-left"><span>Planned</span></span><span class="lr-amt">${fmtMoney(totalPlanned)}</span></div>
-            <div class="legend-row"><span class="lr-left"><span>Committed / Paid</span></span><span class="lr-amt">${fmtMoney(totalSpent)}</span></div>
-            <div class="legend-row"><span class="lr-left"><span>Remaining</span></span><span class="lr-amt">${fmtMoney(totalPlanned-totalSpent)}</span></div>
+    ${nextUp.length ? `
+    <div class="nextup-card">
+      <div class="nextup-head"><span class="nextup-label">Next Up</span></div>
+      ${nextUp.map((a,i)=>`
+        <div class="nextup-item">
+          <div class="nextup-num">${String(i+1).padStart(2,'0')}</div>
+          <div class="nextup-body">
+            <div class="nextup-title">${escapeHtml(a.title)}</div>
+            ${a.dueBy ? `<div class="nextup-due">${escapeHtml(a.dueBy)}</div>` : ''}
+            ${a.rationale ? `<div class="nextup-rationale">${escapeHtml(a.rationale)}</div>` : ''}
+            ${a.ctaRoute ? `<span class="nextup-cta" onclick="renderRoute('${a.ctaRoute}')">${escapeHtml(a.ctaLabel||'View')} →</span>` : ''}
           </div>
-        </div>
-      </div>
+        </div>`).join('')}
+      <div class="nextup-viewall"><span class="ch-link" onclick="renderRoute('plan')" style="cursor:pointer;">View full plan →</span></div>
+    </div>` : ''}
 
-      <div class="card">
-        <div class="card-head"><h4>Event Status</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">All events</span></div>
-        ${d.events.map(e=>`<div class="event-mini-row"><div><div class="em-name">${e.name}</div><div class="em-date">${e.date}</div></div>${statusPill(e.status)}</div>`).join('')}
-      </div>
+    <div class="health-strip">
+      <div class="hs-row" onclick="renderRoute('plan')"><span class="hs-label">Timeline</span><span class="hs-value">${d.healthStatus==='On Track' ? '✓ On track' : escapeHtml(d.healthStatus)}</span></div>
+      <div class="hs-row" onclick="renderRoute('budget')"><span class="hs-label">Budget</span><span class="hs-value">${fmtMoney(d.budgetTotal||totalPlanned)} · ${fmtMoney(totalSpent)} committed</span></div>
+      <div class="hs-row" onclick="renderRoute('guests')"><span class="hs-label">Guests</span><span class="hs-value">${d.rsvp.attending} / ~${d.guestCount}</span></div>
+      <div class="hs-row" onclick="renderRoute('vendors')"><span class="hs-label">Vendors</span><span class="hs-value">${vb.booked} / ${vb.total} booked</span></div>
     </div>
 
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-head"><h4>RSVP Snapshot</h4><span class="ch-link" onclick="renderRoute('guests')" style="cursor:pointer;">Manage guests</span></div>
-        <div class="rsvp-stats"><span><b>${d.rsvp.responded}</b> of ${d.rsvp.invited} responded</span><span>${rsvpPct}%</span></div>
-        <div class="rsvp-bar-track"><div class="rsvp-bar-fill" style="width:${rsvpPct}%;"></div></div>
-        <div class="rsvp-stats" style="margin-top:16px;"><span>Attending so far</span><b>${d.rsvp.attending} guests</b></div>
-      </div>
-
-      <div class="card">
-        <div class="card-head"><h4>Vendor Status</h4><span class="ch-link" onclick="renderRoute('vendors')" style="cursor:pointer;">All vendors</span></div>
-        ${d.vendors.slice(0,5).map(v=>`<div class="vendor-row"><span class="v-cat">${v.category}</span>${statusPill(v.status)}</div>`).join('')}
-      </div>
-    </div>
-
-    <div class="card ai-card">
-      <div class="card-head"><h4>✦ Evera Recommends</h4><span class="ch-link" onclick="toggleAssistant()" style="cursor:pointer;">Open assistant</span></div>
-      ${d.aiSuggestions.map(s=>`<div class="ai-item"><div class="ai-ico"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px; stroke:#fff;">${ICONS.assistant}</svg></div><div><p>${s.text}</p><div class="ai-why">${s.why}</div></div></div>`).join('')}
-    </div>
+    ${(d.aiSuggestions||[]).length ? `
+    <div class="notice-card">
+      <div class="card-head"><h4>✦ Evera Noticed</h4></div>
+      ${d.aiSuggestions.map(s=>`
+        <div class="notice-item">
+          <div class="notice-ico"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px; stroke:#fff;">${ICONS.assistant}</svg></div>
+          <div>
+            <div class="notice-headline">${escapeHtml(s.headline||s.text)}</div>
+            ${s.headline ? `<div class="notice-body">${escapeHtml(s.text)}</div>` : ''}
+            ${s.ctaRoute ? `<span class="notice-cta" onclick="renderRoute('${s.ctaRoute}')">${escapeHtml(s.ctaLabel||'View')} →</span>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>` : ''}
 
     <div class="card">
-      <div class="card-head"><h4>Upcoming Deadlines &amp; Payments</h4></div>
-      ${d.deadlines.map(dl=>`<div class="deadline-row"><div><div class="d-title">${dl.title}</div><div class="d-sub">${dl.sub}</div></div><div class="d-date">${dl.date}</div><div class="d-amt">${dl.amount}</div></div>`).join('')}
+      <div class="card-head"><h4>Your Celebrations</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">View wedding →</span></div>
+      <div class="celeb-scroll">
+        ${d.events.map(e=>`<div class="celeb-card"><div class="celeb-name">${escapeHtml(e.name)}</div><div class="celeb-date">${escapeHtml(e.date)}</div><div class="celeb-guests">${e.guestCount} guests</div></div>`).join('')}
+      </div>
+    </div>
+
+    ${upcomingPayments.length ? `
+    <div class="card">
+      <div class="card-head"><h4>Coming Up</h4><span class="ch-link" onclick="renderRoute('budget')" style="cursor:pointer;">View payments →</span></div>
+      ${upcomingPayments.map(dl=>`<div class="deadline-row"><div><div class="d-title">${escapeHtml(dl.title)}</div><div class="d-sub">${escapeHtml(dl.sub)}</div></div><div class="d-date">${escapeHtml(dl.date)}</div><div class="d-amt">${escapeHtml(dl.amount)}</div></div>`).join('')}
+      <div class="comingup-total">${dueSoonTotal>0 ? `${fmtMoney(dueSoonTotal)} due in the next 30 days` : 'Nothing due in the next 30 days'}</div>
+    </div>` : ''}
+
+    <div class="card">
+      <div class="card-head"><h4>Your Vision</h4><span class="ch-link" onclick="renderRoute('inspiration')" style="cursor:pointer;">Continue your board →</span></div>
+      <div class="vision-swatches">${(d.weddingProfile.colorPalette||[]).map(c=>`<div class="vision-swatch" style="background:${escapeAttr(c)};"></div>`).join('')}</div>
+      ${d.weddingProfile.aestheticNotes ? `<div class="vision-note">"${escapeHtml(d.weddingProfile.aestheticNotes)}"</div>` : `<div class="vision-note">Add a few words about your look and feel to bring your palette to life here.</div>`}
+      ${!hasInspoImages ? `<p style="font-size:12px;color:var(--charcoal-faint);margin-top:12px;">No inspiration images saved yet — your board will preview here once you add some.</p>` : ''}
     </div>
   `;
 }
@@ -4115,7 +4385,7 @@ function renderMyWeddingModule(){
   const wp = d.weddingProfile;
   return `
     <div class="card">
-      <div class="card-head"><div><h4>The Master Record</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${currentUser?'<span id="weddingSaveStatus" class="save-status"></span>':'<span class="save-status save-status-demo">Sample mode — not saved</span>'}</div>
+      <div class="card-head"><div><h4>Your Wedding Details</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${currentUser?'<span id="weddingSaveStatus" class="save-status"></span>':'<span class="save-status save-status-demo">Sample mode — not saved</span>'}</div>
       <div class="field-grid">
         <div class="field-cell">
           <label>Partner 1</label>
@@ -4144,7 +4414,7 @@ function renderMyWeddingModule(){
           <div id="hashtagSuggestBox" class="chip-grid" style="display:none; margin-top:8px;"></div>
         </div>
       </div>
-      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:14px;">Guest count and budget here are your overall estimates — actual headcount lives in Guests, and actual spend lives in Budget.</p>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:14px;">These are your starting estimates. Evera will keep them connected to your guest list and budget as your plans evolve.</p>
     </div>
 
     ${renderNameChangeCard()}
@@ -5613,8 +5883,6 @@ function renderSettingsModule(){
       </div>
       <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Evera doesn't send real email invitations in this prototype — adding someone here just adds their record to your workspace.</p>
     </div>
-
-    ${renderFeedbackSettingsCard()}
   `;
 }
 function toggleNotificationPref(key){ dashboardData.notificationPrefs[key] = !dashboardData.notificationPrefs[key]; document.getElementById('content').innerHTML = renderSettingsModule(); }
@@ -6657,9 +6925,9 @@ function renderPlaybookTimelineSection(){
         </div>
       </div>
       <div class="export-row">
-        <button class="btn btn-outline btn-sm" onclick="exportPlaybook('couple')">Export Couple Master</button>
-        <button class="btn btn-outline btn-sm" onclick="exportPlaybook('coordinator')">Export Coordinator Sheet</button>
-        <button class="btn btn-outline btn-sm" onclick="exportPlaybook('weddingparty')">Export Wedding-Party Guide</button>
+        <button class="btn btn-outline btn-sm" onclick="openPlaybookExportPreview('couple')">📄 Export Couple Master (PDF)</button>
+        <button class="btn btn-outline btn-sm" onclick="openPlaybookExportPreview('coordinator')">📄 Export Coordinator Sheet (PDF)</button>
+        <button class="btn btn-outline btn-sm" onclick="openPlaybookExportPreview('weddingparty')">📄 Export Wedding-Party Guide (PDF)</button>
       </div>
     </div>
     <div class="role-note">${playbookRoleNote()}</div>
@@ -6749,11 +7017,246 @@ function renderPlaybookContactsCard(){
 ================================================================== */
 function renderRunBookSection(){
   return `
+    ${renderPerEventRunbookIntro()}
     ${renderFamilyContactListCard()}
     ${renderVendorDirectoryCard()}
     ${renderDelegateRolesCard()}
     ${renderEmergencyKitCard()}
   `;
+}
+
+/* ==================================================================
+   RUN BOOK PHASE 2 (v1.25.0) — per-event day-of content.
+   Phase 1 (v1.19.0, above) built the global, cross-event reference sheets. This is the much
+   larger per-event layer: one collapsible card per event pulling together everything specific
+   to that day — its slice of the Timeline, its Photo Shot List, Ceremony Order (where it
+   applies), Hair & Makeup Schedule, Flat Lay List, Music Selection, Reading Selection /
+   Officiant Script, Décor Inventory, Menu, Seating Chart, Payments, and Vendor Tagging.
+   Sections that already have a dedicated home elsewhere in Playbook/Budget/Vendors/Guests are
+   read live and link back there (never re-typed) — only genuinely new content (Music, Readings,
+   Décor, Menu, Flat Lay, Hair & Makeup) gets its own editable CRUD here.
+================================================================== */
+function ensureRunbookCollapsedDefaults(eventIds){
+  eventIds.forEach(id=>{
+    if(runbookCollapsedEvents[id]===undefined) runbookCollapsedEvents[id] = true;
+  });
+}
+function toggleRunbookEvent(eventId){
+  runbookCollapsedEvents[eventId] = !runbookCollapsedEvents[eventId];
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function toggleAllRunbookEvents(){
+  const ids = dashboardData.events.map(e=>e.id);
+  const allExpanded = ids.length>0 && ids.every(id=>!runbookCollapsedEvents[id]);
+  ids.forEach(id=>{ runbookCollapsedEvents[id] = allExpanded; });
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function renderPerEventRunbookIntro(){
+  const d = dashboardData;
+  if(!d.events.length) return '';
+  ensureRunbookCollapsedDefaults(d.events.map(e=>e.id));
+  const allExpanded = d.events.every(e=>!runbookCollapsedEvents[e.id]);
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Per-Event Details</h4><span class="d-sub">Everything day-of for each event, in one place</span></div>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Timeline, shot list, seating and vendors are read live from the rest of the Playbook, Budget, Vendors and Guests — edit them there and they update here. Music, Readings, Décor and Menu are new below and edit directly.</p>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin:-6px 0 12px;">
+      <a href="#" class="ch-link" onclick="toggleAllRunbookEvents(); return false;">${allExpanded ? 'Collapse all events' : 'Expand all events'}</a>
+    </div>
+    ${d.events.map(e=>renderPerEventRunbookCard(e)).join('')}
+  `;
+}
+function runbookListRow(label, value, extra){
+  return `<div class="pb-contact-row"><div><div style="font-weight:600;">${escapeHtml(label)}</div>${extra?`<div class="pc-role">${escapeHtml(extra)}</div>`:''}</div><div class="d-sub">${escapeHtml(value||'')}</div></div>`;
+}
+function renderPerEventRunbookCard(e){
+  const d = dashboardData;
+  const collapsed = !!runbookCollapsedEvents[e.id];
+  const timelineItems = (d.playbookTimeline||[]).filter(i=>i.eventId===e.id);
+  const shots = (d.shotList||[]).filter(s=>s.eventId===e.id);
+  const hasCeremonyOrder = d.ceremonyOrder && d.ceremonyOrder.eventId===e.id;
+  const music = (d.musicSelections||{})[e.id]||[];
+  const readings = (d.ceremonyReadings||{})[e.id]||[];
+  const decor = (d.decorPlans||{})[e.id]||[];
+  const menu = (d.eventMenus||{})[e.id]||null;
+  const flatLay = (d.flatLayLists||{})[e.id]||[];
+  const hairMakeup = (d.hairMakeupSchedules||{})[e.id]||[];
+  const chart = (d.seatingCharts||[]).find(c=>c.eventId===e.id);
+  const budgetGroup = eventBudgetSummary().find(g=>g.id===e.id);
+  const vendorsHere = (d.vendorBookings||[]).filter(vb=>(vb.eventIds||[]).includes(e.id));
+  return `
+    <div class="card">
+      <div class="budget-cat-head" style="margin-bottom:${collapsed?'0':'16px'};" onclick="toggleRunbookEvent('${e.id}')">
+        <svg class="bc-chevron ${collapsed?'':'open'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <div><span class="bc-name">${escapeHtml(e.name)}</span><div class="d-sub" style="margin-top:2px;">${e.dateISO?fmtDateLabel(e.dateISO):'Date to be decided'}</div></div>
+        <span class="bc-summary">${timelineItems.length} timeline item${timelineItems.length===1?'':'s'}</span>
+      </div>
+      ${collapsed ? '' : `
+        <div class="detail-section" style="margin-top:0;padding-top:0;border-top:none;">
+          <div class="detail-section-head"><h5 style="margin:0;">Timeline</h5><span class="ch-link" style="cursor:pointer;" onclick="event.stopPropagation(); switchPlaybookSection('timeline');">View in Timeline →</span></div>
+          ${timelineItems.length ? timelineItems.map(i=>runbookListRow(i.title, i.time, i.location)).join('') : '<p class="d-sub">No timeline items tagged to this event yet.</p>'}
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Photo Shot List</h5><span class="ch-link" style="cursor:pointer;" onclick="event.stopPropagation(); switchPlaybookSection('shotlist');">View in Shot List →</span></div>
+          ${shots.length ? `<p class="d-sub" style="margin:0;">${shots.length} shot${shots.length===1?'':'s'} tagged (${shots.filter(s=>s.priority==='must-have').length} must-have).</p>` : '<p class="d-sub">No shots tagged to this event yet.</p>'}
+        </div>
+        ${hasCeremonyOrder ? `
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Ceremony Processional Order</h5><span class="ch-link" style="cursor:pointer;" onclick="event.stopPropagation(); switchPlaybookSection('ceremony');">View in Ceremony Order →</span></div>
+          <p class="d-sub" style="margin:0;">${(d.ceremonyOrder.processional||[]).length} processional roles, ${(d.ceremonyOrder.recessional||[]).length} recessional roles set.</p>
+        </div>` : ''}
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Hair &amp; Makeup Schedule</h5></div>
+          ${hairMakeup.length ? hairMakeup.map((h,hi)=>`<div class="pb-contact-row"><div><div style="font-weight:600;">${escapeHtml(h.person)}</div>${h.notes?`<div class="pc-role">${escapeHtml(h.notes)}</div>`:''}</div><div style="display:flex;align-items:center;gap:10px;"><span class="d-sub">${escapeHtml(h.time)}</span><a href="#" class="danger-link" onclick="removeHairMakeupEntry('${e.id}',${hi}); return false;">Remove</a></div></div>`).join('') : '<p class="d-sub">None added yet.</p>'}
+          <div class="custom-add-row" style="margin-top:8px; flex-wrap:wrap;">
+            <input type="text" id="newHM-${e.id}-person" placeholder="Who">
+            <input type="text" id="newHM-${e.id}-time" placeholder="Time (e.g. 9:00 AM)" style="max-width:140px;">
+            <input type="text" id="newHM-${e.id}-notes" placeholder="Notes (optional)">
+            <button class="btn btn-outline btn-sm" onclick="addHairMakeupEntry('${e.id}')">+ Add</button>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Flat Lay List</h5></div>
+          ${flatLay.length ? `<div class="chip-grid">${flatLay.map((f,fi)=>`<span class="attach-chip">${escapeHtml(f.item)}${f.owner?` — ${escapeHtml(f.owner)}`:''}<a href="#" onclick="removeFlatLayItem('${e.id}',${fi}); return false;" title="Remove">×</a></span>`).join('')}</div>` : '<p class="d-sub">None added yet.</p>'}
+          <div class="custom-add-row" style="margin-top:8px;">
+            <input type="text" id="newFL-${e.id}-item" placeholder="Item to flat-lay">
+            <input type="text" id="newFL-${e.id}-owner" placeholder="Whose (optional)" style="max-width:140px;">
+            <button class="btn btn-outline btn-sm" onclick="addFlatLayItem('${e.id}')">+ Add</button>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Music Selection</h5></div>
+          ${music.length ? music.map((m,mi)=>`<div class="pb-contact-row"><div><div style="font-weight:600;">${escapeHtml(m.moment)}</div><div class="pc-role">${escapeHtml(m.song)}${m.artist?' — '+escapeHtml(m.artist):''}</div></div><a href="#" class="danger-link" onclick="removeMusicSelection('${e.id}',${mi}); return false;">Remove</a></div>`).join('') : '<p class="d-sub">None added yet.</p>'}
+          <div class="custom-add-row" style="margin-top:8px; flex-wrap:wrap;">
+            <input type="text" id="newMusic-${e.id}-moment" placeholder="Moment (e.g. First Dance)">
+            <input type="text" id="newMusic-${e.id}-song" placeholder="Song">
+            <input type="text" id="newMusic-${e.id}-artist" placeholder="Artist (optional)">
+            <button class="btn btn-outline btn-sm" onclick="addMusicSelection('${e.id}')">+ Add</button>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Reading Selection / Officiant Script</h5></div>
+          ${readings.length ? readings.map((r,ri)=>`<div class="pb-contact-row" style="align-items:flex-start;"><div><div style="font-weight:600;">${escapeHtml(r.title)}</div><div class="pc-role">Read by ${escapeHtml(r.reader)}${r.notes?` — ${escapeHtml(r.notes)}`:''}</div></div><a href="#" class="danger-link" onclick="removeCeremonyReading('${e.id}',${ri}); return false;">Remove</a></div>`).join('') : '<p class="d-sub">None added yet.</p>'}
+          <div class="custom-add-row" style="margin-top:8px; flex-wrap:wrap;">
+            <input type="text" id="newReading-${e.id}-title" placeholder="Reading / moment title">
+            <input type="text" id="newReading-${e.id}-reader" placeholder="Reader">
+            <input type="text" id="newReading-${e.id}-notes" placeholder="Notes (optional)">
+            <button class="btn btn-outline btn-sm" onclick="addCeremonyReading('${e.id}')">+ Add</button>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Décor Inventory, Setup &amp; Takedown</h5></div>
+          ${decor.length ? decor.map((dc,dci)=>`<div class="pb-contact-row" style="align-items:flex-start;"><div><div style="font-weight:600;">${escapeHtml(dc.item)}${dc.quantity?` (${escapeHtml(dc.quantity)})`:''}</div><div class="pc-role">Setup: ${escapeHtml(dc.setupBy||'—')} · Takedown: ${escapeHtml(dc.takedownBy||'—')}${dc.notes?` — ${escapeHtml(dc.notes)}`:''}</div></div><a href="#" class="danger-link" onclick="removeRunbookDecorItem('${e.id}',${dci}); return false;">Remove</a></div>`).join('') : '<p class="d-sub">None added yet.</p>'}
+          <div class="custom-add-row" style="margin-top:8px; flex-wrap:wrap;">
+            <input type="text" id="newDecor-${e.id}-item" placeholder="Item">
+            <input type="text" id="newDecor-${e.id}-quantity" placeholder="Qty" style="max-width:70px;">
+            <input type="text" id="newDecor-${e.id}-setupBy" placeholder="Setup by">
+            <input type="text" id="newDecor-${e.id}-takedownBy" placeholder="Takedown by">
+            <button class="btn btn-outline btn-sm" onclick="addRunbookDecorItem('${e.id}')">+ Add</button>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Menu</h5></div>
+          ${menu ? `${menu.notes?`<p class="d-sub" style="margin:0 0 8px;">${escapeHtml(menu.notes)}</p>`:''}${(menu.courses||[]).map((c,ci)=>`<div class="pb-contact-row"><div><div style="font-weight:600;">${escapeHtml(c.course)}</div></div><div style="display:flex;align-items:center;gap:10px;"><span class="d-sub">${escapeHtml(c.dish)}</span><a href="#" class="danger-link" onclick="removeMenuCourse('${e.id}',${ci}); return false;">Remove</a></div></div>`).join('')}` : '<p class="d-sub">No menu set for this event yet.</p>'}
+          <div class="custom-add-row" style="margin-top:8px;">
+            <input type="text" id="newMenu-${e.id}-course" placeholder="Course (e.g. Main)" style="max-width:140px;">
+            <input type="text" id="newMenu-${e.id}-dish" placeholder="Dish">
+            <button class="btn btn-outline btn-sm" onclick="addMenuCourse('${e.id}')">+ Add</button>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Seating Chart</h5><span class="ch-link" style="cursor:pointer;" onclick="event.stopPropagation(); switchPlaybookSection('seating');">View Seating Chart →</span></div>
+          <p class="d-sub" style="margin:0;">${chart ? `${chart.tables.length} table${chart.tables.length===1?'':'s'} set up for this event.` : 'No seating chart set up for this event yet.'}</p>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Payments</h5><span class="ch-link" style="cursor:pointer;" onclick="event.stopPropagation(); renderRoute('budget'); setTimeout(()=>switchBudgetView('event'),0);">View in Budget →</span></div>
+          ${budgetGroup && budgetGroup.items.length ? budgetGroup.items.map(it=>runbookListRow(it.name, fmtMoney(it.planned), it.categoryName)).join('') : '<p class="d-sub">No Budget line items tagged to this event yet.</p>'}
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-head"><h5 style="margin:0;">Vendor Tagging</h5><span class="ch-link" style="cursor:pointer;" onclick="event.stopPropagation(); renderRoute('vendors');">View in Vendors →</span></div>
+          ${vendorsHere.length ? vendorsHere.map(vb=>runbookListRow(vb.vendorName||vb.category, vb.role||vb.category)).join('') : '<p class="d-sub">No vendors tagged to this event yet.</p>'}
+        </div>
+      `}
+    </div>
+  `;
+}
+function addMusicSelection(eventId){
+  const moment = (document.getElementById(`newMusic-${eventId}-moment`).value||'').trim();
+  const song = (document.getElementById(`newMusic-${eventId}-song`).value||'').trim();
+  const artist = (document.getElementById(`newMusic-${eventId}-artist`).value||'').trim();
+  if(!moment || !song) return;
+  if(!dashboardData.musicSelections[eventId]) dashboardData.musicSelections[eventId] = [];
+  dashboardData.musicSelections[eventId].push({id:'ms-'+Date.now().toString(36), moment, song, artist});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeMusicSelection(eventId, idx){
+  dashboardData.musicSelections[eventId].splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function addCeremonyReading(eventId){
+  const title = (document.getElementById(`newReading-${eventId}-title`).value||'').trim();
+  const reader = (document.getElementById(`newReading-${eventId}-reader`).value||'').trim();
+  const notes = (document.getElementById(`newReading-${eventId}-notes`).value||'').trim();
+  if(!title || !reader) return;
+  if(!dashboardData.ceremonyReadings[eventId]) dashboardData.ceremonyReadings[eventId] = [];
+  dashboardData.ceremonyReadings[eventId].push({id:'cr-'+Date.now().toString(36), title, reader, notes});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeCeremonyReading(eventId, idx){
+  dashboardData.ceremonyReadings[eventId].splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function addRunbookDecorItem(eventId){
+  const item = (document.getElementById(`newDecor-${eventId}-item`).value||'').trim();
+  const quantity = (document.getElementById(`newDecor-${eventId}-quantity`).value||'').trim();
+  const setupBy = (document.getElementById(`newDecor-${eventId}-setupBy`).value||'').trim();
+  const takedownBy = (document.getElementById(`newDecor-${eventId}-takedownBy`).value||'').trim();
+  if(!item) return;
+  if(!dashboardData.decorPlans[eventId]) dashboardData.decorPlans[eventId] = [];
+  dashboardData.decorPlans[eventId].push({id:'dp-'+Date.now().toString(36), item, quantity, setupBy, takedownBy, notes:''});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeRunbookDecorItem(eventId, idx){
+  dashboardData.decorPlans[eventId].splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function addMenuCourse(eventId){
+  const course = (document.getElementById(`newMenu-${eventId}-course`).value||'').trim();
+  const dish = (document.getElementById(`newMenu-${eventId}-dish`).value||'').trim();
+  if(!course || !dish) return;
+  if(!dashboardData.eventMenus[eventId]) dashboardData.eventMenus[eventId] = {notes:'', courses:[]};
+  dashboardData.eventMenus[eventId].courses.push({id:'menu-'+Date.now().toString(36), course, dish});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeMenuCourse(eventId, idx){
+  dashboardData.eventMenus[eventId].courses.splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function addFlatLayItem(eventId){
+  const item = (document.getElementById(`newFL-${eventId}-item`).value||'').trim();
+  const owner = (document.getElementById(`newFL-${eventId}-owner`).value||'').trim();
+  if(!item) return;
+  if(!dashboardData.flatLayLists[eventId]) dashboardData.flatLayLists[eventId] = [];
+  dashboardData.flatLayLists[eventId].push({id:'fl-'+Date.now().toString(36), item, owner});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeFlatLayItem(eventId, idx){
+  dashboardData.flatLayLists[eventId].splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function addHairMakeupEntry(eventId){
+  const person = (document.getElementById(`newHM-${eventId}-person`).value||'').trim();
+  const time = (document.getElementById(`newHM-${eventId}-time`).value||'').trim();
+  const notes = (document.getElementById(`newHM-${eventId}-notes`).value||'').trim();
+  if(!person || !time) return;
+  if(!dashboardData.hairMakeupSchedules[eventId]) dashboardData.hairMakeupSchedules[eventId] = [];
+  dashboardData.hairMakeupSchedules[eventId].push({id:'hm-'+Date.now().toString(36), person, time, notes});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeHairMakeupEntry(eventId, idx){
+  dashboardData.hairMakeupSchedules[eventId].splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
 }
 function contactRowsHtml(rows){
   return rows.length
@@ -7547,6 +8050,37 @@ function assignSeat(chartId, tableId, seatIndex, householdId, memberId){
   m.seating[chartId] = {tableId, seatIndex};
   reRenderCurrent();
 }
+/* ---- Vendor seating (v1.23.0) — vendors get a simple table assignment (a chip on the
+   table card, counted toward capacity) rather than a numbered chair-dot seat; day-of
+   vendors like the planner, DJ or photographer sometimes need a seat too. */
+function vendorsSeatedForTable(table){
+  const ids = table.vendorIds||[];
+  return ids.map(id=>(dashboardData.vendorBookings||[]).find(v=>v.id===id)).filter(Boolean);
+}
+function vendorSeatInfo(vendorId, chartId){
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  if(!chart) return null;
+  const table = (chart.tables||[]).find(t=>(t.vendorIds||[]).includes(vendorId));
+  return table ? {tableId: table.id} : null;
+}
+function assignVendorToTable(chartId, tableId, vendorId){
+  if(!vendorId) return;
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  if(!chart) return;
+  chart.tables.forEach(t=>{ if(Array.isArray(t.vendorIds)) t.vendorIds = t.vendorIds.filter(id=>id!==vendorId); });
+  const table = chart.tables.find(t=>t.id===tableId);
+  if(!table) return;
+  if(!Array.isArray(table.vendorIds)) table.vendorIds = [];
+  table.vendorIds.push(vendorId);
+  reRenderCurrent();
+}
+function removeVendorFromTable(chartId, tableId, vendorId){
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  const table = chart && chart.tables.find(t=>t.id===tableId);
+  if(!table || !Array.isArray(table.vendorIds)) return;
+  table.vendorIds = table.vendorIds.filter(id=>id!==vendorId);
+  reRenderCurrent();
+}
 function unassignSeat(householdId, memberId, chartId){
   const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
   const m = h && h.members.find(x=>x.id===memberId);
@@ -7607,12 +8141,13 @@ function renderFloorPlan(){
         ${renderDecorItems(chart)}
         ${chart.tables.map(t=>{
           const seated = seatedMembersForTable(chart, t.id, seatable);
-          const over = seated.length > t.capacity;
+          const vendorsHere = vendorsSeatedForTable(t);
+          const over = (seated.length + vendorsHere.length) > t.capacity;
           return `
           <div class="floor-table floor-table-${t.shape}" draggable="true" ondragstart="onTableDragStart(event,'${t.id}')"
                style="left:${t.posX}%; top:${t.posY}%; ${tableSizeStyle(t)} ${over?'border-color:var(--terracotta);':''}" title="${escapeAttr(t.name)}">
             ${chairDotsHtml(chart, t, seatable)}
-            <div class="floor-table-label"><span class="ftl-num">${t.number}</span><span class="ftl-sub">${seated.length}/${t.capacity}</span></div>
+            <div class="floor-table-label"><span class="ftl-num">${t.number}</span><span class="ftl-sub">${seated.length + vendorsHere.length}/${t.capacity}</span></div>
           </div>`;
         }).join('')}
       </div>
@@ -7643,10 +8178,11 @@ function renderPrintFloorPlan(){
       ${(chart.decor||[]).map(dec=>`<div class="decor-item" style="left:${dec.posX}%; top:${dec.posY}%; width:${dec.w||14}%; height:${dec.h||8}%;"><span class="decor-label">${escapeHtml(dec.label)}</span></div>`).join('')}
       ${tables.map(t=>{
         const seated = seatedMembersForTable(chart, t.id, seatable);
+        const vendorsHere = vendorsSeatedForTable(t);
         return `
         <div class="floor-table floor-table-${t.shape}" style="left:${t.posX}%; top:${t.posY}%; ${tableSizeStyle(t)}">
           ${chairDotsHtml(chart, t, seatable)}
-          <div class="floor-table-label"><span class="ftl-num">${t.number}</span><span class="ftl-sub">${seated.length}/${t.capacity}</span></div>
+          <div class="floor-table-label"><span class="ftl-num">${t.number}</span><span class="ftl-sub">${seated.length + vendorsHere.length}/${t.capacity}</span></div>
         </div>`;
       }).join('')}
     </div>
@@ -7655,7 +8191,9 @@ function renderPrintFloorPlan(){
       <tbody>
         ${tables.map(t=>{
           const seated = seatedMembersForTable(chart, t.id, seatable);
-          return `<tr><td>${t.number}</td><td>${escapeHtml(t.name)}</td><td style="text-transform:capitalize;">${escapeHtml(t.shape)}</td><td>${escapeHtml(t.dimension||'—')}</td><td>${escapeHtml(t.chairStyle||'—')}</td><td>${seated.length}/${t.capacity}</td><td>${seated.map(r=>escapeHtml(r.displayName)).join(', ')||'—'}</td></tr>`;
+          const vendorsHere = vendorsSeatedForTable(t);
+          const names = seated.map(r=>escapeHtml(r.displayName)).concat(vendorsHere.map(v=>escapeHtml(v.vendorName)+' (vendor)'));
+          return `<tr><td>${t.number}</td><td>${escapeHtml(t.name)}</td><td style="text-transform:capitalize;">${escapeHtml(t.shape)}</td><td>${escapeHtml(t.dimension||'—')}</td><td>${escapeHtml(t.chairStyle||'—')}</td><td>${seated.length + vendorsHere.length}/${t.capacity}</td><td>${names.join(', ')||'—'}</td></tr>`;
         }).join('')}
       </tbody>
     </table>
@@ -7713,7 +8251,9 @@ function renderSeatingChartSection(){
     <div class="party-grid">
       ${chart.tables.map(t=>{
         const seated = seatedMembersForTable(chart, t.id, seatable);
-        const over = seated.length > t.capacity;
+        const vendorsHere = vendorsSeatedForTable(t);
+        const over = (seated.length + vendorsHere.length) > t.capacity;
+        const availableVendors = (dashboardData.vendorBookings||[]).filter(v=>!vendorSeatInfo(v.id, chart.id));
         return `
         <div class="card">
           <div class="card-head" style="margin-bottom:8px;">
@@ -7733,10 +8273,19 @@ function renderSeatingChartSection(){
             <div class="field-mini"><label>Dimensions</label><input type="text" placeholder="e.g. 60in or 8ft x 3ft" style="width:150px;" value="${escapeAttr(t.dimension||'')}" onchange="updateTableField('${chart.id}','${t.id}','dimension',this.value)"></div>
             <div class="field-mini"><label>Chair Style</label><input type="text" list="chairStylePresets" placeholder="e.g. Chiavari — Gold" style="width:170px;" value="${escapeAttr(t.chairStyle||'')}" onchange="updateTableField('${chart.id}','${t.id}','chairStyle',this.value)"></div>
           </div>
-          <div class="d-sub" style="margin-bottom:10px;"><span style="${over?'color:var(--terracotta);font-weight:700;':''}">${seated.length}</span> / ${t.capacity} seated</div>
+          <div class="d-sub" style="margin-bottom:10px;"><span style="${over?'color:var(--terracotta);font-weight:700;':''}">${seated.length + vendorsHere.length}</span> / ${t.capacity} seated</div>
           <div class="chip-grid">
             ${seated.length ? seated.map(r=>`<span class="attach-chip">${escapeHtml(r.displayName)}<a href="#" onclick="unassignSeat('${r.h.id}','${r.m.id}','${chart.id}'); return false;" title="Unseat">×</a></span>`).join('') : '<span class="d-sub">No one seated yet.</span>'}
           </div>
+          <div class="d-sub" style="margin-top:14px; margin-bottom:8px;">Vendor seating</div>
+          <div class="chip-grid">
+            ${vendorsHere.length ? vendorsHere.map(v=>`<span class="attach-chip">${escapeHtml(v.vendorName)} <span style="opacity:0.65;">(${escapeHtml(v.category)})</span><a href="#" onclick="removeVendorFromTable('${chart.id}','${t.id}','${v.id}'); return false;" title="Remove">×</a></span>`).join('') : '<span class="d-sub">No vendors seated here.</span>'}
+          </div>
+          ${availableVendors.length ? `
+          <select class="select-field-sm" style="margin-top:8px; max-width:260px;" onchange="if(this.value){assignVendorToTable('${chart.id}','${t.id}',this.value); this.value='';}">
+            <option value="">+ Seat a vendor here…</option>
+            ${availableVendors.map(v=>`<option value="${v.id}">${escapeHtml(v.vendorName)} (${escapeHtml(v.category)})</option>`).join('')}
+          </select>` : ''}
           <a href="#" class="danger-link" style="display:inline-block;margin-top:12px;" onclick="removeTable('${chart.id}','${t.id}'); return false;">Remove table</a>
         </div>`;
       }).join('')}
@@ -7810,7 +8359,7 @@ function addTable(chartId){
   const name = (nameEl.value||'').trim();
   if(!name) return;
   const n = chart.tables.length;
-  chart.tables.push({id:'tbl-'+Date.now().toString(36), name, number:n+1, capacity:Number(capEl.value)||8, shape:(shapeEl&&shapeEl.value)||'round', dimension:(dimEl&&dimEl.value||'').trim(), chairStyle:(chairEl&&chairEl.value||'').trim(), posX:15+(n%4)*22, posY:20+Math.floor(n/4)*32});
+  chart.tables.push({id:'tbl-'+Date.now().toString(36), name, number:n+1, capacity:Number(capEl.value)||8, shape:(shapeEl&&shapeEl.value)||'round', dimension:(dimEl&&dimEl.value||'').trim(), chairStyle:(chairEl&&chairEl.value||'').trim(), posX:15+(n%4)*22, posY:20+Math.floor(n/4)*32, vendorIds:[]});
   reRenderCurrent();
 }
 function removeTable(chartId, tableId){
@@ -8656,44 +9205,49 @@ function feedbackStatusPill(status){
 function feedbackTypeLabel(type){
   return type==='bug' ? '🐛 Bug Report' : '💡 Feature Request';
 }
-function renderFeedbackSettingsCard(){
+function toggleFeedbackPanel(force){
+  const panel = document.getElementById('feedbackPanel');
+  if(!panel) return;
+  if(typeof force === 'boolean') panel.classList.toggle('open', force);
+  else panel.classList.toggle('open');
+}
+function renderFeedbackPanel(){
+  const el = document.getElementById('feedbackPanelBody');
+  if(!el) return;
   const submissions = (dashboardData.feedbackSubmissions||[]).slice().sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt));
-  return `
-    <div class="card">
-      <div class="card-head"><div><h4>Feature Requests &amp; Bug Reports</h4><span class="d-sub">Tell the Evera team what's working, what's broken, or what you wish it did</span></div></div>
-      <div class="field-grid">
-        <div class="field-cell">
-          <label>Type</label>
-          <select id="fbType">
-            <option value="feature">💡 Feature Request</option>
-            <option value="bug">🐛 Bug Report</option>
-          </select>
-        </div>
-        <div class="field-cell"><label>Title</label><input type="text" id="fbTitle" placeholder="Short summary"></div>
+  el.innerHTML = `
+    <div class="field-grid">
+      <div class="field-cell">
+        <label>Type</label>
+        <select id="fbType">
+          <option value="feature">💡 Feature Request</option>
+          <option value="bug">🐛 Bug Report</option>
+        </select>
       </div>
-      <div class="field-cell" style="margin-top:12px;"><label>Details</label><textarea class="notes-field notes-field-sm" id="fbDescription" placeholder="What happened, or what would help?"></textarea></div>
-      <div style="margin-top:12px;"><button class="btn btn-solid btn-sm" onclick="submitFeedback()">Submit</button></div>
-
-      ${submissions.length ? `
-        <div class="budget-items" style="padding-left:0; margin-top:22px;">
-          <div class="budget-items-head" style="grid-template-columns:1fr 0.6fr 0.4fr;"><span>Submission</span><span>Status</span><span></span></div>
-          ${submissions.map(f=>`
-            <div class="budget-item-row" style="grid-template-columns:1fr 0.6fr 0.4fr; align-items:flex-start;">
-              <div>
-                <div style="font-weight:600; font-size:13.5px;">${feedbackTypeLabel(f.type)} · ${escapeHtml(f.title)} ${feedbackStatusPill(f.status)}</div>
-                ${f.description ? `<div class="d-sub" style="margin-top:4px;">${escapeHtml(f.description)}</div>` : ''}
-                <div class="d-sub" style="margin-top:4px;">Submitted ${new Date(f.submittedAt).toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'})}</div>
-              </div>
-              <select class="select-field-sm" onchange="updateFeedbackStatus('${f.id}', this.value)">
-                ${FEEDBACK_STATUSES.map(s=>`<option value="${s}" ${f.status===s?'selected':''}>${FEEDBACK_STATUS_LABELS[s]}</option>`).join('')}
-              </select>
-              <a href="#" class="danger-link" onclick="removeFeedbackSubmission('${f.id}'); return false;">✕</a>
-            </div>
-          `).join('')}
-        </div>
-      ` : `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">Nothing submitted yet — every feature request or bug report you send goes here, so you can check back on it.</p>`}
-      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:12px;">In this prototype, status is shown as a plain dropdown you can change yourself for demo purposes — in the real product, the Evera team would update it as they review what's submitted, not the couple.</p>
+      <div class="field-cell"><label>Title</label><input type="text" id="fbTitle" placeholder="Short summary"></div>
     </div>
+    <div class="field-cell" style="margin-top:12px;"><label>Details</label><textarea class="notes-field notes-field-sm" id="fbDescription" placeholder="What happened, or what would help?"></textarea></div>
+    <div style="margin-top:12px;"><button class="btn btn-solid btn-sm" onclick="submitFeedback()">Submit</button></div>
+
+    ${submissions.length ? `
+      <div class="budget-items" style="padding-left:0; margin-top:22px;">
+        <div class="budget-items-head" style="grid-template-columns:1fr 0.9fr 0.3fr;"><span>Submission</span><span>Status</span><span></span></div>
+        ${submissions.map(f=>`
+          <div class="budget-item-row" style="grid-template-columns:1fr 0.9fr 0.3fr; align-items:flex-start;">
+            <div>
+              <div style="font-weight:600; font-size:13px;">${feedbackTypeLabel(f.type)} · ${escapeHtml(f.title)} ${feedbackStatusPill(f.status)}</div>
+              ${f.description ? `<div class="d-sub" style="margin-top:4px;">${escapeHtml(f.description)}</div>` : ''}
+              <div class="d-sub" style="margin-top:4px;">Submitted ${new Date(f.submittedAt).toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'})}</div>
+            </div>
+            <select class="select-field-sm" onchange="updateFeedbackStatus('${f.id}', this.value)">
+              ${FEEDBACK_STATUSES.map(s=>`<option value="${s}" ${f.status===s?'selected':''}>${FEEDBACK_STATUS_LABELS[s]}</option>`).join('')}
+            </select>
+            <a href="#" class="danger-link" onclick="removeFeedbackSubmission('${f.id}'); return false;">✕</a>
+          </div>
+        `).join('')}
+      </div>
+    ` : `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">Nothing submitted yet — every feature request or bug report you send goes here, so you can check back on it.</p>`}
+    <p style="font-size:12px;color:var(--charcoal-faint);margin-top:12px;">In this prototype, status is shown as a plain dropdown you can change yourself for demo purposes — in the real product, the Evera team would update it as they review what's submitted, not the couple.</p>
   `;
 }
 function submitFeedback(){
@@ -8706,17 +9260,17 @@ function submitFeedback(){
     id: 'fb-'+Date.now(), type, title, description,
     submittedAt: new Date().toISOString(), status: 'submitted'
   });
-  document.getElementById('content').innerHTML = renderSettingsModule();
+  renderFeedbackPanel();
 }
 function updateFeedbackStatus(id, status){
   const f = (dashboardData.feedbackSubmissions||[]).find(x=>x.id===id);
   if(!f) return;
   f.status = status;
-  document.getElementById('content').innerHTML = renderSettingsModule();
+  renderFeedbackPanel();
 }
 function removeFeedbackSubmission(id){
   dashboardData.feedbackSubmissions = (dashboardData.feedbackSubmissions||[]).filter(x=>x.id!==id);
-  document.getElementById('content').innerHTML = renderSettingsModule();
+  renderFeedbackPanel();
 }
 function applicableSurveysForHousehold(h){
   const invitedIds = householdInvitedEventIds(h);
@@ -8791,39 +9345,154 @@ function exportMailingList(){
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-function exportPlaybook(role){
+/* ---- Playbook / Run Book PDF export (v1.23.0) ----
+   Natasha: "the Playbook IS the Run Book" — so the Couple Master export now pulls in the
+   whole Run Book (Family Contacts, Vendor Directory, Delegate Roles, Emergency Kit), not just
+   the day-of timeline. Built as a styled, on-brand printable document reusing the app's existing
+   #printArea / body.printing mechanism (same pattern as the Seating Chart floor plan and the
+   Inspiration Generate Mood Board export) so "Save as PDF" comes from the browser's own print
+   dialog — no new dependency needed for a single-file, backend-free app. */
+function buildPlaybookExportModel(role){
   const d = dashboardData;
-  let items = d.playbookTimeline;
-  let label = 'Couple Master Playbook';
-  if(role==='coordinator') label = 'Coordinator Run-of-Show';
-  if(role==='weddingparty'){ items = items.filter(i=>i.tags.includes('weddingparty')); label = 'Wedding-Party Guide'; }
-
-  let text = `EVERA PLAYBOOK — ${label}\n${d.partner1} & ${d.partner2} · ${d.weddingDateLabel}\n${'='.repeat(50)}\n\n`;
+  let items = d.playbookTimeline||[];
+  let roleLabel = 'Couple Master';
+  if(role==='coordinator') roleLabel = 'Coordinator Run-of-Show';
+  if(role==='weddingparty'){ items = items.filter(i=>i.tags.includes('weddingparty')); roleLabel = 'Wedding-Party Guide'; }
   const days = [];
   items.forEach(i=>{ if(!days.includes(i.day)) days.push(i.day); });
-  days.forEach(day=>{
-    text += `${day.toUpperCase()}\n${'-'.repeat(day.length)}\n`;
-    items.filter(i=>i.day===day).forEach(i=>{ text += `${i.time}   ${i.title}\n`; });
-    text += `\n`;
-  });
-  if(role!=='weddingparty' && d.playbookContacts.length){
-    text += `KEY CONTACTS\n------------\n`;
-    d.playbookContacts.forEach(c=>{ text += `${c.name} (${c.role}) — ${c.phone}\n`; });
-    text += `\n`;
-  }
-  if(role==='couple'){
-    text += `SPECIAL NOTES\n-------------\nDietary: ${d.playbookNotes.dietary}\nAccessibility: ${d.playbookNotes.accessibility}\nRain Plan: ${d.playbookNotes.rainPlan}\nEmergency: ${d.playbookNotes.emergency}\n`;
-  }
+  const dayGroups = days.map(day=>({ day, items: items.filter(i=>i.day===day) }));
 
-  const blob = new Blob([text], {type:'text/plain'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Evera-Playbook-${label.replace(/\s+/g,'-')}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const showContacts = role!=='weddingparty';
+  const showFullRunBook = role==='couple';
+  const showDelegatesAndKit = role==='couple' || role==='coordinator';
+
+  let familyContacts = null;
+  if(showFullRunBook){
+    const parents = (d.weddingParty||[]).filter(m=>m.partyGroup==='Parents');
+    const bridalParty = (d.weddingParty||[]).filter(m=>m.partyGroup && m.partyGroup!=='Parents');
+    const grandparents = (d.guestHouseholds||[]).flatMap(h=>(h.members||[])
+      .filter(mem=>(mem.relationship||'')==='grandparent')
+      .map(mem=>({name:[mem.salutation,mem.firstName,mem.lastName].filter(Boolean).join(' '), role:'Grandparent'})));
+    familyContacts = {
+      immediate: [{name:d.partner1, role:'Bride'}, ...parents.map(p=>({name:p.name, role:p.role})), {name:d.partner2, role:'Groom'}],
+      bridalParty: bridalParty.map(p=>({name:p.name, role:p.role})),
+      grandparents,
+      importantRoles: (d.keyRoles||[]).map(kr=>({name:kr.name, role:kr.role}))
+    };
+  }
+  return {
+    roleLabel, dayGroups, showContacts, showFullRunBook, showDelegatesAndKit,
+    contacts: d.playbookContacts||[],
+    vendorDirectory: d.vendorDirectory||[],
+    delegateRoles: d.delegateRoles||[],
+    emergencyKit: d.emergencyKit||{},
+    notes: d.playbookNotes||{},
+    familyContacts
+  };
+}
+function renderPbExportContactBlock(label, rows){
+  return `
+    <div style="margin-bottom:14px;">
+      <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); margin-bottom:4px;">${escapeHtml(label)}</div>
+      ${rows && rows.length ? rows.map(r=>`<div class="pb-export-contact-row"><span>${escapeHtml(r.name)}</span><span style="color:var(--charcoal-faint);">${escapeHtml(r.role)}</span></div>`).join('') : '<p class="d-sub" style="margin:0;">None added yet.</p>'}
+    </div>
+  `;
+}
+function renderPbExportVendorDirectory(list){
+  const cats = Array.from(new Set((list||[]).map(v=>v.category)));
+  if(!cats.length) return '<p class="d-sub">None added yet.</p>';
+  return cats.map(cat=>`
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); margin-bottom:4px;">${escapeHtml(cat)}</div>
+      ${list.filter(v=>v.category===cat).map(v=>`<div class="pb-export-contact-row"><span>${escapeHtml(v.name)}</span><span style="color:var(--charcoal-faint);">${escapeHtml(v.contact||'')}</span></div>`).join('')}
+    </div>
+  `).join('');
+}
+function renderPlaybookExportDocument(model){
+  const d = dashboardData;
+  return `
+    <div class="pb-export-header">
+      <div class="pb-export-brand">Evera</div>
+      <div class="pb-export-title">The Playbook</div>
+      <div class="pb-export-sub">${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} · ${escapeHtml(d.weddingDateLabel||'')}</div>
+      <div class="pb-export-role-chip">${escapeHtml(model.roleLabel)}</div>
+    </div>
+    <div class="pb-export-section-title">Day-by-Day Timeline</div>
+    ${model.dayGroups.length ? model.dayGroups.map(g=>`
+      <div class="pb-export-day">
+        <div class="pb-export-day-head">${escapeHtml(g.day)}</div>
+        ${g.items.map(i=>`
+          <div class="pb-export-item">
+            <div class="pb-export-time">${escapeHtml(i.time)}</div>
+            <div class="pb-export-item-body">
+              <b>${escapeHtml(i.title)}</b>
+              <span>${escapeHtml(i.location||'')}${i.notes?' — '+escapeHtml(i.notes):''}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('') : '<p class="d-sub">No timeline items yet.</p>'}
+    ${model.showContacts && model.contacts.length ? `
+      <div class="pb-export-section-title">Key Contacts</div>
+      <div class="pb-export-contact-grid">
+        ${model.contacts.map(c=>`<div class="pb-export-contact-row"><span>${escapeHtml(c.name)} <span style="color:var(--charcoal-faint);">(${escapeHtml(c.role)})</span></span><span>${escapeHtml(c.phone)}</span></div>`).join('')}
+      </div>
+    ` : ''}
+    ${model.showFullRunBook && model.familyContacts ? `
+      <div class="pb-export-section-title">Full Family Contact List</div>
+      <p class="d-sub" style="margin-top:-6px;">No phone numbers shown here, per the couple's own instruction for this list.</p>
+      ${renderPbExportContactBlock('Immediate Family', model.familyContacts.immediate)}
+      ${renderPbExportContactBlock('Bridal Party', model.familyContacts.bridalParty)}
+      ${renderPbExportContactBlock('Grandparents', model.familyContacts.grandparents)}
+      ${renderPbExportContactBlock('Important Roles', model.familyContacts.importantRoles)}
+      <div class="pb-export-section-title">Full Vendor List</div>
+      ${renderPbExportVendorDirectory(model.vendorDirectory)}
+    ` : ''}
+    ${model.showDelegatesAndKit ? `
+      <div class="pb-export-section-title">Delegate Roles</div>
+      ${model.delegateRoles.length ? model.delegateRoles.map(r=>`<div style="margin-bottom:6px;"><b style="font-size:12.5px;">${escapeHtml(r.name)} — ${escapeHtml(r.role)}</b>${r.details?`<div style="font-size:11.5px;color:var(--charcoal-faint);margin-top:1px;">${escapeHtml(r.details)}</div>`:''}</div>`).join('') : '<p class="d-sub">None added yet.</p>'}
+      <div class="pb-export-section-title">Emergency Kit</div>
+      ${Object.keys(model.emergencyKit).length ? Object.keys(model.emergencyKit).map(cat=>`
+        <div style="margin-bottom:8px; font-size:12px; line-height:1.6;"><b>${escapeHtml(cat)}:</b> <span style="color:var(--charcoal-soft);">${(model.emergencyKit[cat]||[]).map(x=>escapeHtml(x)).join(', ')}</span></div>
+      `).join('') : '<p class="d-sub">Nothing added yet.</p>'}
+    ` : ''}
+    ${model.showFullRunBook ? `
+      <div class="pb-export-section-title">Special Notes</div>
+      <dl class="pb-export-notes">
+        <dt>Dietary</dt><dd>${escapeHtml(model.notes.dietary||'')}</dd>
+        <dt>Accessibility</dt><dd>${escapeHtml(model.notes.accessibility||'')}</dd>
+        <dt>Rain Plan</dt><dd>${escapeHtml(model.notes.rainPlan||'')}</dd>
+        <dt>Emergency</dt><dd>${escapeHtml(model.notes.emergency||'')}</dd>
+      </dl>
+    ` : ''}
+    <div class="pb-export-foot">Generated by Evera · ${escapeHtml(fmtDateLabel(isoFromDate(new Date())))}</div>
+  `;
+}
+function openPlaybookExportPreview(role){
+  playbookExportRole = role;
+  const overlay = document.getElementById('playbookExportOverlay');
+  const model = buildPlaybookExportModel(role);
+  overlay.innerHTML = `
+    <div class="item-modal item-modal-xl pb-export-modal">
+      <button class="im-close" onclick="closePlaybookExportPreview();">✕</button>
+      <div class="pb-export-doc">${renderPlaybookExportDocument(model)}</div>
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-solid btn-sm" onclick="printPlaybookExport('${role}')">🖨 Print / Save as PDF</button>
+        <button class="btn btn-outline btn-sm" onclick="closePlaybookExportPreview();">Close</button>
+      </div>
+    </div>
+  `;
+  overlay.classList.add('open');
+}
+function closePlaybookExportPreview(){
+  document.getElementById('playbookExportOverlay').classList.remove('open');
+}
+function printPlaybookExport(role){
+  const model = buildPlaybookExportModel(role);
+  document.getElementById('printArea').innerHTML = `<div class="pb-export-doc pb-export-print">${renderPlaybookExportDocument(model)}</div>`;
+  document.body.classList.add('printing');
+  window.print();
+  setTimeout(()=>{ document.body.classList.remove('printing'); }, 800);
 }
 
 /* ==================================================================
