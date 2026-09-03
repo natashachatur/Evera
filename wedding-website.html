@@ -6,20 +6,59 @@
 <title>Natasha &amp; Matteo — April 25, 2027</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --green:#38473B; --green-deep:#232E27; --gold:#C7A467; --blush:#CBB2A6; --cream:#FAF6EE;
     --charcoal:#2B2A26; --charcoal-soft:#5B564C; --charcoal-faint:#8B8577; --line:#E7DFCF;
     --white:#FFFFFF; --radius:16px; --radius-sm:10px;
+    --font-heading:'Playfair Display',Georgia,serif; --font-script:'Great Vibes',cursive;
+    --space-unit:1;
   }
   *{box-sizing:border-box;}
   body{margin:0; font-family:'Inter',sans-serif; color:var(--charcoal); background:var(--cream); -webkit-font-smoothing:antialiased;}
-  h1,h2,h3,h4{font-family:'Playfair Display',serif; margin:0; color:var(--green-deep);}
-  .script{font-family:'Great Vibes',cursive;}
+  h1,h2,h3,h4{font-family:var(--font-heading); margin:0; color:var(--green-deep);}
+  .script{font-family:var(--font-script);}
   a{color:inherit;}
   img{max-width:100%;}
   ::selection{background:var(--gold); color:#fff;}
+
+  /* ---------- password gate ---------- */
+  .gate-screen{position:fixed; inset:0; z-index:200; background:var(--cream); display:flex; align-items:center; justify-content:center; padding:24px;}
+  .gate-box{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:40px 34px; max-width:360px; width:100%; text-align:center; box-shadow:0 12px 40px rgba(35,46,39,0.12);}
+  .gate-box h2{font-size:24px; margin-bottom:10px;}
+  .gate-box p{font-size:13px; color:var(--charcoal-faint); margin-bottom:18px;}
+  .gate-box input{width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:var(--radius-sm); font-size:14px; text-align:center; margin-bottom:12px;}
+  .gate-error{color:#A8493A; font-size:12.5px; margin-top:-4px; margin-bottom:12px; display:none;}
+
+  /* ---------- brand logo ---------- */
+  .brand-logo{height:34px; display:block;}
+  .hero-logo{max-height:90px; margin:0 auto 14px; display:block;}
+
+  /* ---------- registry ---------- */
+  .registry-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;}
+  .registry-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius-sm); padding:22px; text-align:center;}
+  .registry-card h5{font-family:var(--font-heading); font-size:17px; margin-bottom:12px;}
+
+  /* ---------- RSVP household search ---------- */
+  .rsvp-search-results{margin-top:14px;}
+  .rsvp-household-card{border:1.5px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:10px; cursor:pointer; transition:border-color .15s;}
+  .rsvp-household-card:hover{border-color:var(--gold);}
+  .rsvp-household-card .rhc-name{font-weight:700; font-size:14px;}
+  .rsvp-household-card .rhc-meta{font-size:12px; color:var(--charcoal-faint); margin-top:3px;}
+  .rsvp-event-row{border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:10px;}
+  .rsvp-event-row .rer-top{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;}
+  .rsvp-event-row .rer-name{font-weight:700; font-size:14px;}
+  .rsvp-event-row .rer-date{font-size:12px; color:var(--charcoal-faint);}
+  .rsvp-mini-radio{display:flex; gap:8px;}
+  .rsvp-mini-radio button{border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:6px 14px; font-size:12.5px; font-weight:700; cursor:pointer;}
+  .rsvp-mini-radio button.selected-yes{background:var(--green); border-color:var(--green); color:#fff;}
+  .rsvp-mini-radio button.selected-no{background:#A8493A; border-color:#A8493A; color:#fff;}
+  .rsvp-headcount{margin-top:10px; display:flex; align-items:center; gap:8px; font-size:12.5px;}
+  .rsvp-headcount input{width:64px; padding:6px 8px; border:1px solid var(--line); border-radius:6px;}
+  .rsvp-confirm-list{text-align:left; max-width:420px; margin:18px auto 0; font-size:13.5px;}
+  .rsvp-confirm-list li{margin-bottom:6px;}
+  .directions-link{font-size:12px; font-weight:700; color:var(--green); text-decoration:none; margin-left:8px;}
 
   /* ---------- top nav ---------- */
   .topnav{position:sticky; top:0; z-index:50; background:rgba(250,246,238,0.95); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
@@ -35,13 +74,13 @@
   .guest-bar{background:var(--green-deep); color:#fff; font-size:12.5px; padding:8px 24px; display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
   .guest-bar select{background:#fff; color:var(--charcoal); border:none; border-radius:6px; padding:4px 8px; font-size:12.5px; font-family:'Inter',sans-serif;}
 
-  .wrap{max-width:1080px; margin:0 auto; padding:48px 24px 90px;}
+  .wrap{max-width:1080px; margin:0 auto; padding:calc(48px*var(--space-unit)) 24px calc(90px*var(--space-unit));}
   .view{display:none;}
   .view.active{display:block; animation:fadeIn .35s ease;}
   @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
 
   /* ---------- home / hero ---------- */
-  .hero{text-align:center; padding:70px 20px 50px;}
+  .hero{text-align:center; padding:calc(70px*var(--space-unit)) 20px calc(50px*var(--space-unit));}
   .hero .eyebrow{font-size:12px; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); font-weight:700;}
   .hero h1{font-size:56px; margin:14px 0 8px; line-height:1.1;}
   .hero .amp{font-family:'Great Vibes',cursive; color:var(--gold); font-size:44px; padding:0 6px;}
@@ -61,12 +100,12 @@
   .home-card p{font-size:12.5px; color:var(--charcoal-faint); margin-top:6px; line-height:1.5;}
 
   /* ---------- generic section chrome ---------- */
-  .section-head{text-align:center; margin-bottom:36px;}
+  .section-head{text-align:center; margin-bottom:calc(36px*var(--space-unit));}
   .section-head .eyebrow{font-size:11.5px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); font-weight:700;}
   .section-head h2{font-size:36px; margin-top:8px;}
   .section-head p{font-size:14px; color:var(--charcoal-faint); margin-top:8px; max-width:520px; margin-left:auto; margin-right:auto;}
 
-  .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:26px; margin-bottom:20px;}
+  .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:calc(26px*var(--space-unit)); margin-bottom:calc(20px*var(--space-unit));}
 
   /* ---------- our story ---------- */
   .story-block{margin-bottom:28px;}
@@ -92,7 +131,6 @@
   .event-tabs{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:32px;}
   .event-tab-btn{background:#fff; border:1px solid var(--line); padding:9px 16px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer;}
   .event-tab-btn.active{background:var(--green); color:#fff; border-color:var(--green);}
-  .event-tab-btn.locked{opacity:0.4; cursor:not-allowed;}
   .event-detail{display:none;}
   .event-detail.active{display:block; animation:fadeIn .3s ease;}
   .event-hero-line{display:flex; justify-content:center; gap:26px; flex-wrap:wrap; margin-bottom:28px; text-align:center;}
@@ -171,9 +209,19 @@
 </head>
 <body>
 
+<div class="gate-screen" id="gateScreen" style="display:none;">
+  <div class="gate-box">
+    <h2>This website is password protected</h2>
+    <p>Please enter the passcode the couple shared with you.</p>
+    <input type="text" id="gatePasscodeInput" placeholder="Passcode" onkeydown="if(event.key==='Enter'){checkGatePasscode();}">
+    <div class="gate-error" id="gateError">That passcode isn't right — please try again.</div>
+    <button class="btn btn-solid" style="width:100%; justify-content:center;" onclick="checkGatePasscode()">Enter Site</button>
+  </div>
+</div>
+
 <div class="topnav">
   <div class="topnav-inner">
-    <a class="brand" href="#" onclick="goTo('home'); return false;">Natasha &amp; Matteo</a>
+    <a class="brand" href="#" onclick="goTo('home'); return false;" id="brandLink">Natasha &amp; Matteo</a>
     <div class="navlinks" id="navlinks"></div>
   </div>
 </div>
@@ -187,7 +235,7 @@
 
   <!-- HOME -->
   <div class="view active" id="view-home">
-    <div class="hero">
+    <div class="hero" id="heroSection">
       <div class="eyebrow">We're getting married</div>
       <h1>Natasha <span class="amp">&amp;</span> Matteo</h1>
       <div class="datestr">Sunday, April 25, 2027</div>
@@ -195,14 +243,13 @@
       <div class="hashtag">#NatashaAndMatteo2027</div>
       <div class="countdown" id="countdown"></div>
     </div>
-    <div class="home-grid">
-      <div class="home-card" onclick="goTo('story')"><div class="hc-icon">💌</div><h4>Our Story</h4><p>How it all began, in our own words</p></div>
-      <div class="home-card" onclick="goTo('party')"><div class="hc-icon">🥂</div><h4>Wedding Party</h4><p>Meet the people standing with us</p></div>
-      <div class="home-card" onclick="goTo('events')"><div class="hc-icon">📅</div><h4>Events</h4><p>Schedule, locations &amp; dress code</p></div>
-      <div class="home-card" onclick="goTo('album')"><div class="hc-icon">📷</div><h4>Album</h4><p>Photos from our celebrations</p></div>
-      <div class="home-card" onclick="goTo('travel')"><div class="hc-icon">✈️</div><h4>Travel</h4><p>Getting here &amp; getting around</p></div>
-      <div class="home-card" onclick="goTo('faq')"><div class="hc-icon">❓</div><h4>FAQ</h4><p>Answers to the questions we hear most</p></div>
-    </div>
+    <div class="home-grid" id="homeGrid"></div>
+  </div>
+
+  <!-- REGISTRY -->
+  <div class="view" id="view-registry">
+    <div class="section-head"><div class="eyebrow">Registry</div><h2>Gifts</h2><p>Your presence is truly the gift — but if you'd like to give something, here's where we're registered.</p></div>
+    <div class="registry-grid" id="registryGrid"></div>
   </div>
 
   <!-- OUR STORY -->
@@ -254,7 +301,8 @@
   <div class="view" id="view-rsvp">
     <div class="section-head"><div class="eyebrow">RSVP</div><h2>We Can't Wait To Celebrate With You</h2></div>
     <div class="rsvp-deadline-banner" id="rsvpDeadlineBanner"></div>
-    <div class="card" id="rsvpCard"></div>
+    <div class="card" id="rsvpSearchCard"></div>
+    <div id="rsvpFormWrap"></div>
   </div>
 
 </div>
@@ -270,6 +318,42 @@
 ================================================================== */
 const COUPLE = { partner1:'Natasha', partner2:'Matteo', weddingDateISO:'2027-04-25', location:'King City & Toronto, ON', hashtag:'#NatashaAndMatteo2027' };
 
+/* Set by the couple in Evera's Website module — mirrors dashboardData.coupleLogo.
+   Leave null to fall back to the script wordmark, same as when no logo is designed yet. */
+const COUPLE_LOGO = null;
+
+/* Mirrors dashboardData.weddingProfile.colorPalette (the Master Colour Palette) —
+   drives the whole site's colour theme unless the couple sets a website-only palette below. */
+const MASTER_PALETTE = ['#38473B','#CBB2A6','#C7A467','#FAF6EE'];
+
+/* Mirrors dashboardData.website.design in the main app. */
+const WEBSITE_DESIGN = {
+  fontPairing:'classic', // 'classic' | 'romantic' | 'modern' | 'editorial'
+  useCustomPalette:false,
+  customPalette:[],
+  spacing:'comfortable' // 'cozy' | 'comfortable' | 'airy'
+};
+const FONT_PAIRINGS = {
+  classic:{heading:"'Playfair Display',Georgia,serif", script:"'Great Vibes',cursive"},
+  romantic:{heading:"'Cormorant Garamond',Georgia,serif", script:"'Great Vibes',cursive"},
+  modern:{heading:"'Poppins',sans-serif", script:"'Poppins',sans-serif"},
+  editorial:{heading:"'Playfair Display',Georgia,serif", script:"'Playfair Display',Georgia,serif"}
+};
+const SPACING_SCALE = {cozy:0.72, comfortable:1, airy:1.4};
+
+/* Mirrors dashboardData.website.sections — anything false here is fully hidden from
+   the nav and the home page, not just locked. Home and RSVP are always shown. */
+const WEBSITE_SECTIONS = {ourStory:true, weddingParty:true, schedule:true, album:true, registry:true, travel:true, faq:true};
+
+/* Mirrors dashboardData.website.customDomain / passwordProtected / sitePassword. */
+const WEBSITE_ACCESS = {customDomain:'', passwordProtected:false, sitePassword:''};
+
+/* Mirrors dashboardData.website.registryLinks. */
+const REGISTRY_LINKS = [
+  {id:'reg-1', label:'Crate & Barrel', url:'https://www.crateandbarrel.com/'},
+  {id:'reg-2', label:'Honeymoon Fund', url:'https://www.honeyfund.com/'}
+];
+
 const EVENTS = [
   {id:'ev-welcome', name:'Welcome Dinner', dateISO:'2027-04-23', dateLabel:'Friday, April 23, 2027', startTime:'6:00 PM', endTime:'10:00 PM', location:'The Ivy Room, Toronto', address:'The Ivy Room, 118 King St W, Toronto, ON', description:"A relaxed welcome dinner the night before the Mehndi festivities begin — toasts, good food, and time for both families to connect before the big weekend.", dressCodeKey:'cocktail'},
   {id:'ev-mehndi', name:'Mehndi', dateISO:'2027-04-24', dateLabel:'Saturday, April 24, 2027', startTime:'2:00 PM', endTime:'6:00 PM', location:'Hendrick Hall', address:'Hendrick Hall, 40 Bloor St E, Toronto, ON', description:'A traditional henna celebration with a live dhol performance, food stations, and henna artists for the wedding party and guests.', dressCodeKey:'festive'},
@@ -280,12 +364,12 @@ const EVENTS = [
 ];
 
 const DRESS_CODES = {
-  formal:{label:'Formal / Black-Tie', palette:['#232E27','#38473B','#C7A467','#F4EFE3'], garments:['tuxedo-m','gown-f'], desc:'Floor-length gowns, tuxedos or dark formal suits. Please avoid casual fabrics like denim or cotton.'},
-  cocktail:{label:'Cocktail / Semi-Formal', palette:['#4C6355','#CBB2A6','#A8834A','#FAF6EE'], garments:['suit-m','cocktail-f'], desc:'Knee-length dresses or dressy separates; suits without a tie are perfect. A step up from business casual.'},
-  festive:{label:'Bright Colours Encouraged', palette:['#C7A467','#AE5B41','#4C6355','#CBB2A6'], garments:['kurta-m','lehenga-f'], desc:'Rich jewel tones and bright colour are welcome — please avoid all-white or all-black outfits. Comfortable seating attire, as you may be seated on the floor or on low cushions.'},
-  casual:{label:'Casual / Brunch', palette:['#E7DFCF','#CBB2A6','#8B8577','#FAF6EE'], garments:['linen-m','sundress-f'], desc:'Relaxed daytime wear — sundresses, chinos, linen shirts. Comfortable shoes recommended.'}
+  formal:{label:'Formal / Black-Tie', palette:['#232E27','#38473B','#C7A467','#F4EFE3'], garments:['tuxedo-m','threepiece-m','gown-f'], desc:'Floor-length gowns, tuxedos or dark formal suits. Please avoid casual fabrics like denim or cotton.'},
+  cocktail:{label:'Cocktail / Semi-Formal', palette:['#4C6355','#CBB2A6','#A8834A','#FAF6EE'], garments:['suit-m','jumpsuit-f','cocktail-f'], desc:'Knee-length dresses or dressy separates; suits without a tie are perfect. A step up from business casual.'},
+  festive:{label:'Bright Colours Encouraged', palette:['#C7A467','#AE5B41','#4C6355','#CBB2A6'], garments:['kurta-m','sherwani-m','lehenga-f','saree-f'], desc:'Rich jewel tones and bright colour are welcome — please avoid all-white or all-black outfits. Comfortable seating attire, as you may be seated on the floor or on low cushions.'},
+  casual:{label:'Casual / Brunch', palette:['#E7DFCF','#CBB2A6','#8B8577','#FAF6EE'], garments:['linen-m','romper-f','sundress-f'], desc:'Relaxed daytime wear — sundresses, chinos, linen shirts. Comfortable shoes recommended.'}
 };
-const GARMENT_LABELS = {'tuxedo-m':'Tuxedo','gown-f':'Floor-length gown','suit-m':'Suit, no tie','cocktail-f':'Cocktail dress','kurta-m':'Bandhgala / kurta','lehenga-f':'Lehenga & dupatta','linen-m':'Linen shirt & chinos','sundress-f':'Sundress'};
+const GARMENT_LABELS = {'tuxedo-m':'Tuxedo','threepiece-m':'Three-piece suit','gown-f':'Floor-length gown','suit-m':'Suit, no tie','jumpsuit-f':'Dressy jumpsuit','cocktail-f':'Cocktail dress','kurta-m':'Bandhgala / kurta','sherwani-m':'Sherwani','lehenga-f':'Lehenga & dupatta','saree-f':'Saree','linen-m':'Linen shirt & chinos','romper-f':'Romper','sundress-f':'Sundress'};
 
 /* Generic, real-brand attire retailers (not fabricated shops), mapped per dress code category. */
 const RETAILERS = {
@@ -307,7 +391,12 @@ function garmentFigureSVG(type, palette){
     'gown-f': `<path d="M20 32 Q28 27 36 32 L33 58 L23 58 Z" fill="${p1}"/><line x1="23" y1="32" x2="21" y2="26" stroke="${p1}" stroke-width="2.5"/><line x1="33" y1="32" x2="35" y2="26" stroke="${p1}" stroke-width="2.5"/><path d="M22 58 L34 58 L50 128 L6 128 Z" fill="${p1}"/><line x1="22" y1="58" x2="34" y2="58" stroke="${p0}" stroke-width="2"/><path d="M14 128 L28 100 L42 128 Z" fill="${p0}" opacity="0.18"/>`,
     'cocktail-f': `<path d="M20 32 Q28 27 36 32 L40 92 L16 92 Z" fill="${p2}"/><line x1="23" y1="32" x2="22" y2="27" stroke="${p2}" stroke-width="2.5"/><line x1="33" y1="32" x2="34" y2="27" stroke="${p2}" stroke-width="2.5"/><rect x="21" y="92" width="6" height="26" fill="${skinColor}"/><rect x="31" y="92" width="6" height="26" fill="${skinColor}"/><path d="M21 118 L27 118 L25 123 Z" fill="#171614"/><path d="M31 118 L37 118 L34 123 Z" fill="#171614"/>`,
     'lehenga-f': `<path d="M19 32 Q28 27 37 32 L35 55 L21 55 Z" fill="${p0}"/><line x1="22" y1="33" x2="20" y2="27" stroke="${p0}" stroke-width="2.5"/><line x1="34" y1="33" x2="36" y2="27" stroke="${p0}" stroke-width="2.5"/><path d="M17 55 L39 55 L52 128 L4 128 Z" fill="${p1}"/><path d="M20 34 Q34 60 46 100" stroke="${p2}" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.92"/><circle cx="14" cy="80" r="1.6" fill="rgba(255,255,255,0.55)"/><circle cx="20" cy="100" r="1.6" fill="rgba(255,255,255,0.55)"/><circle cx="38" cy="112" r="1.6" fill="rgba(255,255,255,0.55)"/>`,
-    'sundress-f': `<path d="M21 30 L35 30 L41 90 L15 90 Z" fill="${p3}"/><line x1="24" y1="30" x2="23" y2="25" stroke="${p3}" stroke-width="2"/><line x1="32" y1="30" x2="33" y2="25" stroke="${p3}" stroke-width="2"/><rect x="18" y="30" width="6" height="16" fill="${skinColor}"/><rect x="32" y="30" width="6" height="16" fill="${skinColor}"/><rect x="22" y="90" width="5" height="28" fill="${skinColor}"/><rect x="31" y="90" width="5" height="28" fill="${skinColor}"/><ellipse cx="24" cy="119" rx="5.5" ry="2.8" fill="#c99a6a"/><ellipse cx="34" cy="119" rx="5.5" ry="2.8" fill="#c99a6a"/>`
+    'sundress-f': `<path d="M21 30 L35 30 L41 90 L15 90 Z" fill="${p3}"/><line x1="24" y1="30" x2="23" y2="25" stroke="${p3}" stroke-width="2"/><line x1="32" y1="30" x2="33" y2="25" stroke="${p3}" stroke-width="2"/><rect x="18" y="30" width="6" height="16" fill="${skinColor}"/><rect x="32" y="30" width="6" height="16" fill="${skinColor}"/><rect x="22" y="90" width="5" height="28" fill="${skinColor}"/><rect x="31" y="90" width="5" height="28" fill="${skinColor}"/><ellipse cx="24" cy="119" rx="5.5" ry="2.8" fill="#c99a6a"/><ellipse cx="34" cy="119" rx="5.5" ry="2.8" fill="#c99a6a"/>`,
+    'threepiece-m': `<path d="M14 32 Q28 24 42 32 L46 78 L10 78 Z" fill="${p0}"/><path d="M22 32 L28 52 L34 32 Z" fill="${p1}"/><rect x="24" y="35" width="8" height="17" fill="${p0}" opacity="0.88"/><path d="M20 31 L26 28 L26 36 Z" fill="${p0}"/><path d="M36 31 L30 28 L30 36 Z" fill="${p0}"/><rect x="13" y="78" width="14" height="42" fill="#171614"/><rect x="29" y="78" width="14" height="42" fill="#171614"/><ellipse cx="20" cy="121" rx="8" ry="4" fill="#0c0b0a"/><ellipse cx="36" cy="121" rx="8" ry="4" fill="#0c0b0a"/>`,
+    'jumpsuit-f': `<path d="M20 32 Q28 27 36 32 L38 60 L18 60 Z" fill="${p2}"/><line x1="23" y1="32" x2="22" y2="27" stroke="${p2}" stroke-width="2.5"/><line x1="33" y1="32" x2="34" y2="27" stroke="${p2}" stroke-width="2.5"/><path d="M18 60 L27 60 L24 122 L12 122 L15 62 Z" fill="${p2}"/><path d="M38 60 L29 60 L32 122 L44 122 L41 62 Z" fill="${p2}"/><ellipse cx="18" cy="122" rx="6" ry="3" fill="#3a332c"/><ellipse cx="38" cy="122" rx="6" ry="3" fill="#3a332c"/>`,
+    'sherwani-m': `<path d="M16 33 Q28 25 40 33 L45 100 L11 100 Z" fill="${p0}"/><rect x="23" y="27" width="10" height="8" rx="3" fill="${p0}"/><line x1="28" y1="35" x2="28" y2="98" stroke="rgba(255,255,255,0.3)" stroke-width="1.3"/><circle cx="28" cy="48" r="1.3" fill="rgba(255,255,255,0.55)"/><circle cx="28" cy="60" r="1.3" fill="rgba(255,255,255,0.55)"/><circle cx="28" cy="72" r="1.3" fill="rgba(255,255,255,0.55)"/><circle cx="28" cy="84" r="1.3" fill="rgba(255,255,255,0.55)"/><rect x="17" y="100" width="10" height="24" fill="${p1}"/><rect x="29" y="100" width="10" height="24" fill="${p1}"/><ellipse cx="22" cy="123" rx="6.5" ry="3" fill="#3a2f1e"/><ellipse cx="34" cy="123" rx="6.5" ry="3" fill="#3a2f1e"/>`,
+    'saree-f': `<path d="M19 32 Q28 27 37 32 L34 54 L22 54 Z" fill="${p1}"/><line x1="22" y1="33" x2="20" y2="27" stroke="${p1}" stroke-width="2.5"/><line x1="34" y1="33" x2="36" y2="27" stroke="${p1}" stroke-width="2.5"/><path d="M18 54 L38 54 L48 128 L8 128 Z" fill="${p0}"/><path d="M22 54 Q10 80 8 128" stroke="${p2}" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.9"/><path d="M22 54 Q8 90 6 122" stroke="${p3}" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.6"/>`,
+    'romper-f': `<path d="M21 30 L35 30 L39 62 L17 62 Z" fill="${p3}"/><line x1="24" y1="30" x2="23" y2="25" stroke="${p3}" stroke-width="2"/><line x1="32" y1="30" x2="33" y2="25" stroke="${p3}" stroke-width="2"/><rect x="18" y="30" width="6" height="16" fill="${skinColor}"/><rect x="32" y="30" width="6" height="16" fill="${skinColor}"/><rect x="20" y="62" width="6" height="34" fill="${skinColor}"/><rect x="30" y="62" width="6" height="34" fill="${skinColor}"/><ellipse cx="23" cy="97" rx="5.5" ry="2.8" fill="#c99a6a"/><ellipse cx="33" cy="97" rx="5.5" ry="2.8" fill="#c99a6a"/>`
   };
   return `<svg viewBox="0 0 56 126" style="width:64px;height:auto;">${head}${bodies[type]||''}</svg>`;
 }
@@ -368,6 +457,15 @@ const FAQ_ITEMS = [
 
 const RSVP_DEADLINE_ISO = '2027-03-01';
 
+/* RSVP survey questions — mirrors the couple's RSVP Surveys built in Guest Management.
+   A survey with eventId:null applies to everyone; otherwise only guests invited to
+   that event see it. In a full build this would read live from the couple's account. */
+const SURVEYS = [
+  {id:'survey-mehndi-playlist', name:'Mehndi Playlist Requests', eventId:'ev-mehndi', questions:[
+    {id:'q1', label:"Any songs you'd love to hear on the Mehndi dance floor?"}
+  ]}
+];
+
 const ALBUM_PHOTOS = []; // no photos uploaded yet in this demo — shows the empty state
 const ALBUM_NOTIFICATIONS = []; // e.g. [{sentAt: Date.now(), photoCount: 12}]
 
@@ -382,19 +480,33 @@ const GUESTS = [
   {id:'g-outoftown', name:'The Whitfield Family (full weekend, incl. Brunch)', invitedEventIds:EVENTS.map(e=>e.id)}
 ];
 
+/* Real RSVP flow uses this household directory (first/last name search), independent
+   of the "Preview as" picker above (which is just a demo tool for the couple to check
+   per-event gating — real guests never see it). Mirrors dashboardData.guestHouseholds. */
+const HOUSEHOLDS = [
+  {id:'h-anand', invitedEventIds:['ev-welcome','ev-mehndi','ev-ceremony','ev-cocktail','ev-reception'], members:[{id:'m-priya',firstName:'Priya',lastName:'Anand'},{id:'m-raj',firstName:'Raj',lastName:'Anand'}]},
+  {id:'h-kim', invitedEventIds:['ev-ceremony','ev-cocktail','ev-reception'], members:[{id:'m-david',firstName:'David',lastName:'Kim'}]},
+  {id:'h-iqbal', invitedEventIds:['ev-mehndi'], members:[{id:'m-sana',firstName:'Sana',lastName:'Iqbal'}]},
+  {id:'h-whitfield', invitedEventIds:EVENTS.map(e=>e.id), members:[{id:'m-grace',firstName:'Grace',lastName:'Whitfield'},{id:'m-tom',firstName:'Tom',lastName:'Whitfield'},{id:'m-lily',firstName:'Lily',lastName:'Whitfield'}]}
+];
+
 /* ==================================================================
    STATE + NAV
 ================================================================== */
 const NAV_ITEMS = [
-  {key:'home', label:'Home'},
-  {key:'story', label:'Our Story'},
-  {key:'party', label:'Wedding Party'},
-  {key:'events', label:'Events'},
-  {key:'album', label:'Album'},
-  {key:'travel', label:'Travel'},
-  {key:'faq', label:'FAQ'},
-  {key:'rsvp', label:'RSVP'}
+  {key:'home', label:'Home', sectionKey:null},
+  {key:'story', label:'Our Story', sectionKey:'ourStory'},
+  {key:'party', label:'Wedding Party', sectionKey:'weddingParty'},
+  {key:'events', label:'Events', sectionKey:'schedule'},
+  {key:'album', label:'Album', sectionKey:'album'},
+  {key:'registry', label:'Registry', sectionKey:'registry'},
+  {key:'travel', label:'Travel', sectionKey:'travel'},
+  {key:'faq', label:'FAQ', sectionKey:'faq'},
+  {key:'rsvp', label:'RSVP', sectionKey:null}
 ];
+function visibleNavItems(){
+  return NAV_ITEMS.filter(n => !n.sectionKey || WEBSITE_SECTIONS[n.sectionKey]!==false);
+}
 let currentGuestId = GUESTS[0].id;
 let currentEventTab = null;
 let albumFilter = 'all';
@@ -404,7 +516,7 @@ function currentGuest(){ return GUESTS.find(g=>g.id===currentGuestId) || GUESTS[
 function isInvited(eventId){ return currentGuest().invitedEventIds.includes(eventId); }
 
 function initNav(){
-  document.getElementById('navlinks').innerHTML = NAV_ITEMS.map(n=>`<button data-key="${n.key}" onclick="goTo('${n.key}')">${n.label}</button>`).join('');
+  document.getElementById('navlinks').innerHTML = visibleNavItems().map(n=>`<button data-key="${n.key}" onclick="goTo('${n.key}')">${n.label}</button>`).join('');
   document.getElementById('guestSelect').innerHTML = GUESTS.map(g=>`<option value="${g.id}">${escapeHtml(g.name)}</option>`).join('');
 }
 function goTo(key){
@@ -413,6 +525,81 @@ function goTo(key){
   document.querySelectorAll('#navlinks button').forEach(b=>b.classList.toggle('active', b.dataset.key===key));
   window.scrollTo({top:0, behavior:'smooth'});
   if(key==='events') renderEvents();
+  if(key==='registry') renderRegistry();
+}
+
+/* ---------- theme: logo, palette, font, spacing ---------- */
+function applyWebsiteTheme(){
+  const palette = (WEBSITE_DESIGN.useCustomPalette && WEBSITE_DESIGN.customPalette.length) ? WEBSITE_DESIGN.customPalette : MASTER_PALETTE;
+  const root = document.documentElement.style;
+  if(palette[0]) { root.setProperty('--green', palette[0]); root.setProperty('--green-deep', shadeColor(palette[0], -18)); }
+  if(palette[1]) root.setProperty('--blush', palette[1]);
+  if(palette[2]) root.setProperty('--gold', palette[2]);
+  if(palette[3]) root.setProperty('--cream', palette[3]);
+  const fonts = FONT_PAIRINGS[WEBSITE_DESIGN.fontPairing] || FONT_PAIRINGS.classic;
+  root.setProperty('--font-heading', fonts.heading);
+  root.setProperty('--font-script', fonts.script);
+  root.setProperty('--space-unit', SPACING_SCALE[WEBSITE_DESIGN.spacing]!==undefined ? SPACING_SCALE[WEBSITE_DESIGN.spacing] : 1);
+  const brandLink = document.getElementById('brandLink');
+  if(COUPLE_LOGO){
+    brandLink.innerHTML = `<img class="brand-logo" src="${COUPLE_LOGO}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
+  }
+  const heroSection = document.getElementById('heroSection');
+  if(COUPLE_LOGO){
+    const existing = heroSection.querySelector('.hero-logo');
+    if(!existing){
+      const img = document.createElement('img');
+      img.className = 'hero-logo'; img.src = COUPLE_LOGO; img.alt = 'Wedding logo';
+      heroSection.insertBefore(img, heroSection.firstChild);
+    }
+  }
+}
+function shadeColor(hex, percent){
+  const h = (hex||'').replace('#','');
+  if(h.length!==6) return hex;
+  let r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+  const amt = Math.round(2.55*percent);
+  r = Math.max(0,Math.min(255,r+amt)); g = Math.max(0,Math.min(255,g+amt)); b = Math.max(0,Math.min(255,b+amt));
+  return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+
+/* ---------- password gate ---------- */
+function initGate(){
+  if(!WEBSITE_ACCESS.passwordProtected){ document.getElementById('gateScreen').style.display = 'none'; return; }
+  document.getElementById('gateScreen').style.display = 'flex';
+}
+function checkGatePasscode(){
+  const val = (document.getElementById('gatePasscodeInput').value||'').trim();
+  if(val && val.toLowerCase() === (WEBSITE_ACCESS.sitePassword||'').trim().toLowerCase()){
+    document.getElementById('gateScreen').style.display = 'none';
+  } else {
+    document.getElementById('gateError').style.display = 'block';
+  }
+}
+
+/* ---------- home page (dynamic — respects hidden pages) ---------- */
+function renderHomeGrid(){
+  const cardDefs = {
+    story:{icon:'💌', title:'Our Story', desc:'How it all began, in our own words'},
+    party:{icon:'🥂', title:'Wedding Party', desc:'Meet the people standing with us'},
+    events:{icon:'📅', title:'Events', desc:'Schedule, locations & dress code'},
+    album:{icon:'📷', title:'Album', desc:'Photos from our celebrations'},
+    registry:{icon:'🎁', title:'Registry', desc:'If you\'d like to give a gift'},
+    travel:{icon:'✈️', title:'Travel', desc:'Getting here & getting around'},
+    faq:{icon:'❓', title:'FAQ', desc:'Answers to the questions we hear most'}
+  };
+  const visibleKeys = visibleNavItems().map(n=>n.key).filter(k=>cardDefs[k]);
+  document.getElementById('homeGrid').innerHTML = visibleKeys.map(k=>{
+    const c = cardDefs[k];
+    return `<div class="home-card" onclick="goTo('${k}')"><div class="hc-icon">${c.icon}</div><h4>${c.title}</h4><p>${c.desc}</p></div>`;
+  }).join('');
+}
+
+/* ---------- registry ---------- */
+function renderRegistry(){
+  document.getElementById('registryGrid').innerHTML = REGISTRY_LINKS.length ? REGISTRY_LINKS.map(r=>`
+    <div class="registry-card"><h5>${escapeHtml(r.label)}</h5><a class="btn btn-outline" href="${r.url}" target="_blank" rel="noopener">View Registry →</a></div>
+  `).join('') : `<div class="empty-note" style="grid-column:1/-1;">The couple hasn't added any registries yet.</div>`;
 }
 function onGuestChange(id){
   currentGuestId = id;
@@ -474,14 +661,12 @@ function renderParty(){
 
 /* ---------- events ---------- */
 function renderEvents(){
-  const tabsHtml = EVENTS.map(e=>{
-    const invited = isInvited(e.id);
-    return `<button class="event-tab-btn ${invited?'':'locked'} ${currentEventTab===e.id?'active':''}" ${invited?`onclick="selectEventTab('${e.id}')"`:'disabled title="Not part of your invitation"'}>${invited?'':'🔒 '}${escapeHtml(e.name)}</button>`;
+  const invitedEvents = EVENTS.filter(e=>isInvited(e.id));
+  const tabsHtml = invitedEvents.map(e=>{
+    return `<button class="event-tab-btn ${currentEventTab===e.id?'active':''}" onclick="selectEventTab('${e.id}')">${escapeHtml(e.name)}</button>`;
   }).join('');
   document.getElementById('eventTabs').innerHTML = tabsHtml;
-  const firstInvited = EVENTS.find(e=>isInvited(e.id));
-  if(!currentEventTab || !isInvited(currentEventTab)) currentEventTab = firstInvited ? firstInvited.id : null;
-  document.querySelectorAll('.event-tab-btn').forEach(b=>{});
+  if(!currentEventTab || !isInvited(currentEventTab)) currentEventTab = invitedEvents.length ? invitedEvents[0].id : null;
   renderEventDetail();
 }
 function selectEventTab(id){ currentEventTab = id; renderEvents(); }
@@ -500,7 +685,7 @@ function renderEventDetail(){
       <div class="event-hero-line">
         <div class="ehl-item"><span class="ehl-label">Date</span><span class="ehl-val">${escapeHtml(e.dateLabel)}</span></div>
         <div class="ehl-item"><span class="ehl-label">Time</span><span class="ehl-val">${escapeHtml(e.startTime)} – ${escapeHtml(e.endTime)}</span></div>
-        <div class="ehl-item"><span class="ehl-label">Location</span><span class="ehl-val">${escapeHtml(e.location)}</span></div>
+        <div class="ehl-item"><span class="ehl-label">Location</span><span class="ehl-val">${escapeHtml(e.location)}<a class="directions-link" href="${buildDirectionsUrl(e)}" target="_blank" rel="noopener">📍 Get Directions</a></span></div>
       </div>
       <p style="text-align:center; font-size:14.5px; color:var(--charcoal-soft); max-width:560px; margin:0 auto; line-height:1.8;">${escapeHtml(e.description)}</p>
       <div class="cal-buttons">
@@ -538,6 +723,9 @@ function buildGoogleCalendarUrl(e){
     dates:`${start}/${end}`, details:e.description, location:e.address
   });
   return 'https://calendar.google.com/calendar/render?'+params.toString();
+}
+function buildDirectionsUrl(e){
+  return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(e.address||e.location);
 }
 function downloadIcs(eventId){
   const e = EVENTS.find(x=>x.id===eventId);
@@ -613,63 +801,156 @@ function fmtDeadline(iso){
   const d = new Date(iso+'T00:00:00');
   return d.toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 }
+let rsvpHousehold = null;
+let rsvpEventChoices = {}; // {eventId: 'yes'|'no'}
+let rsvpEventHeadcounts = {}; // {eventId: number}
+const RSVP_CONFIRMATION_LOG = []; // simulated confirmation "emails" — {householdId, sentAt}
+
 function renderRsvp(){
   document.getElementById('rsvpDeadlineBanner').innerHTML = `Please RSVP by <b>${fmtDeadline(RSVP_DEADLINE_ISO)}</b>`;
-  renderRsvpForm();
+  renderRsvpSearch();
+  document.getElementById('rsvpFormWrap').innerHTML = '';
 }
-function renderRsvpForm(){
-  document.getElementById('rsvpCard').innerHTML = `
-    <div class="field-row"><label>Full Name</label><input type="text" id="rsvpName" placeholder="As it appears on your invitation"></div>
-    <div class="field-row">
-      <label>Will you be attending?</label>
-      <div class="radio-row">
-        <div class="radio-opt ${rsvpChoice==='yes'?'selected':''}" onclick="setRsvpChoice('yes')">🎉 Joyfully Accept</div>
-        <div class="radio-opt ${rsvpChoice==='no'?'selected':''}" onclick="setRsvpChoice('no')">😢 Regretfully Decline</div>
-      </div>
+function renderRsvpSearch(){
+  document.getElementById('rsvpSearchCard').innerHTML = `
+    <div class="field-row"><label>First or Last Name</label><input type="text" id="rsvpSearchInput" placeholder="e.g. Anand or Priya" onkeydown="if(event.key==='Enter'){searchRsvpHousehold();}"></div>
+    <button class="btn btn-solid" onclick="searchRsvpHousehold()">Find My Invitation</button>
+    <div class="rsvp-search-results" id="rsvpSearchResults"></div>
+  `;
+}
+function searchRsvpHousehold(){
+  const q = (document.getElementById('rsvpSearchInput').value||'').trim().toLowerCase();
+  const resultsBox = document.getElementById('rsvpSearchResults');
+  if(!q){ resultsBox.innerHTML = ''; return; }
+  const matches = HOUSEHOLDS.filter(h => h.members.some(m => m.firstName.toLowerCase().includes(q) || m.lastName.toLowerCase().includes(q)));
+  if(!matches.length){
+    resultsBox.innerHTML = `<div class="empty-note">We couldn't find an invitation under that name — please double-check the spelling, or reach out to the couple directly.</div>`;
+    return;
+  }
+  resultsBox.innerHTML = matches.map(h=>`
+    <div class="rsvp-household-card" onclick="selectRsvpHousehold('${h.id}')">
+      <div class="rhc-name">${escapeHtml(h.members.map(m=>m.firstName+' '+m.lastName).join(' & '))}</div>
+      <div class="rhc-meta">Invited to ${h.invitedEventIds.length} of ${EVENTS.length} events</div>
     </div>
-    ${rsvpChoice==='yes' ? `
-      <div class="field-row"><label>Meal Preference</label>
+  `).join('');
+}
+function selectRsvpHousehold(id){
+  rsvpHousehold = HOUSEHOLDS.find(h=>h.id===id);
+  if(!rsvpHousehold) return;
+  rsvpEventChoices = {};
+  rsvpEventHeadcounts = {};
+  rsvpHousehold.invitedEventIds.forEach(eid => { rsvpEventHeadcounts[eid] = rsvpHousehold.members.length; });
+  renderRsvpHouseholdForm();
+}
+function applicableSurveys(invitedIds){
+  return SURVEYS.filter(s => !s.eventId || invitedIds.includes(s.eventId));
+}
+function renderSurveyQuestionsHtml(invitedIds){
+  const surveys = applicableSurveys(invitedIds);
+  if(!surveys.length) return '';
+  return surveys.map(s=>`
+    <div class="field-row" style="margin-top:10px;"><label style="font-weight:600;">${escapeHtml(s.name)}</label></div>
+    ${s.questions.map(q=>`<div class="field-row"><label>${escapeHtml(q.label)}</label><input type="text" id="surveyq-${s.id}-${q.id}" placeholder="Optional"></div>`).join('')}
+  `).join('');
+}
+function renderRsvpHouseholdForm(){
+  const h = rsvpHousehold;
+  const invitedEvents = EVENTS.filter(e=>h.invitedEventIds.includes(e.id));
+  document.getElementById('rsvpFormWrap').innerHTML = `
+    <div class="card">
+      <p style="font-size:12.5px; color:var(--charcoal-faint);">Not you? <a href="#" onclick="rsvpHousehold=null; renderRsvpSearch(); document.getElementById('rsvpFormWrap').innerHTML=''; return false;" style="font-weight:700; color:var(--green);">Search again</a></p>
+      <div class="field-row"><label>Your Party</label><div style="font-size:14.5px; font-weight:600;">${escapeHtml(h.members.map(m=>m.firstName+' '+m.lastName).join(', '))}</div></div>
+      <div class="field-row"><label>Which events will you be joining?</label></div>
+      ${invitedEvents.map(e=>`
+        <div class="rsvp-event-row">
+          <div class="rer-top">
+            <div><div class="rer-name">${escapeHtml(e.name)}</div><div class="rer-date">${escapeHtml(e.dateLabel)}</div></div>
+            <div class="rsvp-mini-radio">
+              <button class="${rsvpEventChoices[e.id]==='yes'?'selected-yes':''}" onclick="setRsvpEventChoice('${e.id}','yes')">🎉 Joyfully Accept</button>
+              <button class="${rsvpEventChoices[e.id]==='no'?'selected-no':''}" onclick="setRsvpEventChoice('${e.id}','no')">😢 Decline</button>
+            </div>
+          </div>
+          ${rsvpEventChoices[e.id]==='yes' && h.members.length>1 ? `
+            <div class="rsvp-headcount">How many from your party? <input type="number" min="1" max="${h.members.length}" value="${rsvpEventHeadcounts[e.id]||h.members.length}" onchange="rsvpEventHeadcounts['${e.id}']=Math.max(1,Math.min(${h.members.length},parseInt(this.value)||${h.members.length}))"></div>
+          ` : ''}
+        </div>
+      `).join('')}
+      <div class="field-row" style="margin-top:14px;"><label>Meal Preference</label>
         <select id="rsvpMeal"><option>Herb-Roasted Chicken</option><option>Braised Short Rib</option><option>Wild Mushroom Risotto (Vegetarian)</option><option>Vegan Plate</option></select>
       </div>
       <div class="field-row"><label>Dietary Restrictions or Allergies</label><input type="text" id="rsvpDietary" placeholder="Optional"></div>
-    ` : ''}
-    <div class="field-row"><label>Note to the Couple</label><textarea id="rsvpNote" rows="3" placeholder="Optional"></textarea></div>
-    <button class="btn btn-solid" style="width:100%; justify-content:center;" onclick="submitRsvp()">Submit RSVP</button>
-    <p style="font-size:11.5px; color:var(--charcoal-faint); text-align:center; margin-top:14px;">This is a prototype form — responses aren’t saved anywhere yet. Automated reminders for guests who haven’t responded are planned for a future update.</p>
-  `;
-}
-function setRsvpChoice(c){
-  const nameEl = document.getElementById('rsvpName'), noteEl = document.getElementById('rsvpNote');
-  const savedName = nameEl ? nameEl.value : '', savedNote = noteEl ? noteEl.value : '';
-  rsvpChoice = c;
-  renderRsvpForm();
-  const newNameEl = document.getElementById('rsvpName'), newNoteEl = document.getElementById('rsvpNote');
-  if(newNameEl) newNameEl.value = savedName;
-  if(newNoteEl) newNoteEl.value = savedNote;
-}
-function submitRsvp(){
-  const name = (document.getElementById('rsvpName').value||'').trim();
-  if(!name || !rsvpChoice){ alert('Please add your name and let us know if you can make it.'); return; }
-  document.getElementById('rsvpCard').innerHTML = `
-    <div class="rsvp-confirm">
-      <div class="big-check">${rsvpChoice==='yes' ? '🎉' : '💌'}</div>
-      <h3>Thank you, ${escapeHtml(name.split(' ')[0])}!</h3>
-      <p style="color:var(--charcoal-faint); margin-top:8px;">${rsvpChoice==='yes' ? 'We can’t wait to celebrate with you.' : 'We’ll miss you, but thank you for letting us know.'}</p>
+      ${renderSurveyQuestionsHtml(h.invitedEventIds)}
+      <div class="field-row"><label>Note to the Couple</label><textarea id="rsvpNote" rows="3" placeholder="Optional"></textarea></div>
+      <button class="btn btn-solid" style="width:100%; justify-content:center;" onclick="submitHouseholdRsvp()">Submit RSVP</button>
+      <p style="font-size:11.5px; color:var(--charcoal-faint); text-align:center; margin-top:14px;">This is a prototype form — responses aren't saved to a real database yet.</p>
     </div>
   `;
+}
+function setRsvpEventChoice(eventId, val){
+  rsvpEventChoices[eventId] = val;
+  renderRsvpHouseholdForm();
+}
+function submitHouseholdRsvp(){
+  const h = rsvpHousehold;
+  if(!h) return;
+  const missing = h.invitedEventIds.filter(eid => !rsvpEventChoices[eid]);
+  if(missing.length){ alert("Please let us know whether you'll be attending each event before submitting."); return; }
+  const attendingIds = h.invitedEventIds.filter(eid => rsvpEventChoices[eid]==='yes');
+  const decliningIds = h.invitedEventIds.filter(eid => rsvpEventChoices[eid]==='no');
+  RSVP_CONFIRMATION_LOG.push({householdId:h.id, sentAt: Date.now()});
+  const attendingEvents = EVENTS.filter(e=>attendingIds.includes(e.id));
+  const decliningEvents = EVENTS.filter(e=>decliningIds.includes(e.id));
+  document.getElementById('rsvpFormWrap').innerHTML = `
+    <div class="card rsvp-confirm">
+      <div class="big-check">${attendingIds.length ? '🎉' : '💌'}</div>
+      <h3>Thank you, ${escapeHtml(h.members[0].firstName)}!</h3>
+      <p style="color:var(--charcoal-faint); margin-top:8px;">A confirmation has been sent to your party summarizing your RSVP.</p>
+      ${attendingEvents.length ? `
+        <div class="rsvp-confirm-list"><b>You're attending:</b><ul>${attendingEvents.map(e=>`<li>${escapeHtml(e.name)} — ${escapeHtml(e.dateLabel)}</li>`).join('')}</ul></div>
+        <div class="cal-buttons" style="margin-top:18px;">
+          <a class="btn btn-outline" href="#" onclick="downloadCombinedIcs(${JSON.stringify(attendingIds)}); return false;">⤓ Download Calendar (${attendingEvents.length} event${attendingEvents.length===1?'':'s'})</a>
+        </div>
+      ` : ''}
+      ${decliningEvents.length ? `<div class="rsvp-confirm-list"><b>You've declined:</b><ul>${decliningEvents.map(e=>`<li>${escapeHtml(e.name)}</li>`).join('')}</ul></div>` : ''}
+      ${WEBSITE_SECTIONS.registry ? `<p style="margin-top:20px; font-size:13px;">🎁 Want to give a gift? Visit our <a href="#" onclick="goTo('registry'); return false;" style="font-weight:700; color:var(--green);">Registry</a>.</p>` : ''}
+      <p style="font-size:11px; color:var(--charcoal-faint); margin-top:18px; font-style:italic;">A confirmation email has been simulated for this prototype — real email delivery isn't wired up yet.</p>
+    </div>
+  `;
+}
+function downloadCombinedIcs(eventIds){
+  const events = EVENTS.filter(e=>eventIds.includes(e.id));
+  if(!events.length) return;
+  const blocks = events.map(e=>{
+    const start = icsDate(e.dateISO, e.startTime), end = icsDate(e.dateISO, e.endTime);
+    return ['BEGIN:VEVENT', `UID:${e.id}@evera-wedding`, `DTSTART:${start}`, `DTEND:${end}`,
+      `SUMMARY:${COUPLE.partner1} & ${COUPLE.partner2} — ${e.name}`,
+      `DESCRIPTION:${e.description.replace(/,/g,'\\,')}`, `LOCATION:${e.address.replace(/,/g,'\\,')}`,
+      'END:VEVENT'].join('\r\n');
+  }).join('\r\n');
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Evera//Wedding Website//EN', blocks, 'END:VCALENDAR'].join('\r\n');
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'our-wedding-events.ics';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 /* ==================================================================
    INIT
 ================================================================== */
 function init(){
+  initGate();
+  applyWebsiteTheme();
   initNav();
   onGuestChange(currentGuestId);
   renderCountdown();
+  renderHomeGrid();
   renderStory();
   renderParty();
   renderEvents();
   renderAlbum();
+  renderRegistry();
   renderTravel();
   renderFaq();
   renderRsvp();

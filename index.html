@@ -464,6 +464,7 @@
   .cal-dot-deadline{background:var(--amber);}
   .cal-dot-payment{background:var(--terracotta);}
   .cal-dot-unavailable{background:var(--charcoal-faint);}
+  .cal-dot-task{background:var(--rose);}
   .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
   .cal-grid-head{margin-bottom:6px; font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--charcoal-faint); text-align:center;}
   .cal-cell{aspect-ratio:1; border-radius:8px; padding:6px; background:var(--ivory-deep);}
@@ -1190,7 +1191,7 @@ const NAV_ITEMS = [
   {key:'plan', label:'Plan', icon:'plan'},
   {key:'inspiration', label:'Inspiration', icon:'inspiration'},
   {key:'messages', label:'Messages', icon:'messages'},
-  {key:'website', label:'Website & RSVP', icon:'website'},
+  {key:'website', label:'Website', icon:'website'},
   {key:'playbook', label:'Playbook', icon:'playbook'},
   {key:'documents', label:'Documents', icon:'documents'},
   {key:'guides', label:'Guides & Tips', icon:'guides'},
@@ -1207,7 +1208,7 @@ const MODULE_INFO = {
   'plan':{title:'Plan', desc:"Your planning roadmap, tasks, and checklists — filterable by event, role, and priority.", bullets:['Long-range planning roadmap','Event-specific & role-specific checklists','AI-generated and custom tasks']},
   'inspiration':{title:'Inspiration', desc:"Actionable mood boards connected directly to your events, vendors, and Lookbook — not just a Pinterest clone.", bullets:['Event-specific mood boards','Linked to vendors & Lookbook items','Colour palettes & aesthetic direction']},
   'messages':{title:'Messages', desc:"Every important wedding conversation — with vendors, planners, and your wedding party — kept in one retrievable history.", bullets:['Vendor & planner communication history','Wedding-party group threads','Searchable, associated with the right event']},
-  'website':{title:'Website & RSVP', desc:"Your public wedding website and RSVP, generated from the same live data as your planning space — no duplicate entry.", bullets:['English & French publishing','Event-specific visibility','Connected RSVP, travel & registry']},
+  'website':{title:'Website', desc:"Your public wedding website — design, pages and access, generated from the same live data as your planning space — no duplicate entry. RSVPs themselves are managed in Guests.", bullets:['Fully customizable look & feel','Event-specific page visibility','Custom domain & password protection']},
   'playbook':{title:'Playbook', desc:"A living, exportable operational run-of-show generated from your Evera data — not a separate document to maintain.", bullets:['Master & per-event timelines','Role-specific exports (vendor, coordinator, wedding party)','Always up to date with your planning data']},
   'documents':{title:'Documents', desc:"Contracts, invoices, floor plans and planning notes — stored and associated with the right wedding, event, vendor or person.", bullets:['Planning notes, linked to events','Contracts, invoices & floor plans','Attached directly from Budget line items']},
   'guides':{title:'Guides & Tips', desc:"Curated best practices and knowledge articles to help you plan with confidence — from budgeting to etiquette to day-of logistics.", bullets:['Budgeting & vendor-booking timelines','Etiquette & wedding-party guidance','Day-of logistics checklists']},
@@ -1229,6 +1230,47 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.11.0', date:'2026-09-03',
+    title:'A more comprehensive Plan, Home quick-stat reorder, and Master Budget rename',
+    items:[
+      'Quick Stats on Home reordered so Budget Used sits last in the row, after Days to Go, RSVPs In, Planning Progress, and Guests Attending.',
+      '"Calendar at a Glance" moved from the Budget tab into Plan, as a second tab alongside Tasks & Checklists — it now also plots task due dates (a new "Tasks" dot colour) alongside events, deadlines, payments, and unavailability.',
+      'Renamed the "Your Plan" roadmap card to "Getting You Married".',
+      'The task list is dramatically more comprehensive — grown from 12 to 37 tasks spanning the full planning timeline, with realistic multi-level dependency chains (e.g. Finalize Guest List → Order Invitations → Send Invitations → Confirm Final Headcount → Finalize Seating Chart → Give Final Headcount to Venue).',
+      'Tasks & Checklists is now organized into six collapsible sections by how far out they fall from the wedding date (Foundations, 6–9 Months Out, 3–6 Months Out, 1–3 Months Out, Final Month, Week Of & Day-Of) instead of one long flat list. New tasks are sorted into the right section automatically from their due date.',
+      'Sections are collapsed by default except the earliest one with open work — and an "Expand all sections" link lets brides who want to see everything at a glance do that in one click.',
+      'In the Budget tab, renamed "Line Items" to "Master Budget".',
+      'Confirmed the existing per-event budget feature (Sub-Budget Target on each event, rolling up live from linked Budget line items, with Over/On-Track flags in both the Budget "By Event" view and each event\'s own Budget card) already covers setting and tracking a budget per event from both the Budget tab and the Events tab — see the in-app note on this in the project doc for what it does and doesn\'t do.'
+    ]
+  },
+  {
+    version:'1.10.0', date:'2026-09-03',
+    title:'A fully customizable wedding website — design, pages, and access',
+    items:[
+      'Renamed "Website & RSVP" to just "Website" — RSVP management already lives in Guest Management.',
+      'New Website Design controls: pick a font pairing, choose a spacing feel (Cozy/Comfortable/Airy), and use your Master Colour Palette or a website-only palette.',
+      'Your Wedding Logo (if you\'ve designed or uploaded one) and Master Colour Palette now carry through to the guest-facing wedding website automatically.',
+      'Upload a Home Page hero photo for your wedding website.',
+      'Choose exactly which pages guests see — anything unchecked is now hidden entirely from the site, not just locked. Each event tab is also now fully hidden (not shown-but-locked) for guests not invited to that event.',
+      'Dress code illustrations expanded — each dress code now shows 3-4 distinct outfit illustrations instead of 2 (e.g. Bright Colours now shows kurta, sherwani, lehenga, and saree looks).',
+      'Every event location on the wedding website now has a "Get Directions" link straight to Google Maps.',
+      'New Registry page on the wedding website, populated from Registry Links you add in the Website module.',
+      'RSVP is reimagined as a name search: guests type their first or last name to find their family or party, then RSVP per event (with a headcount for multi-person parties), instead of picking themselves from a list. On submit, they see a real confirmation with a downloadable calendar file for every event they said yes to, and a simulated confirmation-email log (real email delivery is still pending the messaging-infra work already logged).',
+      'New Domain & Privacy controls: set a custom domain (with an auto-generated Evera subdomain shown as a fallback) and optionally password-protect the site with your own passcode.'
+    ]
+  },
+  {
+    version:'1.9.0', date:'2026-09-02',
+    title:'RSVP survey builder — ask guests extra questions alongside their RSVP',
+    items:[
+      'New "RSVP Surveys" card in Guest Management: build custom questions for guests to answer alongside their RSVP — short answer, long answer, or multiple choice — and apply a survey to all events or just one (e.g. song requests for the Mehndi, or a t-shirt size for a 5K send-off).',
+      'Each family\'s detail view now shows a Survey Responses section where you can log what they told you by phone or email, or what they submitted on the wedding website.',
+      'A "📨 Send to Invited Guests" button logs a simulated send (matching the existing photo-notification pattern) — real email/text delivery is planned but not built yet.',
+      'On your guest-facing wedding website, applicable survey questions now appear right on the RSVP form for guests who are invited to that event.',
+      'A quick-glance "RSVP Surveys" card was also added to Settings, with a link back to Guest Management for full editing.'
+    ]
+  },
   {
     version:'1.8.0', date:'2026-09-02',
     title:'Per-event RSVP: guests can now RSVP separately to each event, with per-person invite control',
@@ -1374,7 +1416,7 @@ let addingEvent = false;
 let budgetCollapsedMap = {};
 let calendarMonth = null;    // {year, month}
 let selectedCalendarDay = null; // {year, month, day}
-let budgetTab = 'overview';  // 'overview' | 'calendar' | 'savings'
+let budgetTab = 'overview';  // 'overview' | 'savings'
 let budgetOverviewView = 'category'; // 'category' | 'event'
 let docsTab = 'notes';       // 'notes' | 'files'
 let editingNoteId = null;
@@ -1389,6 +1431,8 @@ let draggingGuest = null;     // seating chart: {householdId, memberId} currentl
 let vendorBookingDetailId = null; // vendor booking id whose drill-in detail is open, if any
 let planFilterEvent = 'all', planFilterRole = 'all', planFilterPriority = 'all', planFilterStatus = 'open'; // Plan module task filters
 let planExpandedTaskId = null; // which task row shows its inline Notes/Dependency editor
+let planTab = 'tasks'; // 'tasks' | 'calendar' — Calendar at a Glance now lives inside Plan
+let planCollapsedPhases = {}; // phase key -> collapsed boolean, lazily defaulted the first time each phase is seen
 let messagesFilter = 'all'; // 'all' | 'threads' | 'vendor' — Messages module view
 
 /* Blank "get to know you" survey every wedding-party member (except Parents) gets when added —
@@ -1827,6 +1871,11 @@ function defaultDashboardData(){
         {id:'hh-14-m2', salutation:'Mr.', firstName:'Théo', lastName:'Laurent', attending:true, mealChoice:'', dietaryRestrictions:'', accessibilityNeeds:'', tableId:null}
       ]}
     ],
+    rsvpSurveys:[
+      {id:'survey-mehndi-playlist', name:'Mehndi Playlist Requests', eventId:'ev-mehndi', active:true, sentLog:[], questions:[
+        {id:'q1', type:'text', label:'Any songs you\'d love to hear on the Mehndi dance floor?', required:false}
+      ]}
+    ],
     seatingTables:[
       {id:'tbl-1', name:"Table 1 — Bride's Family", number:1, capacity:8, shape:'round', chairStyle:'Chiavari — Gold', posX:20, posY:24},
       {id:'tbl-2', name:"Table 2 — Groom's Family", number:2, capacity:8, shape:'round', chairStyle:'Chiavari — Gold', posX:50, posY:20},
@@ -1848,18 +1897,49 @@ function defaultDashboardData(){
       {id:'collab-4', name:'Amina Shroff', email:'amina.shroff@example.com', role:'Parent'}
     ],
     tasks:[
-      {id:'task-1', title:'Book photography & videography', eventId:'ev-ceremony', role:'Couple', priority:'High', done:true, dueDateISO:'2026-10-01', notes:'Down to 2 finalists — decision needed.'},
-      {id:'task-2', title:'Finalize florist contract', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-09-15', notes:''},
-      {id:'task-3', title:'Send save-the-dates', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-25', notes:''},
-      {id:'task-4', title:'Confirm final headcount with catering', eventId:'ev-reception', role:'Couple', priority:'High', done:false, dueDateISO:'2027-03-01', notes:'Elmsley Estate needs the number 6 weeks out.'},
-      {id:'task-5', title:'Collect wedding party measurements', eventId:'ev-ceremony', role:'Wedding Party', priority:'Medium', done:false, dueDateISO:'2026-09-30', notes:'Aritzia link already shared in the group chat.'},
-      {id:'task-6', title:'Confirm hotel room block', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-01', notes:''},
-      {id:'task-7', title:'Book hair & makeup trial', eventId:'ev-ceremony', role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-20', notes:''},
-      {id:'task-8', title:'Send Mehndi outfit colour swatches', eventId:'ev-mehndi', role:'Wedding Party', priority:'Low', done:false, dueDateISO:'2026-09-05', notes:''},
-      {id:'task-9', title:'Confirm officiant script & readings', eventId:'ev-ceremony', role:'Couple', priority:'Medium', done:false, dueDateISO:'2027-02-15', notes:''},
-      {id:'task-10', title:'Finalize seating chart', eventId:'ev-reception', role:'Couple', priority:'High', done:false, dueDateISO:'2027-03-20', notes:''},
-      {id:'task-11', title:'Confirm DJ song requests & do-not-play list', eventId:'ev-reception', role:'Vendor', priority:'Low', done:false, dueDateISO:'2027-03-10', notes:''},
-      {id:'task-12', title:'Coordinate transportation pickup times', eventId:null, role:'Planner', priority:'Medium', done:false, dueDateISO:'2027-04-01', notes:'Two different companies — Welcome Dinner shuttle and wedding-day livery.'}
+      /* -- Foundations: the big early decisions everything else depends on -- */
+      {id:'task-f1', title:'Set your overall wedding budget', eventId:null, role:'Couple', priority:'High', done:true, dueDateISO:'2026-05-01', notes:'Landed on a total and how contributions are split.', phase:'foundations', dependsOn:null},
+      {id:'task-f2', title:'Choose your wedding date', eventId:null, role:'Couple', priority:'High', done:true, dueDateISO:'2026-05-10', notes:'', phase:'foundations', dependsOn:null},
+      {id:'task-f3', title:'Book venue & sign contract', eventId:'ev-ceremony', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-01', notes:'Elmsley Estate — deposit paid.', phase:'foundations', dependsOn:'task-f2'},
+      {id:'task-f4', title:'Pay venue deposit', eventId:'ev-ceremony', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-05', notes:'', phase:'foundations', dependsOn:'task-f3'},
+      {id:'task-f5', title:'Create the wedding website', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-15', notes:'', phase:'foundations', dependsOn:'task-f2'},
+      {id:'task-f6', title:'Choose your wedding party', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-20', notes:'', phase:'foundations', dependsOn:null},
+      /* -- 6–9 months out: lock in the major vendors -- */
+      {id:'task-g1', title:'Book officiant', eventId:'ev-ceremony', role:'Couple', priority:'High', done:true, dueDateISO:'2026-07-01', notes:'', phase:'p6to9', dependsOn:'task-f3'},
+      {id:'task-g4', title:'Get florist quotes & compare', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-09-01', notes:'', phase:'p6to9', dependsOn:'task-f3'},
+      {id:'task-6', title:'Confirm hotel room block', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-01', notes:'', phase:'p6to9', dependsOn:null},
+      {id:'task-7', title:'Book hair & makeup trial', eventId:'ev-ceremony', role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-20', notes:'', phase:'p6to9', dependsOn:null},
+      {id:'task-3', title:'Send save-the-dates', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-25', notes:'', phase:'p6to9', dependsOn:'task-f3'},
+      {id:'task-8', title:'Send Mehndi outfit colour swatches', eventId:'ev-mehndi', role:'Wedding Party', priority:'Low', done:false, dueDateISO:'2026-09-05', notes:'', phase:'p6to9', dependsOn:'task-f6'},
+      {id:'task-2', title:'Finalize florist contract', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-09-15', notes:'', phase:'p6to9', dependsOn:'task-g4'},
+      {id:'task-g2', title:'Book caterer & schedule tasting', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-09-20', notes:'', phase:'p6to9', dependsOn:'task-f3'},
+      {id:'task-g3', title:'Start wedding dress / suit shopping', eventId:null, role:'Couple', priority:'Medium', done:false, dueDateISO:'2026-09-25', notes:'', phase:'p6to9', dependsOn:null},
+      {id:'task-5', title:'Collect wedding party measurements', eventId:'ev-ceremony', role:'Wedding Party', priority:'Medium', done:false, dueDateISO:'2026-09-30', notes:'Aritzia link already shared in the group chat.', phase:'p6to9', dependsOn:'task-f6'},
+      {id:'task-1', title:'Book photography & videography', eventId:'ev-ceremony', role:'Couple', priority:'High', done:true, dueDateISO:'2026-10-01', notes:'Down to 2 finalists — decision needed.', phase:'p6to9', dependsOn:'task-f3'},
+      {id:'task-g5', title:'Book DJ or band', eventId:'ev-reception', role:'Couple', priority:'Medium', done:false, dueDateISO:'2026-10-05', notes:'', phase:'p6to9', dependsOn:'task-f3'},
+      /* -- 3–6 months out: guest list, invitations & the details -- */
+      {id:'task-h1', title:'Finalize guest list', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-11-01', notes:'', phase:'p3to6', dependsOn:null},
+      {id:'task-h2', title:'Order wedding invitations', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-11-15', notes:'', phase:'p3to6', dependsOn:'task-h1'},
+      {id:'task-h3', title:'Purchase wedding rings', eventId:null, role:'Couple', priority:'Medium', done:false, dueDateISO:'2026-12-01', notes:'', phase:'p3to6', dependsOn:null},
+      {id:'task-h4', title:'Cake tasting & finalize dessert design', eventId:'ev-reception', role:'Couple', priority:'Medium', done:false, dueDateISO:'2026-12-10', notes:'', phase:'p3to6', dependsOn:'task-g2'},
+      {id:'task-h5', title:'Send wedding invitations', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2027-01-05', notes:'', phase:'p3to6', dependsOn:'task-h2'},
+      /* -- 1–3 months out: confirmations & finishing touches -- */
+      {id:'task-9', title:'Confirm officiant script & readings', eventId:'ev-ceremony', role:'Couple', priority:'Medium', done:false, dueDateISO:'2027-02-15', notes:'', phase:'p1to3', dependsOn:'task-g1'},
+      {id:'task-i1', title:'Apply for your marriage licence', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2027-03-15', notes:'', phase:'p1to3', dependsOn:null},
+      {id:'task-4', title:'Confirm final headcount with catering', eventId:'ev-reception', role:'Couple', priority:'High', done:false, dueDateISO:'2027-03-01', notes:'Elmsley Estate needs the number 6 weeks out.', phase:'p1to3', dependsOn:'task-h5'},
+      {id:'task-11', title:'Confirm DJ song requests & do-not-play list', eventId:'ev-reception', role:'Vendor', priority:'Low', done:false, dueDateISO:'2027-03-10', notes:'', phase:'p1to3', dependsOn:'task-g5'},
+      {id:'task-i2', title:'Final dress / suit fittings', eventId:'ev-ceremony', role:'Wedding Party', priority:'Medium', done:false, dueDateISO:'2027-03-25', notes:'', phase:'p1to3', dependsOn:'task-g3'},
+      {id:'task-10', title:'Finalize seating chart', eventId:'ev-reception', role:'Couple', priority:'High', done:false, dueDateISO:'2027-03-20', notes:'', phase:'p1to3', dependsOn:'task-4'},
+      /* -- Final month: last walkthroughs & payments -- */
+      {id:'task-12', title:'Coordinate transportation pickup times', eventId:null, role:'Planner', priority:'Medium', done:false, dueDateISO:'2027-04-01', notes:'Two different companies — Welcome Dinner shuttle and wedding-day livery.', phase:'finalmonth', dependsOn:null},
+      {id:'task-j1', title:'Final venue walkthrough', eventId:'ev-ceremony', role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-05', notes:'', phase:'finalmonth', dependsOn:'task-f3'},
+      {id:'task-j2', title:'Confirm & send final vendor payments', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-10', notes:'', phase:'finalmonth', dependsOn:'task-4'},
+      {id:'task-j3', title:'Pack for the honeymoon', eventId:null, role:'Couple', priority:'Low', done:false, dueDateISO:'2027-04-20', notes:'', phase:'finalmonth', dependsOn:null},
+      /* -- Week of & day-of: the home stretch -- */
+      {id:'task-k1', title:'Rehearsal run-through', eventId:'ev-welcome', role:'Wedding Party', priority:'High', done:false, dueDateISO:'2027-04-23', notes:'', phase:'weekof', dependsOn:null},
+      {id:'task-k2', title:'Hand off day-of point-of-contact to your planner', eventId:null, role:'Planner', priority:'Medium', done:false, dueDateISO:'2027-04-23', notes:'', phase:'weekof', dependsOn:null},
+      {id:'task-k3', title:'Give final headcount & seating chart to the venue', eventId:'ev-reception', role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-22', notes:'', phase:'weekof', dependsOn:'task-10'},
+      {id:'task-k4', title:'Wedding day! 🎉', eventId:'ev-ceremony', role:'Couple', priority:'High', done:false, dueDateISO:'2027-04-25', notes:'', phase:'weekof', dependsOn:null}
     ],
     moodBoards:[
       {id:'mb-reception', eventId:'ev-reception', title:'Reception — Garden Romantic', colorPalette:['#38473B','#C7A467','#E7D9B7','#FAF6EE'], notes:'Warm greenery, brass accents, candlelight. Ties into the Chiavari gold chairs already booked.', images:[]},
@@ -2347,6 +2427,7 @@ function normalizeDashboardData(d){
       const invitedToThis = !h.invitedEvents.length || h.invitedEvents.includes(ev.id);
       if(invitedToThis && h.eventRsvp[ev.id]===undefined) h.eventRsvp[ev.id] = h.rsvpStatus || 'pending';
     });
+    if(!h.surveyResponses || typeof h.surveyResponses !== 'object') h.surveyResponses = {};
     if(!Array.isArray(h.members)) h.members = [];
     h.members.forEach(m=>{
       if(m.salutation===undefined) m.salutation = '';
@@ -2358,6 +2439,18 @@ function normalizeDashboardData(d){
       if(m.accessibilityNeeds===undefined) m.accessibilityNeeds = '';
       if(m.tableId===undefined) m.tableId = null;
       if(m.relationship===undefined) m.relationship = '';
+    });
+  });
+  if(!Array.isArray(d.rsvpSurveys)) d.rsvpSurveys = [];
+  d.rsvpSurveys.forEach(s=>{
+    if(s.eventId===undefined) s.eventId = null;
+    if(s.active===undefined) s.active = true;
+    if(!Array.isArray(s.questions)) s.questions = [];
+    if(!Array.isArray(s.sentLog)) s.sentLog = [];
+    s.questions.forEach(q=>{
+      if(q.type===undefined) q.type = 'text';
+      if(!Array.isArray(q.options)) q.options = [];
+      if(q.required===undefined) q.required = false;
     });
   });
   if(!Array.isArray(d.seatingTables)) d.seatingTables = [];
@@ -2486,7 +2579,9 @@ function normalizeDashboardData(d){
   if(!d.website) d.website = {};
   if(d.website.language===undefined) d.website.language = 'en';
   if(d.website.published===undefined) d.website.published = false;
-  if(!d.website.sections) d.website.sections = {ourStory:true, schedule:true, registry:false, travel:false, faq:false};
+  if(!d.website.sections) d.website.sections = {ourStory:true, weddingParty:true, schedule:true, album:true, registry:false, travel:false, faq:false};
+  if(d.website.sections.weddingParty===undefined) d.website.sections.weddingParty = true;
+  if(d.website.sections.album===undefined) d.website.sections.album = true;
   if(d.website.ourStoryText===undefined) d.website.ourStoryText = '';
   if(!Array.isArray(d.website.registryLinks)) d.website.registryLinks = [];
   if(!d.website.ourStoryPrompts || typeof d.website.ourStoryPrompts!=='object') d.website.ourStoryPrompts = {};
@@ -2503,11 +2598,25 @@ function normalizeDashboardData(d){
   if(d.website.rsvpDeadlineISO===undefined) d.website.rsvpDeadlineISO = '';
   if(!Array.isArray(d.website.albumPhotos)) d.website.albumPhotos = [];
   if(!Array.isArray(d.website.albumNotifications)) d.website.albumNotifications = [];
+  if(d.website.heroPhoto===undefined) d.website.heroPhoto = null;
+  if(!d.website.design || typeof d.website.design!=='object') d.website.design = {};
+  if(d.website.design.fontPairing===undefined) d.website.design.fontPairing = 'classic';
+  if(d.website.design.useCustomPalette===undefined) d.website.design.useCustomPalette = false;
+  if(!Array.isArray(d.website.design.customPalette)) d.website.design.customPalette = [];
+  if(d.website.design.spacing===undefined) d.website.design.spacing = 'comfortable';
+  if(d.website.customDomain===undefined) d.website.customDomain = '';
+  if(d.website.passwordProtected===undefined) d.website.passwordProtected = false;
+  if(d.website.sitePassword===undefined) d.website.sitePassword = '';
   if(!d.notificationPrefs) d.notificationPrefs = {emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false};
   d.events.forEach(e=>{
     if(e.publicVisibility===undefined) e.publicVisibility = true;
     if(!Array.isArray(e.colorPalette)) e.colorPalette = [];
     if(e.budgetTarget===undefined) e.budgetTarget = null;
+  });
+  if(!Array.isArray(d.tasks)) d.tasks = [];
+  d.tasks.forEach(t=>{
+    if(t.dependsOn===undefined) t.dependsOn = null;
+    if(t.phase===undefined) t.phase = phaseForDueDate(t.dueDateISO);
   });
   if(d.assistantEnabled===undefined) d.assistantEnabled = true;
   if(!d.logoDraft || typeof d.logoDraft!=='object') d.logoDraft = {elements:[], background:'#FFFFFF'};
@@ -2890,10 +2999,10 @@ function renderQuickStats(){
   const days = daysToWedding();
   const tiles = [
     {label:'Days to Go', value: days===null ? '—' : days, sub: days===null ? 'No date set yet' : (d.weddingDateLabel||'')},
-    {label:'Budget Used', value: fmtMoney(totalSpent), sub: `of ${fmtMoney(d.budgetTotal||totalPlanned)}`},
     {label:'RSVPs In', value: `${rsvpPct}%`, sub: `${d.rsvp.responded} of ${d.rsvp.invited} invited`},
     {label:'Planning Progress', value: `${d.planningProgress}%`, sub: 'through your roadmap'},
-    {label:'Guests Attending', value: d.rsvp.attending, sub: `of ${d.guestCount} estimated`}
+    {label:'Guests Attending', value: d.rsvp.attending, sub: `of ${d.guestCount} estimated`},
+    {label:'Budget Used', value: fmtMoney(totalSpent), sub: `of ${fmtMoney(d.budgetTotal||totalPlanned)}`}
   ];
   return `<div class="quick-stats-bar">${tiles.map(t=>`
     <div class="qs-tile">
@@ -3933,6 +4042,29 @@ function renderEventBudgetCard(e){
 /* ==================================================================
    PLAN — tasks, checklists & roadmap
 ================================================================== */
+/* Tasks are grouped into digestible, collapsible sections by how far out they fall from
+   the wedding date, rather than one long running list. phaseForDueDate() assigns new tasks
+   to a section automatically from their due date, so nobody has to pick one by hand. */
+const PLAN_PHASES = [
+  {key:'foundations', label:'Foundations', hint:'The big early decisions everything else depends on'},
+  {key:'p6to9', label:'6–9 Months Out', hint:'Lock in your major vendors'},
+  {key:'p3to6', label:'3–6 Months Out', hint:'Guest list, invitations & the details'},
+  {key:'p1to3', label:'1–3 Months Out', hint:'Confirmations & finishing touches'},
+  {key:'finalmonth', label:'Final Month', hint:'Final walkthroughs & payments'},
+  {key:'weekof', label:'Week Of & Day-Of', hint:'The home stretch'}
+];
+function phaseForDueDate(dueISO){
+  const wed = dashboardData.weddingDateISO;
+  if(!dueISO || !wed) return 'unphased';
+  const diffDays = Math.round((new Date(wed+'T00:00:00') - new Date(dueISO+'T00:00:00'))/86400000);
+  if(diffDays>=270) return 'foundations';
+  if(diffDays>=180) return 'p6to9';
+  if(diffDays>=90) return 'p3to6';
+  if(diffDays>=30) return 'p1to3';
+  if(diffDays>=8) return 'finalmonth';
+  if(diffDays>=0) return 'weekof';
+  return 'unphased';
+}
 function filteredTasks(){
   const d = dashboardData;
   return (d.tasks||[]).filter(t=>{
@@ -3969,9 +4101,7 @@ function planStats(){
   };
 }
 function renderPlanModule(){
-  const d = dashboardData;
   const stats = planStats();
-  const tasks = filteredTasks();
   return `
     <div class="party-summary-strip">
       <div class="ps-stat"><div class="ps-num">${stats.total}</div><div class="ps-label">Total Tasks</div></div>
@@ -3979,9 +4109,44 @@ function renderPlanModule(){
       <div class="ps-stat"><div class="ps-num">${stats.done}</div><div class="ps-label">Completed</div></div>
       <div class="ps-stat"><div class="ps-num">${stats.overdue}</div><div class="ps-label">Overdue</div></div>
     </div>
+    <div class="seg-control" style="margin-bottom:20px;">
+      <button class="seg-btn ${planTab==='tasks'?'active':''}" onclick="switchPlanTab('tasks')">Tasks &amp; Checklists</button>
+      <button class="seg-btn ${planTab==='calendar'?'active':''}" onclick="switchPlanTab('calendar')">Calendar at a Glance</button>
+    </div>
+    ${planTab==='calendar' ? renderCalendarCard() : renderPlanTasksTab()}
+  `;
+}
+function switchPlanTab(tab){ planTab = tab; document.getElementById('content').innerHTML = renderPlanModule(); }
+/* Groups the filtered task list into digestible, collapsible sections by how far out they
+   fall from the wedding date (see PLAN_PHASES), instead of one long running list. Each
+   section is collapsed by default except the earliest one that still has open work — the
+   one most worth looking at right now — and an Expand/Collapse-all link covers brides who'd
+   rather see everything at a glance. */
+function ensurePlanPhaseDefaults(presentKeys){
+  let currentSet = false;
+  PLAN_PHASES.forEach(ph=>{
+    if(!presentKeys.includes(ph.key)) return;
+    if(planCollapsedPhases[ph.key]===undefined){
+      const hasOpen = (dashboardData.tasks||[]).some(t=>(t.phase||'unphased')===ph.key && !t.done);
+      if(hasOpen && !currentSet){ planCollapsedPhases[ph.key] = false; currentSet = true; }
+      else planCollapsedPhases[ph.key] = true;
+    }
+  });
+  if(presentKeys.includes('unphased') && planCollapsedPhases.unphased===undefined) planCollapsedPhases.unphased = false;
+}
+function renderPlanTasksTab(){
+  const d = dashboardData;
+  const tasks = filteredTasks();
+  const knownKeys = new Set(PLAN_PHASES.map(p=>p.key));
+  const groups = PLAN_PHASES.map(ph=>({phase:ph, tasks: tasks.filter(t=>(t.phase||'unphased')===ph.key)})).filter(g=>g.tasks.length);
+  const otherTasks = tasks.filter(t=>!knownKeys.has(t.phase||'unphased'));
+  if(otherTasks.length) groups.push({phase:{key:'unphased', label:'Other Tasks', hint:''}, tasks:otherTasks});
+  ensurePlanPhaseDefaults(groups.map(g=>g.phase.key));
+  const allExpanded = groups.length>0 && groups.every(g=>!planCollapsedPhases[g.phase.key]);
+  return `
     ${d.roadmap && d.roadmap.length ? `
     <div class="card">
-      <div class="card-head"><h4>Your Plan</h4><span class="d-sub">Your long-range path to the big day</span></div>
+      <div class="card-head"><h4>Getting You Married</h4><span class="d-sub">Your long-range path to the big day</span></div>
       <div class="mini-roadmap">${d.roadmap.map(r=>`<div class="mr-item"><div class="mr-dot"></div><div><div class="mr-label">${escapeHtml(r.label)}</div><div class="mr-date">${escapeHtml(r.date)}</div></div></div>`).join('')}</div>
     </div>` : ''}
     <div class="card">
@@ -4014,38 +4179,12 @@ function renderPlanModule(){
           </select>
         </div>
       </div>
-      ${tasks.length ? `
-      <div class="budget-items" style="padding-left:0;">
-        <div class="budget-items-head" style="grid-template-columns:0.4fr 2fr 1fr 0.9fr 0.8fr 0.8fr 0.4fr;"><span></span><span>Task</span><span>Event</span><span>Role</span><span>Priority</span><span>Due</span><span></span></div>
-        ${tasks.map(t=>{
-          const blockedBy = taskBlockedBy(t);
-          return `
-          <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:0.4fr 2fr 1fr 0.9fr 0.8fr 0.8fr 0.4fr; ${t.done?'opacity:0.55;':''}">
-            <span><input type="checkbox" style="width:16px;height:16px;" ${t.done?'checked':''} ${blockedBy&&!t.done?'disabled title="Blocked until its dependency is done"':''} onchange="toggleTaskDone('${t.id}')"></span>
-            <span class="readonly-cell" style="cursor:pointer; ${t.done?'text-decoration:line-through;':''}" onclick="toggleTaskExpanded('${t.id}')">
-              ${escapeHtml(t.title)}
-              ${blockedBy ? `<br><span class="d-sub" style="font-weight:600; color:var(--terracotta);">🔒 Blocked by: ${escapeHtml(blockedBy.title)}</span>` : ''}
-              ${t.notes?`<br><span class="d-sub" style="font-weight:400;">${escapeHtml(t.notes)}</span>`:''}
-              <span class="d-sub" style="font-weight:400;"> · ${planExpandedTaskId===t.id?'Hide':'Edit'} notes &amp; dependency</span>
-            </span>
-            <span class="d-sub">${escapeHtml(taskEventLabel(t))}</span>
-            <span class="d-sub">${escapeHtml(t.role)}</span>
-            <span>${priorityPill(t.priority)}</span>
-            <span class="d-sub">${t.dueDateISO ? new Date(t.dueDateISO+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—'}</span>
-            <span class="cr-chevron-wrap"><a href="#" class="danger-link" onclick="removeTask('${t.id}'); return false;">✕</a></span>
-          </div>
-          ${planExpandedTaskId===t.id ? `
-          <div class="detail-hint" style="background:var(--ivory-deep); border-radius:var(--radius-sm); padding:12px 14px; margin:2px 0 10px;">
-            <div class="field-cell" style="margin-bottom:10px;"><label>Notes</label><textarea class="notes-field" style="min-height:56px;" placeholder="Any detail worth remembering about this task..." onchange="updateTaskField('${t.id}','notes',this.value)">${escapeHtml(t.notes)}</textarea></div>
-            <div class="field-cell" style="max-width:280px;"><label>Depends On</label>
-              <select onchange="updateTaskField('${t.id}','dependsOn',this.value||null)">
-                <option value="">No dependency</option>
-                ${tasksThatCanDependOn(t).map(o=>`<option value="${o.id}" ${t.dependsOn===o.id?'selected':''}>${escapeHtml(o.title)}</option>`).join('')}
-              </select>
-            </div>
-          </div>` : ''}
-        `;}).join('')}
-      </div>` : `<p style="font-size:13px;color:var(--charcoal-faint);">No tasks match this filter.</p>`}
+      ${groups.length ? `
+      <div style="display:flex;justify-content:flex-end;margin:-6px 0 12px;">
+        <a href="#" class="ch-link" onclick="toggleAllPlanPhases(); return false;">${allExpanded ? 'Collapse all sections' : 'Expand all sections — see everything at a glance'}</a>
+      </div>
+      ${groups.map(g=>renderPlanPhaseGroup(g.phase, g.tasks)).join('')}
+      ` : `<p style="font-size:13px;color:var(--charcoal-faint);">No tasks match this filter.</p>`}
       <div class="detail-section">
         <div class="detail-section-head"><h4 style="margin:0;">Add a Task</h4></div>
         <div class="custom-add-row" style="flex-wrap:wrap;">
@@ -4063,9 +4202,72 @@ function renderPlanModule(){
           <input type="date" id="newTaskDue" class="select-field-sm" style="width:auto;">
           <button class="btn btn-outline btn-sm" onclick="addTask()">+ Add Task</button>
         </div>
+        <p class="detail-hint">New tasks are automatically sorted into the right section above based on their due date.</p>
       </div>
     </div>
   `;
+}
+function renderPlanPhaseGroup(phase, tasksInPhase){
+  const collapsed = !!planCollapsedPhases[phase.key];
+  const doneCount = tasksInPhase.filter(t=>t.done).length;
+  const allDone = tasksInPhase.length>0 && doneCount===tasksInPhase.length;
+  return `
+    <div class="budget-cat-block">
+      <div class="budget-cat-head" onclick="togglePlanPhase('${phase.key}')">
+        <svg class="bc-chevron ${collapsed?'':'open'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="bc-name">${escapeHtml(phase.label)}</span>
+        ${phase.hint ? `<span class="d-sub" style="font-weight:400;">${escapeHtml(phase.hint)}</span>` : ''}
+        ${allDone ? '<span class="pill pill-ok">All Done</span>' : ''}
+        <span class="bc-summary">${doneCount} of ${tasksInPhase.length} done</span>
+      </div>
+      ${collapsed ? '' : `
+      <div class="budget-items" style="padding-left:0;">
+        <div class="budget-items-head" style="grid-template-columns:0.4fr 2fr 1fr 0.9fr 0.8fr 0.8fr 0.4fr;"><span></span><span>Task</span><span>Event</span><span>Role</span><span>Priority</span><span>Due</span><span></span></div>
+        ${tasksInPhase.map(t=>renderPlanTaskRow(t)).join('')}
+      </div>`}
+    </div>
+  `;
+}
+function renderPlanTaskRow(t){
+  const blockedBy = taskBlockedBy(t);
+  return `
+    <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:0.4fr 2fr 1fr 0.9fr 0.8fr 0.8fr 0.4fr; ${t.done?'opacity:0.55;':''}">
+      <span><input type="checkbox" style="width:16px;height:16px;" ${t.done?'checked':''} ${blockedBy&&!t.done?'disabled title="Blocked until its dependency is done"':''} onchange="toggleTaskDone('${t.id}')"></span>
+      <span class="readonly-cell" style="cursor:pointer; ${t.done?'text-decoration:line-through;':''}" onclick="toggleTaskExpanded('${t.id}')">
+        ${escapeHtml(t.title)}
+        ${blockedBy ? `<br><span class="d-sub" style="font-weight:600; color:var(--terracotta);">🔒 Blocked by: ${escapeHtml(blockedBy.title)}</span>` : ''}
+        ${t.notes?`<br><span class="d-sub" style="font-weight:400;">${escapeHtml(t.notes)}</span>`:''}
+        <span class="d-sub" style="font-weight:400;"> · ${planExpandedTaskId===t.id?'Hide':'Edit'} notes &amp; dependency</span>
+      </span>
+      <span class="d-sub">${escapeHtml(taskEventLabel(t))}</span>
+      <span class="d-sub">${escapeHtml(t.role)}</span>
+      <span>${priorityPill(t.priority)}</span>
+      <span class="d-sub">${t.dueDateISO ? new Date(t.dueDateISO+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—'}</span>
+      <span class="cr-chevron-wrap"><a href="#" class="danger-link" onclick="removeTask('${t.id}'); return false;">✕</a></span>
+    </div>
+    ${planExpandedTaskId===t.id ? `
+    <div class="detail-hint" style="background:var(--ivory-deep); border-radius:var(--radius-sm); padding:12px 14px; margin:2px 0 10px;">
+      <div class="field-cell" style="margin-bottom:10px;"><label>Notes</label><textarea class="notes-field" style="min-height:56px;" placeholder="Any detail worth remembering about this task..." onchange="updateTaskField('${t.id}','notes',this.value)">${escapeHtml(t.notes)}</textarea></div>
+      <div class="field-cell" style="max-width:280px;"><label>Depends On</label>
+        <select onchange="updateTaskField('${t.id}','dependsOn',this.value||null)">
+          <option value="">No dependency</option>
+          ${tasksThatCanDependOn(t).map(o=>`<option value="${o.id}" ${t.dependsOn===o.id?'selected':''}>${escapeHtml(o.title)}</option>`).join('')}
+        </select>
+      </div>
+    </div>` : ''}
+  `;
+}
+function togglePlanPhase(key){
+  planCollapsedPhases[key] = !planCollapsedPhases[key];
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function toggleAllPlanPhases(){
+  const tasks = filteredTasks();
+  const knownKeys = new Set(PLAN_PHASES.map(p=>p.key));
+  const presentKeys = Array.from(new Set(tasks.map(t=> knownKeys.has(t.phase) ? t.phase : 'unphased')));
+  const allExpanded = presentKeys.length>0 && presentKeys.every(k=>!planCollapsedPhases[k]);
+  presentKeys.forEach(k=>{ planCollapsedPhases[k] = allExpanded; });
+  document.getElementById('content').innerHTML = renderPlanModule();
 }
 function switchPlanStatusFilter(v){ planFilterStatus=v; document.getElementById('content').innerHTML = renderPlanModule(); }
 function updatePlanFilter(which,val){
@@ -4120,7 +4322,7 @@ function addTask(){
   const priority = document.getElementById('newTaskPriority').value;
   const dueDateISO = document.getElementById('newTaskDue').value || null;
   if(!Array.isArray(dashboardData.tasks)) dashboardData.tasks=[];
-  dashboardData.tasks.push({id:'task-'+Date.now().toString(36), title, eventId, role, priority, done:false, dueDateISO, notes:'', dependsOn:null});
+  dashboardData.tasks.push({id:'task-'+Date.now().toString(36), title, eventId, role, priority, done:false, dueDateISO, notes:'', dependsOn:null, phase: phaseForDueDate(dueDateISO)});
   document.getElementById('content').innerHTML = renderPlanModule();
 }
 
@@ -4335,6 +4537,17 @@ function postThreadMessage(threadId){
 /* ==================================================================
    WEBSITE & RSVP
 ================================================================== */
+const FONT_PAIRINGS = [
+  {id:'classic', label:'Classic Serif', heading:"'Playfair Display', Georgia, serif", body:"'Inter', sans-serif", script:"'Great Vibes', cursive"},
+  {id:'romantic', label:'Romantic Script', heading:"'Cormorant Garamond', Georgia, serif", body:"'Inter', sans-serif", script:"'Great Vibes', cursive"},
+  {id:'modern', label:'Modern Minimal', heading:"'Poppins', sans-serif", body:"'Inter', sans-serif", script:"'Poppins', sans-serif"},
+  {id:'editorial', label:'Bold Editorial', heading:"'Playfair Display', Georgia, serif", body:"'Inter', sans-serif", script:"'Playfair Display', Georgia, serif"}
+];
+const WEBSITE_SPACING_PRESETS = [
+  {id:'cozy', label:'Cozy'},
+  {id:'comfortable', label:'Comfortable'},
+  {id:'airy', label:'Airy'}
+];
 const OUR_STORY_PROMPTS = [
   {id:'howMet', q:'How did you two meet?'},
   {id:'proposal', q:'How did the proposal happen?'},
@@ -4440,7 +4653,7 @@ function renderWebsiteModule(){
   const stats = guestOverallStats();
   return `
     <div class="card">
-      <div class="card-head"><h4>Website &amp; RSVP</h4><span class="d-sub">Generated from your Evera data — not a separate document to maintain</span></div>
+      <div class="card-head"><h4>Website</h4><span class="d-sub">Generated from your Evera data — not a separate document to maintain</span></div>
       <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">This is the control panel behind your guest-facing wedding website. Evera doesn't stand up a live public site in this prototype — this is where you'd manage its content and settings.</p>
       <div class="room-setup-row">
         <div class="field-mini"><label>Status</label><span class="pill ${w.published?'pill-ok':'pill-warn'}" style="margin-top:4px;">${w.published?'Published':'Draft'}</span></div>
@@ -4461,10 +4674,87 @@ function renderWebsiteModule(){
         <div class="rsvp-stats" style="margin-top:8px;"><span>${stats.declinedHeadcount} declined</span><span></span></div>
       </div>
       <div class="card">
-        <div class="card-head"><h4>Website Sections</h4></div>
+        <div class="card-head"><h4>Pages Shown to Guests</h4><span class="d-sub">Anything unchecked is hidden entirely, not just locked</span></div>
         ${Object.entries(w.sections).map(([key,on])=>`
           <div class="event-mini-row"><div class="em-name" style="text-transform:capitalize;">${key.replace(/([A-Z])/g,' $1')}</div><input type="checkbox" style="width:16px;height:16px;" ${on?'checked':''} onchange="toggleWebsiteSection('${key}')"></div>
         `).join('')}
+        <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:8px;">Home and RSVP are always shown. Each Events tab is also individually hidden for guests not invited to that event — see Event Visibility below.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>Home Page Photo</h4><span class="d-sub">The hero image guests see first when they open your website</span></div>
+      <div class="personalize-row">
+        <div class="personalize-slot">
+          <div class="personalize-preview" style="width:160px; height:100px;">${w.heroPhoto ? `<img src="${w.heroPhoto}" alt="Website hero photo">` : `<span class="pp-placeholder">📷</span>`}</div>
+          <div>
+            <div class="pp-label">Hero Photo</div>
+            <div class="pp-actions">
+              <label class="btn btn-outline btn-sm" for="heroPhotoInput">${w.heroPhoto?'Change':'Upload'} Photo</label>
+              <input type="file" id="heroPhotoInput" accept="image/*" style="display:none;" onchange="handleHeroPhotoUpload(event)">
+              ${w.heroPhoto ? `<a href="#" class="danger-link" onclick="removeHeroPhoto(); return false;">Remove</a>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:10px;">Photos for other pages: add them to Milestone Photos below (Our Story page) or the Album (Events/Album page).</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>Website Design</h4><span class="d-sub">Look &amp; feel — font, colour, and spacing</span></div>
+      <div class="field-grid">
+        <div class="field-cell"><label>Font Pairing</label>
+          <select onchange="updateWebsiteDesignField('fontPairing',this.value)">
+            ${FONT_PAIRINGS.map(f=>`<option value="${f.id}" ${w.design.fontPairing===f.id?'selected':''}>${escapeHtml(f.label)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>Spacing</label>
+          <select onchange="updateWebsiteDesignField('spacing',this.value)">
+            ${WEBSITE_SPACING_PRESETS.map(s=>`<option value="${s.id}" ${w.design.spacing===s.id?'selected':''}>${escapeHtml(s.label)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);">
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+          <input type="checkbox" ${w.design.useCustomPalette?'checked':''} onchange="toggleWebsiteCustomPalette()">
+          Use a different colour palette just for the website
+        </label>
+        ${w.design.useCustomPalette ? `
+          <div class="palette-band" style="margin-top:12px;">
+            ${w.design.customPalette.map((c,i)=>`
+              <div class="palette-swatch" style="background:${c};">
+                <input type="color" value="${c}" class="palette-swatch-picker" title="Click to change this colour" onchange="updateWebsiteCustomPaletteColor(${i},this.value)">
+                <button type="button" class="palette-remove" title="Remove this colour" onclick="event.stopPropagation(); removeWebsiteCustomPaletteColor(${i});">✕</button>
+                <span class="palette-hex" style="color:${contrastTextColor(c)};">${escapeHtml(c.toUpperCase())}</span>
+              </div>`).join('')}
+          </div>
+          <div class="custom-add-row" style="margin-top:12px; flex-wrap:wrap;">
+            <input type="text" id="newWebsiteHexColor" placeholder="#RRGGBB" maxlength="7" style="max-width:130px; text-transform:uppercase;">
+            <button class="btn btn-outline btn-sm" onclick="addWebsiteCustomPaletteColor()">+ Add by Hex Code</button>
+          </div>
+        ` : `<p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Using your Master Colour Palette from My Wedding Blueprint (${d.weddingProfile.colorPalette.map(c=>c.toUpperCase()).join(', ')}).</p>`}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>Domain &amp; Privacy</h4></div>
+      <div class="field-cell">
+        <label>Custom Domain (optional)</label>
+        <input type="text" placeholder="e.g. natashaandmatteo.com" value="${escapeAttr(w.customDomain)}" onchange="updateWebsiteField('customDomain',this.value)">
+      </div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">${w.customDomain ? `Your site will be reachable at <b>${escapeHtml(w.customDomain)}</b> once DNS is configured (Evera doesn't host live public domains in this prototype).` : `No custom domain set — guests will use your free Evera address: <b>${everaSubdomainPreview()}</b>`}</p>
+      <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft);">
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+          <input type="checkbox" ${w.passwordProtected?'checked':''} onchange="togglePasswordProtected()">
+          Password-protect the website
+        </label>
+        ${w.passwordProtected ? `
+          <div class="field-cell" style="margin-top:10px; max-width:260px;">
+            <label>Passcode</label>
+            <input type="text" placeholder="e.g. NM2027" value="${escapeAttr(w.sitePassword)}" onchange="updateWebsiteField('sitePassword',this.value)">
+          </div>
+          <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:6px;">Guests will need this passcode to view the site. This is a simple front-door lock for a prototype, not enterprise-grade security.</p>
+        ` : ''}
       </div>
     </div>
 
@@ -4637,6 +4927,59 @@ function removeRegistryLink(id){
   dashboardData.website.registryLinks = dashboardData.website.registryLinks.filter(r=>r.id!==id);
   document.getElementById('content').innerHTML = renderWebsiteModule();
 }
+function updateWebsiteDesignField(field,val){
+  dashboardData.website.design[field] = val;
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function toggleWebsiteCustomPalette(){
+  dashboardData.website.design.useCustomPalette = !dashboardData.website.design.useCustomPalette;
+  if(dashboardData.website.design.useCustomPalette && !dashboardData.website.design.customPalette.length){
+    dashboardData.website.design.customPalette = dashboardData.weddingProfile.colorPalette.slice();
+  }
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function updateWebsiteCustomPaletteColor(i, val){
+  const hex = normalizeHex(val);
+  if(hex) dashboardData.website.design.customPalette[i] = hex;
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function addWebsiteCustomPaletteColor(){
+  const el = document.getElementById('newWebsiteHexColor');
+  const hex = normalizeHex(el.value);
+  if(!hex) return;
+  dashboardData.website.design.customPalette.push(hex);
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function removeWebsiteCustomPaletteColor(i){
+  dashboardData.website.design.customPalette.splice(i,1);
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function handleHeroPhotoUpload(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    dashboardData.website.heroPhoto = e.target.result;
+    document.getElementById('content').innerHTML = renderWebsiteModule();
+  };
+  reader.readAsDataURL(file);
+}
+function removeHeroPhoto(){
+  dashboardData.website.heroPhoto = null;
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function slugifyForSubdomain(s){
+  return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+}
+function everaSubdomainPreview(){
+  const d = dashboardData;
+  const slug = [slugifyForSubdomain(d.partner1First||d.partner1), slugifyForSubdomain(d.partner2First||d.partner2)].filter(Boolean).join('-') || 'your-wedding';
+  return `${slug}.evera.wedding`;
+}
+function togglePasswordProtected(){
+  dashboardData.website.passwordProtected = !dashboardData.website.passwordProtected;
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
 
 /* ==================================================================
    SETTINGS — account, notifications, collaborators
@@ -4707,6 +5050,8 @@ function renderSettingsModule(){
       <div class="card-head"><div><h4>Evera Assistant</h4><span class="d-sub">The floating help panel with proactive planning tips</span></div></div>
       <div class="event-mini-row"><div class="em-name">Show the Evera Assistant</div><input type="checkbox" style="width:16px;height:16px;" ${d.assistantEnabled!==false?'checked':''} onchange="toggleAssistantEnabled(this.checked)"></div>
     </div>
+
+    ${renderSurveysSettingsCard()}
 
     <div class="card">
       <div class="card-head"><div><h4>Guest Categories</h4><span class="d-sub">Rename or remove the categories available in Guest Management</span></div></div>
@@ -5313,7 +5658,7 @@ function renderPartyMemberDetail(id){
       <div><h2>${escapeHtml(m.name)}</h2><div class="mdh-role">${escapeHtml(m.role)}</div><div class="mdh-side">${escapeHtml(m.side)}</div></div>
       <div style="margin-left:auto; display:flex; gap:8px;">${m.photo ? `<a href="#" class="danger-link" style="align-self:center;" onclick="removeMemberPhoto('${m.id}'); return false;">Remove photo</a>` : ''}<button class="btn btn-outline btn-sm" onclick="openPortalPreview('${m.id}')">Preview Their Portal →</button></div>
     </div>
-    <p style="font-size:12px;color:var(--charcoal-faint);margin-top:-14px;">Headshots upload here or from the member's own survey, and carry through to Contacts, the Lookbook, and the Wedding Party section of Website &amp; RSVP.</p>
+    <p style="font-size:12px;color:var(--charcoal-faint);margin-top:-14px;">Headshots upload here or from the member's own survey, and carry through to Contacts, the Lookbook, and the Wedding Party section of your Website.</p>
 
     <div class="grid-2">
       <div class="card">
@@ -7007,6 +7352,7 @@ function renderGuestsModule(){
       `}
     </div>
     ${renderEventRsvpBreakdownCard()}
+    ${renderSurveyBuilderCard()}
     ${renderNeedsSeatCard()}
     <div class="card">
       <div class="card-head">
@@ -7265,6 +7611,7 @@ function renderHouseholdDetailModal(householdId){
         </select>
       </div>
       ${renderHouseholdEventRsvpSection(h)}
+      ${renderHouseholdSurveySection(h)}
       <div class="budget-items" style="padding-left:0; margin-top:14px;">
         <div class="budget-items-head" style="grid-template-columns:0.7fr 1fr 1fr 0.9fr 0.6fr 0.9fr 1.1fr 1.1fr 0.5fr;"><span>Salutation</span><span>First</span><span>Last</span><span>Relation</span><span>Attending</span><span>Meal</span><span>Dietary</span><span>Accessibility</span><span></span></div>
         ${(h.members||[]).map(m=>`
@@ -7422,6 +7769,197 @@ function addGuestCategoryFromSettings(){
   if(!label) return;
   if(!dashboardData.guestCategories.includes(label)) dashboardData.guestCategories.push(label);
   document.getElementById('content').innerHTML = renderSettingsModule();
+}
+/* ---- RSVP Surveys (chunk 3 of the Guest Management & RSVP redesign) ----
+   A survey lives in Guest Management; assigning it to a specific event lets the
+   couple send different surveys at different points (e.g. one for the shower,
+   another for the ceremony/reception). Settings offers quick active/delete controls
+   and links back here for full editing. Results are logged either by the couple
+   (phone/email RSVPs, in the household detail modal) or, in the guest-facing
+   website prototype, answered directly by the guest on the RSVP form. */
+let surveyBuilderOpenId = null;
+function toggleSurveyBuilder(id){
+  surveyBuilderOpenId = surveyBuilderOpenId===id ? null : id;
+  document.getElementById('content').innerHTML = renderGuestsModule();
+}
+function addRsvpSurvey(){
+  const s = {id:'survey-'+Date.now().toString(36), name:'New Survey', eventId:null, active:true, sentLog:[], questions:[]};
+  dashboardData.rsvpSurveys.push(s);
+  surveyBuilderOpenId = s.id;
+  document.getElementById('content').innerHTML = renderGuestsModule();
+}
+function updateSurveyField(id, field, val){
+  const s = dashboardData.rsvpSurveys.find(x=>x.id===id);
+  if(!s) return;
+  s[field] = field==='eventId' ? (val || null) : val;
+  refreshGuestsBackground();
+}
+function removeRsvpSurvey(id){
+  dashboardData.rsvpSurveys = dashboardData.rsvpSurveys.filter(s=>s.id!==id);
+  if(surveyBuilderOpenId===id) surveyBuilderOpenId = null;
+  if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule();
+  else refreshGuestsBackground();
+}
+function toggleSurveyActive(id){
+  const s = dashboardData.rsvpSurveys.find(x=>x.id===id);
+  if(s) s.active = !s.active;
+  if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule();
+  else refreshGuestsBackground();
+}
+function addSurveyQuestion(surveyId){
+  const s = dashboardData.rsvpSurveys.find(x=>x.id===surveyId);
+  if(!s) return;
+  s.questions.push({id:'q-'+Date.now().toString(36), type:'text', label:'', options:[], required:false});
+  refreshGuestsBackground();
+}
+function updateSurveyQuestionField(surveyId, qId, field, val){
+  const s = dashboardData.rsvpSurveys.find(x=>x.id===surveyId);
+  const q = s && s.questions.find(x=>x.id===qId);
+  if(!q) return;
+  if(field==='options') q.options = val.split(',').map(o=>o.trim()).filter(Boolean);
+  else q[field] = val;
+  refreshGuestsBackground();
+}
+function removeSurveyQuestion(surveyId, qId){
+  const s = dashboardData.rsvpSurveys.find(x=>x.id===surveyId);
+  if(!s) return;
+  s.questions = s.questions.filter(q=>q.id!==qId);
+  refreshGuestsBackground();
+}
+function sendSurveySimulated(id){
+  const s = dashboardData.rsvpSurveys.find(x=>x.id===id);
+  if(!s) return;
+  s.sentLog.push({sentAt: new Date().toISOString()});
+  refreshGuestsBackground();
+}
+function renderSurveyBuilderCard(){
+  const d = dashboardData;
+  const surveys = d.rsvpSurveys||[];
+  return `
+    <div class="card">
+      <div class="card-head">
+        <div><h4>RSVP Surveys</h4><span class="d-sub">Ask guests extra questions alongside their RSVP — one for everyone, or a different one per event</span></div>
+        <button class="btn btn-solid btn-sm" onclick="addRsvpSurvey()">+ New Survey</button>
+      </div>
+      ${surveys.length ? surveys.map(s=>renderSurveyRow(s)).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No surveys yet — add one to start collecting extra info alongside RSVPs.</p>`}
+    </div>
+  `;
+}
+function renderSurveyRow(s){
+  const d = dashboardData;
+  const ev = s.eventId ? d.events.find(e=>e.id===s.eventId) : null;
+  const open = surveyBuilderOpenId === s.id;
+  const lastSent = s.sentLog.length ? s.sentLog[s.sentLog.length-1] : null;
+  return `
+    <div class="detail-section" style="margin-top:12px; padding-top:12px;">
+      <div class="detail-section-head" style="cursor:pointer;" onclick="toggleSurveyBuilder('${s.id}')">
+        <div>
+          <h4 style="margin:0;">${escapeHtml(s.name)}${s.active ? '' : ' <span class="pill pill-neutral">Inactive</span>'}</h4>
+          <span class="d-sub">${ev ? escapeHtml(ev.name) : 'All events / general'} · ${s.questions.length} question${s.questions.length===1?'':'s'}${lastSent ? ` · sent ${new Date(lastSent.sentAt).toLocaleDateString()}` : ''}</span>
+        </div>
+        <svg class="icon cr-chevron" style="${open?'transform:rotate(90deg);':''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      ${open ? renderSurveyEditor(s) : ''}
+    </div>
+  `;
+}
+function renderSurveyEditor(s){
+  const d = dashboardData;
+  return `
+    <div style="margin-top:10px; padding:12px; background:var(--ivory-deep); border-radius:var(--radius-sm);">
+      <div class="field-grid">
+        <div class="field-cell"><label>Survey Name</label><input type="text" value="${escapeAttr(s.name)}" onchange="updateSurveyField('${s.id}','name',this.value)"></div>
+        <div class="field-cell"><label>Applies To</label>
+          <select onchange="updateSurveyField('${s.id}','eventId',this.value)">
+            <option value="">All events / general</option>
+            ${d.events.map(e=>`<option value="${e.id}" ${s.eventId===e.id?'selected':''}>${escapeHtml(e.name)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:10px;">
+        ${s.questions.map(q=>renderSurveyQuestionRow(s.id,q)).join('')}
+      </div>
+      <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addSurveyQuestion('${s.id}')">+ Add Question</button>
+      <div style="display:flex; gap:14px; align-items:center; margin-top:14px; padding-top:12px; border-top:1px solid var(--line-soft); flex-wrap:wrap;">
+        <label style="display:flex; align-items:center; gap:6px; font-size:13px;"><input type="checkbox" ${s.active?'checked':''} onchange="toggleSurveyActive('${s.id}')"> Active</label>
+        <button class="btn btn-outline btn-sm" onclick="sendSurveySimulated('${s.id}')">📨 Send to Invited Guests</button>
+        <a href="#" class="danger-link" style="margin-left:auto;" onclick="removeRsvpSurvey('${s.id}'); return false;">Delete Survey</a>
+      </div>
+      ${s.sentLog.length ? `<p class="d-sub" style="margin-top:6px;">Sent ${s.sentLog.length} time${s.sentLog.length===1?'':'s'} — most recently ${new Date(s.sentLog[s.sentLog.length-1].sentAt).toLocaleDateString()}. This logs a simulated send (same as the Website's photo-notify button) — no real email or text goes out yet.</p>` : ''}
+    </div>
+  `;
+}
+function renderSurveyQuestionRow(surveyId, q){
+  return `
+    <div class="budget-item-row" style="grid-template-columns:1.6fr 0.9fr 1.1fr 0.4fr; align-items:center; padding:6px 0;">
+      <input type="text" class="select-field-sm" placeholder="Question text" value="${escapeAttr(q.label)}" onchange="updateSurveyQuestionField('${surveyId}','${q.id}','label',this.value)">
+      <select class="select-field-sm" onchange="updateSurveyQuestionField('${surveyId}','${q.id}','type',this.value)">
+        <option value="text" ${q.type==='text'?'selected':''}>Short answer</option>
+        <option value="textarea" ${q.type==='textarea'?'selected':''}>Long answer</option>
+        <option value="select" ${q.type==='select'?'selected':''}>Multiple choice</option>
+      </select>
+      ${q.type==='select' ? `<input type="text" class="select-field-sm" placeholder="Options, comma separated" value="${escapeAttr((q.options||[]).join(', '))}" onchange="updateSurveyQuestionField('${surveyId}','${q.id}','options',this.value)">` : `<span></span>`}
+      <a href="#" class="danger-link" onclick="removeSurveyQuestion('${surveyId}','${q.id}'); return false;">✕</a>
+    </div>
+  `;
+}
+function renderSurveysSettingsCard(){
+  const d = dashboardData;
+  const surveys = d.rsvpSurveys||[];
+  return `
+    <div class="card">
+      <div class="card-head"><div><h4>RSVP Surveys</h4><span class="d-sub">Quick controls — build and edit questions in Guest Management</span></div></div>
+      ${surveys.length ? `<div class="budget-items" style="padding-left:0;">
+        ${surveys.map(s=>{
+          const ev = s.eventId ? d.events.find(e=>e.id===s.eventId) : null;
+          return `
+          <div class="budget-item-row" style="grid-template-columns:1.4fr 1fr 0.7fr 0.4fr; align-items:center;">
+            <span class="readonly-cell">${escapeHtml(s.name)}</span>
+            <span class="d-sub">${ev ? escapeHtml(ev.name) : 'All events'}</span>
+            <label style="display:flex; align-items:center; gap:6px; font-size:12.5px;"><input type="checkbox" ${s.active?'checked':''} onchange="toggleSurveyActive('${s.id}')"> Active</label>
+            <a href="#" class="danger-link" onclick="removeRsvpSurvey('${s.id}'); return false;">✕</a>
+          </div>`;
+        }).join('')}
+      </div>` : `<p style="font-size:13px;color:var(--charcoal-faint);">No surveys yet — create one in Guest Management.</p>`}
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Add new surveys or questions from <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('guests')">Guest Management →</span></p>
+    </div>
+  `;
+}
+function applicableSurveysForHousehold(h){
+  const invitedIds = householdInvitedEventIds(h);
+  return (dashboardData.rsvpSurveys||[]).filter(s => s.active && (!s.eventId || invitedIds.includes(s.eventId)));
+}
+function renderHouseholdSurveySection(h){
+  const surveys = applicableSurveysForHousehold(h).filter(s=>s.questions.length);
+  if(!surveys.length) return '';
+  return `
+    <div class="detail-section" style="margin-top:14px; padding-top:14px;">
+      <div class="detail-section-head"><h4 style="margin:0;">Survey Responses</h4><span class="d-sub">Log what this family told you by phone or email, or what they submit on the wedding website</span></div>
+      ${surveys.map(s=>`
+        <div style="margin-top:10px;">
+          <div style="font-weight:600; font-size:13px;">${escapeHtml(s.name)}</div>
+          ${s.questions.map(q=>{
+            const val = (h.surveyResponses[s.id] && h.surveyResponses[s.id][q.id]) || '';
+            if(q.type==='select'){
+              return `<div class="field-mini" style="margin-top:4px;"><label>${escapeHtml(q.label||'Question')}</label>
+                <select class="select-field-sm" onchange="updateHouseholdSurveyResponse('${h.id}','${s.id}','${q.id}',this.value)">
+                  <option value="">—</option>
+                  ${(q.options||[]).map(o=>`<option value="${escapeAttr(o)}" ${val===o?'selected':''}>${escapeHtml(o)}</option>`).join('')}
+                </select></div>`;
+            }
+            return `<div class="field-mini" style="margin-top:4px;"><label>${escapeHtml(q.label||'Question')}</label><input type="text" style="width:100%;" value="${escapeAttr(val)}" onchange="updateHouseholdSurveyResponse('${h.id}','${s.id}','${q.id}',this.value)"></div>`;
+          }).join('')}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+function updateHouseholdSurveyResponse(householdId, surveyId, questionId, val){
+  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+  if(!h) return;
+  if(!h.surveyResponses[surveyId]) h.surveyResponses[surveyId] = {};
+  h.surveyResponses[surveyId][questionId] = val;
+  refreshHouseholdDetail();
 }
 /* ---- mail-merge-style mailing list export (structured addresses + salutations) ---- */
 function csvEscape(val){
@@ -7897,7 +8435,6 @@ function vendorStatusFor(category){
 function renderBudgetModule(){
   const tabs = [
     {key:'overview', label:'Overview'},
-    {key:'calendar', label:'Calendar at a Glance'},
     {key:'savings', label:'Savings Plan'}
   ];
   return `
@@ -7907,7 +8444,7 @@ function renderBudgetModule(){
     <div class="seg-control" style="margin-bottom:20px;">
       ${tabs.map(t=>`<button class="seg-btn ${budgetTab===t.key?'active':''}" onclick="switchBudgetTab('${t.key}')">${t.label}</button>`).join('')}
     </div>
-    ${budgetTab==='overview' ? renderBudgetOverviewTab() : budgetTab==='calendar' ? renderCalendarCard() : renderSavingsPlanTab()}
+    ${budgetTab==='savings' ? renderSavingsPlanTab() : renderBudgetOverviewTab()}
   `;
 }
 function switchBudgetTab(tab){
@@ -7992,7 +8529,7 @@ function renderBudgetOverviewTab(){
 
     <div class="card">
       <div class="card-head">
-        <h4>Line Items</h4>
+        <h4>Master Budget</h4>
         <div class="seg-control">
           <button class="seg-btn ${budgetOverviewView==='category'?'active':''}" onclick="switchBudgetView('category')">By Category</button>
           <button class="seg-btn ${budgetOverviewView==='event'?'active':''}" onclick="switchBudgetView('event')">By Event</button>
@@ -8439,6 +8976,10 @@ function getCalendarItems(){
   (d.unavailability||[]).forEach(u=>{
     items.push({dateISO:u.startISO, endISO:u.endISO||u.startISO, type:'unavailable', title:u.label, sub:u.note, amount:null});
   });
+  (d.tasks||[]).forEach(t=>{
+    if(!t.dueDateISO || t.done) return;
+    items.push({dateISO:t.dueDateISO, endISO:t.dueDateISO, type:'task', title:t.title, sub:taskEventLabel(t), amount:null});
+  });
   return items;
 }
 function renderCalendarCard(){
@@ -8491,6 +9032,7 @@ function renderCalendarCard(){
       </div>
       <div class="cal-legend">
         <span><span class="cal-dot cal-dot-event"></span>Events</span>
+        <span><span class="cal-dot cal-dot-task"></span>Tasks</span>
         <span><span class="cal-dot cal-dot-deadline"></span>Deadlines</span>
         <span><span class="cal-dot cal-dot-payment"></span>Payments</span>
         <span><span class="cal-dot cal-dot-unavailable"></span>Unavailable</span>
@@ -8536,15 +9078,15 @@ function shiftCalendarMonth(delta){
   if(month<0){ month=11; year--; } else if(month>11){ month=0; year++; }
   calendarMonth = {year, month};
   selectedCalendarDay = null;
-  document.getElementById('content').innerHTML = renderBudgetModule();
+  document.getElementById('content').innerHTML = renderPlanModule();
 }
 function showCalendarDay(year, month, day){
   selectedCalendarDay = {year, month, day};
-  document.getElementById('content').innerHTML = renderBudgetModule();
+  document.getElementById('content').innerHTML = renderPlanModule();
 }
 function clearCalendarDay(){
   selectedCalendarDay = null;
-  document.getElementById('content').innerHTML = renderBudgetModule();
+  document.getElementById('content').innerHTML = renderPlanModule();
 }
 
 /* ==================================================================
