@@ -461,7 +461,7 @@
   /* ---- calendar at a glance ---- */
   .cal-nav{display:flex; align-items:center; gap:12px; font-size:13px; font-weight:700; color:var(--charcoal);}
   .cal-nav button{width:26px; height:26px; border-radius:50%; border:1px solid var(--line); background:var(--paper); color:var(--charcoal-soft); font-size:14px; line-height:1;}
-  .cal-legend{display:flex; gap:16px; flex-wrap:wrap; margin:14px 0; font-size:11.5px; color:var(--charcoal-faint);}
+  .cal-legend{display:flex; gap:16px; flex-wrap:wrap; margin:10px 0; font-size:11.5px; color:var(--charcoal-faint);}
   .cal-legend span{display:inline-flex; align-items:center; gap:6px;}
   .cal-dot{width:7px; height:7px; border-radius:50%; display:inline-block; flex-shrink:0;}
   .cal-dot-event{background:var(--green);}
@@ -473,21 +473,21 @@
   .cal-dot-custom{background:var(--green-mid);}
   .cal-layout{display:grid; grid-template-columns:1fr 260px; gap:24px; align-items:start;}
   @media (max-width:960px){ .cal-layout{grid-template-columns:1fr;} }
-  .cal-toolbar{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;}
-  .cal-mini-col{display:flex; flex-direction:column; gap:14px;}
-  .cal-mini{border:1px solid var(--line); border-radius:12px; padding:12px; background:var(--paper);}
-  .cal-mini-head{font-size:12px; font-weight:700; color:var(--charcoal); margin-bottom:8px; text-align:center;}
-  .cal-mini-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:2px;}
-  .cal-mini-dow{font-size:8px; color:var(--charcoal-faint); text-align:center;}
-  .cal-mini-cell{aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:8.5px; color:var(--charcoal-faint); border-radius:4px;}
+  .cal-toolbar{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;}
+  .cal-mini-col{display:flex; flex-direction:column; gap:8px;}
+  .cal-mini{border:1px solid var(--line); border-radius:10px; padding:8px; background:var(--paper);}
+  .cal-mini-head{font-size:11px; font-weight:700; color:var(--charcoal); margin-bottom:4px; text-align:center;}
+  .cal-mini-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:1px;}
+  .cal-mini-dow{font-size:7.5px; color:var(--charcoal-faint); text-align:center;}
+  .cal-mini-cell{height:20px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:8px; color:var(--charcoal-faint); border-radius:3px;}
   .cal-mini-cell.cal-mini-today{border:1px solid var(--champagne-dark);}
   .cal-mini-cell.has-items{cursor:pointer; background:var(--ivory-deep); color:var(--charcoal);}
   .cal-mini-cell.has-items:hover{background:var(--champagne-light);}
   .cal-mini-dots{display:flex; gap:1px; margin-top:1px;}
   .cal-mini-dot{width:4px; height:4px; border-radius:50%; display:inline-block;}
-  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
-  .cal-grid-head{margin-bottom:6px; font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--charcoal-faint); text-align:center;}
-  .cal-cell{min-height:74px; border-radius:8px; padding:6px; background:var(--ivory-deep); display:flex; flex-direction:column;}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:3px;}
+  .cal-grid-head{margin-bottom:4px; font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--charcoal-faint); text-align:center;}
+  .cal-cell{min-height:70px; border-radius:8px; padding:5px; background:var(--ivory-deep); display:flex; flex-direction:column;}
   .cal-cell.cal-empty{background:transparent;}
   .cal-cell.has-items{cursor:pointer; background:var(--paper); border:1px solid var(--line);}
   .cal-cell.has-items:hover{box-shadow:var(--shadow);}
@@ -495,14 +495,16 @@
   .cal-cell.cal-selected{background:var(--green-tint); border-color:var(--green);}
   .cal-daynum{font-size:11.5px; font-weight:700; color:var(--charcoal-soft);}
   .cal-dots{display:flex; gap:3px; flex-wrap:wrap; margin-top:4px;}
-  .cal-chips{display:flex; flex-direction:column; gap:2px; margin-top:4px; overflow:hidden;}
-  .cal-chip{display:flex; align-items:center; gap:4px; font-size:9.5px; color:var(--charcoal-soft); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; padding:1px 3px; border-radius:4px;}
+  .cal-chips{display:flex; flex-direction:column; gap:2px; margin-top:3px; overflow:hidden;}
+  .cal-chip{display:flex; align-items:flex-start; gap:4px; cursor:pointer; padding:1px 3px; border-radius:4px;}
   .cal-chip:hover{background:var(--ivory-deep);}
   .cal-cell.has-items .cal-chip:hover{background:var(--ivory);}
-  .cal-chip .cal-dot{flex-shrink:0;}
+  .cal-chip .cal-dot{flex-shrink:0; margin-top:3px;}
+  .cal-chip-text{font-size:9.5px; line-height:1.25; color:var(--charcoal-soft); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; word-break:break-word;}
   .cal-more{font-size:9px; color:var(--charcoal-faint); padding:0 3px;}
-  .cal-agenda-head{font-size:12.5px; font-weight:700; color:var(--charcoal-faint); text-transform:uppercase; letter-spacing:0.03em; margin:18px 0 6px; padding-top:14px; border-top:1px solid var(--line);}
-  .cal-agenda-row{display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-top:1px solid var(--line-soft); font-size:13px;}
+  .cal-agenda-head{font-size:12.5px; font-weight:700; color:var(--charcoal-faint); text-transform:uppercase; letter-spacing:0.03em; margin:10px 0 4px; padding-top:10px; border-top:1px solid var(--line);}
+  .cal-agenda-list{max-height:160px; overflow-y:auto;}
+  .cal-agenda-row{display:flex; align-items:flex-start; gap:10px; padding:7px 0; border-top:1px solid var(--line-soft); font-size:13px;}
   .cal-agenda-row:first-child{border-top:none;}
   .cal-agenda-row .cal-dot{margin-top:6px;}
 
@@ -1121,7 +1123,22 @@
       </div>
     </div>
     <div class="result-cta">
-      <button class="btn btn-solid" onclick="enterApp()">Go to My Dashboard →</button>
+      <button class="btn btn-solid" onclick="goTo('inspiration-intro')">Continue →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSPIRATION INTRO (first stop after onboarding) ============ -->
+<section id="view-inspiration-intro" class="view">
+  <div class="result-wrap">
+    <div class="result-head">
+      <div class="check"><svg class="icon" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2l2.2 5.6L20 10l-5.8 2.4L12 18l-2.2-5.6L4 10l5.8-2.4L12 2z"/></svg></div>
+      <h1><span id="insp-intro-names">Before anything else</span> — let's capture your inspiration</h1>
+      <p id="res-sub">Florals, stationery, photography, attire, decor, guest gifts, tablescapes, hair &amp; makeup — everything else Evera helps with, from your Master Colour Palette to your Playbook to future vendor matches, builds from what you gather here first.</p>
+    </div>
+    <div class="result-cta" style="flex-direction:column; gap:10px; align-items:center;">
+      <button class="btn btn-solid" onclick="startInspirationFromIntro()">Start My Inspiration Board →</button>
+      <button type="button" class="btn-ghost" onclick="skipInspirationIntro()">Skip for now, take me to my Dashboard</button>
     </div>
   </div>
 </section>
@@ -1164,6 +1181,7 @@
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div class="item-overlay" id="calendarItemOverlay" onclick="if(event.target===this) closeCalendarItemDetail();"><!-- injected --></div>
+<div class="item-overlay" id="moodBoardOverlay" onclick="if(event.target===this) closeGeneratedMoodBoard();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
 
 <!-- ============ ASSISTANT ============ -->
@@ -1232,7 +1250,7 @@ const MODULE_INFO = {
   'vendors':{title:'Vendors', desc:"Curated, explainable vendor recommendations plus a home for every vendor record — booked or not.", bullets:['Why-this-vendor match explanations','Quotes, contracts, invoices & payments','Emerging vendor discovery']},
   'budget':{title:'Budget', desc:"One master budget with event-level rollups, so you always know where your money is going.", bullets:['Planned vs. committed vs. paid','Category-level breakdown','AI-flagged over/under-budget areas']},
   'plan':{title:'Plan', desc:"Your planning roadmap, tasks, and checklists — filterable by event, role, and priority.", bullets:['Long-range planning roadmap','Event-specific & role-specific checklists','AI-generated and custom tasks']},
-  'inspiration':{title:'Inspiration', desc:"Actionable mood boards connected directly to your events, vendors, and Lookbook — not just a Pinterest clone.", bullets:['Event-specific mood boards','Linked to vendors & Lookbook items','Colour palettes & aesthetic direction']},
+  'inspiration':{title:'Inspiration', desc:"One board per event, covering florals, stationery, photography, attire, decor, guest gifts, tablescapes, and hair & makeup — the starting point everything else builds from.", bullets:['One board per event, by category','Feeds your Master Colour Palette','Generate a one-page mood board']},
   'messages':{title:'Messages', desc:"Every important wedding conversation — with vendors, planners, and your wedding party — kept in one retrievable history.", bullets:['Vendor & planner communication history','Wedding-party group threads','Searchable, associated with the right event']},
   'website':{title:'Website', desc:"Your public wedding website — design, pages and access, generated from the same live data as your planning space — no duplicate entry. RSVPs themselves are managed in Guests.", bullets:['Fully customizable look & feel','Event-specific page visibility','Custom domain & password protection']},
   'playbook':{title:'Playbook', desc:"A living, exportable operational run-of-show generated from your Evera data — not a separate document to maintain.", bullets:['Master & per-event timelines','Role-specific exports (vendor, coordinator, wedding party)','Always up to date with your planning data']},
@@ -1256,6 +1274,27 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.16.0', date:'2026-09-03',
+    title:'Inspiration overhaul: one board per event, real categories, and a colour palette pulled from your own images',
+    items:[
+      'Inspiration is now one structured board per event, covering Florals, Stationery, Photography, Attire, Decor, Guest Gifts, Tablescapes, and Hair & Makeup — each with its own images and notes, instead of one freeform board per event.',
+      'A "🖼 Generate Mood Board" button on each event pulls everything you\'ve added into a single cohesive one-page summary, with a Print / Save as PDF option — ready to attach to that event\'s plan.',
+      'Right after onboarding, you\'ll now be invited to start your Inspiration board before anything else — with a clear "skip for now" option if you\'d rather head straight to your Dashboard.',
+      'The Master Colour Palette on My Wedding Blueprint can now generate itself from your Inspiration images — a new "🎨 Generate from Inspiration" button analyzes the colours across everything you\'ve uploaded and suggests a palette you can accept or keep editing by hand, same as before.',
+      'Your existing sample mood board content (Reception, Mehndi, Ceremony) carried over automatically into each event\'s new Decor section, so nothing was lost in the switch.',
+      'Not built yet, and explicitly logged for later: recommending venues and vendors based on this inspiration (proximity, budget, and reviews) — that needs real vendor/venue data first, which is a separate, bigger project.'
+    ]
+  },
+  {
+    version:'1.15.0', date:'2026-09-03',
+    title:'Calendar clean-up: readable event text, categories for your own events, a tighter layout',
+    items:[
+      'Event titles on Calendar at a Glance now wrap onto up to two lines instead of getting cut off with "…" — so you can actually read what a day\'s items are without clicking in.',
+      'Adding your own event now lets you pick a Category (Personal, Family, Vendor Meeting, Fitting/Appointment, Travel, Celebration/Social, or Other) alongside the title, date, and notes — it shows up in the item\'s detail view and in the agenda list.',
+      'Tightened the whole calendar layout — smaller rolling mini-months, less padding around the legend/toolbar, and a scrolling cap on the "Upcoming" agenda list — so a full month takes noticeably less vertical space. A very full month with many events can still need a bit of scrolling, but it\'s meaningfully more compact than before.'
+    ]
+  },
   {
     version:'1.14.0', date:'2026-09-03',
     title:'Click into any calendar item for the full record, plus per-event RSVP deadlines',
@@ -2621,7 +2660,7 @@ function normalizeDashboardData(d){
   });
   if(!Array.isArray(d.bachParties)) d.bachParties = [];
   if(!Array.isArray(d.customCalendarEvents)) d.customCalendarEvents = [];
-  d.customCalendarEvents.forEach(c=>{ if(c.notes===undefined) c.notes = ''; });
+  d.customCalendarEvents.forEach(c=>{ if(c.notes===undefined) c.notes = ''; if(c.category===undefined) c.category = 'other'; });
   if(!Array.isArray(d.moodBoards)) d.moodBoards = [];
   d.moodBoards.forEach(mb=>{
     if(mb.eventId===undefined) mb.eventId = null;
@@ -2629,6 +2668,35 @@ function normalizeDashboardData(d){
     if(mb.notes===undefined) mb.notes = '';
     if(!Array.isArray(mb.images)) mb.images = [];
   });
+  /* ---- Inspiration Board overhaul (v1.16.0): one structured board per event ---- */
+  if(!Array.isArray(d.inspirationBoards)) d.inspirationBoards = [];
+  d.events.forEach(e=>{
+    let board = d.inspirationBoards.find(b=>b.eventId===e.id);
+    if(!board){
+      board = {id:'insp-'+e.id, eventId:e.id, categories: emptyInspirationCategories()};
+      d.inspirationBoards.push(board);
+    }
+    if(!board.categories || typeof board.categories!=='object') board.categories = emptyInspirationCategories();
+    INSPIRATION_CATEGORIES.forEach(c=>{
+      if(!board.categories[c.key]) board.categories[c.key] = {images:[], notes:''};
+      if(!Array.isArray(board.categories[c.key].images)) board.categories[c.key].images = [];
+      if(board.categories[c.key].notes===undefined) board.categories[c.key].notes = '';
+    });
+  });
+  // one-time migration: carry the old freeform mood boards' images/notes into the new Decor
+  // category for the same event, so existing sample content isn't lost — only when that
+  // event's Decor section is still empty, so this never overwrites anything already entered.
+  d.moodBoards.forEach(mb=>{
+    if(!mb.eventId) return;
+    const board = d.inspirationBoards.find(b=>b.eventId===mb.eventId);
+    if(!board) return;
+    const decor = board.categories.decor;
+    if(!decor.images.length && !decor.notes && (mb.images.length || mb.notes)){
+      decor.images = mb.images.slice();
+      decor.notes = mb.notes || '';
+    }
+  });
+  if(d.inspirationIntroSeen===undefined) d.inspirationIntroSeen = false;
   if(!Array.isArray(d.messageThreads)) d.messageThreads = [];
   d.messageThreads.forEach(th=>{
     if(th.participants===undefined) th.participants = '';
@@ -2702,6 +2770,17 @@ function enterApp(){
   goTo('app');
   renderRoute('home');
   applyAssistantVisibility();
+}
+function startInspirationFromIntro(){
+  dashboardData.inspirationIntroSeen = true;
+  if(currentUser) persistWeddingRecord();
+  goTo('app');
+  renderRoute('inspiration');
+  applyAssistantVisibility();
+}
+function skipInspirationIntro(){
+  dashboardData.inspirationIntroSeen = true;
+  enterApp();
 }
 
 /* ==================================================================
@@ -2865,6 +2944,8 @@ function renderResult(){
   document.getElementById('res-task-count').textContent = d.tasksCount || (18+d.events.length*3);
   document.getElementById('res-roadmap').innerHTML = d.roadmap.map(r=>`<div class="mr-item"><div class="mr-dot"></div><div><div class="mr-label">${r.label}</div><div class="mr-date">${r.date}</div></div></div>`).join('');
   document.getElementById('res-vendors').innerHTML = d.vendorCategoriesSuggested.map(v=>`<span class="chip-mini">${v}</span>`).join('');
+  const introNames = document.getElementById('insp-intro-names');
+  if(introNames) introNames.textContent = `${d.partner1} & ${d.partner2}`;
 }
 
 /* ==================================================================
@@ -3911,6 +3992,11 @@ function renderMyWeddingModule(){
         </label>
         <span id="hexColorError" style="font-size:11.5px;color:var(--terracotta);display:none;">Enter a valid hex code, e.g. #C7A467</span>
       </div>
+      <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);">
+        <div class="d-sub" style="margin-bottom:8px;">Pull colours straight from the images you've added across your Inspiration boards</div>
+        <button class="btn btn-outline btn-sm" id="genPaletteBtn" onclick="generateMasterPaletteFromInspiration()" ${hasInspirationImages()?'':'disabled title="Add some inspiration images first"'}>🎨 Generate from Inspiration</button>
+        <div id="paletteGenSuggestions" style="margin-top:10px;"></div>
+      </div>
       ${(()=>{ const words = generateThemeWords(); return words.length ? `
       <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft);">
         <div class="d-sub" style="margin-bottom:8px;">Inspired by your palette${wp.aestheticNotes?' & aesthetic notes':''} — some words and themes to spark ideas</div>
@@ -4002,6 +4088,41 @@ function updatePaletteColor(i,val){
   dashboardData.weddingProfile.colorPalette[i] = val;
   document.getElementById('content').innerHTML = renderMyWeddingModule();
   persistWeddingRecord();
+}
+let pendingPaletteSuggestion = null;
+async function generateMasterPaletteFromInspiration(){
+  const btn = document.getElementById('genPaletteBtn');
+  const box = document.getElementById('paletteGenSuggestions');
+  if(btn){ btn.disabled = true; btn.textContent = 'Analyzing your images…'; }
+  const suggested = await generatePaletteFromInspiration();
+  if(btn){ btn.disabled = !hasInspirationImages(); btn.textContent = '🎨 Generate from Inspiration'; }
+  if(!box) return;
+  if(!suggested.length){
+    box.innerHTML = `<p class="d-sub" style="margin:0;">Couldn't pull clear colours from your inspiration images yet — try adding a few more.</p>`;
+    return;
+  }
+  pendingPaletteSuggestion = suggested;
+  box.innerHTML = `
+    <div class="palette-band" style="margin-bottom:10px;">
+      ${suggested.map(c=>`<div class="palette-swatch" style="background:${c};"><span class="palette-hex" style="color:${contrastTextColor(c)};">${escapeHtml(c)}</span></div>`).join('')}
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-solid btn-sm" onclick="applySuggestedPalette()">Use These Colours</button>
+      <button type="button" class="btn-ghost" onclick="dismissSuggestedPalette()">Dismiss</button>
+    </div>
+  `;
+}
+function applySuggestedPalette(){
+  if(!pendingPaletteSuggestion) return;
+  dashboardData.weddingProfile.colorPalette = pendingPaletteSuggestion.slice();
+  pendingPaletteSuggestion = null;
+  document.getElementById('content').innerHTML = renderMyWeddingModule();
+  persistWeddingRecord();
+}
+function dismissSuggestedPalette(){
+  pendingPaletteSuggestion = null;
+  const box = document.getElementById('paletteGenSuggestions');
+  if(box) box.innerHTML = '';
 }
 
 /* ---- per-event colour palette (separate from the wedding-wide Master Colour Palette) ---- */
@@ -4394,116 +4515,234 @@ function addTask(){
 /* ==================================================================
    INSPIRATION — mood boards
 ================================================================== */
+const INSPIRATION_CATEGORIES = [
+  {key:'florals', label:'Florals'},
+  {key:'stationery', label:'Stationery'},
+  {key:'photography', label:'Photography'},
+  {key:'attire', label:'Attire'},
+  {key:'decor', label:'Decor'},
+  {key:'guestGifts', label:'Guest Gifts'},
+  {key:'tablescapes', label:'Tablescapes'},
+  {key:'hairMakeup', label:'Hair & Makeup'}
+];
+function emptyInspirationCategories(){
+  const obj = {};
+  INSPIRATION_CATEGORIES.forEach(c=>{ obj[c.key] = {images:[], notes:''}; });
+  return obj;
+}
+function findInspirationBoard(boardId){
+  return (dashboardData.inspirationBoards||[]).find(b=>b.id===boardId);
+}
+function hasInspirationImages(){
+  return (dashboardData.inspirationBoards||[]).some(b=>Object.values(b.categories||{}).some(c=>(c.images||[]).length>0));
+}
 function renderInspirationModule(){
   const d = dashboardData;
-  const boards = d.moodBoards||[];
   return `
     <div class="card">
-      <div class="card-head"><h4>Mood Boards</h4><span class="d-sub">Linked to your events, so the look stays connected to the plan</span></div>
-      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Upload your own reference images — Evera doesn't fabricate inspiration photos for you.</p>
+      <div class="card-head"><h4>Inspiration</h4><span class="d-sub">One board per event, so the look stays connected to your plan</span></div>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Upload your own reference images for each category below — Evera doesn't fabricate inspiration photos for you. Once you've added some, your Master Colour Palette (on My Wedding Blueprint) can pull real colours straight from them.</p>
     </div>
-    <div class="grid-2">
-      ${boards.map(mb=>renderMoodBoardCard(mb)).join('')}
-    </div>
-    <div class="card">
-      <div class="detail-section-head"><h4 style="margin:0;">Add a Mood Board</h4></div>
-      <div class="custom-add-row" style="flex-wrap:wrap; margin-top:10px;">
-        <input type="text" id="newBoardTitle" placeholder="Board title (e.g. Reception — Garden Romantic)" style="flex:2; min-width:220px;">
-        <select id="newBoardEvent" class="select-field-sm" style="width:auto;">
-          <option value="">Not linked to an event</option>
-          ${d.events.map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
-        </select>
-        <button class="btn btn-outline btn-sm" onclick="addMoodBoard()">+ Add Board</button>
-      </div>
-    </div>
+    ${d.events.length ? d.events.map(e=>renderInspirationEventBoard(e)).join('') : `<div class="card"><p class="d-sub" style="margin:0;">Add an event in Events to start building inspiration for it.</p></div>`}
   `;
 }
-function renderMoodBoardCard(mb){
+function renderInspirationEventBoard(e){
+  const board = (dashboardData.inspirationBoards||[]).find(b=>b.eventId===e.id);
+  if(!board) return '';
   return `
     <div class="card">
       <div class="card-head">
-        <input type="text" value="${escapeAttr(mb.title)}" style="border:none;background:none;font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;padding:0;flex:1;" onchange="updateMoodBoardField('${mb.id}','title',this.value)">
-        <a href="#" class="danger-link" onclick="removeMoodBoard('${mb.id}'); return false;">Remove</a>
+        <div><h4 style="margin:0;">${escapeHtml(e.name)}</h4><span class="d-sub">${e.dateISO?fmtDateLabel(e.dateISO):'Date to be decided'}</span></div>
+        <button class="btn btn-outline btn-sm" onclick="openGeneratedMoodBoard('${e.id}')">🖼 Generate Mood Board</button>
       </div>
-      <div class="field-cell" style="margin-bottom:10px;">
-        <label>Linked Event</label>
-        <select class="select-field-sm" onchange="updateMoodBoardField('${mb.id}','eventId',this.value||null)">
-          <option value="">Not linked to an event</option>
-          ${dashboardData.events.map(ev=>`<option value="${ev.id}" ${mb.eventId===ev.id?'selected':''}>${escapeHtml(ev.name)}</option>`).join('')}
-        </select>
-      </div>
-      <div class="chip-grid" style="margin-bottom:10px;">
-        ${mb.colorPalette.map((c,i)=>`<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 7px 3px 3px;border-radius:999px;border:1px solid var(--line);"><input type="color" value="${c}" style="width:20px;height:20px;border:none;padding:0;background:none;" onchange="updateMoodBoardColor('${mb.id}',${i},this.value)"><a href="#" class="danger-link" style="font-size:10px;" onclick="removeMoodBoardColor('${mb.id}',${i}); return false;">✕</a></span>`).join('')}
-        <button class="btn btn-outline btn-sm" style="padding:3px 10px;font-size:11px;" onclick="addMoodBoardColor('${mb.id}')">+ Colour</button>
-      </div>
-      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-        ${mb.images.map(img=>`<div style="position:relative;width:76px;height:76px;"><img src="${img.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--line);"><a href="#" onclick="removeMoodBoardImage('${mb.id}','${img.id}'); return false;" style="position:absolute;top:2px;right:2px;background:rgba(43,42,38,0.7);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;">✕</a></div>`).join('')}
-        <label style="width:76px;height:76px;border:1.3px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--charcoal-faint);font-size:22px;">+
-          <input type="file" accept="image/*" multiple style="display:none;" onchange="uploadMoodBoardImages('${mb.id}',event)">
-        </label>
-      </div>
-      <textarea class="notes-field" style="min-height:70px;" placeholder="Notes on this look..." onchange="updateMoodBoardField('${mb.id}','notes',this.value)">${escapeHtml(mb.notes)}</textarea>
+      ${INSPIRATION_CATEGORIES.map(c=>renderInspirationCategory(board, c)).join('')}
     </div>
   `;
 }
-function addMoodBoard(){
-  const titleEl = document.getElementById('newBoardTitle');
-  const title = (titleEl.value||'').trim();
-  if(!title) return;
-  const eventId = document.getElementById('newBoardEvent').value || null;
-  if(!Array.isArray(dashboardData.moodBoards)) dashboardData.moodBoards=[];
-  dashboardData.moodBoards.push({id:'mb-'+Date.now().toString(36), eventId, title, colorPalette:[], notes:'', images:[]});
-  document.getElementById('content').innerHTML = renderInspirationModule();
+function renderInspirationCategory(board, cat){
+  const data = board.categories[cat.key];
+  return `
+    <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);">
+      <div class="detail-section-head"><h5 style="margin:0;">${escapeHtml(cat.label)}</h5></div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin:8px 0;">
+        ${data.images.map(img=>`<div style="position:relative;width:72px;height:72px;"><img src="${img.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--line);"><a href="#" onclick="removeInspirationImage('${board.id}','${cat.key}','${img.id}'); return false;" style="position:absolute;top:2px;right:2px;background:rgba(43,42,38,0.7);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;">✕</a></div>`).join('')}
+        <label style="width:72px;height:72px;border:1.3px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--charcoal-faint);font-size:20px;">+
+          <input type="file" accept="image/*" multiple style="display:none;" onchange="uploadInspirationImages('${board.id}','${cat.key}',event)">
+        </label>
+      </div>
+      <textarea class="notes-field" style="min-height:50px;" placeholder="Notes on ${escapeAttr(cat.label.toLowerCase())}..." onchange="updateInspirationNotes('${board.id}','${cat.key}',this.value)">${escapeHtml(data.notes)}</textarea>
+    </div>
+  `;
 }
-function removeMoodBoard(id){
-  dashboardData.moodBoards = (dashboardData.moodBoards||[]).filter(b=>b.id!==id);
-  document.getElementById('content').innerHTML = renderInspirationModule();
-}
-function updateMoodBoardField(id,field,val){
-  const mb = (dashboardData.moodBoards||[]).find(b=>b.id===id);
-  if(!mb) return;
-  mb[field]=val;
-  document.getElementById('content').innerHTML = renderInspirationModule();
-}
-function addMoodBoardColor(id){
-  const mb = (dashboardData.moodBoards||[]).find(b=>b.id===id);
-  if(!mb) return;
-  mb.colorPalette.push('#C7A467');
-  document.getElementById('content').innerHTML = renderInspirationModule();
-}
-function updateMoodBoardColor(id,i,val){
-  const mb = (dashboardData.moodBoards||[]).find(b=>b.id===id);
-  if(!mb) return;
-  mb.colorPalette[i]=val;
-  document.getElementById('content').innerHTML = renderInspirationModule();
-}
-function removeMoodBoardColor(id,i){
-  const mb = (dashboardData.moodBoards||[]).find(b=>b.id===id);
-  if(!mb) return;
-  mb.colorPalette.splice(i,1);
-  document.getElementById('content').innerHTML = renderInspirationModule();
-}
-function uploadMoodBoardImages(id, evt){
-  const mb = (dashboardData.moodBoards||[]).find(b=>b.id===id);
-  if(!mb) return;
+function uploadInspirationImages(boardId, catKey, evt){
+  const board = findInspirationBoard(boardId);
+  if(!board) return;
   const files = Array.from(evt.target.files||[]);
   if(!files.length) return;
   let remaining = files.length;
   files.forEach(file=>{
     const reader = new FileReader();
     reader.onload = function(e){
-      mb.images.push({id:'img-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), src:e.target.result});
+      board.categories[catKey].images.push({id:'img-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), src:e.target.result});
       remaining--;
       if(remaining<=0 && currentRouteKey==='inspiration') document.getElementById('content').innerHTML = renderInspirationModule();
     };
     reader.readAsDataURL(file);
   });
 }
-function removeMoodBoardImage(boardId, imageId){
-  const mb = (dashboardData.moodBoards||[]).find(b=>b.id===boardId);
-  if(!mb) return;
-  mb.images = mb.images.filter(i=>i.id!==imageId);
+function removeInspirationImage(boardId, catKey, imgId){
+  const board = findInspirationBoard(boardId);
+  if(!board) return;
+  board.categories[catKey].images = board.categories[catKey].images.filter(i=>i.id!==imgId);
   document.getElementById('content').innerHTML = renderInspirationModule();
+}
+function updateInspirationNotes(boardId, catKey, val){
+  const board = findInspirationBoard(boardId);
+  if(!board) return;
+  board.categories[catKey].notes = val;
+}
+/* ---- Client-side colour extraction from inspiration images (no external service) ---- */
+function rgbToHexStr(r,g,b){
+  return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+function hexToRgbObj(hex){
+  hex = (hex||'').replace('#','');
+  return {r:parseInt(hex.substring(0,2),16)||0, g:parseInt(hex.substring(2,4),16)||0, b:parseInt(hex.substring(4,6),16)||0};
+}
+function extractColorsFromImageSrc(src){
+  return new Promise((resolve)=>{
+    const img = new Image();
+    img.onload = function(){
+      try{
+        const w = 40, h = 40;
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const data = ctx.getImageData(0,0,w,h).data;
+        const buckets = {};
+        for(let i=0;i<data.length;i+=4){
+          const r=data[i], g=data[i+1], b=data[i+2], a=data[i+3];
+          if(a<128) continue;
+          const max=Math.max(r,g,b), min=Math.min(r,g,b);
+          if(max>245 && min>245) continue; // near-white background
+          if(max<12) continue; // near-black
+          const rq = Math.round(r/24)*24, gq=Math.round(g/24)*24, bq=Math.round(b/24)*24;
+          const key = rq+','+gq+','+bq;
+          buckets[key] = (buckets[key]||0)+1;
+        }
+        const sorted = Object.entries(buckets).sort((a,b)=>b[1]-a[1]).slice(0,3);
+        resolve(sorted.map(([key])=>{
+          const [r,g,b] = key.split(',').map(Number);
+          return rgbToHexStr(r,g,b);
+        }));
+      }catch(err){ resolve([]); }
+    };
+    img.onerror = function(){ resolve([]); };
+    img.src = src;
+  });
+}
+async function extractPaletteFromSrcs(srcs, maxColors){
+  const freq = {};
+  for(const src of srcs){
+    const colors = await extractColorsFromImageSrc(src);
+    colors.forEach((hex,idx)=>{
+      const weight = idx===0?3:idx===1?2:1;
+      freq[hex] = (freq[hex]||0)+weight;
+    });
+  }
+  const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(([hex])=>hex);
+  const picked = [];
+  for(const hex of sorted){
+    if(picked.length>=maxColors) break;
+    const rgb = hexToRgbObj(hex);
+    const tooClose = picked.some(p=>{
+      const prgb = hexToRgbObj(p);
+      const dist = Math.sqrt(Math.pow(rgb.r-prgb.r,2)+Math.pow(rgb.g-prgb.g,2)+Math.pow(rgb.b-prgb.b,2));
+      return dist<28;
+    });
+    if(!tooClose) picked.push(hex);
+  }
+  return picked;
+}
+function allInspirationImageSrcs(){
+  const out = [];
+  (dashboardData.inspirationBoards||[]).forEach(b=>{
+    Object.values(b.categories||{}).forEach(cat=>{ (cat.images||[]).forEach(img=>out.push(img.src)); });
+  });
+  return out;
+}
+async function generatePaletteFromInspiration(){
+  const srcs = allInspirationImageSrcs();
+  if(!srcs.length) return [];
+  return extractPaletteFromSrcs(srcs, 6);
+}
+
+/* ---- "Generate Mood Board" — a one-page, per-event summary of Inspiration ---- */
+async function renderGeneratedMoodBoardBody(eventId){
+  const d = dashboardData;
+  const e = d.events.find(ev=>ev.id===eventId);
+  const board = (d.inspirationBoards||[]).find(b=>b.eventId===eventId);
+  if(!e || !board) return { header:'', palette:[], sections:'' };
+  const srcs = [];
+  INSPIRATION_CATEGORIES.forEach(c=>{ (board.categories[c.key].images||[]).forEach(img=>srcs.push(img.src)); });
+  const palette = srcs.length ? await extractPaletteFromSrcs(srcs, 6) : [];
+  const sections = INSPIRATION_CATEGORIES.map(c=>{
+    const data = board.categories[c.key];
+    if(!data.images.length && !data.notes) return '';
+    return { key:c.key, label:c.label, images:data.images, notes:data.notes };
+  }).filter(Boolean);
+  return { event:e, palette, sections };
+}
+async function openGeneratedMoodBoard(eventId){
+  const overlay = document.getElementById('moodBoardOverlay');
+  overlay.innerHTML = `<div class="item-modal item-modal-xl"><button class="im-close" onclick="closeGeneratedMoodBoard();">✕</button><p class="d-sub">Pulling together your mood board…</p></div>`;
+  overlay.classList.add('open');
+  const { event, palette, sections } = await renderGeneratedMoodBoardBody(eventId);
+  if(!event){ closeGeneratedMoodBoard(); return; }
+  overlay.innerHTML = `
+    <div class="item-modal item-modal-xl">
+      <button class="im-close" onclick="closeGeneratedMoodBoard();">✕</button>
+      <div class="eyebrow">Mood Board</div>
+      <h3 style="margin:4px 0 4px;">${escapeHtml(event.name)}</h3>
+      <p class="d-sub" style="margin:0 0 14px;">${event.dateISO?fmtDateLabel(event.dateISO):'Date to be decided'}</p>
+      ${palette.length ? `<div class="palette-band" style="margin-bottom:16px;">${palette.map(c=>`<div class="palette-swatch" style="background:${c};"><span class="palette-hex" style="color:${contrastTextColor(c)};">${escapeHtml(c)}</span></div>`).join('')}</div>` : ''}
+      ${sections.length ? sections.map(s=>`
+        <div style="margin-bottom:16px;">
+          <div class="eyebrow">${escapeHtml(s.label)}</div>
+          ${s.images.length ? `<div style="display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;">${s.images.map(img=>`<img src="${img.src}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--line);">`).join('')}</div>` : ''}
+          ${s.notes ? `<p style="font-size:13px;color:var(--charcoal-soft);margin:4px 0 0;">${escapeHtml(s.notes)}</p>` : ''}
+        </div>`).join('') : `<p class="d-sub">Nothing added yet for ${escapeHtml(event.name)} — add some images or notes above, then come back here.</p>`}
+      <div style="margin-top:6px;">
+        <button class="btn btn-outline btn-sm" onclick="printGeneratedMoodBoard('${eventId}')">🖨 Print / Save as PDF</button>
+      </div>
+    </div>
+  `;
+}
+function closeGeneratedMoodBoard(){
+  document.getElementById('moodBoardOverlay').classList.remove('open');
+}
+async function printGeneratedMoodBoard(eventId){
+  const d = dashboardData;
+  const { event, palette, sections } = await renderGeneratedMoodBoardBody(eventId);
+  if(!event) return;
+  document.getElementById('printArea').innerHTML = `
+    <div class="print-header">
+      <h1>${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)}</h1>
+      <h2>${escapeHtml(event.name)} — Mood Board</h2>
+      <p>${event.dateISO?fmtDateLabel(event.dateISO):'Date to be decided'}</p>
+    </div>
+    ${palette.length ? `<div class="palette-band" style="margin:16px 0;">${palette.map(c=>`<div class="palette-swatch" style="background:${c};"><span class="palette-hex" style="color:${contrastTextColor(c)};">${escapeHtml(c)}</span></div>`).join('')}</div>` : ''}
+    ${sections.length ? sections.map(s=>`
+      <div style="margin-bottom:16px; break-inside:avoid;">
+        <h3 style="font-size:14px; margin:0 0 6px;">${escapeHtml(s.label)}</h3>
+        ${s.images.length ? `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px;">${s.images.map(img=>`<img src="${img.src}" style="width:70px;height:70px;object-fit:cover;border-radius:6px;">`).join('')}</div>` : ''}
+        ${s.notes ? `<p style="font-size:12.5px;color:var(--charcoal-soft);margin:0;">${escapeHtml(s.notes)}</p>` : ''}
+      </div>`).join('') : '<p>Nothing added yet for this event.</p>'}
+  `;
+  document.body.classList.add('printing');
+  window.print();
+  setTimeout(()=>{ document.body.classList.remove('printing'); }, 800);
 }
 
 /* ==================================================================
@@ -9080,7 +9319,8 @@ function getCalendarItems(){
   });
   (d.customCalendarEvents||[]).forEach(c=>{
     if(!c.dateISO) return;
-    items.push({dateISO:c.dateISO, endISO:c.dateISO, type:'custom', id:c.id, title:c.title, sub:c.notes||'', amount:null});
+    const catLabel = customEventCategoryLabel(c.category);
+    items.push({dateISO:c.dateISO, endISO:c.dateISO, type:'custom', id:c.id, title:c.title, sub:[catLabel, c.notes||''].filter(Boolean).join(' · '), amount:null});
   });
   return items;
 }
@@ -9091,6 +9331,21 @@ const CAL_TYPE_COLORS = {
   unavailable:'var(--charcoal-faint)', bach:'var(--champagne-dark)', custom:'var(--green-mid)'
 };
 function calTypeColor(type){ return CAL_TYPE_COLORS[type] || 'var(--charcoal-faint)'; }
+// Categories for ad-hoc calendar events (all still plot under the shared "Other" dot colour —
+// the category is a label for context, e.g. in the agenda and detail view, not a new legend colour.
+const CUSTOM_EVENT_CATEGORIES = [
+  {key:'personal', label:'Personal'},
+  {key:'family', label:'Family'},
+  {key:'vendor', label:'Vendor Meeting'},
+  {key:'appointment', label:'Fitting / Appointment'},
+  {key:'travel', label:'Travel'},
+  {key:'celebration', label:'Celebration / Social'},
+  {key:'other', label:'Other'}
+];
+function customEventCategoryLabel(key){
+  const c = CUSTOM_EVENT_CATEGORIES.find(x=>x.key===key);
+  return c ? c.label : 'Other';
+}
 function renderCalendarCard(){
   initCalendarMonth();
   const items = getCalendarItems();
@@ -9128,7 +9383,7 @@ function renderCalendarCard(){
     cells += `<div class="cal-cell ${dayItems.length?'has-items':''} ${isToday?'cal-today':''} ${isSelected?'cal-selected':''}" ${dayItems.length?`onclick="showCalendarDay(${year},${month},${day})"`:''}>
       <div class="cal-daynum">${day}</div>
       <div class="cal-chips">
-        ${shown.map(it=>`<div class="cal-chip" title="${escapeAttr(it.title)}" onclick="event.stopPropagation(); openCalendarItemDetail('${it.type}','${escapeAttr(String(it.id))}');"><span class="cal-dot cal-dot-${it.type}"></span>${escapeHtml(it.title)}</div>`).join('')}
+        ${shown.map(it=>`<div class="cal-chip" title="${escapeAttr(it.title)}" onclick="event.stopPropagation(); openCalendarItemDetail('${it.type}','${escapeAttr(String(it.id))}');"><span class="cal-dot cal-dot-${it.type}"></span><span class="cal-chip-text">${escapeHtml(it.title)}</span></div>`).join('')}
         ${extra>0 ? `<div class="cal-more">+${extra} more</div>` : ''}
       </div>
     </div>`;
@@ -9232,6 +9487,9 @@ function renderCalendarAddForm(){
       <div class="custom-add-row" style="flex-wrap:wrap;">
         <input type="text" id="calNewEventTitle" placeholder="Title (e.g. Dress fitting, family brunch)" style="flex:2; min-width:220px;">
         <input type="date" id="calNewEventDate" class="select-field-sm" style="width:auto;">
+        <select id="calNewEventCategory" class="select-field-sm" style="width:auto;">
+          ${CUSTOM_EVENT_CATEGORIES.map(c=>`<option value="${c.key}">${escapeHtml(c.label)}</option>`).join('')}
+        </select>
         <input type="text" id="calNewEventNotes" placeholder="Notes (optional)" style="flex:2; min-width:180px;">
         <button class="btn btn-outline btn-sm" onclick="addCustomCalendarEvent()">+ Add Event</button>
       </div>
@@ -9246,11 +9504,12 @@ function toggleCalendarAddForm(){
 function addCustomCalendarEvent(){
   const titleEl = document.getElementById('calNewEventTitle');
   const dateEl = document.getElementById('calNewEventDate');
+  const categoryEl = document.getElementById('calNewEventCategory');
   const notesEl = document.getElementById('calNewEventNotes');
   const title = titleEl.value.trim();
   const dateISO = dateEl.value;
   if(!title || !dateISO) return;
-  dashboardData.customCalendarEvents.push({id:'cal-'+Date.now(), title, dateISO, notes:(notesEl.value||'').trim()});
+  dashboardData.customCalendarEvents.push({id:'cal-'+Date.now(), title, dateISO, category:(categoryEl && categoryEl.value)||'other', notes:(notesEl.value||'').trim()});
   calendarAddFormOpen = false;
   document.getElementById('content').innerHTML = renderPlanModule();
 }
@@ -9467,7 +9726,7 @@ function renderCalendarItemDetail(type, id){
     return `
       <div class="item-modal">
         <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
-        <div class="eyebrow">Other</div>
+        <div class="eyebrow">${escapeHtml(customEventCategoryLabel(c.category))}</div>
         <h3 style="margin-top:6px;">${escapeHtml(c.title)}</h3>
         <div class="d-sub" style="margin-top:4px;">${fmtCalDate(c.dateISO)}</div>
         ${c.notes ? `<p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6; margin-top:16px;">${escapeHtml(c.notes)}</p>` : ''}
@@ -9495,6 +9754,7 @@ function renderCalendarAgenda(items){
   }
   return `
     <div class="cal-agenda-head">${heading}${selectedCalendarDay ? ` · <a href="#" class="ch-link" onclick="clearCalendarDay(); return false;">Clear</a>` : ''}</div>
+    <div class="cal-agenda-list">
     ${list.length ? list.map(it=>`
       <div class="cal-agenda-row" style="cursor:pointer;" onclick="openCalendarItemDetail('${it.type}','${escapeAttr(String(it.id))}')">
         <span class="cal-dot cal-dot-${it.type}"></span>
@@ -9502,6 +9762,7 @@ function renderCalendarAgenda(items){
         ${it.amount && it.amount!=='—' ? `<div class="d-amt">${it.amount}</div>` : ''}
         ${it.type==='custom' && it.id ? `<a href="#" class="danger-link" onclick="event.stopPropagation(); removeCustomCalendarEvent('${it.id}'); return false;">Remove</a>` : ''}
       </div>`).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">Nothing scheduled.</p>`}
+    </div>
   `;
 }
 function shiftCalendarMonth(delta){
