@@ -487,7 +487,7 @@
   .cal-mini-dot{width:4px; height:4px; border-radius:50%; display:inline-block;}
   .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
   .cal-grid-head{margin-bottom:6px; font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--charcoal-faint); text-align:center;}
-  .cal-cell{aspect-ratio:1; border-radius:8px; padding:6px; background:var(--ivory-deep);}
+  .cal-cell{min-height:74px; border-radius:8px; padding:6px; background:var(--ivory-deep); display:flex; flex-direction:column;}
   .cal-cell.cal-empty{background:transparent;}
   .cal-cell.has-items{cursor:pointer; background:var(--paper); border:1px solid var(--line);}
   .cal-cell.has-items:hover{box-shadow:var(--shadow);}
@@ -495,6 +495,12 @@
   .cal-cell.cal-selected{background:var(--green-tint); border-color:var(--green);}
   .cal-daynum{font-size:11.5px; font-weight:700; color:var(--charcoal-soft);}
   .cal-dots{display:flex; gap:3px; flex-wrap:wrap; margin-top:4px;}
+  .cal-chips{display:flex; flex-direction:column; gap:2px; margin-top:4px; overflow:hidden;}
+  .cal-chip{display:flex; align-items:center; gap:4px; font-size:9.5px; color:var(--charcoal-soft); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; padding:1px 3px; border-radius:4px;}
+  .cal-chip:hover{background:var(--ivory-deep);}
+  .cal-cell.has-items .cal-chip:hover{background:var(--ivory);}
+  .cal-chip .cal-dot{flex-shrink:0;}
+  .cal-more{font-size:9px; color:var(--charcoal-faint); padding:0 3px;}
   .cal-agenda-head{font-size:12.5px; font-weight:700; color:var(--charcoal-faint); text-transform:uppercase; letter-spacing:0.03em; margin:18px 0 6px; padding-top:14px; border-top:1px solid var(--line);}
   .cal-agenda-row{display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-top:1px solid var(--line-soft); font-size:13px;}
   .cal-agenda-row:first-child{border-top:none;}
@@ -1157,6 +1163,7 @@
 <div class="item-overlay" id="vendorBookingOverlay" onclick="if(event.target===this) closeVendorBookingDetail();"><!-- injected --></div>
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
+<div class="item-overlay" id="calendarItemOverlay" onclick="if(event.target===this) closeCalendarItemDetail();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
 
 <!-- ============ ASSISTANT ============ -->
@@ -1249,6 +1256,15 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.14.0', date:'2026-09-03',
+    title:'Click into any calendar item for the full record, plus per-event RSVP deadlines',
+    items:[
+      'The big Calendar at a Glance now shows a short title snippet next to each item\'s colour dot, right on the day cell, instead of a dot alone.',
+      'Click any item — on the calendar, or in the agenda list below it — to open its full record: for Events that\'s start/end time, venue access time, location, dress code, description, and special rituals, with a link to the full Event page; Tasks show owner, priority, notes, and any blocking dependency with a link into Plan; Payments show the vendor and amount with a link to the Budget line item; Bach &amp; Bachelorette shows the itinerary and organizer with a link to the Wedding Party Hub.',
+      'Added RSVP Deadline as a real field on every event, auto-suggested as 30 days before the event\'s date the first time it\'s seen, and freely editable from there. It shows up as its own Key Milestone on Calendar at a Glance, and as an "RSVP by / RSVP closed" line under each event in the Guests page\'s RSVPs by Event breakdown.'
+    ]
+  },
   {
     version:'1.13.0', date:'2026-09-03',
     title:'Over-budget alert, and a much richer Calendar at a Glance',
@@ -2654,6 +2670,10 @@ function normalizeDashboardData(d){
     if(e.publicVisibility===undefined) e.publicVisibility = true;
     if(!Array.isArray(e.colorPalette)) e.colorPalette = [];
     if(e.budgetTarget===undefined) e.budgetTarget = null;
+    // RSVP Deadline: auto-suggested as 30 days before the event the first time we ever see it,
+    // then left alone — after that it's a plain editable field like any other, so a later change
+    // to the event's own date doesn't silently drag an already-set RSVP deadline along with it.
+    if(e.rsvpDeadlineISO===undefined) e.rsvpDeadlineISO = e.dateISO ? addDaysISO(e.dateISO, -30) : '';
   });
   if(!Array.isArray(d.tasks)) d.tasks = [];
   d.tasks.forEach(t=>{
@@ -7260,6 +7280,11 @@ function toggleMemberEventExclusion(householdId, memberId, eventId){
   refreshGuestsBackground();
   refreshHouseholdDetail();
 }
+function isRsvpDeadlinePassed(e){
+  if(!e.rsvpDeadlineISO) return false;
+  const today0 = new Date(); today0.setHours(0,0,0,0);
+  return new Date(e.rsvpDeadlineISO+'T00:00:00') < today0;
+}
 function eventRsvpBreakdown(){
   const d = dashboardData;
   return (d.events||[]).map(e=>{
@@ -7286,7 +7311,10 @@ function renderEventRsvpBreakdownCard(){
         <div class="budget-items-head" style="grid-template-columns:1.4fr 0.8fr 0.8fr 0.8fr;"><span>Event</span><span>Confirmed</span><span>Pending</span><span>Declined</span></div>
         ${rows.map(r=>`
           <div class="budget-item-row" style="grid-template-columns:1.4fr 0.8fr 0.8fr 0.8fr;">
-            <span class="readonly-cell">${escapeHtml(r.event.name)}</span>
+            <span class="readonly-cell" style="flex-direction:column; align-items:flex-start; gap:2px;">
+              ${escapeHtml(r.event.name)}
+              ${r.event.rsvpDeadlineISO ? `<span class="d-sub" style="font-weight:400; ${isRsvpDeadlinePassed(r.event) ? 'color:var(--terracotta);' : ''}">RSVP ${isRsvpDeadlinePassed(r.event) ? 'closed' : 'by'} ${fmtDateLabel(r.event.rsvpDeadlineISO)}</span>` : ''}
+            </span>
             <span style="color:var(--ok); font-weight:600;">${r.confirmed}</span>
             <span style="color:var(--amber); font-weight:600;">${r.pending}</span>
             <span style="color:var(--terracotta); font-weight:600;">${r.declined}</span>
@@ -8155,7 +8183,7 @@ function submitAddEvent(){
   const id = 'ev-' + name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '-' + Math.random().toString(36).slice(2,6);
   d.events.push({
     id, name, date:'Date TBD', dateISO:null, startTime:'', endTime:'', accessTime:'', location:'', status:'planning',
-    guestCount: d.guestCount || 0, notes:'', dressCode:'', description:'', specialRituals:'',
+    guestCount: d.guestCount || 0, notes:'', dressCode:'', description:'', specialRituals:'', rsvpDeadlineISO:'',
     vendorCategories: EVENT_VENDOR_MAP[name] ? [EVENT_VENDOR_MAP[name]] : []
   });
   addingEvent = false;
@@ -8203,8 +8231,10 @@ function renderEventDetail(id){
           <div class="loc-suggest-attribution">Address search powered by OpenStreetMap — no API key needed. Swap in Google Places or Canada Post AddressComplete once you have one.</div>
         </div>
         <div class="field-cell"><label>Guest Count (Estimate)</label><input type="number" min="0" value="${e.guestCount||0}" onchange="updateEventField('${e.id}','guestCount',Number(this.value)||0)"></div>
+        <div class="field-cell"><label>RSVP Deadline</label><input type="date" value="${e.rsvpDeadlineISO||''}" onchange="updateEventField('${e.id}','rsvpDeadlineISO',this.value)"></div>
         ${renderDressCodeField(e)}
       </div>
+      <p class="detail-hint">RSVP Deadline auto-suggests 30 days before the event's date — move it any time. It shows up as a Key Milestone on Calendar at a Glance and on the RSVP breakdown below.</p>
       <div class="room-setup-row" style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);">
         <div class="field-mini"><label>Estimated Guests</label><span style="font-size:17px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',serif;">${e.guestCount||0}</span></div>
         <div class="field-mini"><label>Invited (from Guest List)</label><span style="font-size:17px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',serif;">${eventGuestStats(e).invited}</span></div>
@@ -9001,16 +9031,16 @@ function initCalendarMonth(){
 function getAllPayments(){
   const d = dashboardData;
   const list = [];
-  (d.deadlines||[]).forEach(dl=>{
+  (d.deadlines||[]).forEach((dl,idx)=>{
     if(dl.dateISO && dl.amount && dl.amount!=='—'){
-      list.push({title:dl.title, sub:dl.sub, dateISO:dl.dateISO, amountNum: Number(String(dl.amount).replace(/[^0-9.]/g,''))||0, paid:false});
+      list.push({id:'deadline:'+idx, title:dl.title, sub:dl.sub, dateISO:dl.dateISO, amountNum: Number(String(dl.amount).replace(/[^0-9.]/g,''))||0, paid:false});
     }
   });
-  d.budgetBreakdown.forEach(cat=>{
-    (cat.items||[]).forEach(it=>{
-      (it.paymentSchedule||[]).forEach(p=>{
+  d.budgetBreakdown.forEach((cat,ci)=>{
+    (cat.items||[]).forEach((it,ii)=>{
+      (it.paymentSchedule||[]).forEach((p,pIdx)=>{
         if(p.dueDateISO && p.amount){
-          list.push({title:`${it.name} — ${p.label}`, sub: it.vendorName || cat.category, dateISO:p.dueDateISO, amountNum:p.amount, paid: !!p.paid});
+          list.push({id:'item:'+ci+':'+ii+':'+pIdx, title:`${it.name} — ${p.label}`, sub: it.vendorName || cat.category, dateISO:p.dueDateISO, amountNum:p.amount, paid: !!p.paid});
         }
       });
     });
@@ -9020,33 +9050,37 @@ function getAllPayments(){
 function getCalendarItems(){
   const d = dashboardData;
   const items = [];
-  (d.deadlines||[]).forEach(dl=>{
+  (d.deadlines||[]).forEach((dl,idx)=>{
     if(!dl.dateISO) return;
     const isPayment = dl.amount && dl.amount!=='—';
     if(isPayment) return; // payments are sourced from getAllPayments() below to avoid double-counting
-    items.push({dateISO:dl.dateISO, endISO:dl.dateISO, type:'deadline', title:dl.title, sub:dl.sub, amount:dl.amount});
+    items.push({dateISO:dl.dateISO, endISO:dl.dateISO, type:'deadline', id:String(idx), title:dl.title, sub:dl.sub, amount:dl.amount});
   });
   getAllPayments().forEach(p=>{
-    items.push({dateISO:p.dateISO, endISO:p.dateISO, type:'payment', title:p.title, sub:p.sub, amount:fmtMoney(p.amountNum), paid:p.paid});
+    items.push({dateISO:p.dateISO, endISO:p.dateISO, type:'payment', id:p.id, title:p.title, sub:p.sub, amount:fmtMoney(p.amountNum), paid:p.paid});
   });
   (d.events||[]).forEach(e=>{
     if(!e.dateISO) return;
-    items.push({dateISO:e.dateISO, endISO:e.dateISO, type:'event', title:e.name, sub:e.location||'', amount:null});
+    items.push({dateISO:e.dateISO, endISO:e.dateISO, type:'event', id:e.id, title:e.name, sub:e.location||'', amount:null});
+  });
+  (d.events||[]).forEach(e=>{
+    if(!e.rsvpDeadlineISO) return;
+    items.push({dateISO:e.rsvpDeadlineISO, endISO:e.rsvpDeadlineISO, type:'deadline', id:'rsvp:'+e.id, title:`RSVP Deadline — ${e.name}`, sub:'RSVP closes for this event', amount:null});
   });
   (d.unavailability||[]).forEach(u=>{
-    items.push({dateISO:u.startISO, endISO:u.endISO||u.startISO, type:'unavailable', title:u.label, sub:u.note, amount:null});
+    items.push({dateISO:u.startISO, endISO:u.endISO||u.startISO, type:'unavailable', id:u.id, title:u.label, sub:u.note, amount:null});
   });
   (d.tasks||[]).forEach(t=>{
     if(!t.dueDateISO || t.done) return;
-    items.push({dateISO:t.dueDateISO, endISO:t.dueDateISO, type:'task', title:t.title, sub:taskEventLabel(t), amount:null});
+    items.push({dateISO:t.dueDateISO, endISO:t.dueDateISO, type:'task', id:t.id, title:t.title, sub:taskEventLabel(t), amount:null});
   });
   (d.bachParties||[]).forEach(b=>{
     if(!b.dateISO) return;
-    items.push({dateISO:b.dateISO, endISO:b.dateISO, type:'bach', title:b.label, sub:b.location||'', amount:null});
+    items.push({dateISO:b.dateISO, endISO:b.dateISO, type:'bach', id:b.id, title:b.label, sub:b.location||'', amount:null});
   });
   (d.customCalendarEvents||[]).forEach(c=>{
     if(!c.dateISO) return;
-    items.push({dateISO:c.dateISO, endISO:c.dateISO, type:'custom', title:c.title, sub:c.notes||'', amount:null, id:c.id});
+    items.push({dateISO:c.dateISO, endISO:c.dateISO, type:'custom', id:c.id, title:c.title, sub:c.notes||'', amount:null});
   });
   return items;
 }
@@ -9089,9 +9123,14 @@ function renderCalendarCard(){
     const dayItems = dayMap[day]||[];
     const isToday = isCurrentMonth && now.getDate()===day;
     const isSelected = selectedCalendarDay && selectedCalendarDay.year===year && selectedCalendarDay.month===month && selectedCalendarDay.day===day;
+    const shown = dayItems.slice(0,2);
+    const extra = dayItems.length - shown.length;
     cells += `<div class="cal-cell ${dayItems.length?'has-items':''} ${isToday?'cal-today':''} ${isSelected?'cal-selected':''}" ${dayItems.length?`onclick="showCalendarDay(${year},${month},${day})"`:''}>
       <div class="cal-daynum">${day}</div>
-      <div class="cal-dots">${dayItems.slice(0,4).map(it=>`<span class="cal-dot cal-dot-${it.type}"></span>`).join('')}</div>
+      <div class="cal-chips">
+        ${shown.map(it=>`<div class="cal-chip" title="${escapeAttr(it.title)}" onclick="event.stopPropagation(); openCalendarItemDetail('${it.type}','${escapeAttr(String(it.id))}');"><span class="cal-dot cal-dot-${it.type}"></span>${escapeHtml(it.title)}</div>`).join('')}
+        ${extra>0 ? `<div class="cal-more">+${extra} more</div>` : ''}
+      </div>
     </div>`;
   }
 
@@ -9255,6 +9294,189 @@ function jumpToCalendarDay(year, month, day){
   selectedCalendarDay = {year, month, day};
   document.getElementById('content').innerHTML = renderPlanModule();
 }
+/* ---- calendar item detail (click into a dot/chip for the full record) ---- */
+function openCalendarItemDetail(type, id){
+  document.getElementById('calendarItemOverlay').innerHTML = renderCalendarItemDetail(type, id);
+  document.getElementById('calendarItemOverlay').classList.add('open');
+}
+function closeCalendarItemDetail(){
+  document.getElementById('calendarItemOverlay').classList.remove('open');
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function fmtCalDate(dateISO){
+  if(!dateISO) return '';
+  return new Date(dateISO+'T12:00:00').toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric', year:'numeric'});
+}
+function calDetailRow(label, value){
+  if(!value) return '';
+  return `<div class="field-cell"><label>${label}</label><div class="readonly-cell" style="padding:7px 0;">${value}</div></div>`;
+}
+function expandPlanTaskFromCalendar(id){
+  const t = dashboardData.tasks.find(x=>x.id===id);
+  if(t){
+    const knownKeys = new Set(PLAN_PHASES.map(p=>p.key));
+    const phaseKey = knownKeys.has(t.phase) ? t.phase : 'unphased';
+    planCollapsedPhases[phaseKey] = false;
+    planExpandedTaskId = id;
+  }
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function renderCalendarItemDetail(type, id){
+  const d = dashboardData;
+  if(type==='event'){
+    const e = d.events.find(x=>x.id===id);
+    if(!e) return '';
+    return `
+      <div class="item-modal item-modal-lg">
+        <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
+        <div class="eyebrow">Event · ${statusPill(e.status)}</div>
+        <h3 style="margin-top:6px;">${escapeHtml(e.name)}</h3>
+        <div class="d-sub" style="margin-top:4px;">${fmtCalDate(e.dateISO)}${eventTimeRangeLabel(e) ? ' · '+eventTimeRangeLabel(e) : ''}</div>
+        <div class="field-grid" style="margin-top:18px;">
+          ${calDetailRow('Location', escapeHtml(e.location||'TBD'))}
+          ${calDetailRow('Guest Access / Load-In', escapeHtml(e.accessTime||'—'))}
+          ${calDetailRow('Dress Code', escapeHtml(e.dressCode||'—'))}
+          ${calDetailRow('Guest Count', e.guestCount ? String(e.guestCount) : '—')}
+        </div>
+        ${e.description ? `<div class="detail-section" style="margin-top:18px;"><div class="detail-section-head"><h4 style="margin:0;">Description</h4></div><p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6;">${escapeHtml(e.description)}</p></div>` : ''}
+        ${e.specialRituals ? `<div class="detail-section"><div class="detail-section-head"><h4 style="margin:0;">Special Rituals</h4></div><p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6;">${escapeHtml(e.specialRituals)}</p></div>` : ''}
+        <div style="margin-top:20px;"><a href="#" class="ch-link" onclick="closeCalendarItemDetail(); renderRoute('events'); openEventDetail('${e.id}'); return false;">View Full Event Page →</a></div>
+      </div>
+    `;
+  }
+  if(type==='task'){
+    const t = d.tasks.find(x=>x.id===id);
+    if(!t) return '';
+    const blockedBy = taskBlockedBy(t);
+    return `
+      <div class="item-modal">
+        <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
+        <div class="eyebrow">Task${t.done?' · Done':''}</div>
+        <h3 style="margin-top:6px;">${escapeHtml(t.title)}</h3>
+        <div class="d-sub" style="margin-top:4px;">${fmtCalDate(t.dueDateISO)}</div>
+        <div class="field-grid" style="margin-top:18px;">
+          ${calDetailRow('Related To', escapeHtml(taskEventLabel(t)))}
+          ${calDetailRow('Owner', escapeHtml(t.role))}
+          ${calDetailRow('Priority', priorityPill(t.priority))}
+          ${blockedBy ? calDetailRow('Blocked By', escapeHtml(blockedBy.title)) : ''}
+        </div>
+        ${t.notes ? `<div class="detail-section" style="margin-top:18px;"><div class="detail-section-head"><h4 style="margin:0;">Notes</h4></div><p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6;">${escapeHtml(t.notes)}</p></div>` : ''}
+        <div style="margin-top:20px;"><a href="#" class="ch-link" onclick="closeCalendarItemDetail(); renderRoute('plan'); switchPlanTab('tasks'); expandPlanTaskFromCalendar('${t.id}'); return false;">View in Plan →</a></div>
+      </div>
+    `;
+  }
+  if(type==='bach'){
+    const b = d.bachParties.find(x=>x.id===id);
+    if(!b) return '';
+    return `
+      <div class="item-modal item-modal-lg">
+        <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
+        <div class="eyebrow">Bach &amp; Bachelorette</div>
+        <h3 style="margin-top:6px;">${escapeHtml(b.label)}</h3>
+        <div class="d-sub" style="margin-top:4px;">${fmtCalDate(b.dateISO)}</div>
+        <div class="field-grid" style="margin-top:18px;">
+          ${calDetailRow('Location', escapeHtml(b.location||'—'))}
+          ${calDetailRow('Organizer', escapeHtml(b.organizer||'—'))}
+          ${calDetailRow('Budget', escapeHtml(b.budgetPerPerson||'—'))}
+          ${calDetailRow('Status', escapeHtml(b.status||'—'))}
+        </div>
+        ${(b.itinerary||[]).length ? `<div class="detail-section" style="margin-top:18px;"><div class="detail-section-head"><h4 style="margin:0;">Itinerary</h4></div>${b.itinerary.map(it=>`<div class="opp-row"><b>${escapeHtml(it.time)}</b> — ${escapeHtml(it.title)}</div>`).join('')}</div>` : ''}
+        ${b.notes ? `<div class="detail-section"><div class="detail-section-head"><h4 style="margin:0;">Notes</h4></div><p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6;">${escapeHtml(b.notes)}</p></div>` : ''}
+        <div style="margin-top:20px;"><a href="#" class="ch-link" onclick="closeCalendarItemDetail(); renderRoute('wedding-party'); switchPartyTab('bach'); return false;">View in Wedding Party Hub →</a></div>
+      </div>
+    `;
+  }
+  if(type==='deadline'){
+    if(String(id).startsWith('rsvp:')){
+      const eventId = String(id).slice(5);
+      const e = d.events.find(x=>x.id===eventId);
+      if(!e) return '';
+      return `
+        <div class="item-modal">
+          <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
+          <div class="eyebrow">Key Milestone · RSVP Deadline</div>
+          <h3 style="margin-top:6px;">${escapeHtml(e.name)}</h3>
+          <div class="d-sub" style="margin-top:4px;">RSVPs close ${fmtCalDate(e.rsvpDeadlineISO)}</div>
+          <div class="field-grid" style="margin-top:18px;">
+            ${calDetailRow('Event Date', fmtCalDate(e.dateISO))}
+            ${calDetailRow('Location', escapeHtml(e.location||'TBD'))}
+          </div>
+          <div style="margin-top:20px;"><a href="#" class="ch-link" onclick="closeCalendarItemDetail(); renderRoute('events'); openEventDetail('${e.id}'); return false;">View Full Event Page →</a></div>
+        </div>
+      `;
+    }
+    const dl = (d.deadlines||[])[Number(id)];
+    if(!dl) return '';
+    return `
+      <div class="item-modal">
+        <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
+        <div class="eyebrow">Key Milestone</div>
+        <h3 style="margin-top:6px;">${escapeHtml(dl.title)}</h3>
+        <div class="d-sub" style="margin-top:4px;">${fmtCalDate(dl.dateISO)}</div>
+        <div class="field-grid" style="margin-top:18px;">
+          ${calDetailRow('Details', escapeHtml(dl.sub||'—'))}
+          ${dl.amount && dl.amount!=='—' ? calDetailRow('Amount', escapeHtml(dl.amount)) : ''}
+        </div>
+      </div>
+    `;
+  }
+  if(type==='payment'){
+    const parts = String(id).split(':');
+    let title, sub, dateISO, amountNum, paid, ci=null, ii=null;
+    if(parts[0]==='deadline'){
+      const dl = (d.deadlines||[])[Number(parts[1])];
+      if(!dl) return '';
+      title = dl.title; sub = dl.sub; dateISO = dl.dateISO;
+      amountNum = Number(String(dl.amount).replace(/[^0-9.]/g,''))||0; paid = false;
+    } else if(parts[0]==='item'){
+      ci = Number(parts[1]); ii = Number(parts[2]); const pIdx = Number(parts[3]);
+      const cat = d.budgetBreakdown[ci]; const it = cat && cat.items[ii]; const p = it && it.paymentSchedule[pIdx];
+      if(!it || !p) return '';
+      title = `${it.name} — ${p.label}`; sub = it.vendorName || cat.category; dateISO = p.dueDateISO; amountNum = p.amount; paid = !!p.paid;
+    } else return '';
+    return `
+      <div class="item-modal">
+        <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
+        <div class="eyebrow">Payment${paid?' · Paid':' · Due'}</div>
+        <h3 style="margin-top:6px;">${escapeHtml(title)}</h3>
+        <div class="d-sub" style="margin-top:4px;">${fmtCalDate(dateISO)}</div>
+        <div class="field-grid" style="margin-top:18px;">
+          ${calDetailRow('Vendor / Category', escapeHtml(sub||'—'))}
+          ${calDetailRow('Amount', fmtMoney(amountNum))}
+        </div>
+        ${ci!==null ? `<div style="margin-top:20px;"><a href="#" class="ch-link" onclick="closeCalendarItemDetail(); renderRoute('budget'); openBudgetItemDetail(${ci},${ii}); return false;">View Budget Item →</a></div>` : ''}
+      </div>
+    `;
+  }
+  if(type==='unavailable'){
+    const u = (d.unavailability||[]).find(x=>x.id===id);
+    if(!u) return '';
+    return `
+      <div class="item-modal">
+        <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
+        <div class="eyebrow">Unavailable</div>
+        <h3 style="margin-top:6px;">${escapeHtml(u.label)}</h3>
+        <div class="d-sub" style="margin-top:4px;">${fmtCalDate(u.startISO)}${u.endISO && u.endISO!==u.startISO ? ' – '+fmtCalDate(u.endISO) : ''}</div>
+        ${u.note ? `<p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6; margin-top:16px;">${escapeHtml(u.note)}</p>` : ''}
+      </div>
+    `;
+  }
+  if(type==='custom'){
+    const c = (d.customCalendarEvents||[]).find(x=>x.id===id);
+    if(!c) return '';
+    return `
+      <div class="item-modal">
+        <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
+        <div class="eyebrow">Other</div>
+        <h3 style="margin-top:6px;">${escapeHtml(c.title)}</h3>
+        <div class="d-sub" style="margin-top:4px;">${fmtCalDate(c.dateISO)}</div>
+        ${c.notes ? `<p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6; margin-top:16px;">${escapeHtml(c.notes)}</p>` : ''}
+        <div style="margin-top:20px;"><a href="#" class="danger-link" onclick="removeCustomCalendarEvent('${c.id}'); closeCalendarItemDetail();">Remove This Event</a></div>
+      </div>
+    `;
+  }
+  return '';
+}
 function renderCalendarAgenda(items){
   let list, heading;
   if(selectedCalendarDay){
@@ -9274,11 +9496,11 @@ function renderCalendarAgenda(items){
   return `
     <div class="cal-agenda-head">${heading}${selectedCalendarDay ? ` · <a href="#" class="ch-link" onclick="clearCalendarDay(); return false;">Clear</a>` : ''}</div>
     ${list.length ? list.map(it=>`
-      <div class="cal-agenda-row">
+      <div class="cal-agenda-row" style="cursor:pointer;" onclick="openCalendarItemDetail('${it.type}','${escapeAttr(String(it.id))}')">
         <span class="cal-dot cal-dot-${it.type}"></span>
         <div style="flex:1;"><div class="d-title">${escapeHtml(it.title)}</div><div class="d-sub">${escapeHtml(it.sub||'')}</div></div>
         ${it.amount && it.amount!=='—' ? `<div class="d-amt">${it.amount}</div>` : ''}
-        ${it.type==='custom' && it.id ? `<a href="#" class="danger-link" onclick="removeCustomCalendarEvent('${it.id}'); return false;">Remove</a>` : ''}
+        ${it.type==='custom' && it.id ? `<a href="#" class="danger-link" onclick="event.stopPropagation(); removeCustomCalendarEvent('${it.id}'); return false;">Remove</a>` : ''}
       </div>`).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">Nothing scheduled.</p>`}
   `;
 }
