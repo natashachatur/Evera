@@ -431,6 +431,10 @@
   .opp-alert::before{background:var(--terracotta);}
   .opp-warn::before{background:var(--amber);}
   .opp-ok::before{background:var(--green);}
+  .budget-overspend-banner{display:flex; align-items:center; gap:14px; background:var(--terracotta-tint); border:1px solid var(--terracotta); border-radius:var(--radius); padding:16px 20px; margin-bottom:20px;}
+  .budget-overspend-banner .bo-icon{width:34px; height:34px; border-radius:50%; background:var(--terracotta); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:17px; font-weight:700;}
+  .budget-overspend-banner .bo-title{font-weight:700; color:var(--terracotta); font-size:14.5px;}
+  .budget-overspend-banner .bo-sub{font-size:12.5px; color:var(--charcoal-soft); margin-top:2px; line-height:1.5;}
   .budget-cat-block{border-top:1px solid var(--line); padding:16px 0;}
   .budget-cat-block:first-child{border-top:none; padding-top:4px;}
   .budget-cat-head{display:flex; align-items:center; gap:12px; cursor:pointer; flex-wrap:wrap;}
@@ -465,6 +469,22 @@
   .cal-dot-payment{background:var(--terracotta);}
   .cal-dot-unavailable{background:var(--charcoal-faint);}
   .cal-dot-task{background:var(--rose);}
+  .cal-dot-bach{background:var(--champagne-dark);}
+  .cal-dot-custom{background:var(--green-mid);}
+  .cal-layout{display:grid; grid-template-columns:1fr 260px; gap:24px; align-items:start;}
+  @media (max-width:960px){ .cal-layout{grid-template-columns:1fr;} }
+  .cal-toolbar{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;}
+  .cal-mini-col{display:flex; flex-direction:column; gap:14px;}
+  .cal-mini{border:1px solid var(--line); border-radius:12px; padding:12px; background:var(--paper);}
+  .cal-mini-head{font-size:12px; font-weight:700; color:var(--charcoal); margin-bottom:8px; text-align:center;}
+  .cal-mini-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:2px;}
+  .cal-mini-dow{font-size:8px; color:var(--charcoal-faint); text-align:center;}
+  .cal-mini-cell{aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:8.5px; color:var(--charcoal-faint); border-radius:4px;}
+  .cal-mini-cell.cal-mini-today{border:1px solid var(--champagne-dark);}
+  .cal-mini-cell.has-items{cursor:pointer; background:var(--ivory-deep); color:var(--charcoal);}
+  .cal-mini-cell.has-items:hover{background:var(--champagne-light);}
+  .cal-mini-dots{display:flex; gap:1px; margin-top:1px;}
+  .cal-mini-dot{width:4px; height:4px; border-radius:50%; display:inline-block;}
   .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
   .cal-grid-head{margin-bottom:6px; font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--charcoal-faint); text-align:center;}
   .cal-cell{aspect-ratio:1; border-radius:8px; padding:6px; background:var(--ivory-deep);}
@@ -1108,7 +1128,7 @@
     <div class="sb-nav" id="sbNav"><!-- injected --></div>
     <div class="sb-foot">
       <div class="sb-couple"><div class="sb-avatar" id="sbAvatar">P&amp;J</div><div><div style="font-weight:700; color:#EFE9DA;" id="sbCoupleName">Natasha &amp; Matteo</div><div>Couple Account</div></div><span id="sbLogoChip" class="sb-logo-chip"></span></div>
-      <button type="button" onclick="openChangelog()" style="width:100%; margin-top:12px; background:none; border:1px solid rgba(239,233,218,0.18); color:rgba(239,233,218,0.75); font-size:12px; padding:7px 10px; border-radius:8px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:6px; justify-content:space-between;"><span>🆕 What's New</span><span id="sbVersionTag" style="opacity:0.7;"></span></button>
+      <button type="button" onclick="renderRoute('changelog')" style="width:100%; margin-top:12px; background:none; border:1px solid rgba(239,233,218,0.18); color:rgba(239,233,218,0.75); font-size:12px; padding:7px 10px; border-radius:8px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:6px; justify-content:space-between;"><span>🆕 What's New</span><span id="sbVersionTag" style="opacity:0.7;"></span></button>
     </div>
   </nav>
 
@@ -1136,7 +1156,6 @@
 <div class="item-overlay" id="householdOverlay" onclick="if(event.target===this) closeHouseholdDetail();"><!-- injected --></div>
 <div class="item-overlay" id="vendorBookingOverlay" onclick="if(event.target===this) closeVendorBookingDetail();"><!-- injected --></div>
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
-<div class="item-overlay" id="changelogOverlay" onclick="if(event.target===this) closeChangelog();"><!-- injected --></div>
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
 
@@ -1230,6 +1249,28 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.13.0', date:'2026-09-03',
+    title:'Over-budget alert, and a much richer Calendar at a Glance',
+    items:[
+      'Budget now shows a clear alert banner right at the top of the Overview tab the moment your total committed/paid spend passes your Total Budget — separate from the existing per-category "over budget" flags, this one is about the number that actually matters: are you over budget overall.',
+      'Calendar at a Glance now plots everything: Events, Tasks, Key Milestones (renamed from "Deadlines"), Payments, Unavailability, and — new — Bach & Bachelorette dates, each in its own colour with an updated legend.',
+      'You can now add your own ad-hoc events directly on the calendar ("+ Add an Event") — shown in a distinct "Other" colour alongside everything else, with a Remove link in the day agenda.',
+      'Added a rolling 3-month preview alongside the big month view — three small calendars (with the same colour-coded dots) showing what\'s coming up over the following months; click any highlighted day to jump the main calendar there.',
+      'Added "Export / Subscribe (.ics)" — downloads every calendar item as a .ics file you can import into Google Calendar or Outlook. A true auto-syncing "subscribe" feed needs hosting infrastructure this prototype doesn\'t have yet, so this is a fresh snapshot each time — noted in-app.'
+    ]
+  },
+  {
+    version:'1.12.0', date:'2026-09-03',
+    title:'What\'s New is now a page (not a cut-off popup), a Guests fix, and an Events widget',
+    items:[
+      'Fixed a real bug: adding a new family/party from Guest Management created the record but then silently failed to let you add anything else to it — a missing field on brand-new households crashed their own detail card the moment it tried to open. New households now get the full field set from the start.',
+      'Adding a family, party, or guest now opens that record\'s full detail card immediately afterward, so you can add email, address, RSVP status, and additional members right away instead of hunting for the new row in the list below.',
+      'The "+ Add a Family, Party, or Guest" button moved into the Guest List card\'s header, next to Export — it no longer takes up a full-width row of its own.',
+      'Added an Events count widget to the Guests summary strip (click it to jump to Events).',
+      '"What\'s New" is now a full page, reached from the same sidebar link, instead of a popup — with 11+ releases of history, the popup had no scroll of its own and simply ran off the bottom of the screen.'
+    ]
+  },
   {
     version:'1.11.0', date:'2026-09-03',
     title:'A more comprehensive Plan, Home quick-stat reorder, and Master Budget rename',
@@ -1371,11 +1412,15 @@ const CHANGELOG = [
   }
 ];
 const CURRENT_VERSION = CHANGELOG[0].version;
-function renderChangelogModal(){
+/* What's New used to be a popup (.item-modal, no max-height/scroll of its own) — with 11+
+   releases of content it simply ran off the bottom of the screen with no way to see the rest.
+   It's now a full page like any other module, reached via the same sidebar link, so it scrolls
+   naturally with the rest of the app. */
+function renderChangelogPage(){
   return `
-    <div class="item-modal">
-      <button class="im-close" onclick="closeChangelog()">✕</button>
-      <div class="detail-section-head" style="margin-top:8px;">
+    <button class="back-link" onclick="renderRoute('home')" style="background:none;border:none;cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>Back to Home</button>
+    <div class="card">
+      <div class="detail-section-head" style="margin-top:0;">
         <h3 style="margin:0;">What's New</h3>
         <span class="d-sub">Everything that's shipped to Evera so far · currently v${escapeHtml(CURRENT_VERSION)}</span>
       </div>
@@ -1393,13 +1438,6 @@ function renderChangelogModal(){
       `).join('')}
     </div>
   `;
-}
-function openChangelog(){
-  document.getElementById('changelogOverlay').innerHTML = renderChangelogModal();
-  document.getElementById('changelogOverlay').classList.add('open');
-}
-function closeChangelog(){
-  document.getElementById('changelogOverlay').classList.remove('open');
 }
 
 /* ==================================================================
@@ -1433,6 +1471,7 @@ let planFilterEvent = 'all', planFilterRole = 'all', planFilterPriority = 'all',
 let planExpandedTaskId = null; // which task row shows its inline Notes/Dependency editor
 let planTab = 'tasks'; // 'tasks' | 'calendar' — Calendar at a Glance now lives inside Plan
 let planCollapsedPhases = {}; // phase key -> collapsed boolean, lazily defaulted the first time each phase is seen
+let calendarAddFormOpen = false; // toggles the "+ Add an Event" inline form on Calendar at a Glance
 let messagesFilter = 'all'; // 'all' | 'threads' | 'vendor' — Messages module view
 
 /* Blank "get to know you" survey every wedding-party member (except Parents) gets when added —
@@ -2564,6 +2603,9 @@ function normalizeDashboardData(d){
     if(t.dueDateISO===undefined) t.dueDateISO = null;
     if(t.notes===undefined) t.notes = '';
   });
+  if(!Array.isArray(d.bachParties)) d.bachParties = [];
+  if(!Array.isArray(d.customCalendarEvents)) d.customCalendarEvents = [];
+  d.customCalendarEvents.forEach(c=>{ if(c.notes===undefined) c.notes = ''; });
   if(!Array.isArray(d.moodBoards)) d.moodBoards = [];
   d.moodBoards.forEach(mb=>{
     if(mb.eventId===undefined) mb.eventId = null;
@@ -2896,6 +2938,7 @@ function reRenderCurrent(){
   else if(currentRouteKey==='messages') document.getElementById('content').innerHTML = renderMessagesModule();
   else if(currentRouteKey==='website') document.getElementById('content').innerHTML = renderWebsiteModule();
   else if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule();
+  else if(currentRouteKey==='changelog') document.getElementById('content').innerHTML = renderChangelogPage();
   else document.getElementById('content').innerHTML = renderModulePlaceholder(currentRouteKey);
 }
 function renderRoute(key){
@@ -2910,9 +2953,9 @@ function renderRoute(key){
   vendorBookingDetailId = null;
   renderSidebar(key);
   updateChrome();
-  const titleMap = Object.assign({home:'Home'}, Object.fromEntries(Object.entries(MODULE_INFO).map(([k,v])=>[k,v.title])));
+  const titleMap = Object.assign({home:'Home', changelog:"What's New"}, Object.fromEntries(Object.entries(MODULE_INFO).map(([k,v])=>[k,v.title])));
   document.getElementById('tbTitle').textContent = titleMap[key] || 'Home';
-  document.getElementById('tbSub').textContent = key==='home' ? `Welcome back, ${dashboardData.partner1} & ${dashboardData.partner2} — here's where things stand.` : (MODULE_INFO[key]?.desc.split('.')[0]+'.' || '');
+  document.getElementById('tbSub').textContent = key==='home' ? `Welcome back, ${dashboardData.partner1} & ${dashboardData.partner2} — here's where things stand.` : key==='changelog' ? `Everything that's shipped to Evera so far.` : (MODULE_INFO[key]?.desc.split('.')[0]+'.' || '');
   if(key==='home'){
     document.getElementById('content').innerHTML = renderHome();
   } else if(key==='wedding-party'){
@@ -2952,6 +2995,8 @@ function renderRoute(key){
     document.getElementById('content').innerHTML = renderWebsiteModule();
   } else if(key==='settings'){
     document.getElementById('content').innerHTML = renderSettingsModule();
+  } else if(key==='changelog'){
+    document.getElementById('content').innerHTML = renderChangelogPage();
   } else {
     document.getElementById('content').innerHTML = renderModulePlaceholder(key);
   }
@@ -7325,32 +7370,9 @@ function renderGuestsModule(){
       <div class="ps-stat"><div class="ps-num">${stats.confirmedHeadcount}</div><div class="ps-label">Confirmed Headcount</div></div>
       <div class="ps-stat"><div class="ps-num">${stats.pendingHeadcount}</div><div class="ps-label">Pending</div></div>
       <div class="ps-stat"><div class="ps-num">${stats.declinedHeadcount}</div><div class="ps-label">Declined</div></div>
+      <div class="ps-stat" style="cursor:pointer;" onclick="renderRoute('events')"><div class="ps-num">${d.events.length}</div><div class="ps-label">Events</div></div>
     </div>
     ${d.guestCount ? `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:-10px;">You've added ${stats.totalIndividuals} of your estimated ${d.guestCount} guests individually — add the rest as you collect names and RSVPs.</p>` : ''}
-    <div class="card">
-      ${guestAddFormOpen ? `
-      <div class="card-head">
-        <h4>Add a Family, Party, or Guest</h4>
-        <button class="btn btn-outline btn-sm" onclick="toggleGuestAddForm()">Done</button>
-      </div>
-      <div class="custom-add-row">
-        <input type="text" id="newHouseholdLabel" placeholder="e.g. The Cesario Family, or a single guest's name">
-        <select id="newHouseholdCategory" class="select-field-sm" style="max-width:180px;">
-          ${categories.map(c=>`<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join('')}
-        </select>
-        <button class="btn btn-outline btn-sm" onclick="addHousehold()">+ Add</button>
-      </div>
-      <div class="custom-add-row" style="margin-top:10px;">
-        <input type="text" id="newCategoryLabel" placeholder="New category (e.g. Colleagues, Dance Friends)">
-        <button class="btn btn-outline btn-sm" onclick="addGuestCategory()">+ Add Category</button>
-      </div>
-      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Manage or remove existing categories any time in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Settings →</span></p>
-      ` : `
-      <div style="display:flex; justify-content:center;">
-        <button class="btn btn-solid btn-sm" onclick="toggleGuestAddForm()">+ Add a Family, Party, or Guest</button>
-      </div>
-      `}
-    </div>
     ${renderEventRsvpBreakdownCard()}
     ${renderSurveyBuilderCard()}
     ${renderNeedsSeatCard()}
@@ -7365,8 +7387,26 @@ function renderGuestsModule(){
             <button class="seg-btn ${guestsFilterRsvp==='declined'?'active':''}" onclick="switchGuestsRsvpFilter('declined')">Declined</button>
           </div>
           <button class="btn btn-outline btn-sm" onclick="exportMailingList()">⬇ Export Mailing List (CSV)</button>
+          <button class="btn btn-solid btn-sm" onclick="toggleGuestAddForm()">${guestAddFormOpen ? 'Done Adding' : '+ Add a Family, Party, or Guest'}</button>
         </div>
       </div>
+      ${guestAddFormOpen ? `
+      <div class="detail-section" style="margin-top:0; padding-top:14px;">
+        <div class="custom-add-row">
+          <input type="text" id="newHouseholdLabel" placeholder="e.g. The Cesario Family, or a single guest's name">
+          <select id="newHouseholdCategory" class="select-field-sm" style="max-width:180px;">
+            ${categories.map(c=>`<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join('')}
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="addHousehold()">+ Add</button>
+        </div>
+        <p class="detail-hint" style="margin-top:6px;">After you add a name, its full detail card opens right away so you can fill in email, address, RSVP, and everyone in the party.</p>
+        <div class="custom-add-row" style="margin-top:10px;">
+          <input type="text" id="newCategoryLabel" placeholder="New category (e.g. Colleagues, Dance Friends)">
+          <button class="btn btn-outline btn-sm" onclick="addGuestCategory()">+ Add Category</button>
+        </div>
+        <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Manage or remove existing categories any time in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Settings →</span></p>
+      </div>
+      ` : ''}
       <div class="room-setup-row">
         <div class="field-mini"><label>Tier</label>
           <select onchange="updateGuestsTierFilter(this.value)">
@@ -7717,13 +7757,19 @@ function addHousehold(){
   const newHousehold = {
     id, label, categories: catEl && catEl.value ? [catEl.value] : [], tier:'A', rsvpStatus:'pending',
     email:'', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:[],
-    eventRsvp:{}, memberEventExclusions:{},
+    eventRsvp:{}, memberEventExclusions:{}, surveyResponses:{},
     members:[{id:id+'-m1', salutation:'', firstName:'', lastName:'', attending:true, mealChoice:'', dietaryRestrictions:'', accessibilityNeeds:'', tableId:null, relationship:'', seating:{}}]
   };
   (dashboardData.events||[]).forEach(ev=>{ newHousehold.eventRsvp[ev.id] = 'pending'; });
   dashboardData.guestHouseholds.push(newHousehold);
+  // Previously this just re-rendered the background list and refocused the name field for
+  // rapid-fire adding — but the quick-add form only ever captured a name and a category, so
+  // there was no way to tell the couple *how* to add anything else (email, address, RSVP,
+  // additional members). Opening the full detail card immediately fixes that: the new record
+  // is right there, editable, the moment it's created.
+  guestAddFormOpen = false;
   refreshGuestsBackground();
-  setTimeout(()=>{ const el=document.getElementById('newHouseholdLabel'); if(el) el.focus(); },0);
+  openHouseholdDetail(id);
 }
 function removeHousehold(householdId){
   dashboardData.guestHouseholds = dashboardData.guestHouseholds.filter(h=>h.id!==householdId);
@@ -8483,8 +8529,22 @@ function renderBudgetOverviewTab(){
     return (c.items||[]).some(i=> !i.vendorCategory || vendorStatusFor(i.vendorCategory)==='searching');
   }) : [];
   const hasFlags = overBudgetCats.length || nearLimitCats.length || opportunityCats.length;
+  // Overall-budget alert: distinct from the per-category "Over budget" rows in Opportunities & Watch List below —
+  // this flags when total committed/paid spend has exceeded the couple's Total Budget itself, which is the
+  // number that actually matters for "am I over budget," not just any single category.
+  const isOverallOverBudget = d.budgetTotal>0 && totalSpent > d.budgetTotal;
+  const overallOverspendAmt = totalSpent - d.budgetTotal;
 
   return `
+    ${isOverallOverBudget ? `
+      <div class="budget-overspend-banner">
+        <div class="bo-icon">!</div>
+        <div>
+          <div class="bo-title">You're over budget — by ${fmtMoney(overallOverspendAmt)}</div>
+          <div class="bo-sub">You've spent/committed ${fmtMoney(totalSpent)} against a ${fmtMoney(d.budgetTotal)} total budget. Check the Opportunities &amp; Watch List and Master Budget below to see which categories are driving it.</div>
+        </div>
+      </div>
+    ` : ''}
     <div class="party-summary-strip">
       <div class="ps-stat">
         <div class="ps-label" style="margin-bottom:4px;">Total Budget</div>
@@ -8980,8 +9040,23 @@ function getCalendarItems(){
     if(!t.dueDateISO || t.done) return;
     items.push({dateISO:t.dueDateISO, endISO:t.dueDateISO, type:'task', title:t.title, sub:taskEventLabel(t), amount:null});
   });
+  (d.bachParties||[]).forEach(b=>{
+    if(!b.dateISO) return;
+    items.push({dateISO:b.dateISO, endISO:b.dateISO, type:'bach', title:b.label, sub:b.location||'', amount:null});
+  });
+  (d.customCalendarEvents||[]).forEach(c=>{
+    if(!c.dateISO) return;
+    items.push({dateISO:c.dateISO, endISO:c.dateISO, type:'custom', title:c.title, sub:c.notes||'', amount:null, id:c.id});
+  });
   return items;
 }
+// Colour used for each calendar item type — shared by the big month grid (via the .cal-dot-* CSS
+// classes) and the mini rolling-3-month previews (applied inline, since those dots are a different size).
+const CAL_TYPE_COLORS = {
+  event:'var(--green)', task:'var(--rose)', deadline:'var(--amber)', payment:'var(--terracotta)',
+  unavailable:'var(--charcoal-faint)', bach:'var(--champagne-dark)', custom:'var(--green-mid)'
+};
+function calTypeColor(type){ return CAL_TYPE_COLORS[type] || 'var(--charcoal-faint)'; }
 function renderCalendarCard(){
   initCalendarMonth();
   const items = getCalendarItems();
@@ -9020,6 +9095,15 @@ function renderCalendarCard(){
     </div>`;
   }
 
+  // Rolling 3-month preview: always the three months immediately after whatever month the big
+  // calendar is currently showing, so paging the big calendar with ‹ › rolls the mini previews too.
+  let miniMonths = '';
+  for(let i=1;i<=3;i++){
+    let my = year, mm = month+i;
+    while(mm>11){ mm-=12; my++; }
+    miniMonths += renderMiniMonth(my, mm, items);
+  }
+
   return `
     <div class="card">
       <div class="card-head">
@@ -9030,20 +9114,146 @@ function renderCalendarCard(){
           <button onclick="shiftCalendarMonth(1)">›</button>
         </div>
       </div>
+      <div class="cal-toolbar">
+        <button class="btn btn-outline btn-sm" onclick="downloadFullCalendarIcs()">⤓ Export / Subscribe (.ics)</button>
+        <button class="btn btn-solid btn-sm" onclick="toggleCalendarAddForm()">${calendarAddFormOpen ? 'Done' : '+ Add an Event'}</button>
+      </div>
+      ${calendarAddFormOpen ? renderCalendarAddForm() : ''}
       <div class="cal-legend">
         <span><span class="cal-dot cal-dot-event"></span>Events</span>
         <span><span class="cal-dot cal-dot-task"></span>Tasks</span>
-        <span><span class="cal-dot cal-dot-deadline"></span>Deadlines</span>
+        <span><span class="cal-dot cal-dot-deadline"></span>Key Milestones</span>
         <span><span class="cal-dot cal-dot-payment"></span>Payments</span>
+        <span><span class="cal-dot cal-dot-bach"></span>Bach &amp; Bachelorette</span>
         <span><span class="cal-dot cal-dot-unavailable"></span>Unavailable</span>
+        <span><span class="cal-dot cal-dot-custom"></span>Other</span>
       </div>
-      <div class="cal-grid cal-grid-head">
-        <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+      <div class="cal-layout">
+        <div>
+          <div class="cal-grid cal-grid-head">
+            <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+          </div>
+          <div class="cal-grid">${cells}</div>
+          ${renderCalendarAgenda(items)}
+        </div>
+        <div class="cal-mini-col">
+          <div class="d-sub" style="font-size:11px;text-transform:uppercase;letter-spacing:0.04em;">Coming up</div>
+          ${miniMonths}
+        </div>
       </div>
-      <div class="cal-grid">${cells}</div>
-      ${renderCalendarAgenda(items)}
+      <p class="detail-hint">Exporting downloads a .ics file you can import into Google Calendar or Outlook. True live-sync subscriptions (where the calendar updates itself automatically) need hosting infrastructure this prototype doesn't have yet — re-export any time you want an updated snapshot.</p>
     </div>
   `;
+}
+function renderMiniMonth(year, month, items){
+  const monthLabel = new Date(year, month, 1).toLocaleDateString('en-US',{month:'long', year:'numeric'});
+  const firstWeekday = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const now = new Date();
+  const isCurrentMonth = now.getFullYear()===year && now.getMonth()===month;
+  const dayMap = {};
+  items.forEach(it=>{
+    const s = new Date(it.dateISO+'T00:00:00');
+    const e = new Date((it.endISO||it.dateISO)+'T00:00:00');
+    const cursor = new Date(s);
+    let guard = 0;
+    while(cursor<=e && guard<400){
+      if(cursor.getFullYear()===year && cursor.getMonth()===month){
+        const key = cursor.getDate();
+        (dayMap[key] = dayMap[key]||[]).push(it);
+      }
+      cursor.setDate(cursor.getDate()+1);
+      guard++;
+    }
+  });
+  let cells = '';
+  for(let i=0;i<firstWeekday;i++) cells += `<div class="cal-mini-cell"></div>`;
+  for(let day=1; day<=daysInMonth; day++){
+    const dayItems = dayMap[day]||[];
+    const isToday = isCurrentMonth && now.getDate()===day;
+    cells += `<div class="cal-mini-cell ${dayItems.length?'has-items':''} ${isToday?'cal-mini-today':''}" ${dayItems.length?`onclick="jumpToCalendarDay(${year},${month},${day})"`:''}>
+      <div>${day}</div>
+      ${dayItems.length ? `<div class="cal-mini-dots">${dayItems.slice(0,3).map(it=>`<span class="cal-mini-dot" style="background:${calTypeColor(it.type)};"></span>`).join('')}</div>` : ''}
+    </div>`;
+  }
+  return `
+    <div class="cal-mini">
+      <div class="cal-mini-head">${monthLabel}</div>
+      <div class="cal-mini-grid">
+        <div class="cal-mini-dow">S</div><div class="cal-mini-dow">M</div><div class="cal-mini-dow">T</div><div class="cal-mini-dow">W</div><div class="cal-mini-dow">T</div><div class="cal-mini-dow">F</div><div class="cal-mini-dow">S</div>
+        ${cells}
+      </div>
+    </div>
+  `;
+}
+function renderCalendarAddForm(){
+  return `
+    <div class="detail-section" style="margin-bottom:14px;">
+      <div class="detail-section-head"><h4 style="margin:0;">Add an Event</h4></div>
+      <div class="custom-add-row" style="flex-wrap:wrap;">
+        <input type="text" id="calNewEventTitle" placeholder="Title (e.g. Dress fitting, family brunch)" style="flex:2; min-width:220px;">
+        <input type="date" id="calNewEventDate" class="select-field-sm" style="width:auto;">
+        <input type="text" id="calNewEventNotes" placeholder="Notes (optional)" style="flex:2; min-width:180px;">
+        <button class="btn btn-outline btn-sm" onclick="addCustomCalendarEvent()">+ Add Event</button>
+      </div>
+      <p class="detail-hint">Ad-hoc events you add here show up as "Other" (in a distinct colour) alongside your real events, tasks, milestones, payments, and bach/bachelorette dates.</p>
+    </div>
+  `;
+}
+function toggleCalendarAddForm(){
+  calendarAddFormOpen = !calendarAddFormOpen;
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function addCustomCalendarEvent(){
+  const titleEl = document.getElementById('calNewEventTitle');
+  const dateEl = document.getElementById('calNewEventDate');
+  const notesEl = document.getElementById('calNewEventNotes');
+  const title = titleEl.value.trim();
+  const dateISO = dateEl.value;
+  if(!title || !dateISO) return;
+  dashboardData.customCalendarEvents.push({id:'cal-'+Date.now(), title, dateISO, notes:(notesEl.value||'').trim()});
+  calendarAddFormOpen = false;
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function removeCustomCalendarEvent(id){
+  dashboardData.customCalendarEvents = dashboardData.customCalendarEvents.filter(c=>c.id!==id);
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function icsDateOnly(dateISO){ return dateISO.replace(/-/g,''); }
+function addDaysISO(dateISO, n){
+  const dt = new Date(dateISO+'T00:00:00');
+  dt.setDate(dt.getDate()+n);
+  return dt.toISOString().slice(0,10);
+}
+// Exports every item currently plotted on Calendar at a Glance (events, tasks, key milestones, payments,
+// bach/bachelorette dates, unavailability, and any ad-hoc events added above) as a downloadable .ics file
+// that imports cleanly into Google Calendar or Outlook. There's no live "subscribe" feed here — that needs
+// a stable hosted URL that updates itself automatically, which this static prototype doesn't have — so this
+// is a fresh one-time snapshot each time it's downloaded, same spirit as the guest-facing website's calendar download.
+function downloadFullCalendarIcs(){
+  const items = getCalendarItems();
+  if(!items.length) return;
+  const blocks = items.map((it,idx)=>{
+    const dt = icsDateOnly(it.dateISO);
+    const endDt = icsDateOnly(addDaysISO(it.endISO||it.dateISO, 1));
+    return ['BEGIN:VEVENT', `UID:evera-cal-${idx}-${dt}@evera-wedding`,
+      `DTSTART;VALUE=DATE:${dt}`, `DTEND;VALUE=DATE:${endDt}`,
+      `SUMMARY:${(it.title||'').replace(/,/g,'\\,')}`,
+      `DESCRIPTION:${(it.sub||'').replace(/,/g,'\\,')}`,
+      'END:VEVENT'].join('\r\n');
+  }).join('\r\n');
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Evera//Wedding Planning//EN', blocks, 'END:VCALENDAR'].join('\r\n');
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'evera-wedding-calendar.ics';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function jumpToCalendarDay(year, month, day){
+  calendarMonth = {year, month};
+  selectedCalendarDay = {year, month, day};
+  document.getElementById('content').innerHTML = renderPlanModule();
 }
 function renderCalendarAgenda(items){
   let list, heading;
@@ -9068,6 +9278,7 @@ function renderCalendarAgenda(items){
         <span class="cal-dot cal-dot-${it.type}"></span>
         <div style="flex:1;"><div class="d-title">${escapeHtml(it.title)}</div><div class="d-sub">${escapeHtml(it.sub||'')}</div></div>
         ${it.amount && it.amount!=='—' ? `<div class="d-amt">${it.amount}</div>` : ''}
+        ${it.type==='custom' && it.id ? `<a href="#" class="danger-link" onclick="removeCustomCalendarEvent('${it.id}'); return false;">Remove</a>` : ''}
       </div>`).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">Nothing scheduled.</p>`}
   `;
 }
