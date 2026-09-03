@@ -88,7 +88,6 @@
     width:100%; padding:14px 16px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--paper);
     font-family:'Inter'; font-size:15px; color:var(--charcoal);
   }
-  .auth-card{max-width:420px; margin:0 auto; text-align:left; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:36px; box-shadow:var(--shadow);}
   .auth-tabs{display:flex; gap:6px; background:var(--ivory-deep); border-radius:999px; padding:4px; margin-bottom:28px;}
   .auth-tab{flex:1; text-align:center; padding:10px; border-radius:999px; font-size:12.5px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--charcoal-soft); cursor:pointer; transition:all .15s ease;}
   .auth-tab.active{background:var(--green); color:#fff;}
@@ -96,6 +95,42 @@
   .auth-error.show{display:block;}
   .auth-submit{width:100%; justify-content:center; margin-top:6px;}
   .auth-back{display:block; text-align:center; margin-top:20px; font-size:13px; color:var(--charcoal-faint);}
+
+  /* ================= AUTH (split branded layout) ================= */
+  #view-auth.active{display:flex;}
+  .auth-split{display:flex; width:100%; min-height:100vh;}
+  .auth-brand-panel{
+    flex:0 0 44%; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, var(--green-deep) 0%, var(--green) 68%, var(--green-mid) 100%);
+    display:flex; align-items:center; padding:64px 56px;
+  }
+  .auth-brand-panel-motif{position:absolute; inset:0; z-index:0; pointer-events:none;}
+  .auth-brand-panel-inner{position:relative; z-index:1; max-width:420px;}
+  .auth-brand-panel .landing-brand{color:var(--paper); margin-bottom:0; letter-spacing:0.1em;}
+  .auth-brand-headline{font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-weight:500; color:var(--paper); font-size:clamp(34px,3.6vw,48px); line-height:1.16; margin-top:22px;}
+  .auth-brand-tagline{margin-top:20px; font-size:15px; line-height:1.7; color:var(--champagne-light);}
+  .auth-brand-pills{margin-top:30px; display:flex; gap:8px; flex-wrap:wrap; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--champagne-light);}
+  .auth-brand-pills span:nth-child(even){color:rgba(250,246,238,0.45); font-weight:400; text-transform:none; letter-spacing:0;}
+  .auth-brand-teaser{margin-top:44px; font-size:12.5px; line-height:1.7; color:rgba(250,246,238,0.6); border-top:1px solid rgba(250,246,238,0.16); padding-top:20px;}
+  .auth-brand-teaser strong{color:var(--champagne-light); font-weight:600;}
+
+  .auth-form-panel{flex:1; display:flex; align-items:center; justify-content:center; background:var(--ivory); padding:48px 24px;}
+  .auth-form-inner{width:100%; max-width:380px;}
+
+  .auth-pw-wrap{position:relative;}
+  .auth-pw-wrap input{padding-right:52px !important;}
+  .auth-pw-toggle{position:absolute; right:2px; top:50%; transform:translateY(-50%); background:none; border:none; padding:8px 10px; color:var(--charcoal-faint); font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;}
+  .auth-pw-toggle:hover{color:var(--green);}
+
+  @media (max-width:860px){
+    .auth-split{flex-direction:column; min-height:0;}
+    .auth-brand-panel{flex:0 0 auto; padding:40px 28px;}
+    .auth-brand-headline{font-size:clamp(26px,7vw,34px); margin-top:16px;}
+    .auth-brand-tagline{margin-top:12px; font-size:14px;}
+    .auth-brand-pills{margin-top:16px;}
+    .auth-brand-teaser{display:none;}
+    .auth-form-panel{padding:40px 24px 64px;}
+  }
   .save-status{font-size:12px; font-weight:600; color:var(--charcoal-faint); white-space:nowrap;}
   .save-status-saving{color:var(--amber);}
   .save-status-saved{color:var(--ok);}
@@ -502,6 +537,13 @@
   .cal-chip .cal-dot{flex-shrink:0; margin-top:3px;}
   .cal-chip-text{font-size:9.5px; line-height:1.25; color:var(--charcoal-soft); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; word-break:break-word;}
   .cal-more{font-size:9px; color:var(--charcoal-faint); padding:0 3px;}
+  /* Unavailability "band" — a coloured strip per day-cell that bleeds edge-to-edge (cancelling the cell's
+     own padding via negative margin) so consecutive days in the same window read as one continuous block,
+     with rounded corners only at the window's true start/end day (see unavailabilityWindowsForDay()). */
+  .cal-unavail-band{margin:3px -5px 0 -5px; padding:2px 5px; background:var(--charcoal-faint); cursor:pointer; min-height:13px;}
+  .cal-unavail-band.band-start{border-top-left-radius:5px; border-bottom-left-radius:5px; margin-left:-4px; padding-left:5px;}
+  .cal-unavail-band.band-end{border-top-right-radius:5px; border-bottom-right-radius:5px; margin-right:-4px; padding-right:5px;}
+  .cal-unavail-band-label{font-size:8.5px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; line-height:1.4;}
   .cal-agenda-head{font-size:12.5px; font-weight:700; color:var(--charcoal-faint); text-transform:uppercase; letter-spacing:0.03em; margin:10px 0 4px; padding-top:10px; border-top:1px solid var(--line);}
   .cal-agenda-list{max-height:160px; overflow-y:auto;}
   .cal-agenda-row{display:flex; align-items:flex-start; gap:10px; padding:7px 0; border-top:1px solid var(--line-soft); font-size:13px;}
@@ -876,20 +918,41 @@
 
 <!-- ============ AUTH (real Firebase sign-up / sign-in) ============ -->
 <section id="view-auth" class="view">
-  <div class="landing-inner auth-card">
-    <div class="landing-brand" style="margin-bottom:28px;"><span>Evera</span></div>
-    <div class="auth-tabs">
-      <div class="auth-tab" id="authTabSignup" onclick="setAuthMode('signup')">Create Account</div>
-      <div class="auth-tab" id="authTabLogin" onclick="setAuthMode('login')">Sign In</div>
+  <div class="auth-split">
+    <div class="auth-brand-panel">
+      <div class="auth-brand-panel-motif">
+        <svg width="380" height="380" style="position:absolute; top:-60px; right:-90px; opacity:0.5;" viewBox="0 0 200 200"><path d="M100 10 C60 40 40 90 100 190 C160 90 140 40 100 10Z" stroke="#E7D9B7" stroke-width="0.6" fill="none"/></svg>
+        <svg width="320" height="320" style="position:absolute; bottom:-90px; left:-70px; opacity:0.4;" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" stroke="#E7D9B7" stroke-width="0.6" fill="none"/><circle cx="100" cy="100" r="55" stroke="#E7D9B7" stroke-width="0.6" fill="none"/></svg>
+      </div>
+      <div class="auth-brand-panel-inner">
+        <div class="landing-brand"><span>Evera</span></div>
+        <h1 class="auth-brand-headline">Your wedding<br>starts here.</h1>
+        <div class="auth-brand-tagline">One intelligent plan for your whole wedding — every tradition, every event, each with its own guests, vendors, budget, and look.</div>
+        <div class="auth-brand-pills"><span>Budget</span><span>·</span><span>Guests</span><span>·</span><span>Events</span><span>·</span><span>Vendors</span><span>·</span><span>Timeline</span></div>
+        <div class="auth-brand-teaser">Peek inside: <strong>Natasha &amp; Matteo</strong> — 150 guests · $100,000 budget · King City &amp; Toronto, ON</div>
+      </div>
     </div>
-    <div class="auth-error" id="authError"></div>
-    <form id="authForm" onsubmit="handleAuthSubmit(event)">
-      <div class="field-row"><label>Email</label><input type="email" id="auth-email" autocomplete="email" required></div>
-      <div class="field-row"><label>Password</label><input type="password" id="auth-password" autocomplete="current-password" required minlength="6"></div>
-      <div class="field-row" id="authConfirmRow"><label>Confirm Password</label><input type="password" id="auth-password-confirm" autocomplete="new-password" minlength="6"></div>
-      <button type="submit" class="btn btn-solid auth-submit" id="authSubmitBtn">Create Account</button>
-    </form>
-    <a href="#" class="auth-back" onclick="goTo('landing'); return false;">← Back</a>
+    <div class="auth-form-panel">
+      <div class="auth-form-inner">
+        <div class="auth-tabs">
+          <div class="auth-tab" id="authTabSignup" onclick="setAuthMode('signup')">Create Account</div>
+          <div class="auth-tab" id="authTabLogin" onclick="setAuthMode('login')">Sign In</div>
+        </div>
+        <div class="auth-error" id="authError"></div>
+        <form id="authForm" onsubmit="handleAuthSubmit(event)">
+          <div class="field-row"><label>Email</label><input type="email" id="auth-email" autocomplete="email" required></div>
+          <div class="field-row">
+            <label>Password</label>
+            <div class="auth-pw-wrap">
+              <input type="password" id="auth-password" autocomplete="current-password" required minlength="6">
+              <button type="button" class="auth-pw-toggle" id="authPwToggle" onclick="toggleAuthPasswordVisibility()">Show</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-solid auth-submit" id="authSubmitBtn">Create Account</button>
+        </form>
+        <a href="#" class="auth-back" onclick="goTo('landing'); return false;">← Back</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1275,6 +1338,55 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.21.0', date:'2026-09-03',
+    title:'Feature requests & bug reports',
+    items:[
+      'A new "Feature Requests & Bug Reports" card in Settings lets couples send feedback straight to the Evera team — pick Feature Request or Bug Report, add a short title and any details, and submit.',
+      'Every submission is logged with a status you can check back on — Submitted, Under Review, Planned, or Done — so feedback never just disappears into a form.',
+      'In this prototype the status dropdown is editable by anyone using the app, for demo purposes; in the real product, the Evera team would be the ones moving a submission through review, not the couple themselves.'
+    ]
+  },
+  {
+    version:'1.20.0', date:'2026-09-03',
+    title:'Redesigned Sign In / Create Account',
+    items:[
+      'The Sign In / Create Account screen has been rebuilt as a branded split layout — a green editorial panel on the left ("Your wedding starts here.") that carries the same feature highlights and sample-wedding teaser as the landing page, paired with a clean, minimal form on the right.',
+      'Confirm Password has been removed — Firebase Auth never required it, it was only a client-side typo check. In its place, the password field has a Show/Hide toggle so you can check what you typed before submitting.',
+      'On narrower screens the branded panel collapses to a compact header above the form instead of taking over the screen, so the redesign holds up on mobile too.'
+    ]
+  },
+  {
+    version:'1.19.0', date:'2026-09-03',
+    title:'Playbook Run Book: family contacts, vendor list, delegate roles & emergency kit',
+    items:[
+      'A new "Run Book" tab in Playbook brings together the day-of reference sheets every coordinator and wedding party actually needs: a Full Family Contact List, a Full Vendor List, Delegate Roles, and an Emergency Kit checklist.',
+      'The Family Contact List — immediate family, bridal party, and grandparents — is read live from Wedding Party Hub and Guests, not re-typed, so editing someone there updates it here automatically. One-off ceremonial roles that don\'t live anywhere else yet (officiant, flower girl, ring bearer, planner) can be added directly on this new tab.',
+      'The Full Vendor List is grouped by category (Venue, Beauty, Photo & Video, Catering, Décor & Entertainment) with a name and contact person for each — a quick-reference sheet distinct from the fuller booking records in Vendors.',
+      'Delegate Roles is a lighthearted but genuinely useful list — the "Playlist Princess," "Lint Man," "Keeper of the Rings" style assignments that keep small day-of jobs from falling through the cracks — fully editable, add or remove any role.',
+      'The Emergency Kit is a categorized packing checklist (Clothing, Hair/Makeup/Hygiene, Medical, Misc) for whoever\'s in charge of the day-of kit — add items or whole new categories freely.',
+      'The new sample data (important roles, vendor list, delegate roles) uses real names and businesses from the reference Run Book Natasha shared, with phone numbers deliberately left out.'
+    ]
+  },
+  {
+    version:'1.18.0', date:'2026-09-03',
+    title:'Editable, multi-day unavailability windows',
+    items:[
+      'Unavailability windows on Calendar at a Glance (like "traveling for work" or a venue closed for maintenance) are now fully editable — click one to change its label, dates, or note, or remove it entirely.',
+      'You can also add a new unavailability window directly from the calendar toolbar ("+ Add Unavailability"), the same way you already add ad-hoc events.',
+      'A window spanning multiple days now renders as one continuous coloured band across those days instead of a repeated entry on every single day — the label shows once, at the start of the span, with the rest of the days showing just the colour underneath the day number.',
+      'Everything else on the calendar (the "Upcoming" list, the day agenda, exporting to .ics) already handled multi-day spans correctly and is unchanged.'
+    ]
+  },
+  {
+    version:'1.17.0', date:'2026-09-03',
+    title:'Collapsible Inspiration boards',
+    items:[
+      'Each event\'s Inspiration board can now be collapsed or expanded — with lots of photos across 8 categories per event, the page could get long fast, so every event starts collapsed, showing just its name, date, and photo count until you open it.',
+      'An "Expand all events" / "Collapse all events" link at the top lets you see everything at once, or tidy it back up, in one click — same pattern as the Expand All / Collapse All link on Plan\'s Tasks & Checklists.',
+      'The "🖼 Generate Mood Board" button still works straight from the collapsed header, so you don\'t need to expand a board just to generate its summary.'
+    ]
+  },
+  {
     version:'1.16.0', date:'2026-09-03',
     title:'Inspiration overhaul: one board per event, real categories, and a colour palette pulled from your own images',
     items:[
@@ -1527,6 +1639,7 @@ let planExpandedTaskId = null; // which task row shows its inline Notes/Dependen
 let planTab = 'tasks'; // 'tasks' | 'calendar' — Calendar at a Glance now lives inside Plan
 let planCollapsedPhases = {}; // phase key -> collapsed boolean, lazily defaulted the first time each phase is seen
 let calendarAddFormOpen = false; // toggles the "+ Add an Event" inline form on Calendar at a Glance
+let unavailAddFormOpen = false; // toggles the "+ Add Unavailability" inline form on Calendar at a Glance
 let messagesFilter = 'all'; // 'all' | 'threads' | 'vendor' — Messages module view
 
 /* Blank "get to know you" survey every wedding-party member (except Parents) gets when added —
@@ -1911,6 +2024,68 @@ function defaultDashboardData(){
         brideSide:['partner1','amber','safa','dina']
       }
     },
+    // Playbook Run Book (v1.19.0) — one-off ceremonial roles not modeled anywhere else (the couple, parents,
+    // bridal party and grandparents are already real data in weddingParty/guestHouseholds, so the Run Book's
+    // Family Contact List reads live from those instead of duplicating them here).
+    keyRoles:[
+      {name:'Nirvanie', role:'Wedding Planner'},
+      {name:'Devon John', role:'Officiant'},
+      {name:'Julia Mannarino', role:'Flower Girl'},
+      {name:'Nico Mannarino', role:'Ring Bearer'}
+    ],
+    // A dedicated day-of vendor directory for the Playbook Run Book — deliberately separate from the
+    // Vendors module's own dashboardData.vendorBookings (which still uses illustrative sample vendors),
+    // since unifying the two would mean replacing that module's sample scenario, a bigger decision on its own.
+    vendorDirectory:[
+      {category:'Venue', name:'Atrium Banquet Centre', contact:'Alex Figueiredo'},
+      {category:'Venue', name:'Mary Mother of God Parish', contact:'Natalia'},
+      {category:'Venue', name:'Ismaili Centre Toronto', contact:'Saleem Punjani'},
+      {category:'Venue', name:'Royal Ontario Golf Club', contact:'Kelly Paterson'},
+      {category:'Beauty', name:'TropBelle — Bridal Makeup', contact:'Senita'},
+      {category:'Beauty', name:'Hair by Shay — Bridal Hair', contact:'Shay Nabizadah'},
+      {category:'Beauty', name:'MissArtisticoBeauty — Bridal Henna', contact:'Vijeshri'},
+      {category:'Beauty', name:'Henna by Noor', contact:'Mahnoor'},
+      {category:'Beauty', name:'BrushMeUp', contact:'Rubie'},
+      {category:'Beauty', name:'Perfect Pleats — Saree Pleating', contact:'Aranya'},
+      {category:'Photo & Video', name:'Gauche Co. — Videography', contact:'Zen Turczyn'},
+      {category:'Photo & Video', name:'Mango Studio — Photography', contact:'Veronica'},
+      {category:'Catering', name:"Nani's Gelato", contact:'Parry'},
+      {category:'Catering', name:'Cook Gourmet', contact:'Patricia Corsini'},
+      {category:'Catering', name:'Zauq Catering', contact:'Jaspreet'},
+      {category:'Catering', name:'Fancy That Cake', contact:'Kelli Barclay'},
+      {category:'Décor & Entertainment', name:'B2BChex — Church Musician', contact:'Timson Thomas'},
+      {category:'Décor & Entertainment', name:'Sparkling Moments GTA', contact:'Adib Fatayer'},
+      {category:'Décor & Entertainment', name:'The 360 Booth', contact:'Rovin'},
+      {category:'Décor & Entertainment', name:'Universal Floor Wraps', contact:'Chandrapaul'},
+      {category:'Décor & Entertainment', name:'Babylon Décor', contact:'Rafi Michael'},
+      {category:'Décor & Entertainment', name:'Doli Decor', contact:'Sumayah'},
+      {category:'Décor & Entertainment', name:'SG — Bangle Bar Cart', contact:'Shivangi Sharma'},
+      {category:'Décor & Entertainment', name:'Gloria Yip — Violinist', contact:''}
+    ],
+    delegateRoles:[
+      {name:'Melissa', role:'Content Queen', details:''},
+      {name:'Dina', role:'Outfit Officiando', details:'Steam the dresses · check for loose threads · no hair ties or watches on wrists · no phones before the aisle'},
+      {name:'Safa', role:'Breakfast Bestie', details:'Make sure everyone eats and stays hydrated — especially the bride'},
+      {name:'Amber', role:'Playlist Princess', details:'Bring your speaker, play a great playlist for the morning'},
+      {name:'Amber', role:'Pee Pal', details:'Help the bride get to the bathroom (in that dress!)'},
+      {name:'Nirvanie', role:'Timeline Babe', details:'If anyone has questions, they come to you'},
+      {name:'Michael', role:'Keeper of the Rings', details:'Keep the rings on you at all times — guard them with your life'},
+      {name:'Joey', role:'Coffee Jockey', details:'Make sure there is coffee (and Baileys) and everyone eats breakfast'},
+      {name:'Malik', role:'Content King', details:'Get some getting-ready pics before the photo/video crew arrives'},
+      {name:'Arsum', role:'Lint Man', details:'No lint on suits, no watches on wrists, suits ironed, ties straight'},
+      {name:'Malik', role:'Get Ready Tunes', details:'Bring a speaker, play some morning tunes'}
+    ],
+    emergencyKit:{
+      'Clothing':['Micro-stitch gun','Safety pins','Wrinkle release spray','Sewing kit','Body/clothing tape','Stain remover pen'],
+      'Hair, Makeup & Hygiene':['Hair brush','Bobby pins & U-pins','Lash glue','Mouthwash','Mints','Oil-absorbing sheets','Flushable wipes','Deodorant','Breath strips','Chapstick','Hair elastics','Dry shampoo','Hair spray','Makeup remover wipes'],
+      'Medical':['Tums','Polysporin','Reactine','Gravol','Bandaids','Pepto-Bismol'],
+      'Misc':['Gorilla Glue','Lidocaine spray']
+    },
+    feedbackSubmissions:[
+      {id:'fb-1', type:'feature', title:'A shared view of whose tasks are whose', description:'It would help to see at a glance which Plan tasks are mine vs. Matteo\'s, instead of one shared list.', submittedAt:'2026-08-20T14:00:00.000Z', status:'planned'},
+      {id:'fb-2', type:'bug', title:'Guest count on Home didn\'t update right away', description:'After marking a household as declined in Guest Management, the Guests Attending tile on Home still showed the old number until I refreshed the page.', submittedAt:'2026-08-27T09:30:00.000Z', status:'done'},
+      {id:'fb-3', type:'feature', title:'Dark mode for late-night planning sessions', description:'Half our planning happens after 11pm — a dark theme would be a lot easier on the eyes.', submittedAt:'2026-09-01T22:15:00.000Z', status:'under_review'}
+    ],
     guestCategories:["Natasha's Side","Matteo's Side","Natasha's Family","Matteo's Family","Friends","Colleagues","Dance Friends"],
     guestHouseholds:[
       {id:'hh-1', label:'The Chatur Family', categories:["Natasha's Side","Natasha's Family"], tier:'A', rsvpStatus:'confirmed', email:'asif.chatur@example.com', address:{street:'42 Rosewood Ave', city:'Toronto', region:'ON', postalCode:'M4K 1M2', country:'Canada'}, songRequest:'', invitedEvents:[], members:[
@@ -2194,6 +2369,7 @@ function buildFromOnboarding(a){
     ] : [{title:'Add your wedding date', sub:'Unlocks your full timeline', date:'Whenever ready', dateISO:null, amount:'—'}],
     roadmap, vendorCategoriesSuggested:vendorCats, tasksCount,
     weddingParty:[], bachParties:[], broadcasts:[], unavailability:[], vendorBookings:[],
+    keyRoles:[], vendorDirectory:[], delegateRoles:[], emergencyKit:{}, feedbackSubmissions:[],
     playbookTimeline: evNames.map((name,i)=>({id:'auto'+i, day: hasDate ? 'See your Events workspace for exact timing' : 'Date TBD', time:'—', title:name, tags:['coordinator','weddingparty'], location:'TBD', notes:''})),
     playbookContacts:[],
     playbookNotes:{dietary:'No dietary notes yet — these appear once guests start RSVPing.', accessibility:'No accessibility notes yet.', rainPlan:'No rain plan set yet — add one from your venue\'s indoor options.', emergency:'Add an on-site emergency contact once your venue is booked.'},
@@ -2237,11 +2413,24 @@ function setAuthMode(mode){
   authMode = mode;
   document.getElementById('authTabSignup').classList.toggle('active', mode==='signup');
   document.getElementById('authTabLogin').classList.toggle('active', mode==='login');
-  document.getElementById('authConfirmRow').style.display = mode==='signup' ? '' : 'none';
-  document.getElementById('auth-password-confirm').required = mode==='signup';
   document.getElementById('authSubmitBtn').textContent = mode==='signup' ? 'Create Account' : 'Sign In';
   document.getElementById('auth-password').setAttribute('autocomplete', mode==='signup' ? 'new-password' : 'current-password');
+  resetAuthPasswordVisibility();
   hideAuthError();
+}
+function toggleAuthPasswordVisibility(){
+  const input = document.getElementById('auth-password');
+  const btn = document.getElementById('authPwToggle');
+  const showing = input.type === 'text';
+  input.type = showing ? 'password' : 'text';
+  btn.textContent = showing ? 'Show' : 'Hide';
+}
+function resetAuthPasswordVisibility(){
+  const input = document.getElementById('auth-password');
+  const btn = document.getElementById('authPwToggle');
+  if(!input || !btn) return;
+  input.type = 'password';
+  btn.textContent = 'Show';
 }
 function showAuthError(msg){
   const el = document.getElementById('authError');
@@ -2272,11 +2461,6 @@ async function handleAuthSubmit(event){
   hideAuthError();
   const email = document.getElementById('auth-email').value.trim();
   const password = document.getElementById('auth-password').value;
-  const confirm = document.getElementById('auth-password-confirm').value;
-  if(authMode==='signup' && password !== confirm){
-    showAuthError('Those passwords don\'t match.');
-    return;
-  }
   if(!window.everaFirebase){
     showAuthError('Still connecting to the server — please try again in a moment.');
     return;
@@ -2478,6 +2662,11 @@ function normalizeDashboardData(d){
       if(!Array.isArray(m.survey.professionalServices) || m.survey.professionalServices.length<4) m.survey.professionalServices = ['','','',''];
     }
   });
+  if(!Array.isArray(d.keyRoles)) d.keyRoles = [];
+  if(!Array.isArray(d.vendorDirectory)) d.vendorDirectory = [];
+  if(!Array.isArray(d.delegateRoles)) d.delegateRoles = [];
+  if(!d.emergencyKit || typeof d.emergencyKit!=='object') d.emergencyKit = {};
+  if(!Array.isArray(d.feedbackSubmissions)) d.feedbackSubmissions = [];
   if(!Array.isArray(d.vendors)) d.vendors = [];
   if(!Array.isArray(d.vendorRecommendations)) d.vendorRecommendations = [];
   if(!Array.isArray(d.vendorBookings)) d.vendorBookings = [];
@@ -4536,26 +4725,56 @@ function findInspirationBoard(boardId){
 function hasInspirationImages(){
   return (dashboardData.inspirationBoards||[]).some(b=>Object.values(b.categories||{}).some(c=>(c.images||[]).length>0));
 }
+let inspirationCollapsedEvents = {}; // eventId -> collapsed boolean, defaults to collapsed the first time each event is seen
+function ensureInspirationCollapsedDefaults(eventIds){
+  eventIds.forEach(id=>{
+    if(inspirationCollapsedEvents[id]===undefined) inspirationCollapsedEvents[id] = true;
+  });
+}
+function toggleInspirationEvent(eventId){
+  inspirationCollapsedEvents[eventId] = !inspirationCollapsedEvents[eventId];
+  document.getElementById('content').innerHTML = renderInspirationModule();
+}
+function toggleAllInspirationEvents(){
+  const ids = dashboardData.events.map(e=>e.id);
+  const allExpanded = ids.length>0 && ids.every(id=>!inspirationCollapsedEvents[id]);
+  ids.forEach(id=>{ inspirationCollapsedEvents[id] = allExpanded; });
+  document.getElementById('content').innerHTML = renderInspirationModule();
+}
+function inspirationBoardImageCount(board){
+  return Object.values(board.categories||{}).reduce((sum,c)=>sum+(c.images||[]).length, 0);
+}
 function renderInspirationModule(){
   const d = dashboardData;
+  ensureInspirationCollapsedDefaults(d.events.map(e=>e.id));
+  const allExpanded = d.events.length>0 && d.events.every(e=>!inspirationCollapsedEvents[e.id]);
   return `
     <div class="card">
       <div class="card-head"><h4>Inspiration</h4><span class="d-sub">One board per event, so the look stays connected to your plan</span></div>
       <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Upload your own reference images for each category below — Evera doesn't fabricate inspiration photos for you. Once you've added some, your Master Colour Palette (on My Wedding Blueprint) can pull real colours straight from them.</p>
     </div>
-    ${d.events.length ? d.events.map(e=>renderInspirationEventBoard(e)).join('') : `<div class="card"><p class="d-sub" style="margin:0;">Add an event in Events to start building inspiration for it.</p></div>`}
+    ${d.events.length ? `
+    <div style="display:flex;justify-content:flex-end;margin:-6px 0 12px;">
+      <a href="#" class="ch-link" onclick="toggleAllInspirationEvents(); return false;">${allExpanded ? 'Collapse all events' : 'Expand all events'}</a>
+    </div>
+    ${d.events.map(e=>renderInspirationEventBoard(e)).join('')}
+    ` : `<div class="card"><p class="d-sub" style="margin:0;">Add an event in Events to start building inspiration for it.</p></div>`}
   `;
 }
 function renderInspirationEventBoard(e){
   const board = (dashboardData.inspirationBoards||[]).find(b=>b.eventId===e.id);
   if(!board) return '';
+  const collapsed = !!inspirationCollapsedEvents[e.id];
+  const imgCount = inspirationBoardImageCount(board);
   return `
     <div class="card">
-      <div class="card-head">
-        <div><h4 style="margin:0;">${escapeHtml(e.name)}</h4><span class="d-sub">${e.dateISO?fmtDateLabel(e.dateISO):'Date to be decided'}</span></div>
-        <button class="btn btn-outline btn-sm" onclick="openGeneratedMoodBoard('${e.id}')">🖼 Generate Mood Board</button>
+      <div class="budget-cat-head" style="margin-bottom:${collapsed?'0':'14px'};" onclick="toggleInspirationEvent('${e.id}')">
+        <svg class="bc-chevron ${collapsed?'':'open'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <div><span class="bc-name">${escapeHtml(e.name)}</span><div class="d-sub" style="margin-top:2px;">${e.dateISO?fmtDateLabel(e.dateISO):'Date to be decided'}</div></div>
+        <span class="bc-summary">${imgCount} photo${imgCount===1?'':'s'}</span>
+        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); openGeneratedMoodBoard('${e.id}')">🖼 Generate Mood Board</button>
       </div>
-      ${INSPIRATION_CATEGORIES.map(c=>renderInspirationCategory(board, c)).join('')}
+      ${collapsed ? '' : INSPIRATION_CATEGORIES.map(c=>renderInspirationCategory(board, c)).join('')}
     </div>
   `;
 }
@@ -5394,6 +5613,8 @@ function renderSettingsModule(){
       </div>
       <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Evera doesn't send real email invitations in this prototype — adding someone here just adds their record to your workspace.</p>
     </div>
+
+    ${renderFeedbackSettingsCard()}
   `;
 }
 function toggleNotificationPref(key){ dashboardData.notificationPrefs[key] = !dashboardData.notificationPrefs[key]; document.getElementById('content').innerHTML = renderSettingsModule(); }
@@ -6401,7 +6622,8 @@ function renderPlaybook(){
     {key:'timeline', label:'Timeline'},
     {key:'shotlist', label:'Photo Shot List'},
     {key:'ceremony', label:'Ceremony Order'},
-    {key:'seating', label:'Seating Chart'}
+    {key:'seating', label:'Seating Chart'},
+    {key:'runbook', label:'Run Book'}
   ];
   return `
     <div class="module-header">
@@ -6411,7 +6633,7 @@ function renderPlaybook(){
         </div>
       </div>
     </div>
-    ${playbookSection==='timeline' ? renderPlaybookTimelineSection() : playbookSection==='shotlist' ? renderShotListSection() : playbookSection==='ceremony' ? renderCeremonyOrderSection() : renderSeatingChartSection()}
+    ${playbookSection==='timeline' ? renderPlaybookTimelineSection() : playbookSection==='shotlist' ? renderShotListSection() : playbookSection==='ceremony' ? renderCeremonyOrderSection() : playbookSection==='runbook' ? renderRunBookSection() : renderSeatingChartSection()}
   `;
 }
 function switchPlaybookSection(key){
@@ -6516,6 +6738,193 @@ function renderPlaybookContactsCard(){
     ${d.playbookContacts.length ? d.playbookContacts.map(c=>`<div class="pb-contact-row"><div><div style="font-weight:600;">${c.name}</div><div class="pc-role">${c.role}</div></div><div>${c.phone}</div></div>`).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">No contacts yet.</p>'}
     <div class="itinerary-row" style="margin-top:6px;"><div class="it-day">Emergency</div><div>${d.playbookNotes.emergency}</div></div>
   </div>`;
+}
+
+/* ==================================================================
+   PLAYBOOK RUN BOOK (v1.19.0) — Full Family Contact List, Full Vendor List,
+   Delegate Roles, and an Emergency Kit checklist. Family/bridal-party/grandparent
+   rows are read live from Wedding Party Hub + Guests (no duplicate data model);
+   key roles, the vendor directory, delegate roles and the kit are their own
+   small editable lists, since nothing else in the app models them yet.
+================================================================== */
+function renderRunBookSection(){
+  return `
+    ${renderFamilyContactListCard()}
+    ${renderVendorDirectoryCard()}
+    ${renderDelegateRolesCard()}
+    ${renderEmergencyKitCard()}
+  `;
+}
+function contactRowsHtml(rows){
+  return rows.length
+    ? rows.map(c=>`<div class="pb-contact-row"><div><div style="font-weight:600;">${escapeHtml(c.name)}</div><div class="pc-role">${escapeHtml(c.role)}</div></div></div>`).join('')
+    : '<p style="font-size:12.5px;color:var(--charcoal-faint);">None added yet.</p>';
+}
+function renderFamilyContactListCard(){
+  const d = dashboardData;
+  const parents = (d.weddingParty||[]).filter(m=>m.partyGroup==='Parents');
+  const bridalParty = (d.weddingParty||[]).filter(m=>m.partyGroup && m.partyGroup!=='Parents');
+  const grandparents = (d.guestHouseholds||[]).flatMap(h=>(h.members||[])
+    .filter(mem=>(mem.relationship||'')==='grandparent')
+    .map(mem=>({name:[mem.salutation,mem.firstName,mem.lastName].filter(Boolean).join(' '), role:'Grandparent'})));
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Full Family Contact List</h4><span class="d-sub">Read live from Wedding Party &amp; Guests — no phone numbers shown here</span></div>
+      <div class="detail-section" style="margin-top:4px;">
+        <div class="detail-section-head"><h4 style="margin:0;">Immediate Family</h4></div>
+        ${contactRowsHtml([{name:d.partner1, role:'Bride'}, ...parents.map(p=>({name:p.name, role:p.role})), {name:d.partner2, role:'Groom'}])}
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-head"><h4 style="margin:0;">Bridal Party</h4></div>
+        ${contactRowsHtml(bridalParty.map(p=>({name:p.name, role:p.role})))}
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-head"><h4 style="margin:0;">Grandparents</h4></div>
+        ${contactRowsHtml(grandparents)}
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-head"><h4 style="margin:0;">Important Roles</h4></div>
+        ${(d.keyRoles||[]).length ? d.keyRoles.map((kr,ki)=>`<div class="pb-contact-row"><div><div style="font-weight:600;">${escapeHtml(kr.name)}</div><div class="pc-role">${escapeHtml(kr.role)}</div></div><a href="#" class="danger-link" onclick="removeKeyRole(${ki}); return false;">Remove</a></div>`).join('') : '<p style="font-size:12.5px;color:var(--charcoal-faint);">None added yet.</p>'}
+        <div class="custom-add-row" style="margin-top:8px;">
+          <input type="text" id="newKeyRoleName" placeholder="Name">
+          <input type="text" id="newKeyRoleRole" placeholder="Role (e.g. Officiant)">
+          <button class="btn btn-outline btn-sm" onclick="addKeyRole()">+ Add Role</button>
+        </div>
+      </div>
+      <p class="detail-hint">Parents and bridal party come from Wedding Party Hub; grandparents come from any Guest household member marked as a grandparent — edit them there and they update here automatically. Add one-off ceremonial roles (officiant, flower girl, ring bearer, planner) directly above.</p>
+    </div>
+  `;
+}
+function addKeyRole(){
+  const name = (document.getElementById('newKeyRoleName').value||'').trim();
+  const role = (document.getElementById('newKeyRoleRole').value||'').trim();
+  if(!name || !role) return;
+  dashboardData.keyRoles.push({name, role});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeKeyRole(idx){
+  dashboardData.keyRoles.splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function renderVendorDirectoryCard(){
+  const d = dashboardData;
+  const list = d.vendorDirectory||[];
+  const cats = Array.from(new Set(list.map(v=>v.category)));
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Full Vendor List</h4><span class="d-sub">${list.length} vendor${list.length===1?'':'s'} across ${cats.length} categor${cats.length===1?'y':'ies'}</span></div>
+      ${cats.length ? cats.map(cat=>`
+        <div class="detail-section">
+          <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(cat)}</h4></div>
+          ${list.map((v,vi)=>({v,vi})).filter(r=>r.v.category===cat).map(r=>`
+            <div class="pb-contact-row">
+              <div><div style="font-weight:600;">${escapeHtml(r.v.name)}</div>${r.v.contact ? `<div class="pc-role">${escapeHtml(r.v.contact)}</div>` : ''}</div>
+              <a href="#" class="danger-link" onclick="removeVendorDirectoryEntry(${r.vi}); return false;">Remove</a>
+            </div>
+          `).join('')}
+        </div>
+      `).join('') : '<p style="font-size:12.5px;color:var(--charcoal-faint);">No vendors yet.</p>'}
+      <div class="custom-add-row" style="margin-top:12px; flex-wrap:wrap;">
+        <input type="text" id="newVendorDirName" placeholder="Vendor / business name" style="flex:2; min-width:180px;">
+        <input type="text" id="newVendorDirContact" placeholder="Contact person (optional)" style="flex:1; min-width:140px;">
+        <input type="text" id="newVendorDirCategory" placeholder="Category (e.g. Catering)" style="flex:1; min-width:140px;">
+        <button class="btn btn-outline btn-sm" onclick="addVendorDirectoryEntry()">+ Add Vendor</button>
+      </div>
+      <p class="detail-hint">This is your own quick-reference vendor sheet for the Playbook — separate from the booking records tracked in Vendors.</p>
+    </div>
+  `;
+}
+function addVendorDirectoryEntry(){
+  const name = (document.getElementById('newVendorDirName').value||'').trim();
+  const contact = (document.getElementById('newVendorDirContact').value||'').trim();
+  const category = (document.getElementById('newVendorDirCategory').value||'').trim() || 'Other';
+  if(!name) return;
+  dashboardData.vendorDirectory.push({category, name, contact});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeVendorDirectoryEntry(idx){
+  dashboardData.vendorDirectory.splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function renderDelegateRolesCard(){
+  const d = dashboardData;
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Delegate Roles</h4><span class="d-sub">Fun, specific day-of jobs so nothing falls through the cracks</span></div>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Give each of these to someone whose main job that day has room for one more small, memorable task.</p>
+      ${(d.delegateRoles||[]).length ? d.delegateRoles.map((r,ri)=>`
+        <div class="pb-contact-row" style="align-items:flex-start;">
+          <div><div style="font-weight:600;">${escapeHtml(r.name)} — ${escapeHtml(r.role)}</div>${r.details ? `<div class="pc-role" style="white-space:normal;">${escapeHtml(r.details)}</div>` : ''}</div>
+          <a href="#" class="danger-link" onclick="removeDelegateRole(${ri}); return false;">Remove</a>
+        </div>
+      `).join('') : '<p style="font-size:12.5px;color:var(--charcoal-faint);">No delegate roles yet.</p>'}
+      <div class="custom-add-row" style="margin-top:12px; flex-wrap:wrap;">
+        <input type="text" id="newDelegateName" placeholder="Who" style="flex:1; min-width:120px;">
+        <input type="text" id="newDelegateRole" placeholder="Fun role name" style="flex:1; min-width:140px;">
+        <input type="text" id="newDelegateDetails" placeholder="What they actually do (optional)" style="flex:2; min-width:200px;">
+        <button class="btn btn-outline btn-sm" onclick="addDelegateRole()">+ Add Role</button>
+      </div>
+    </div>
+  `;
+}
+function addDelegateRole(){
+  const name = (document.getElementById('newDelegateName').value||'').trim();
+  const role = (document.getElementById('newDelegateRole').value||'').trim();
+  const details = (document.getElementById('newDelegateDetails').value||'').trim();
+  if(!name || !role) return;
+  dashboardData.delegateRoles.push({name, role, details});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeDelegateRole(idx){
+  dashboardData.delegateRoles.splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function renderEmergencyKitCard(){
+  const d = dashboardData;
+  const cats = Object.keys(d.emergencyKit||{});
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Emergency Kit Checklist</h4><span class="d-sub">Pack this the morning of</span></div>
+      ${cats.length ? cats.map((cat,ci)=>`
+        <div class="detail-section">
+          <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(cat)}</h4></div>
+          <div class="chip-grid">
+            ${(d.emergencyKit[cat]||[]).map((item,ii)=>`<span class="attach-chip">${escapeHtml(item)}<a href="#" onclick="removeEmergencyKitItem(${ci},${ii}); return false;" title="Remove">×</a></span>`).join('')}
+          </div>
+          <div class="custom-add-row" style="margin-top:8px;">
+            <input type="text" id="newKitItem-${ci}" placeholder="Add item">
+            <button class="btn btn-outline btn-sm" onclick="addEmergencyKitItem(${ci})">+ Add</button>
+          </div>
+        </div>
+      `).join('') : '<p style="font-size:12.5px;color:var(--charcoal-faint);">No categories yet.</p>'}
+      <div class="custom-add-row" style="margin-top:12px;">
+        <input type="text" id="newKitCategory" placeholder="New category name (e.g. Documents)">
+        <button class="btn btn-outline btn-sm" onclick="addEmergencyKitCategory()">+ Add Category</button>
+      </div>
+    </div>
+  `;
+}
+function addEmergencyKitItem(ci){
+  const cat = Object.keys(dashboardData.emergencyKit)[ci];
+  if(!cat) return;
+  const el = document.getElementById('newKitItem-'+ci);
+  const val = (el.value||'').trim();
+  if(!val) return;
+  dashboardData.emergencyKit[cat].push(val);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeEmergencyKitItem(ci, ii){
+  const cat = Object.keys(dashboardData.emergencyKit)[ci];
+  if(!cat) return;
+  dashboardData.emergencyKit[cat].splice(ii,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function addEmergencyKitCategory(){
+  const el = document.getElementById('newKitCategory');
+  const val = (el.value||'').trim();
+  if(!val) return;
+  if(!dashboardData.emergencyKit[val]) dashboardData.emergencyKit[val] = [];
+  document.getElementById('content').innerHTML = renderPlaybook();
 }
 
 /* ==================================================================
@@ -8238,6 +8647,77 @@ function renderSurveysSettingsCard(){
     </div>
   `;
 }
+const FEEDBACK_STATUSES = ['submitted','under_review','planned','done'];
+const FEEDBACK_STATUS_LABELS = { submitted:'Submitted', under_review:'Under Review', planned:'Planned', done:'Done' };
+const FEEDBACK_STATUS_PILL_CLASS = { submitted:'pill-neutral', under_review:'pill-warn', planned:'pill-warn', done:'pill-ok' };
+function feedbackStatusPill(status){
+  return `<span class="pill ${FEEDBACK_STATUS_PILL_CLASS[status] || 'pill-neutral'}">${FEEDBACK_STATUS_LABELS[status] || status}</span>`;
+}
+function feedbackTypeLabel(type){
+  return type==='bug' ? '🐛 Bug Report' : '💡 Feature Request';
+}
+function renderFeedbackSettingsCard(){
+  const submissions = (dashboardData.feedbackSubmissions||[]).slice().sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt));
+  return `
+    <div class="card">
+      <div class="card-head"><div><h4>Feature Requests &amp; Bug Reports</h4><span class="d-sub">Tell the Evera team what's working, what's broken, or what you wish it did</span></div></div>
+      <div class="field-grid">
+        <div class="field-cell">
+          <label>Type</label>
+          <select id="fbType">
+            <option value="feature">💡 Feature Request</option>
+            <option value="bug">🐛 Bug Report</option>
+          </select>
+        </div>
+        <div class="field-cell"><label>Title</label><input type="text" id="fbTitle" placeholder="Short summary"></div>
+      </div>
+      <div class="field-cell" style="margin-top:12px;"><label>Details</label><textarea class="notes-field notes-field-sm" id="fbDescription" placeholder="What happened, or what would help?"></textarea></div>
+      <div style="margin-top:12px;"><button class="btn btn-solid btn-sm" onclick="submitFeedback()">Submit</button></div>
+
+      ${submissions.length ? `
+        <div class="budget-items" style="padding-left:0; margin-top:22px;">
+          <div class="budget-items-head" style="grid-template-columns:1fr 0.6fr 0.4fr;"><span>Submission</span><span>Status</span><span></span></div>
+          ${submissions.map(f=>`
+            <div class="budget-item-row" style="grid-template-columns:1fr 0.6fr 0.4fr; align-items:flex-start;">
+              <div>
+                <div style="font-weight:600; font-size:13.5px;">${feedbackTypeLabel(f.type)} · ${escapeHtml(f.title)} ${feedbackStatusPill(f.status)}</div>
+                ${f.description ? `<div class="d-sub" style="margin-top:4px;">${escapeHtml(f.description)}</div>` : ''}
+                <div class="d-sub" style="margin-top:4px;">Submitted ${new Date(f.submittedAt).toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'})}</div>
+              </div>
+              <select class="select-field-sm" onchange="updateFeedbackStatus('${f.id}', this.value)">
+                ${FEEDBACK_STATUSES.map(s=>`<option value="${s}" ${f.status===s?'selected':''}>${FEEDBACK_STATUS_LABELS[s]}</option>`).join('')}
+              </select>
+              <a href="#" class="danger-link" onclick="removeFeedbackSubmission('${f.id}'); return false;">✕</a>
+            </div>
+          `).join('')}
+        </div>
+      ` : `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">Nothing submitted yet — every feature request or bug report you send goes here, so you can check back on it.</p>`}
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:12px;">In this prototype, status is shown as a plain dropdown you can change yourself for demo purposes — in the real product, the Evera team would update it as they review what's submitted, not the couple.</p>
+    </div>
+  `;
+}
+function submitFeedback(){
+  const type = document.getElementById('fbType').value;
+  const title = document.getElementById('fbTitle').value.trim();
+  const description = document.getElementById('fbDescription').value.trim();
+  if(!title) return;
+  dashboardData.feedbackSubmissions = dashboardData.feedbackSubmissions || [];
+  dashboardData.feedbackSubmissions.push({
+    id: 'fb-'+Date.now(), type, title, description,
+    submittedAt: new Date().toISOString(), status: 'submitted'
+  });
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function updateFeedbackStatus(id, status){
+  const f = (dashboardData.feedbackSubmissions||[]).find(x=>x.id===id);
+  if(!f) return;
+  f.status = status;
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function removeFeedbackSubmission(id){
+  dashboardData.feedbackSubmissions = (dashboardData.feedbackSubmissions||[]).filter(x=>x.id!==id);
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
 function applicableSurveysForHousehold(h){
   const invitedIds = householdInvitedEventIds(h);
   return (dashboardData.rsvpSurveys||[]).filter(s => s.active && (!s.eventId || invitedIds.includes(s.eventId)));
@@ -9331,6 +9811,27 @@ const CAL_TYPE_COLORS = {
   unavailable:'var(--charcoal-faint)', bach:'var(--champagne-dark)', custom:'var(--green-mid)'
 };
 function calTypeColor(type){ return CAL_TYPE_COLORS[type] || 'var(--charcoal-faint)'; }
+// ---- Unavailability windows: the only calendar item type that can genuinely span multiple days.
+// Rather than plotting them as a repeated chip on every covered day (like every other item type),
+// the month grid renders them as a coloured "band" segment per day-cell, rounded only at the window's
+// true start/end (not clipped at a month boundary), so a multi-day window reads as one continuous
+// block instead of N separate entries. See renderCalendarCard().
+function ymdToISO(year, month, day){
+  return year + '-' + String(month+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+}
+function unavailabilityWindowsForDay(year, month, day){
+  const dateISO = ymdToISO(year, month, day);
+  const d0 = new Date(dateISO+'T00:00:00');
+  return (dashboardData.unavailability||[]).filter(u=>{
+    const s = new Date(u.startISO+'T00:00:00');
+    const e = new Date((u.endISO||u.startISO)+'T00:00:00');
+    return d0>=s && d0<=e;
+  }).map(u=>({
+    ...u,
+    isStart: u.startISO===dateISO,
+    isEnd: (u.endISO||u.startISO)===dateISO
+  }));
+}
 // Categories for ad-hoc calendar events (all still plot under the shared "Other" dot colour —
 // the category is a label for context, e.g. in the agenda and detail view, not a new legend colour.
 const CUSTOM_EVENT_CATEGORIES = [
@@ -9376,12 +9877,17 @@ function renderCalendarCard(){
   for(let i=0;i<firstWeekday;i++) cells += `<div class="cal-cell cal-empty"></div>`;
   for(let day=1; day<=daysInMonth; day++){
     const dayItems = dayMap[day]||[];
+    // Unavailability windows render as a band (below), not as chips in the regular list — otherwise
+    // a multi-day window would show up as a repeated, separately-clickable chip on every day it covers.
+    const chipItems = dayItems.filter(it=>it.type!=='unavailable');
+    const unavailWindows = unavailabilityWindowsForDay(year, month, day);
     const isToday = isCurrentMonth && now.getDate()===day;
     const isSelected = selectedCalendarDay && selectedCalendarDay.year===year && selectedCalendarDay.month===month && selectedCalendarDay.day===day;
-    const shown = dayItems.slice(0,2);
-    const extra = dayItems.length - shown.length;
+    const shown = chipItems.slice(0,2);
+    const extra = chipItems.length - shown.length;
     cells += `<div class="cal-cell ${dayItems.length?'has-items':''} ${isToday?'cal-today':''} ${isSelected?'cal-selected':''}" ${dayItems.length?`onclick="showCalendarDay(${year},${month},${day})"`:''}>
       <div class="cal-daynum">${day}</div>
+      ${unavailWindows.map(u=>`<div class="cal-unavail-band ${u.isStart?'band-start':''} ${u.isEnd?'band-end':''}" title="${escapeAttr(u.label)}" onclick="event.stopPropagation(); openCalendarItemDetail('unavailable','${escapeAttr(String(u.id))}');">${u.isStart ? `<span class="cal-unavail-band-label">${escapeHtml(u.label)}</span>` : ''}</div>`).join('')}
       <div class="cal-chips">
         ${shown.map(it=>`<div class="cal-chip" title="${escapeAttr(it.title)}" onclick="event.stopPropagation(); openCalendarItemDetail('${it.type}','${escapeAttr(String(it.id))}');"><span class="cal-dot cal-dot-${it.type}"></span><span class="cal-chip-text">${escapeHtml(it.title)}</span></div>`).join('')}
         ${extra>0 ? `<div class="cal-more">+${extra} more</div>` : ''}
@@ -9410,9 +9916,11 @@ function renderCalendarCard(){
       </div>
       <div class="cal-toolbar">
         <button class="btn btn-outline btn-sm" onclick="downloadFullCalendarIcs()">⤓ Export / Subscribe (.ics)</button>
+        <button class="btn btn-outline btn-sm" onclick="toggleUnavailAddForm()">${unavailAddFormOpen ? 'Done' : '+ Add Unavailability'}</button>
         <button class="btn btn-solid btn-sm" onclick="toggleCalendarAddForm()">${calendarAddFormOpen ? 'Done' : '+ Add an Event'}</button>
       </div>
       ${calendarAddFormOpen ? renderCalendarAddForm() : ''}
+      ${unavailAddFormOpen ? renderUnavailAddForm() : ''}
       <div class="cal-legend">
         <span><span class="cal-dot cal-dot-event"></span>Events</span>
         <span><span class="cal-dot cal-dot-task"></span>Tasks</span>
@@ -9516,6 +10024,52 @@ function addCustomCalendarEvent(){
 function removeCustomCalendarEvent(id){
   dashboardData.customCalendarEvents = dashboardData.customCalendarEvents.filter(c=>c.id!==id);
   document.getElementById('content').innerHTML = renderPlanModule();
+}
+function renderUnavailAddForm(){
+  return `
+    <div class="detail-section" style="margin-bottom:14px;">
+      <div class="detail-section-head"><h4 style="margin:0;">Add Unavailability</h4></div>
+      <div class="custom-add-row" style="flex-wrap:wrap;">
+        <input type="text" id="unavailNewLabel" placeholder="Label (e.g. Natasha traveling for work)" style="flex:2; min-width:220px;">
+        <input type="date" id="unavailNewStart" class="select-field-sm" style="width:auto;" title="Start date">
+        <input type="date" id="unavailNewEnd" class="select-field-sm" style="width:auto;" title="End date">
+        <input type="text" id="unavailNewNote" placeholder="Note (optional)" style="flex:2; min-width:180px;">
+        <button class="btn btn-outline btn-sm" onclick="addUnavailability()">+ Add Unavailability</button>
+      </div>
+      <p class="detail-hint">Blocks off a window (single day or a multi-day span) as unavailable for scheduling — shown as a coloured band on the calendar. Leave the end date blank for a single day.</p>
+    </div>
+  `;
+}
+function toggleUnavailAddForm(){
+  unavailAddFormOpen = !unavailAddFormOpen;
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function addUnavailability(){
+  const labelEl = document.getElementById('unavailNewLabel');
+  const startEl = document.getElementById('unavailNewStart');
+  const endEl = document.getElementById('unavailNewEnd');
+  const noteEl = document.getElementById('unavailNewNote');
+  const label = labelEl.value.trim();
+  const startISO = startEl.value;
+  if(!label || !startISO) return;
+  let endISO = endEl.value || startISO;
+  if(endISO < startISO) endISO = startISO; // guard against an accidentally-reversed range
+  dashboardData.unavailability = dashboardData.unavailability || [];
+  dashboardData.unavailability.push({id:'ua-'+Date.now(), type:'custom', label, startISO, endISO, note:(noteEl.value||'').trim()});
+  unavailAddFormOpen = false;
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function updateUnavailabilityField(id, field, value){
+  const u = (dashboardData.unavailability||[]).find(x=>x.id===id);
+  if(!u) return;
+  u[field] = value;
+  if(field==='startISO' && u.endISO && u.endISO<u.startISO) u.endISO = u.startISO;
+  if(field==='endISO' && (!u.endISO || u.endISO<u.startISO)) u.endISO = u.startISO;
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function removeUnavailability(id){
+  dashboardData.unavailability = (dashboardData.unavailability||[]).filter(u=>u.id!==id);
+  closeCalendarItemDetail();
 }
 function icsDateOnly(dateISO){ return dateISO.replace(/-/g,''); }
 function addDaysISO(dateISO, n){
@@ -9714,9 +10268,13 @@ function renderCalendarItemDetail(type, id){
       <div class="item-modal">
         <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
         <div class="eyebrow">Unavailable</div>
-        <h3 style="margin-top:6px;">${escapeHtml(u.label)}</h3>
-        <div class="d-sub" style="margin-top:4px;">${fmtCalDate(u.startISO)}${u.endISO && u.endISO!==u.startISO ? ' – '+fmtCalDate(u.endISO) : ''}</div>
-        ${u.note ? `<p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6; margin-top:16px;">${escapeHtml(u.note)}</p>` : ''}
+        <div class="field-cell" style="margin-top:10px;"><label>Label</label><input type="text" style="font-size:16px; font-weight:700;" value="${escapeAttr(u.label)}" onchange="updateUnavailabilityField('${u.id}','label',this.value)"></div>
+        <div class="field-grid" style="margin-top:12px;">
+          <div class="field-cell"><label>Start Date</label><input type="date" value="${u.startISO}" onchange="updateUnavailabilityField('${u.id}','startISO',this.value)"></div>
+          <div class="field-cell"><label>End Date</label><input type="date" value="${u.endISO||u.startISO}" onchange="updateUnavailabilityField('${u.id}','endISO',this.value)"></div>
+        </div>
+        <div class="field-cell" style="margin-top:12px;"><label>Note</label><textarea class="notes-field notes-field-sm" onchange="updateUnavailabilityField('${u.id}','note',this.value)">${escapeHtml(u.note||'')}</textarea></div>
+        <div style="margin-top:20px;"><a href="#" class="danger-link" onclick="removeUnavailability('${u.id}'); return false;">Remove This Unavailability</a></div>
       </div>
     `;
   }
