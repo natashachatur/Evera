@@ -377,6 +377,37 @@
   .vision-swatch{width:26px; height:26px; border-radius:50%; border:2px solid var(--paper); box-shadow:0 0 0 1px var(--line);}
   .vision-note{font-size:13px; color:var(--charcoal-soft); line-height:1.55; font-style:italic;}
 
+  /* ---- My Wedding Blueprint redesign (Sep 25 2026): a visual vision hero + guided details ---- */
+  .bp-hero{border-radius:var(--radius); box-shadow:var(--shadow-lg); margin-bottom:18px; padding:36px 38px; display:flex; gap:32px; align-items:center; justify-content:space-between; flex-wrap:wrap; position:relative;}
+  .bp-hero-copy{flex:1 1 320px; min-width:260px;}
+  .bp-hero-eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:0.22em; font-weight:700; opacity:0.75;}
+  .bp-hero-names{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600; font-size:clamp(28px,3.4vw,42px); line-height:1.12; margin-top:8px;}
+  .bp-hero-meta{font-size:13.5px; margin-top:10px; opacity:0.92; display:flex; flex-wrap:wrap;}
+  .bp-hero-meta span{white-space:nowrap;}
+  .bp-hero-meta span:not(:last-child)::after{content:'·'; margin:0 10px; opacity:0.6;}
+  .bp-hero-quote{font-size:14.5px; font-style:italic; line-height:1.6; margin-top:18px; max-width:440px;}
+  .bp-hero-tags{display:flex; gap:6px; flex-wrap:wrap; margin-top:16px;}
+  .bp-hero-tag{font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700; padding:5px 11px; border-radius:999px; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.32);}
+  .bp-hero-palette{display:flex; gap:7px; margin-top:18px;}
+  .bp-hero-swatch{width:24px; height:24px; border-radius:50%; box-shadow:0 0 0 2px rgba(255,255,255,0.55);}
+  .bp-hero-collage{flex-shrink:0; display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:98px; gap:10px; width:280px;}
+  .bp-hero-collage img{width:100%; height:100%; object-fit:cover; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.28); display:block;}
+  .bp-hero-collage .bph-img-1{grid-row:span 2;}
+  .bp-hero-collage-1{grid-template-columns:1fr; width:200px;}
+  .bp-hero-collage-1 img{height:236px;}
+  .bp-hero-collage-2{grid-template-columns:1fr; width:200px;}
+  .bp-hero-empty{flex:0 0 260px; border:1.5px dashed rgba(255,255,255,0.4); border-radius:14px; padding:22px; text-align:center;}
+  .bp-hero-empty p{font-size:12.5px; line-height:1.6; opacity:0.92; margin:0 0 14px;}
+  .bp-hero-empty .btn{background:rgba(255,255,255,0.16); border-color:rgba(255,255,255,0.45); color:inherit;}
+  .bp-hero-empty .btn:hover{background:rgba(255,255,255,0.26);}
+  @media (max-width:760px){ .bp-hero{padding:26px 22px;} .bp-hero-collage, .bp-hero-collage-1, .bp-hero-collage-2, .bp-hero-empty{width:100%; flex-basis:100%;} }
+  .bp-progress-card{background:var(--ivory-deep); border-radius:var(--radius-sm); padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  .bp-progress-track{flex:1; min-width:140px; height:6px; border-radius:99px; background:var(--line-soft); overflow:hidden;}
+  .bp-progress-fill{height:100%; border-radius:99px; background:var(--green); transition:width .3s ease;}
+  .bp-progress-label{font-size:12.5px; font-weight:700; color:var(--charcoal); white-space:nowrap;}
+  .bp-progress-note{font-size:12px; color:var(--charcoal-faint); flex-basis:100%;}
+  .bp-section-label{font-size:11px; text-transform:uppercase; letter-spacing:0.16em; font-weight:700; color:var(--charcoal-faint); margin:6px 2px 10px;}
+
   .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
   .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
   @media (max-width:1000px){ .grid-2, .grid-3{grid-template-columns:1fr;} }
@@ -550,6 +581,17 @@
   .bc-progress-track{height:4px; border-radius:99px; background:var(--line-soft); margin-top:9px; overflow:hidden;}
   .bc-progress-fill{height:100%; border-radius:99px; transition:width .2s ease;}
   .budget-cat-tools{display:flex; align-items:center; gap:14px;}
+  /* Budget category management (new, Sep 25 2026): rename-in-place, reorder, delete w/ reallocate */
+  .bc-name-input{font-family:inherit; font-size:14px; font-weight:700; color:var(--charcoal); border:1px solid transparent; background:transparent; padding:3px 6px; border-radius:6px; min-width:60px; cursor:text;}
+  .bc-name-input:hover{background:var(--ivory-deep);}
+  .bc-name-input:focus{background:var(--ivory-deep); outline:none; border-color:var(--line);}
+  .bc-head-tools{display:flex; align-items:center; gap:1px;}
+  .bc-icon-btn{background:none; border:none; cursor:pointer; color:var(--charcoal-faint); font-size:11px; padding:4px 6px; line-height:1; border-radius:5px;}
+  .bc-icon-btn:hover{background:var(--ivory-deep); color:var(--charcoal);}
+  .bc-icon-btn:disabled{opacity:0.3; cursor:default;}
+  .bc-icon-btn:disabled:hover{background:none; color:var(--charcoal-faint);}
+  .bc-icon-btn-danger{font-size:13px;}
+  .bc-icon-btn-danger:hover{background:var(--rose); color:var(--terracotta);}
   .expand-toggle{font-size:11.5px; font-weight:700; color:var(--green); border-bottom:1px solid var(--champagne); white-space:nowrap;}
   .budget-items{margin-top:12px; padding-left:20px;}
   .budget-items-head{display:grid; grid-template-columns:1.6fr 0.8fr 0.8fr 1.2fr 0.6fr; gap:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); padding-bottom:6px;}
@@ -866,6 +908,34 @@
   .note-text-readonly{flex:1; font-size:10.5px; color:var(--charcoal); padding:2px 3px; overflow:auto; white-space:pre-wrap; line-height:1.35;}
   .note-remove{position:absolute; top:-8px; right:-8px; width:16px; height:16px; border-radius:50%; background:var(--terracotta); color:#fff; font-size:11px; line-height:16px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.2); z-index:2;}
   .seating-lock-banner p{margin-top:0;}
+  /* Seating chart: drag-or-click guest pane beside the floor plan (new request, Sep 25 2026) */
+  .seating-layout{display:grid; grid-template-columns:1fr 300px; gap:16px; align-items:start;}
+  .seating-guest-pane{position:sticky; top:86px; max-height:calc(100vh - 110px); overflow-y:auto;}
+  .sgp-search{width:100%; box-sizing:border-box; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px; margin-bottom:10px;}
+  .sgp-section-label{font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); font-weight:700; margin:12px 0 6px;}
+  .sgp-list{display:flex; flex-direction:column; gap:4px;}
+  .sgp-row{display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:10px; background:var(--ivory-deep); cursor:grab;}
+  .sgp-row:active{cursor:grabbing;}
+  .sgp-row-seated{background:var(--green-tint);}
+  .sgp-dot{width:16px; height:16px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:9px; color:#fff; font-weight:700;}
+  .sgp-dot-open{border:1.5px dashed var(--charcoal-faint); background:transparent;}
+  .sgp-dot-seated{background:var(--ok);}
+  .sgp-info{flex:1; min-width:0;}
+  .sgp-name{font-size:12.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .sgp-meta{font-size:10.5px; color:var(--charcoal-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .sgp-unseat{flex-shrink:0; color:var(--charcoal-faint); font-size:14px; padding:0 2px;}
+  .sgp-add-row{display:flex; flex-direction:column; gap:6px; margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);}
+  .sgp-add-row input, .sgp-add-row select{padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px;}
+  .seat-picker-panel{background:var(--paper); border:1.5px solid var(--champagne-dark); border-radius:14px; padding:12px 14px; margin-bottom:12px; box-shadow:0 2px 8px rgba(43,42,38,0.1);}
+  .seat-picker-head{display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12.5px; font-weight:700; color:var(--green-deep); margin-bottom:8px;}
+  .seat-picker-close{color:var(--charcoal-faint); font-size:16px; line-height:1;}
+  .seat-picker-list{max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:2px;}
+  .seat-picker-row{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 9px; border-radius:8px; font-size:12.5px; font-weight:600; color:var(--charcoal);}
+  .seat-picker-row:hover{background:var(--ivory-deep);}
+  @media (max-width: 900px){
+    .seating-layout{grid-template-columns:1fr;}
+    .seating-guest-pane{position:static; max-height:none;}
+  }
 
   /* assistant panel */
   .assistant-fab{
@@ -1429,6 +1499,8 @@
 <div class="item-overlay" id="budgetItemOverlay" onclick="if(event.target===this) closeBudgetItemDetail();"><!-- injected --></div>
 <div class="item-overlay" id="householdOverlay" onclick="if(event.target===this) closeHouseholdDetail();"><!-- injected --></div>
 <div class="item-overlay" id="vendorBookingOverlay" onclick="if(event.target===this) closeVendorBookingDetail();"><!-- injected --></div>
+<div class="item-overlay" id="vendorAddOverlay" onclick="if(event.target===this) closeVendorAddModal();"><!-- injected --></div>
+<div class="item-overlay" id="budgetCategoryDeleteOverlay" onclick="if(event.target===this) closeBudgetCategoryDelete();"><!-- injected --></div>
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div class="item-overlay" id="calendarItemOverlay" onclick="if(event.target===this) closeCalendarItemDetail();"><!-- injected --></div>
@@ -1549,6 +1621,17 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.31.0', date:'2026-09-25',
+    title:'Drag-to-seat guests, flexible Budget categories, a real Add Vendor form, and a redesigned Wedding Blueprint',
+    items:[
+      'Seating Chart: a Guests pane now sits beside the floor plan showing who\'s seated and who\'s remaining — drag a name straight onto a seat, or click any open seat to pick a guest from a searchable list instead.',
+      'Budget: "+ Add Line Item" up top lets you add a line item without choosing a category first (it lands in Uncategorized until you sort it) — or use "+ Add Item" inside a specific category to place it exactly where you want.',
+      'Budget: "+ New Category" is now a simple button at the top of Master Budget. Category names are editable right in place, categories can be reordered with the ▲▼ arrows, and deleting one now asks whether to move its line items to another category or delete them too.',
+      'Vendors: "+ Add Vendor" now opens a full pop-up with every field — contact info, cost, contract status, linked budget item, and which events it covers — instead of just category/role/name. The same pop-up is reachable from the Seating Chart\'s "seat a vendor here" menu too, so you can add a new vendor without leaving the chart.',
+      'My Wedding Blueprint: redesigned around a visual vision hero at the top — your names, date, palette, aesthetic notes, and a photo collage pulled straight from Inspiration — followed by a "details set" progress strip and the same editable fields as before, now organized as guided sections underneath.'
+    ]
+  },
   {
     version:'1.30.0', date:'2026-09-25',
     title:'Seating chart overhaul: real rooms, a floor plan backdrop, and freeform notes',
@@ -1933,6 +2016,9 @@ let eventsView = 'list';     // 'list' | 'detail'
 let selectedEventId = null;
 let addingEvent = false;
 let budgetCollapsedMap = {};
+let budgetItemQuickAddOpen = false;  // Budget: "+ Add Line Item" up top — add a line item without picking a category first
+let budgetCategoryAddOpen = false;   // Budget: "+ New Category" up top
+let budgetCategoryDeleteState = null; // Budget: {ci} while the delete/reallocate modal is open for that category
 let calendarMonth = null;    // {year, month}
 let selectedCalendarDay = null; // {year, month, day}
 let budgetTab = 'overview';  // 'overview' | 'savings'
@@ -1949,6 +2035,9 @@ let draggingTableId = null;   // seating chart: table currently being reposition
 let draggingDecorId = null;   // seating chart: décor piece currently being repositioned
 let draggingNoteId = null;    // seating chart: freeform note currently being repositioned (chunk 5)
 let draggingGuest = null;     // seating chart: {householdId, memberId} currently being dragged onto a seat
+let seatPickerState = null;   // seating chart: {chartId, tableId, seatIndex} — open when an empty seat is clicked, so a guest can be picked instead of dragged
+let seatPickerSearch = '';    // seating chart: filter text for the seat-picker panel's guest list
+let seatingPaneSearch = '';   // seating chart: filter text for the seated/unassigned guest pane beside the floor plan
 let vendorBookingDetailId = null; // vendor booking id whose drill-in detail is open, if any
 let planFilterEvent = 'all', planFilterRole = 'all', planFilterPriority = 'all', planFilterStatus = 'open'; // Plan module task filters
 let planExpandedTaskId = null; // which task row shows its inline Notes/Dependency editor
@@ -3677,7 +3766,7 @@ function renderRoute(key){
     eventsView = 'list'; selectedEventId = null; addingEvent = false;
     document.getElementById('content').innerHTML = renderEventsModule();
   } else if(key==='budget'){
-    budgetTab = 'overview'; budgetOverviewView = 'category';
+    budgetTab = 'overview'; budgetOverviewView = 'category'; budgetItemQuickAddOpen = false; budgetCategoryAddOpen = false;
     document.getElementById('content').innerHTML = renderBudgetModule();
   } else if(key==='documents'){
     docsTab = 'notes'; editingNoteId = null;
@@ -3689,7 +3778,7 @@ function renderRoute(key){
     guestsFilterRsvp = 'all'; guestsFilterTier = 'all'; guestsFilterCategory = 'all'; guestsFilterEvent = 'all'; guestsGroupBy = 'family'; guestAddFormOpen = false;
     document.getElementById('content').innerHTML = renderGuestsModule();
   } else if(key==='vendors'){
-    vendorAddFormOpen = false;
+    vendorAddFormOpen = null;
     document.getElementById('content').innerHTML = renderVendorsModule();
   } else if(key==='my-wedding'){
     document.getElementById('content').innerHTML = renderMyWeddingModule();
@@ -4543,10 +4632,94 @@ function renderNameChangeChecklistModal(key){
   `;
 }
 let nameChangeChecklistKey = null;
+/* ---- My Wedding Blueprint redesign (Sep 25 2026): a visual vision hero + a guided details
+   section below, so the page works both as a showcase of the couple's vision and as the
+   one place to set every core wedding fact. ---- */
+function blueprintCollageImages(limit){
+  const out = [];
+  (dashboardData.inspirationBoards||[]).forEach(b=>{
+    INSPIRATION_CATEGORIES.forEach(c=>{
+      ((b.categories[c.key]||{}).images||[]).forEach(img=>{ if(img && img.src) out.push(img.src); });
+    });
+  });
+  return out.slice(0, limit);
+}
+function weddingBlueprintCompleteness(){
+  const d = dashboardData, wp = d.weddingProfile;
+  const checks = [
+    !!(d.partner1First && d.partner1Last),
+    !!(d.partner2First && d.partner2Last),
+    !!d.weddingDateISO,
+    !!(d.location && d.location.trim()),
+    d.guestCount>0,
+    d.budgetTotal>0,
+    !!(wp.traditions && wp.traditions.length>0),
+    !!(wp.colorPalette && wp.colorPalette.length>0),
+    !!(wp.aestheticNotes && wp.aestheticNotes.trim())
+  ];
+  const done = checks.filter(Boolean).length;
+  return {done, total: checks.length, pct: Math.round(done/checks.length*100)};
+}
+function renderBlueprintVisionHero(){
+  const d = dashboardData, wp = d.weddingProfile;
+  const palette = wp.colorPalette||[];
+  const c1 = palette[0] || '#38473B', c2 = palette[1] || palette[0] || '#8B8577', c3 = palette[2] || palette[1] || palette[0] || '#C7A467';
+  const textColor = contrastTextColor(c1)==='#FFFFFF' ? '#FBF8F1' : '#241F16';
+  const days = daysToWedding();
+  const images = blueprintCollageImages(3);
+  let collageHtml;
+  if(!images.length){
+    collageHtml = `
+      <div class="bp-hero-empty">
+        <p>Your vision board starts with photos. Add a few to Inspiration and they'll show right here.</p>
+        <button class="btn btn-outline btn-sm" onclick="renderRoute('inspiration')">+ Add Inspiration Photos</button>
+      </div>`;
+  } else if(images.length===1){
+    collageHtml = `<div class="bp-hero-collage bp-hero-collage-1"><img src="${escapeAttr(images[0])}" alt="A photo from your Inspiration board"></div>`;
+  } else if(images.length===2){
+    collageHtml = `<div class="bp-hero-collage bp-hero-collage-2"><img src="${escapeAttr(images[0])}" alt="A photo from your Inspiration board"><img src="${escapeAttr(images[1])}" alt="A photo from your Inspiration board"></div>`;
+  } else {
+    collageHtml = `<div class="bp-hero-collage"><img class="bph-img-1" src="${escapeAttr(images[0])}" alt="A photo from your Inspiration board"><img class="bph-img-2" src="${escapeAttr(images[1])}" alt="A photo from your Inspiration board"><img class="bph-img-3" src="${escapeAttr(images[2])}" alt="A photo from your Inspiration board"></div>`;
+  }
+  return `
+    <div class="bp-hero" style="background:linear-gradient(125deg, ${escapeAttr(c1)}, ${escapeAttr(c2)}, ${escapeAttr(c3)}); color:${textColor};">
+      <div class="bp-hero-copy">
+        <div class="bp-hero-eyebrow">Your Wedding Blueprint</div>
+        <div class="bp-hero-names">${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)}</div>
+        <div class="bp-hero-meta">
+          <span>${d.weddingDateLabel ? escapeHtml(d.weddingDateLabel) : 'Date to be decided'}</span>
+          <span>${d.location ? escapeHtml(d.location) : 'Location to be decided'}</span>
+          ${days!==null ? `<span>${days} days to go</span>` : ''}
+        </div>
+        ${wp.aestheticNotes ? `<div class="bp-hero-quote">"${escapeHtml(wp.aestheticNotes)}"</div>` : `<div class="bp-hero-quote" style="opacity:0.75;">Add a few words about your look and feel below — they'll show right here.</div>`}
+        ${wp.traditions && wp.traditions.length ? `<div class="bp-hero-tags">${wp.traditions.slice(0,6).map(t=>`<span class="bp-hero-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+        ${palette.length ? `<div class="bp-hero-palette">${palette.map(c=>`<span class="bp-hero-swatch" style="background:${escapeAttr(c)};" title="${escapeAttr(c.toUpperCase())}"></span>`).join('')}</div>` : ''}
+      </div>
+      ${collageHtml}
+    </div>
+  `;
+}
+function renderBlueprintProgressStrip(){
+  const c = weddingBlueprintCompleteness();
+  const msg = c.pct>=100 ? "Your wedding blueprint is complete — everything else in Evera builds from this."
+    : c.pct>=60 ? "Almost there — your blueprint is really taking shape."
+    : c.pct>=25 ? "Good progress — a few more details to go."
+    : "Just getting started — fill in a few basics below.";
+  return `
+    <div class="bp-progress-card">
+      <span class="bp-progress-label">${c.done}/${c.total} details set</span>
+      <div class="bp-progress-track"><div class="bp-progress-fill" style="width:${c.pct}%;"></div></div>
+      <span class="bp-progress-note">${msg}</span>
+    </div>
+  `;
+}
 function renderMyWeddingModule(){
   const d = dashboardData;
   const wp = d.weddingProfile;
   return `
+    ${renderBlueprintVisionHero()}
+    ${renderBlueprintProgressStrip()}
+    <div class="bp-section-label">The Details</div>
     <div class="card">
       <div class="card-head"><div><h4>Your Wedding Details</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${currentUser?'<span id="weddingSaveStatus" class="save-status"></span>':'<span class="save-status save-status-demo">Sample mode — not saved</span>'}</div>
       <div class="field-grid">
@@ -6475,25 +6648,108 @@ function renderNotificationsPanel(){
   updateNotificationBadge();
 }
 
-let vendorAddFormOpen = false;
-function toggleVendorAddForm(){
-  vendorAddFormOpen = !vendorAddFormOpen;
-  document.getElementById('content').innerHTML = renderVendorsModule();
+/* ---- Add Vendor modal (redesigned Sep 25 2026): a full-field pop-up, reused everywhere a
+   new vendor booking can be created, instead of the old bare Category/Role/Name inline row.
+   vendorAddFormOpen holds the open modal's context (null when closed): optionally
+   {presetCategory, autoAssignChartId, autoAssignTableId} when opened from the Seating Chart's
+   "seat a vendor here" dropdown, so saving both creates the booking and seats it in one step. */
+let vendorAddFormOpen = null;
+function openVendorAddModal(opts){
+  vendorAddFormOpen = opts || {};
+  document.getElementById('vendorAddOverlay').innerHTML = renderVendorAddModal();
+  document.getElementById('vendorAddOverlay').classList.add('open');
+}
+function closeVendorAddModal(){
+  vendorAddFormOpen = null;
+  document.getElementById('vendorAddOverlay').classList.remove('open');
+}
+function renderVendorAddModal(){
+  if(!vendorAddFormOpen) return '';
+  const d = dashboardData;
+  const ctx = vendorAddFormOpen;
+  const budgetOptions = allBudgetItemsFlat();
+  return `
+    <div class="item-modal item-modal-lg">
+      <button class="im-close" onclick="closeVendorAddModal()">✕</button>
+      <div class="eyebrow">New Vendor</div>
+      <h3 style="margin-top:4px;">Add a Vendor</h3>
+      <p class="detail-hint" style="margin-top:-4px;">Fill in what you know now — every field here can be changed later from My Vendor Team.</p>
+      <div class="field-grid" style="margin-top:14px;">
+        <div class="field-cell"><label>Category</label><input type="text" id="newVBCategory" placeholder="e.g. Hair & Makeup" value="${escapeAttr(ctx.presetCategory||'')}"></div>
+        <div class="field-cell"><label>Role (optional)</label><input type="text" id="newVBRole" placeholder="e.g. Bridesmaids"></div>
+        <div class="field-cell"><label>Vendor Name</label><input type="text" id="newVBName" placeholder="Business or vendor name"></div>
+        <div class="field-cell"><label>Contact Name</label><input type="text" id="newVBContact" placeholder="Who you deal with"></div>
+        <div class="field-cell"><label>Email</label><input type="text" id="newVBEmail" placeholder="name@example.com"></div>
+        <div class="field-cell"><label>Phone</label><input type="text" id="newVBPhone" placeholder="(555) 555-5555"></div>
+        <div class="field-cell"><label>Cost</label><input type="number" min="0" id="newVBCost" placeholder="0"></div>
+        <div class="field-cell"><label>Status</label>
+          <select id="newVBStatus">
+            <option value="searching">Searching</option>
+            <option value="shortlisted">Shortlisted</option>
+            <option value="booked">Booked</option>
+          </select>
+        </div>
+        <div class="field-cell"><label>Contract Status</label>
+          <select id="newVBContractStatus">
+            <option value="not-started">Not Started</option>
+            <option value="sent">Sent</option>
+            <option value="signed">Signed</option>
+          </select>
+        </div>
+        <div class="field-cell"><label>Linked Budget Line Item</label>
+          <select id="newVBLinkedBudgetItem">
+            <option value="">— Not linked —</option>
+            ${budgetOptions.map(it=>`<option value="${it.id}">${escapeHtml(it.categoryLabel)} — ${escapeHtml(it.name)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="chip-grid" style="margin-top:10px; gap:4px;">
+        <span class="pp-label" style="width:100%;">Which events does this vendor cover?</span>
+        ${d.events.map(e=>`<label style="display:inline-flex; align-items:center; gap:5px; font-size:12.5px; background:var(--ivory-deep); padding:5px 10px; border-radius:999px;"><input type="checkbox" class="newVBEvent" value="${e.id}"> ${escapeHtml(e.name)}</label>`).join('')}
+        <span class="d-sub" style="width:100%; margin-top:2px;">Leave all unchecked for "all events."</span>
+      </div>
+      <div class="field-cell" style="margin-top:14px;"><label>Notes</label><textarea id="newVBNotes" rows="3" style="width:100%; box-sizing:border-box; padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px; resize:vertical;" placeholder="Anything else worth remembering"></textarea></div>
+      ${ctx.autoAssignTableId ? `<p class="detail-hint">Saving will also seat this vendor at the table you were assigning from.</p>` : ''}
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+        <button class="btn btn-outline btn-sm" onclick="closeVendorAddModal()">Cancel</button>
+        <button class="btn btn-solid btn-sm" onclick="submitVendorAddModal()">+ Add Vendor</button>
+      </div>
+    </div>
+  `;
+}
+function submitVendorAddModal(){
+  const catEl = document.getElementById('newVBCategory');
+  const category = (catEl.value||'').trim();
+  if(!category){ catEl.focus(); return; }
+  const roleEl = document.getElementById('newVBRole');
+  const nameEl = document.getElementById('newVBName');
+  const contactEl = document.getElementById('newVBContact');
+  const emailEl = document.getElementById('newVBEmail');
+  const phoneEl = document.getElementById('newVBPhone');
+  const costEl = document.getElementById('newVBCost');
+  const statusEl = document.getElementById('newVBStatus');
+  const contractEl = document.getElementById('newVBContractStatus');
+  const linkedEl = document.getElementById('newVBLinkedBudgetItem');
+  const notesEl = document.getElementById('newVBNotes');
+  const eventIds = Array.from(document.querySelectorAll('.newVBEvent:checked')).map(el=>el.value);
+  if(!Array.isArray(dashboardData.vendorBookings)) dashboardData.vendorBookings = [];
+  const vb = {
+    id:'vb-'+Date.now().toString(36), category, role:(roleEl.value||'').trim(), vendorName:(nameEl.value||'').trim(),
+    status: statusEl.value, contactName:(contactEl.value||'').trim(), email:(emailEl.value||'').trim(), phone:(phoneEl.value||'').trim(),
+    cost: Number(costEl.value)||0, linkedBudgetItemId: linkedEl.value||null, contractStatus: contractEl.value,
+    notes:(notesEl.value||'').trim(), eventIds, communications:[]
+  };
+  dashboardData.vendorBookings.push(vb);
+  const ctx = vendorAddFormOpen || {};
+  closeVendorAddModal();
+  if(ctx.autoAssignChartId && ctx.autoAssignTableId) assignVendorToTable(ctx.autoAssignChartId, ctx.autoAssignTableId, vb.id);
+  else reRenderCurrent();
 }
 function renderVendorAddButton(){
   return `<div class="module-header">
     <div class="mh-copy"><h4 style="margin:0;">Vendors</h4><span class="d-sub">Your full vendor team, status, and recommendations</span></div>
-    <button class="btn btn-solid btn-sm" onclick="toggleVendorAddForm()">${vendorAddFormOpen ? 'Done Adding' : '+ Add Vendor'}</button>
-  </div>
-  ${vendorAddFormOpen ? `
-  <div class="card" style="margin-bottom:20px;">
-    <div class="custom-add-row" style="flex-wrap:wrap;">
-      <input type="text" id="newVBCategory" placeholder="Category (e.g. Hair & Makeup)">
-      <input type="text" id="newVBRole" placeholder="Role (optional — e.g. Bridesmaids)">
-      <input type="text" id="newVBName" placeholder="Vendor name">
-      <button class="btn btn-outline btn-sm" onclick="addVendorBooking()">+ Add Vendor Booking</button>
-    </div>
-  </div>` : ''}`;
+    <button class="btn btn-solid btn-sm" onclick="openVendorAddModal()">+ Add Vendor</button>
+  </div>`;
 }
 function renderVendorTeamSection(){
   const d = dashboardData;
@@ -6528,21 +6784,6 @@ function renderVendorTeamSection(){
       `).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No vendor bookings yet — use "+ Add Vendor" at the top of the page, or book straight from a recommendation.</p>`}
     </div>
   `;
-}
-function addVendorBooking(){
-  const catEl = document.getElementById('newVBCategory');
-  const roleEl = document.getElementById('newVBRole');
-  const nameEl = document.getElementById('newVBName');
-  const category = (catEl.value||'').trim();
-  if(!category) return;
-  if(!Array.isArray(dashboardData.vendorBookings)) dashboardData.vendorBookings = [];
-  dashboardData.vendorBookings.push({
-    id:'vb-'+Date.now().toString(36), category, role:(roleEl.value||'').trim(), vendorName:(nameEl.value||'').trim(),
-    status:'searching', contactName:'', email:'', phone:'', cost:0, linkedBudgetItemId:null, contractStatus:'not-started',
-    notes:'', eventIds:[], communications:[]
-  });
-  catEl.value=''; roleEl.value=''; nameEl.value='';
-  document.getElementById('content').innerHTML = renderVendorsModule();
 }
 function removeVendorBooking(id){
   dashboardData.vendorBookings = (dashboardData.vendorBookings||[]).filter(v=>v.id!==id);
@@ -8498,14 +8739,15 @@ function chairDotsHtml(chart, table, seatable, readOnly){
   const marker = (x,y,idx)=>{
     const occ = seatedAt(idx);
     const cls = occ ? 'seat-marker seat-marker-filled' : 'seat-marker seat-marker-empty';
-    const title = occ ? escapeAttr(`Seat ${idx+1} — ${occ.displayName}`) : (readOnly ? `Seat ${idx+1} — empty` : `Seat ${idx+1} — empty, drag a guest here`);
+    const title = occ ? escapeAttr(`Seat ${idx+1} — ${occ.displayName}`) : (readOnly ? `Seat ${idx+1} — empty` : `Seat ${idx+1} — empty, drag a guest here or click to choose`);
     const dragAttrs = (!readOnly && occ) ? `draggable="true" ondragstart="onSeatedGuestDragStart(event,'${occ.h.id}','${occ.m.id}')"` : '';
     const dropAttrs = readOnly ? '' : `ondragover="event.preventDefault(); event.stopPropagation();" ondrop="onSeatDrop(event,'${chart.id}','${table.id}',${idx})"`;
+    const clickAttrs = (!readOnly && !occ) ? `onclick="event.stopPropagation(); openSeatPicker('${chart.id}','${table.id}',${idx});"` : '';
     const shortName = occ ? (occ.m.firstName || occ.displayName || '').trim() || occ.displayName : '';
     const inner = occ
       ? `<span class="seat-num">${idx+1}</span><span class="seat-name">${escapeHtml(shortName)}</span>`
       : `<span class="seat-num">${idx+1}</span>`;
-    return `<span class="${cls}" style="left:${x}%; top:${y}%;" title="${title}" ${dropAttrs} ${dragAttrs}>${inner}</span>`;
+    return `<span class="${cls}" style="left:${x}%; top:${y}%;" title="${title}" ${dropAttrs} ${dragAttrs} ${clickAttrs}>${inner}</span>`;
   };
   let dots = '';
   if(shape==='round'){
@@ -8769,6 +9011,102 @@ function unassignSeat(householdId, memberId, chartId){
   if(m && m.seating) delete m.seating[chartId];
   reRenderCurrent();
 }
+/* ---- Click-to-seat picker (new, Sep 25 2026): clicking an open seat on the floor plan
+   opens a small searchable panel of not-yet-seated guests, as an alternative to dragging. */
+function openSeatPicker(chartId, tableId, seatIndex){
+  seatPickerState = {chartId, tableId, seatIndex};
+  seatPickerSearch = '';
+  reRenderCurrent();
+}
+function closeSeatPicker(){
+  seatPickerState = null;
+  seatPickerSearch = '';
+  reRenderCurrent();
+}
+function updateSeatPickerSearch(val){
+  seatPickerSearch = val;
+  reRenderCurrent();
+}
+function pickGuestForSeat(householdId, memberId){
+  if(!seatPickerState) return;
+  const {chartId, tableId, seatIndex} = seatPickerState;
+  seatPickerState = null;
+  seatPickerSearch = '';
+  assignSeat(chartId, tableId, seatIndex, householdId, memberId);
+}
+function renderSeatPickerPanel(chart){
+  if(!seatPickerState || seatPickerState.chartId !== chart.id) return '';
+  const table = chart.tables.find(t=>t.id===seatPickerState.tableId);
+  if(!table) return '';
+  const q = seatPickerSearch.trim().toLowerCase();
+  const unassigned = allSeatableMembers().filter(r=>!memberSeatInfo(r.m, chart.id) && (!q || r.displayName.toLowerCase().includes(q)));
+  return `
+    <div class="seat-picker-panel">
+      <div class="seat-picker-head">
+        <span>Seat ${seatPickerState.seatIndex+1} at ${escapeHtml(table.name)} — choose a guest</span>
+        <a href="#" onclick="closeSeatPicker(); return false;" class="seat-picker-close" title="Cancel">×</a>
+      </div>
+      <input type="text" class="sgp-search" placeholder="Search guests…" value="${escapeAttr(seatPickerSearch)}" oninput="updateSeatPickerSearch(this.value)">
+      <div class="seat-picker-list">
+        ${unassigned.length ? unassigned.map(r=>`
+          <a href="#" class="seat-picker-row" onclick="pickGuestForSeat('${r.h.id}','${r.m.id}'); return false;">
+            <span>${escapeHtml(r.displayName)}</span><span class="d-sub">${escapeHtml(r.h.label)}</span>
+          </a>`).join('') : `<p class="d-sub" style="padding:8px;">${q?'No matches.':'Everyone is already seated.'}</p>`}
+      </div>
+    </div>
+  `;
+}
+/* ---- Seated/unassigned guest pane (new, Sep 25 2026): sits beside the floor plan so guests
+   can be dragged straight onto a seat, or reviewed at a glance for who's seated vs. remaining. */
+function updateSeatingPaneSearch(val){
+  seatingPaneSearch = val;
+  reRenderCurrent();
+}
+function renderSeatingGuestPane(chart, seatable, readOnly){
+  const q = seatingPaneSearch.trim().toLowerCase();
+  const matches = r => !q || r.displayName.toLowerCase().includes(q);
+  const unassignedAll = seatable.filter(r=>!memberSeatInfo(r.m, chart.id));
+  const seatedAll = seatable.filter(r=>memberSeatInfo(r.m, chart.id)).map(r=>{
+    const si = memberSeatInfo(r.m, chart.id);
+    const t = chart.tables.find(tt=>tt.id===si.tableId);
+    return Object.assign({}, r, {tableName: t ? t.name : '—', seatIndex: si.seatIndex});
+  }).sort((a,b)=> (a.tableName||'').localeCompare(b.tableName||'') || a.seatIndex - b.seatIndex);
+  const unassigned = unassignedAll.filter(matches);
+  const seated = seatedAll.filter(matches);
+  return `
+    <div class="card seating-guest-pane">
+      <div class="card-head"><h4>Guests</h4><span class="d-sub">${seatedAll.length}/${seatable.length} seated</span></div>
+      <input type="text" class="sgp-search" placeholder="Search guests…" value="${escapeAttr(seatingPaneSearch)}" oninput="updateSeatingPaneSearch(this.value)">
+      <div class="sgp-section-label">Not Yet Seated (${unassigned.length})</div>
+      <div class="sgp-list">
+        ${unassigned.length ? unassigned.map(r=>`
+          <div class="sgp-row sgp-row-unassigned" ${readOnly?'':`draggable="true" ondragstart="onGuestDragStart(event,'${r.h.id}','${r.m.id}')"`} title="${readOnly?'':'Drag onto an open seat'}">
+            <span class="sgp-dot sgp-dot-open"></span>
+            <div class="sgp-info"><div class="sgp-name">${escapeHtml(r.displayName)}</div><div class="sgp-meta">${escapeHtml(r.h.label)}</div></div>
+          </div>`).join('') : `<p class="d-sub" style="padding:4px 2px;">${q ? 'No matches.' : 'Everyone eligible is seated.'}</p>`}
+      </div>
+      <div class="sgp-section-label">Seated (${seated.length})</div>
+      <div class="sgp-list">
+        ${seated.length ? seated.map(r=>`
+          <div class="sgp-row sgp-row-seated" ${readOnly?'':`draggable="true" ondragstart="onSeatedGuestDragStart(event,'${r.h.id}','${r.m.id}')"`} title="${readOnly?'':'Drag onto a different seat'}">
+            <span class="sgp-dot sgp-dot-seated">✓</span>
+            <div class="sgp-info"><div class="sgp-name">${escapeHtml(r.displayName)}</div><div class="sgp-meta">${escapeHtml(r.tableName)} · Seat ${r.seatIndex+1}</div></div>
+            ${readOnly?'':`<a href="#" class="sgp-unseat" title="Unseat" onclick="unassignSeat('${r.h.id}','${r.m.id}','${chart.id}'); return false;">×</a>`}
+          </div>`).join('') : `<p class="d-sub" style="padding:4px 2px;">${q ? 'No matches.' : 'No one seated yet.'}</p>`}
+      </div>
+      ${(!readOnly && chart.isPrimary) ? `
+      <div class="sgp-add-row">
+        <input type="text" id="newGuestName" placeholder="Add a guest or family…">
+        <select id="newGuestSide" class="select-field-sm">
+          <option value="${escapeAttr(dashboardData.partner1)}'s Side">${escapeHtml(dashboardData.partner1)}'s Side</option>
+          <option value="${escapeAttr(dashboardData.partner2)}'s Side">${escapeHtml(dashboardData.partner2)}'s Side</option>
+          <option value="Friends">Friends / Shared</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="quickAddSeatingGuest()">+ Add Guest</button>
+      </div>` : ''}
+    </div>
+  `;
+}
 function assignToPrimaryTable(householdId, memberId, tableId){
   const chart = primarySeatingChart();
   if(!chart) return;
@@ -8788,6 +9126,7 @@ function renderFloorPlan(readOnly){
   const rs = chart.roomSetup;
   const seatable = allSeatableMembers();
   return `
+    <div class="seating-layout">
     <div class="card">
       <div class="card-head">
         <h4>Room Layout</h4>
@@ -8808,7 +9147,8 @@ function renderFloorPlan(readOnly){
         <button class="btn btn-outline btn-sm" onclick="addSeatingChart()">+ Add Seating Chart</button>
         ${!chart.isPrimary ? `<a href="#" class="danger-link" onclick="removeSeatingChart('${chart.id}'); return false;">Remove this chart</a>` : ''}
       </div>`}
-      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">${readOnly ? "View-only reference — only guests who RSVP'd yes appear here." : "Only guests who RSVP'd yes appear here — pending and declined guests can't be seated. Each seat around a table shows its exact position and, once assigned, the guest's name — so you can see the seating order and rearrange it by dragging. Drag tables, décor, or notes into place, and drag a guest straight onto an open seat."}</p>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">${readOnly ? "View-only reference — only guests who RSVP'd yes appear here." : "Only guests who RSVP'd yes appear here — pending and declined guests can't be seated. Each seat around a table shows its exact position and, once assigned, the guest's name — so you can see the seating order and rearrange it by dragging. Drag a guest from the pane onto an open seat, or click an open seat to pick a name."}</p>
+      ${readOnly ? '' : renderSeatPickerPanel(chart)}
       ${readOnly ? `
       <div class="room-setup-row">
         <div class="field-mini"><label>Room</label><span class="d-sub" style="font-weight:700;">${rs.shape==='square'?'Square':'Rectangular'} · ${rs.width}ft × ${rs.depth}ft</span></div>
@@ -8856,6 +9196,8 @@ function renderFloorPlan(readOnly){
         <button class="btn btn-outline btn-sm" onclick="addFreeformNote('${chart.id}')">+ Add Note</button>
       </div>
       `}
+    </div>
+    ${renderSeatingGuestPane(chart, seatable, readOnly)}
     </div>
   `;
 }
@@ -8922,34 +9264,9 @@ function renderSeatingChartSection(readOnly){
   const chart = currentSeatingChart();
   if(!chart) return renderFloorPlan(readOnly);
   const seatable = allSeatableMembers();
-  const unassigned = seatable.filter(r=>!memberSeatInfo(r.m, chart.id));
   return `
     ${renderFloorPlan(readOnly)}
     ${renderChairOrderSummary(chart)}
-    <div class="card">
-      <div class="card-head"><h4>Unassigned Guests — ${escapeHtml(chart.label)}</h4><span class="d-sub">${unassigned.length} not yet seated</span></div>
-      ${unassigned.length ? unassigned.map(r=>`
-        <div class="contact-row" style="cursor:default;">
-          <div ${readOnly ? '' : `draggable="true" ondragstart="onGuestDragStart(event,'${r.h.id}','${r.m.id}')"`} style="flex:1; ${readOnly ? '' : 'cursor:grab;'}"><div style="font-weight:600;font-size:13.5px;">${escapeHtml(r.displayName)}</div><div class="pc-role">${escapeHtml(r.h.label)} · ${guestRsvpPill(r.h.rsvpStatus)}</div></div>
-          ${readOnly ? '' : `
-          <select class="select-field-sm" style="max-width:220px;" onchange="if(this.value){assignToChartTable('${chart.id}','${r.h.id}','${r.m.id}',this.value); this.value='';}">
-            <option value="">Seat at…</option>
-            ${chart.tables.map(t=>`<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('')}
-          </select>`}
-        </div>`).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">Everyone eligible to be seated has a seat on this chart.</p>'}
-      ${(!readOnly && chart.isPrimary) ? `
-      <div class="custom-add-row" style="margin-top:14px;">
-        <input type="text" id="newGuestName" placeholder="Guest or family name (e.g. Sam Rivera)">
-        <select id="newGuestSide" class="select-field-sm" style="max-width:180px;">
-          <option value="${escapeAttr(d.partner1)}'s Side">${escapeHtml(d.partner1)}'s Side</option>
-          <option value="${escapeAttr(d.partner2)}'s Side">${escapeHtml(d.partner2)}'s Side</option>
-          <option value="Friends">Friends / Shared</option>
-        </select>
-        <button class="btn btn-outline btn-sm" onclick="quickAddSeatingGuest()">+ Add Guest</button>
-      </div>
-      <p class="detail-hint">Adds a new one-person household you can flesh out later in the Guests module (address, dietary needs, more family members). New guests default to a confirmed RSVP so they're immediately seatable here.</p>
-      ` : ''}
-    </div>
     <div class="party-grid">
       ${chart.tables.map(t=>{
         const seated = seatedMembersForTable(chart, t.id, seatable);
@@ -8998,11 +9315,11 @@ function renderSeatingChartSection(readOnly){
           <div class="chip-grid">
             ${vendorsHere.length ? vendorsHere.map(v=>`<span class="attach-chip">${escapeHtml(v.vendorName)} <span style="opacity:0.65;">(${escapeHtml(v.category)})</span><a href="#" onclick="removeVendorFromTable('${chart.id}','${t.id}','${v.id}'); return false;" title="Remove">×</a></span>`).join('') : '<span class="d-sub">No vendors seated here.</span>'}
           </div>
-          ${availableVendors.length ? `
-          <select class="select-field-sm" style="margin-top:8px; max-width:260px;" onchange="if(this.value){assignVendorToTable('${chart.id}','${t.id}',this.value); this.value='';}">
+          <select class="select-field-sm" style="margin-top:8px; max-width:260px;" onchange="if(this.value==='__add_new__'){ openVendorAddModal({autoAssignChartId:'${chart.id}', autoAssignTableId:'${t.id}'}); this.value=''; } else if(this.value){ assignVendorToTable('${chart.id}','${t.id}',this.value); this.value=''; }">
             <option value="">+ Seat a vendor here…</option>
             ${availableVendors.map(v=>`<option value="${v.id}">${escapeHtml(v.vendorName)} (${escapeHtml(v.category)})</option>`).join('')}
-          </select>` : ''}
+            <option value="__add_new__">+ Add a new vendor…</option>
+          </select>
           <a href="#" class="danger-link" style="display:inline-block;margin-top:12px;" onclick="removeTable('${chart.id}','${t.id}'); return false;">Remove table</a>
         </div>`;
       }).join('')}
@@ -10754,6 +11071,12 @@ function renderBudgetOverviewTab(){
           </div>
         </div>
       </div>
+      <div class="chip-grid" style="margin:0 0 12px;">
+        <button class="btn btn-outline btn-sm" onclick="toggleBudgetItemQuickAdd()">${budgetItemQuickAddOpen ? 'Cancel' : '+ Add Line Item'}</button>
+        <button class="btn btn-outline btn-sm" onclick="toggleBudgetCategoryAdd()">${budgetCategoryAddOpen ? 'Cancel' : '+ New Category'}</button>
+      </div>
+      ${budgetItemQuickAddOpen ? renderBudgetItemQuickAddRow() : ''}
+      ${budgetCategoryAddOpen ? renderBudgetCategoryAddRow() : ''}
       ${budgetOverviewView==='category' ? renderBudgetCategories() : renderBudgetByEvent()}
     </div>
   `;
@@ -10837,9 +11160,14 @@ function renderBudgetCategories(){
       <div class="budget-cat-head" onclick="toggleBudgetCategory('${escapeAttr(c.category)}')">
         <svg class="bc-chevron ${collapsed?'':'open'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         <span class="legend-dot" style="background:${c.color};"></span>
-        <span class="bc-name">${escapeHtml(c.category)}</span>
+        <input type="text" class="bc-name-input" value="${escapeAttr(c.category)}" onclick="event.stopPropagation();" onchange="renameBudgetCategory(${ci}, this.value)">
         ${over ? '<span class="pill pill-alert">Over Budget</span>' : (spent>0 ? '<span class="pill pill-ok">On Track</span>' : '<span class="pill pill-neutral">Not Started</span>')}
         <span class="bc-summary">${fmtMoney(spent)} / ${fmtMoney(planned)}</span>
+        <span class="bc-head-tools" onclick="event.stopPropagation();">
+          <button type="button" class="bc-icon-btn" title="Move up" onclick="moveBudgetCategory(${ci},-1);" ${ci===0?'disabled':''}>▲</button>
+          <button type="button" class="bc-icon-btn" title="Move down" onclick="moveBudgetCategory(${ci},1);" ${ci===d.budgetBreakdown.length-1?'disabled':''}>▼</button>
+          <button type="button" class="bc-icon-btn bc-icon-btn-danger" title="Delete category" onclick="openBudgetCategoryDelete(${ci});">🗑</button>
+        </span>
       </div>
       <div class="bc-progress-track"><div class="bc-progress-fill" style="width:${pct}%; background:${over?'var(--terracotta)':'var(--green)'};"></div></div>
       ${collapsed ? '' : `
@@ -10869,13 +11197,7 @@ function renderBudgetCategories(){
       </div>`}
     </div>`;
   }).join('');
-  return catsHtml + `
-    <div class="custom-add-row" style="margin-top:18px; padding-top:18px; border-top:1px solid var(--line);">
-      <input type="text" id="newCatName" placeholder="New category name">
-      <input type="number" min="0" id="newCatPlanned" placeholder="Planned amount" style="max-width:160px;">
-      <button class="btn btn-outline btn-sm" onclick="addBudgetCategory()">+ Add Category</button>
-    </div>
-  `;
+  return catsHtml || '<p style="font-size:13px;color:var(--charcoal-faint);">No categories yet — use "+ New Category" above to add your first one.</p>';
 }
 function toggleBudgetCategory(category){
   budgetCollapsedMap[category] = !budgetCollapsedMap[category];
@@ -10928,11 +11250,141 @@ function addBudgetCategory(){
   const planned = Number(plannedEl.value)||0;
   const color = BUDGET_COLORS[dashboardData.budgetBreakdown.length % BUDGET_COLORS.length];
   dashboardData.budgetBreakdown.push({category:name, color, items:[{id:'bi-'+Date.now().toString(36), name:'General Allocation', planned, spent:0, vendorCategory:null, eventId:null, vendorName:'', paymentFrequency:'one-time', attachmentIds:[], paymentSchedule:[], multiEvent:false, eventAllocations:[], contractedHours:null, overageRate:null, notes:''}]});
+  budgetCategoryAddOpen = false;
   refreshBudgetBackground();
 }
-function removeBudgetCategory(idx){
-  dashboardData.budgetBreakdown.splice(idx,1);
+/* ---- Category management (new, Sep 25 2026): rename in place, reorder, and delete with a
+   reallocate-or-delete choice for any line items the category still holds. */
+function renameBudgetCategory(ci, newName){
+  const cat = dashboardData.budgetBreakdown[ci];
+  if(!cat) return;
+  const trimmed = (newName||'').trim();
+  if(!trimmed){ refreshBudgetBackground(); return; }
+  if(budgetCollapsedMap[cat.category]!==undefined){ budgetCollapsedMap[trimmed] = budgetCollapsedMap[cat.category]; delete budgetCollapsedMap[cat.category]; }
+  cat.category = trimmed;
   refreshBudgetBackground();
+}
+function moveBudgetCategory(ci, dir){
+  const arr = dashboardData.budgetBreakdown;
+  const target = ci + dir;
+  if(target<0 || target>=arr.length) return;
+  const tmp = arr[ci]; arr[ci] = arr[target]; arr[target] = tmp;
+  refreshBudgetBackground();
+}
+function openBudgetCategoryDelete(ci){
+  budgetCategoryDeleteState = {ci};
+  document.getElementById('budgetCategoryDeleteOverlay').innerHTML = renderBudgetCategoryDeleteModal();
+  document.getElementById('budgetCategoryDeleteOverlay').classList.add('open');
+}
+function closeBudgetCategoryDelete(){
+  budgetCategoryDeleteState = null;
+  document.getElementById('budgetCategoryDeleteOverlay').classList.remove('open');
+}
+function renderBudgetCategoryDeleteModal(){
+  if(!budgetCategoryDeleteState) return '';
+  const {ci} = budgetCategoryDeleteState;
+  const cat = dashboardData.budgetBreakdown[ci];
+  if(!cat) return '';
+  const itemCount = (cat.items||[]).length;
+  const otherCats = dashboardData.budgetBreakdown.filter((c,idx)=>idx!==ci);
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="closeBudgetCategoryDelete()">✕</button>
+      <h3>Delete "${escapeHtml(cat.category)}"?</h3>
+      ${itemCount ? `
+      <p class="detail-hint">This category has ${itemCount} line item${itemCount===1?'':'s'}. Choose what happens to ${itemCount===1?'it':'them'}:</p>
+      ${otherCats.length ? `
+      <div class="field-cell" style="margin-top:10px;">
+        <label>Move items to</label>
+        <select id="reallocateCatTarget">
+          ${otherCats.map(c=>`<option value="${escapeAttr(c.category)}">${escapeHtml(c.category)}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn btn-solid btn-sm" style="margin-top:12px; width:100%;" onclick="confirmBudgetCategoryDelete('reallocate')">Move Items &amp; Delete Category</button>
+      ` : ''}
+      <button class="btn btn-outline btn-sm" style="margin-top:10px; width:100%; border-color:var(--terracotta); color:var(--terracotta);" onclick="confirmBudgetCategoryDelete('delete-items')">Delete Category &amp; Its ${itemCount} Item${itemCount===1?'':'s'}</button>
+      ` : `
+      <p class="detail-hint">This category is empty.</p>
+      <button class="btn btn-outline btn-sm" style="margin-top:10px; width:100%; border-color:var(--terracotta); color:var(--terracotta);" onclick="confirmBudgetCategoryDelete('delete-items')">Delete Category</button>
+      `}
+      <button class="btn btn-outline btn-sm" style="margin-top:10px; width:100%;" onclick="closeBudgetCategoryDelete()">Cancel</button>
+    </div>
+  `;
+}
+function confirmBudgetCategoryDelete(mode){
+  if(!budgetCategoryDeleteState) return;
+  const {ci} = budgetCategoryDeleteState;
+  const cat = dashboardData.budgetBreakdown[ci];
+  if(!cat) return;
+  if(mode==='reallocate'){
+    const targetEl = document.getElementById('reallocateCatTarget');
+    const targetName = targetEl && targetEl.value;
+    const target = dashboardData.budgetBreakdown.find(c=>c.category===targetName);
+    if(target && target!==cat) target.items = (target.items||[]).concat(cat.items||[]);
+  }
+  dashboardData.budgetBreakdown.splice(ci,1);
+  closeBudgetCategoryDelete();
+  refreshBudgetBackground();
+}
+/* ---- Add a line item without choosing a category first — it lands in an auto-created
+   "Uncategorized" bucket, which behaves like any other category (rename/reorder/sort later). */
+function toggleBudgetItemQuickAdd(){
+  budgetItemQuickAddOpen = !budgetItemQuickAddOpen;
+  refreshBudgetBackground();
+}
+function toggleBudgetCategoryAdd(){
+  budgetCategoryAddOpen = !budgetCategoryAddOpen;
+  refreshBudgetBackground();
+}
+function findOrCreateUncategorizedBudgetCategory(){
+  let cat = dashboardData.budgetBreakdown.find(c=>c.category==='Uncategorized');
+  if(!cat){
+    cat = {category:'Uncategorized', color:'#9C9488', items:[]};
+    dashboardData.budgetBreakdown.push(cat);
+  }
+  return cat;
+}
+function renderBudgetItemQuickAddRow(){
+  const cats = dashboardData.budgetBreakdown;
+  return `
+    <div class="card" style="margin-bottom:14px; background:var(--ivory-deep); box-shadow:none;">
+      <div class="custom-add-row" style="flex-wrap:wrap;">
+        <input type="text" id="quickItemName" placeholder="Line item name">
+        <input type="number" min="0" id="quickItemPlanned" placeholder="Planned" style="max-width:120px;">
+        <select id="quickItemCategory" class="select-field-sm" style="max-width:220px;">
+          <option value="">— Uncategorized —</option>
+          ${cats.map(c=>`<option value="${escapeAttr(c.category)}">${escapeHtml(c.category)}</option>`).join('')}
+        </select>
+        <button class="btn btn-solid btn-sm" onclick="submitBudgetItemQuickAdd()">+ Add</button>
+      </div>
+      <p class="detail-hint" style="margin-bottom:0;">Leave the category as "Uncategorized" to sort it later, or pick one now — either way, you can move it afterward from the line item itself.</p>
+    </div>
+  `;
+}
+function submitBudgetItemQuickAdd(){
+  const nameEl = document.getElementById('quickItemName');
+  const plannedEl = document.getElementById('quickItemPlanned');
+  const catEl = document.getElementById('quickItemCategory');
+  const name = (nameEl.value||'').trim();
+  if(!name){ nameEl.focus(); return; }
+  const planned = Number(plannedEl.value)||0;
+  const catName = catEl.value;
+  const cat = catName ? dashboardData.budgetBreakdown.find(c=>c.category===catName) : findOrCreateUncategorizedBudgetCategory();
+  const target = cat || findOrCreateUncategorizedBudgetCategory();
+  target.items.push({id:'bi-'+Date.now().toString(36), name, planned, spent:0, vendorCategory:null, eventId:null, vendorName:'', paymentFrequency:'one-time', attachmentIds:[], paymentSchedule:[], multiEvent:false, eventAllocations:[], contractedHours:null, overageRate:null, notes:''});
+  budgetItemQuickAddOpen = false;
+  refreshBudgetBackground();
+}
+function renderBudgetCategoryAddRow(){
+  return `
+    <div class="card" style="margin-bottom:14px; background:var(--ivory-deep); box-shadow:none;">
+      <div class="custom-add-row" style="flex-wrap:wrap;">
+        <input type="text" id="newCatName" placeholder="New category name">
+        <input type="number" min="0" id="newCatPlanned" placeholder="Planned amount" style="max-width:160px;">
+        <button class="btn btn-solid btn-sm" onclick="addBudgetCategory()">+ Add Category</button>
+      </div>
+    </div>
+  `;
 }
 const PAYMENT_FREQUENCIES = [
   {key:'one-time', label:'One-time payment'},
