@@ -521,11 +521,16 @@
   /* ---- budget: totals, pace, itemized categories ---- */
   .budget-total-input{width:140px; padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--paper); font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--green); text-align:left;}
   .budget-input{width:100%; padding:7px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px; color:var(--charcoal);}
+  .bp-split{display:grid; grid-template-columns:1fr 1fr; gap:30px;}
+  @media (max-width:900px){ .bp-split{grid-template-columns:1fr;} }
+  .bp-col-head{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-bottom:12px;}
+  .bp-divider{border-left:1px solid var(--line-soft); padding-left:30px;}
+  @media (max-width:900px){ .bp-divider{border-left:none; border-top:1px solid var(--line-soft); padding-left:0; padding-top:20px;} }
   .pace-row{display:flex; gap:36px; margin-bottom:14px;}
   .pace-stat .pace-num{font-family:'Cormorant Garamond',serif; font-size:34px; color:var(--green);}
   .pace-stat .pace-label{font-size:11.5px; color:var(--charcoal-faint); margin-top:2px;}
   .pace-note{font-size:13px; color:var(--charcoal-soft); line-height:1.6; padding-top:14px; border-top:1px solid var(--line-soft);}
-  .opp-row{display:flex; gap:10px; align-items:flex-start; padding:11px 0; border-top:1px solid var(--line-soft); font-size:13px; line-height:1.55; color:var(--charcoal-soft);}
+  .opp-row{display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--line-soft); font-size:13px; line-height:1.5; color:var(--charcoal-soft);}
   .opp-row:first-child{border-top:none;}
   .opp-row::before{content:''; width:7px; height:7px; border-radius:50%; margin-top:6px; flex-shrink:0;}
   .opp-alert::before{background:var(--terracotta);}
@@ -535,19 +540,25 @@
   .budget-overspend-banner .bo-icon{width:34px; height:34px; border-radius:50%; background:var(--terracotta); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:17px; font-weight:700;}
   .budget-overspend-banner .bo-title{font-weight:700; color:var(--terracotta); font-size:14.5px;}
   .budget-overspend-banner .bo-sub{font-size:12.5px; color:var(--charcoal-soft); margin-top:2px; line-height:1.5;}
-  .budget-cat-block{border-top:1px solid var(--line); padding:16px 0;}
-  .budget-cat-block:first-child{border-top:none; padding-top:4px;}
+  .budget-cat-block{border-top:1px solid var(--line); padding:12px 0;}
+  .budget-cat-block:first-child{border-top:none; padding-top:2px;}
   .budget-cat-head{display:flex; align-items:center; gap:12px; cursor:pointer; flex-wrap:wrap;}
-  .budget-cat-head .bc-name{font-weight:700; font-size:14.5px;}
-  .budget-cat-head .bc-summary{font-size:12.5px; color:var(--charcoal-faint); margin-left:auto;}
+  .budget-cat-head .bc-name{font-weight:700; font-size:14px;}
+  .budget-cat-head .bc-summary{font-size:12.5px; color:var(--charcoal-faint); margin-left:auto; font-variant-numeric:tabular-nums;}
   .bc-chevron{width:14px; height:14px; color:var(--charcoal-faint); transition:transform .15s ease; flex-shrink:0;}
   .bc-chevron.open{transform:rotate(90deg);}
-  .budget-items{margin-top:14px; padding-left:21px;}
-  .budget-items-head{display:grid; grid-template-columns:1.6fr 0.8fr 0.8fr 1fr 1fr 0.6fr; gap:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); padding-bottom:8px;}
-  .budget-item-row{display:grid; grid-template-columns:1.6fr 0.8fr 0.8fr 1fr 1fr 0.6fr; gap:10px; align-items:center; padding:7px 0;}
-  .budget-item-name{padding:7px 10px; border-radius:8px; border:1px solid var(--line); background:var(--paper); font-family:'Inter'; font-size:12.5px; color:var(--charcoal);}
-  .readonly-cell{padding:7px 10px; font-family:'Inter'; font-size:12.5px; font-weight:600; color:var(--charcoal); display:flex; align-items:center;}
-  @media (max-width:900px){ .budget-items-head{display:none;} .budget-item-row{grid-template-columns:1fr 1fr; row-gap:6px; padding:12px 0; border-top:1px dashed var(--line-soft);} }
+  .bc-progress-track{height:4px; border-radius:99px; background:var(--line-soft); margin-top:9px; overflow:hidden;}
+  .bc-progress-fill{height:100%; border-radius:99px; transition:width .2s ease;}
+  .budget-cat-tools{display:flex; align-items:center; gap:14px;}
+  .expand-toggle{font-size:11.5px; font-weight:700; color:var(--green); border-bottom:1px solid var(--champagne); white-space:nowrap;}
+  .budget-items{margin-top:12px; padding-left:20px;}
+  .budget-items-head{display:grid; grid-template-columns:1.6fr 0.8fr 0.8fr 1.2fr 0.6fr; gap:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); padding-bottom:6px;}
+  .budget-item-row{display:grid; grid-template-columns:1.6fr 0.8fr 0.8fr 1.2fr 0.6fr; gap:10px; align-items:center; padding:5px 0;}
+  .budget-item-name{padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--paper); font-family:'Inter'; font-size:12.5px; color:var(--charcoal);}
+  .readonly-cell{padding:5px 10px; font-family:'Inter'; font-size:12.5px; font-weight:600; color:var(--charcoal); display:flex; align-items:center;}
+  .bi-meta{display:flex; flex-direction:column; gap:1px; line-height:1.4;}
+  .bi-due{font-size:10.5px; font-weight:700; color:var(--amber);}
+  @media (max-width:900px){ .budget-items-head{display:none;} .budget-item-row{grid-template-columns:1fr 1fr; row-gap:6px; padding:11px 0; border-top:1px dashed var(--line-soft);} }
   .budget-item-row2{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:0 0 12px 0; margin-bottom:2px; border-bottom:1px dashed var(--line-soft);}
   .budget-item-row2 > input.select-field-sm{width:auto; flex:0 0 200px;}
   .budget-item-row2 > select.select-field-sm{width:auto; flex:0 0 160px;}
@@ -842,6 +853,19 @@
   .room-setup-row .field-mini label{font-size:10px; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); font-weight:700;}
   .room-setup-row input, .room-setup-row select{padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px; color:var(--charcoal); width:90px;}
   .room-setup-row select{width:auto; min-width:128px;}
+  /* Seating chart overhaul (chunk 5): floor-plan backdrop image, resize handles for décor
+     and notes, and freeform sticky notes on the canvas. */
+  .floor-canvas-bg{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none; z-index:0;}
+  .resize-handle{position:absolute; right:1px; bottom:1px; width:11px; height:11px; cursor:nwse-resize; background:linear-gradient(135deg, transparent 50%, var(--charcoal-faint) 50%); border-radius:0 0 4px 0; opacity:0.65; z-index:2;}
+  .resize-handle:hover{opacity:1;}
+  .note-item{position:absolute; background:var(--amber-tint); border:1.5px solid var(--champagne-dark); border-radius:8px; box-shadow:0 2px 6px rgba(43,42,38,0.14); display:flex; flex-direction:column; padding:3px; min-width:70px; min-height:48px; z-index:1;}
+  .note-drag-handle{font-size:9px; font-weight:700; color:var(--charcoal-soft); cursor:grab; padding:1px 3px 0; user-select:none; letter-spacing:0.02em;}
+  .note-drag-handle:active{cursor:grabbing;}
+  .note-drag-handle-locked{cursor:default;}
+  .note-text-field{flex:1; resize:none; border:none; background:transparent; font-family:'Inter',sans-serif; font-size:10.5px; color:var(--charcoal); padding:2px 3px; outline:none; line-height:1.35;}
+  .note-text-readonly{flex:1; font-size:10.5px; color:var(--charcoal); padding:2px 3px; overflow:auto; white-space:pre-wrap; line-height:1.35;}
+  .note-remove{position:absolute; top:-8px; right:-8px; width:16px; height:16px; border-radius:50%; background:var(--terracotta); color:#fff; font-size:11px; line-height:16px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.2); z-index:2;}
+  .seating-lock-banner p{margin-top:0;}
 
   /* assistant panel */
   .assistant-fab{
@@ -996,6 +1020,63 @@
   .palette-remove{position:absolute; top:8px; right:8px; width:20px; height:20px; border-radius:50%; border:none; background:rgba(0,0,0,0.28); color:#fff; font-size:11px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .12s ease;}
   .palette-swatch:hover .palette-remove{opacity:1;}
   .palette-hex{font-family:'Inter'; font-size:12px; font-weight:600; letter-spacing:0.02em; pointer-events:none;}
+
+  /* ---- mood board: selectable palette + juxtaposed image collage ---- */
+  .mb-palette-swatch{position:relative; flex:1 1 90px; min-width:90px; height:92px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:10px; cursor:pointer; transition:box-shadow .12s ease;}
+  .mb-palette-swatch.selected{box-shadow:inset 0 0 0 3px #fff, inset 0 0 0 5px var(--green);}
+  .mb-palette-check{position:absolute; top:8px; right:8px; width:18px; height:18px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.85); display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:700; background:rgba(0,0,0,0.18);}
+  .mb-palette-swatch.selected .mb-palette-check{background:var(--green); border-color:var(--green);}
+  .moodboard-collage{display:grid; grid-template-columns:repeat(6,1fr); grid-auto-rows:64px; gap:6px; margin:8px 0 4px;}
+  .moodboard-tile{position:relative; border-radius:8px; overflow:hidden; border:1px solid var(--line); background:var(--ivory-deep);}
+  .moodboard-tile img{width:100%; height:100%; object-fit:cover; display:block;}
+  .moodboard-tile .mt-tag{position:absolute; bottom:5px; left:7px; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,0.65);}
+  .mt-big{grid-column:span 2; grid-row:span 2;}
+  .mt-wide{grid-column:span 2;}
+  .mt-tall{grid-row:span 2;}
+  @media (max-width:640px){ .moodboard-collage{grid-template-columns:repeat(3,1fr); grid-auto-rows:54px;} }
+
+  /* ---- rich text notes: bold/italic/highlight + @mention tagging ---- */
+  .rte-wrap{border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--ivory);}
+  .rte-toolbar{display:flex; align-items:center; gap:4px; padding:6px 8px; background:var(--ivory-deep); border-bottom:1px solid var(--line);}
+  .rte-btn{width:26px; height:26px; border-radius:6px; border:1px solid transparent; background:none; color:var(--charcoal-soft); font-family:'Inter'; font-size:12.5px; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .rte-btn:hover{background:var(--paper); border-color:var(--line);}
+  .rte-hint{font-size:11px; color:var(--charcoal-faint); margin-left:6px;}
+  .rte-editor{min-height:70px; padding:9px 11px; font-family:'Inter'; font-size:13px; color:var(--charcoal); line-height:1.55; outline:none;}
+  .rte-editor:empty::before{content:attr(data-placeholder); color:var(--charcoal-faint);}
+  .note-mention{background:var(--champagne-tint); color:var(--champagne-dark); font-weight:700; padding:1px 5px; border-radius:5px; white-space:nowrap;}
+  .mention-panel{position:fixed; z-index:400; display:none; flex-direction:column; background:var(--paper); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow-lg); overflow:hidden;}
+  .mention-panel.open{display:flex;}
+  .mention-filter{border:none; border-bottom:1px solid var(--line-soft); padding:9px 12px; font-family:'Inter'; font-size:12.5px; background:var(--paper); color:var(--charcoal); outline:none;}
+  .mention-list{max-height:200px; overflow-y:auto;}
+  .mention-option{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; cursor:pointer; font-size:12.5px;}
+  .mention-option:hover{background:var(--ivory-deep);}
+  .mention-name{font-weight:600; color:var(--charcoal);}
+  .mention-type{font-size:10.5px; color:var(--charcoal-faint); text-transform:uppercase; letter-spacing:0.03em;}
+  .mention-empty{padding:12px; font-size:12px; color:var(--charcoal-faint);}
+  .mention-close-row{padding:7px 12px; border-top:1px solid var(--line-soft); text-align:right;}
+  .mention-close-row a{font-size:11.5px; font-weight:700; color:var(--charcoal-faint);}
+
+  /* ---- notifications panel (topbar bell) ---- */
+  .notif-panel{
+    position:fixed; top:74px; right:34px; z-index:250; width:380px; max-width:calc(100vw - 40px);
+    background:var(--paper); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow-lg);
+    display:none; flex-direction:column; overflow:hidden;
+  }
+  .notif-panel.open{display:flex;}
+  .notif-head{background:var(--green-deep); color:#F4EFE3; padding:18px 20px; display:flex; align-items:center; gap:10px;}
+  .notif-head .notif-title{font-family:'Cormorant Garamond',serif; font-size:18px;}
+  .notif-head .notif-sub{font-size:11px; color:#B9B2A0;}
+  .notif-close{margin-left:auto; background:none; border:none; color:#F4EFE3; opacity:0.7; cursor:pointer; font-size:15px; line-height:1; padding:6px; flex-shrink:0;}
+  .notif-close:hover{opacity:1;}
+  .notif-body{padding:16px 20px; max-height:min(70vh,480px); overflow-y:auto;}
+  .notif-row{padding:11px 0; border-top:1px solid var(--line-soft); cursor:pointer;}
+  .notif-row:first-child{border-top:none;}
+  .notif-row.notif-unread .notif-text{font-weight:700;}
+  .notif-row.notif-unread::before{content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--terracotta); margin-right:7px; vertical-align:middle;}
+  .notif-text{font-size:13px; color:var(--charcoal); display:inline;}
+  .notif-meta{font-size:11px; color:var(--charcoal-faint); margin-top:3px;}
+  .notif-empty{font-size:13px; color:var(--charcoal-faint); text-align:center; padding:20px 0;}
+  @media (max-width:900px){ .notif-panel{top:64px; right:12px;} }
 </style>
 </head>
 <body>
@@ -1332,7 +1413,7 @@
       </div>
       <div class="tb-right">
         <div class="countdown-chip"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><b id="tbCountdown">—</b> to go</div>
-        <button class="icon-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
+        <button class="icon-btn" id="tbNotifBell" onclick="toggleNotificationsPanel()" title="Notifications" aria-label="Notifications"><svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
         <button class="icon-btn" onclick="toggleFeedbackPanel()" title="Feature requests &amp; bug reports" aria-label="Feature requests and bug reports"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/></svg></button>
         <div class="sb-avatar" style="background:linear-gradient(150deg,var(--champagne-light),var(--rose)); width:38px; height:38px; font-size:12px; cursor:pointer;" id="tbAvatar" onclick="renderRoute('settings')" title="Settings" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){renderRoute('settings');}">P&amp;J</div>
       </div>
@@ -1364,6 +1445,19 @@
   </div>
   <div class="fp-body" id="feedbackPanelBody"><!-- injected --></div>
 </div>
+
+<!-- ============ NOTIFICATIONS ============ -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-head">
+    <svg class="icon" viewBox="0 0 24 24" style="stroke:var(--champagne);"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+    <div><div class="notif-title">Notifications</div><div class="notif-sub">When someone's tagged in a note</div></div>
+    <button type="button" class="notif-close" onclick="toggleNotificationsPanel(false)" aria-label="Close">✕</button>
+  </div>
+  <div class="notif-body" id="notifPanelBody"><!-- injected --></div>
+</div>
+
+<!-- ============ @MENTION PICKER (shared by every rich-text notes field) ============ -->
+<div class="mention-panel" id="mentionPanel"><!-- injected --></div>
 
 <!-- ============ ASSISTANT ============ -->
 <button class="assistant-fab" id="assistantFab" onclick="toggleAssistant()">
@@ -1455,6 +1549,60 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.30.0', date:'2026-09-25',
+    title:'Seating chart overhaul: real rooms, a floor plan backdrop, and freeform notes',
+    items:[
+      'The seating chart now lives in Guest Management, on its own "Seating Chart" tab next to your Guest List — build tables and seat guests right there instead of digging into the Playbook.',
+      'The Playbook still shows the chart for quick reference, but it\'s view-only by default now, with a one-click "Unlock to edit here" if you ever want to make a change from that page directly.',
+      'Upload a photo of your venue\'s actual floor plan and it drops in as a backdrop you can trace your layout over, with an opacity slider so it fades into the background once your tables are placed.',
+      'Décor pieces (and the new freeform notes below) can now be resized right on the canvas — drag the little corner handle instead of only being able to move them.',
+      'New: freeform sticky notes you can drop anywhere on the floor plan for anything that does not fit a table or décor piece — a reminder about a pillar, a note for the coordinator, anything freeform.',
+      'Print / Export Floor Plan now includes the backdrop image and any notes you have left on the chart, so the printed version matches what you see on screen.'
+    ]
+  },
+  {
+    version:'1.29.0', date:'2026-09-03',
+    title:'Rich text notes, tag your people, and a real notifications bell',
+    items:[
+      'Notes on a vendor booking, and a brand-new Notes field on every Budget line item, are now rich text — bold, italics, and highlight, right from a small toolbar.',
+      'Type @ in any of these notes to tag someone — your partner, anyone in your wedding party, or a vendor contact — and they show up as a highlighted mention right in the text.',
+      'Tagging someone now logs a real notification, surfaced from the bell icon in the top bar (previously decorative) with an unread badge — click one to jump straight back to the note it came from.',
+      'Honest scope note, shown directly in the notifications panel: this is in-app only for now — Evera doesn\'t send real emails, texts, or push notifications yet. That\'s the same messaging-infrastructure gap already logged under the Communications Center backlog item, and tagging is the first place this in-app notification pattern shows up.'
+    ]
+  },
+  {
+    version:'1.28.0', date:'2026-09-03',
+    title:'A cleaner Budget page, and a real mood board',
+    items:[
+      'Vendors: "+ Add Vendor" is now a simple button at the top of the page, instead of a form buried at the bottom of your vendor team list.',
+      'Budget: Budget Breakdown and Budget Pace are now one card, side by side, so you see your category split and how your spending compares to your planning progress at a glance.',
+      'Budget: each category in the Master Budget now shows a thin progress bar against its planned amount, and an Expand All / Collapse All link makes it much faster to scan a budget with a lot of categories.',
+      'Budget: line items are tighter across the board — smaller row padding, and the vendor / next-payment details are laid out on their own line instead of one long run-on string.',
+      'Inspiration: the "Generate Mood Board" view now pulls its colour palette straight from your images and lets you select the ones you love, then commit them directly to that event\'s colour palette with one click.',
+      'Inspiration: the mood board itself is now a real collage — images from every category are mixed together into one juxtaposed board, instead of being listed out one category at a time. The Print / Save as PDF export matches the same layout.'
+    ]
+  },
+  {
+    version:'1.27.0', date:'2026-09-03',
+    title:'Full context on your shot list and key contacts',
+    items:[
+      'Every shot list entry now has its own Location and Details fields, editable right on the row — so "Full wedding party group portrait" can say exactly where to be and what to know, not just what to shoot.',
+      'Emergency & Key Contacts and Vendor Contacts are now built live from your actual vendor bookings, so every contact shows the business, the real contact person, and which event (or "All Events") it applies to — not just a name and a phone number.',
+      'This replaces a separate, hand-typed contacts list that could drift out of sync with your real vendor bookings — one source of truth now, same as the rest of the Run Book.',
+      'The same full-context contact card appears in the Couple Master and Coordinator Sheet PDF exports.'
+    ]
+  },
+  {
+    version:'1.26.0', date:'2026-09-03',
+    title:'Add your own timeline moments, and link them to a vendor',
+    items:[
+      'You can now add your own timeline items directly at the event level — from an event\'s own page in Events, or from that event\'s card in the Playbook\'s Run Book — and they immediately feed into the overall Playbook Timeline, the Coordinator Sheet, and every export.',
+      'Every ad-hoc item can be linked to one of your actual booked vendors, so "Cake cutting, 8:45 PM" can point straight at your caterer\'s real booking record instead of just a category label — tap through from the timeline item to see that vendor\'s full details.',
+      'Timeline items you add now slot into the right spot chronologically alongside the rest of that day\'s schedule, instead of always landing at the end of the list.',
+      'Fixed a real bug found while building this: an event\'s "Linked Playbook Moments" card was matching timeline items by checking whether the event\'s name appeared in the item\'s title — a fragile match that could miss or wrongly include items. It now uses the same real event link every other part of the Run Book relies on.'
+    ]
+  },
   {
     version:'1.25.0', date:'2026-09-03',
     title:'The Run Book, event by event',
@@ -1795,9 +1943,11 @@ let guidesView = 'list';     // 'list' | 'detail'
 let selectedArticleId = null;
 let guidesCategory = 'All';
 let playbookSection = 'timeline'; // 'timeline' | 'shotlist' | 'ceremony' | 'seating'
+let playbookSeatingUnlocked = false; // seating chart overhaul (chunk 5): Playbook shows the chart view-only by default; this unlocks in-place editing there
 let currentSeatingChartId = 'sc-reception'; // which dashboardData.seatingCharts[] entry is showing in the Seating Chart section
 let draggingTableId = null;   // seating chart: table currently being repositioned on the floor canvas
 let draggingDecorId = null;   // seating chart: décor piece currently being repositioned
+let draggingNoteId = null;    // seating chart: freeform note currently being repositioned (chunk 5)
 let draggingGuest = null;     // seating chart: {householdId, memberId} currently being dragged onto a seat
 let vendorBookingDetailId = null; // vendor booking id whose drill-in detail is open, if any
 let planFilterEvent = 'all', planFilterRole = 'all', planFilterPriority = 'all', planFilterStatus = 'open'; // Plan module task filters
@@ -2160,18 +2310,18 @@ function defaultDashboardData(){
       {id:'photog-b', label:'Photographer B', side:'partner2'}
     ],
     shotList:[
-      {id:'shot-1', title:"Bride's full look, solo — dress, shoes, jewelry", groupLabel:'Natasha (solo)', groupIds:[], eventId:'ev-church', priority:'must-have', done:false, photographerId:'photog-a'},
-      {id:'shot-2', title:'Bride with bridesmaids getting ready', groupLabel:"Natasha's Bridesmaids", groupIds:['amber','safa','dina'], eventId:'ev-church', priority:'must-have', done:false, photographerId:'photog-a'},
-      {id:'shot-3', title:'Groom with groomsmen getting ready', groupLabel:"Matteo's Groomsmen", groupIds:['michael','arsum'], eventId:'ev-church', priority:'must-have', done:false, photographerId:'photog-b'},
-      {id:'shot-4', title:'Full wedding party group portrait', groupLabel:'Full Wedding Party', groupIds:['amber','michael','safa','arsum','dina','melissa','joe','joey'], eventId:'ev-church', priority:'must-have', done:false, photographerId:null},
-      {id:'shot-5', title:'Couple exiting the ceremony', groupLabel:'Couple', groupIds:[], eventId:'ev-church', priority:'must-have', done:false, photographerId:null},
-      {id:'shot-6', title:'Parents with the couple, both sides', groupLabel:'Asif & Amina Shroff, Lisa & Tony Cesario', groupIds:['hh-1-m1','hh-1-m2','hh-2-m1','hh-2-m2'], eventId:'ev-church', priority:'must-have', done:false, photographerId:null},
-      {id:'shot-7', title:'Candid henna application close-ups', groupLabel:'Couple + Henna Artist', groupIds:[], eventId:'ev-mehndi', priority:'nice-to-have', done:false, photographerId:null},
-      {id:'shot-8', title:'Dhol performance, wide + candid crowd shots', groupLabel:'Guests', groupIds:[], eventId:'ev-mehndi', priority:'nice-to-have', done:false, photographerId:null},
-      {id:'shot-9', title:'First dance', groupLabel:'Couple', groupIds:[], eventId:'ev-reception', priority:'must-have', done:false, photographerId:null},
-      {id:'shot-10', title:'Speeches — candid reactions from head table', groupLabel:'Wedding Party + Family', groupIds:['amber','michael'], eventId:'ev-reception', priority:'nice-to-have', done:false, photographerId:null},
-      {id:'shot-11', title:'Cake cutting', groupLabel:'Couple', groupIds:[], eventId:'ev-reception', priority:'must-have', done:false, photographerId:null},
-      {id:'shot-12', title:'Candid guest shots during cocktail hour', groupLabel:'Guests', groupIds:[], eventId:'ev-reception', priority:'nice-to-have', done:false, photographerId:null}
+      {id:'shot-1', title:"Bride's full look, solo — dress, shoes, jewelry", groupLabel:'Natasha (solo)', groupIds:[], eventId:'ev-church', priority:'must-have', done:false, photographerId:'photog-a', location:'Elmsley Estate — Conservatory Garden', notes:'Natural light near the conservatory windows, before the wedding party joins.'},
+      {id:'shot-2', title:'Bride with bridesmaids getting ready', groupLabel:"Natasha's Bridesmaids", groupIds:['amber','safa','dina'], eventId:'ev-church', priority:'must-have', done:false, photographerId:'photog-a', location:'Elmsley Estate — Conservatory Garden', notes:''},
+      {id:'shot-3', title:'Groom with groomsmen getting ready', groupLabel:"Matteo's Groomsmen", groupIds:['michael','arsum'], eventId:'ev-church', priority:'must-have', done:false, photographerId:'photog-b', location:'Elmsley Estate — Groom\'s Suite', notes:''},
+      {id:'shot-4', title:'Full wedding party group portrait', groupLabel:'Full Wedding Party', groupIds:['amber','michael','safa','arsum','dina','melissa','joe','joey'], eventId:'ev-church', priority:'must-have', done:false, photographerId:null, location:'Elmsley Estate — Conservatory Garden', notes:'Needs both photographers coordinating — allow 15 extra minutes to gather everyone.'},
+      {id:'shot-5', title:'Couple exiting the ceremony', groupLabel:'Couple', groupIds:[], eventId:'ev-church', priority:'must-have', done:false, photographerId:null, location:'Elmsley Estate — Ceremony Lawn', notes:''},
+      {id:'shot-6', title:'Parents with the couple, both sides', groupLabel:'Asif & Amina Shroff, Lisa & Tony Cesario', groupIds:['hh-1-m1','hh-1-m2','hh-2-m1','hh-2-m2'], eventId:'ev-church', priority:'must-have', done:false, photographerId:null, location:'Elmsley Estate — Ceremony Lawn', notes:''},
+      {id:'shot-7', title:'Candid henna application close-ups', groupLabel:'Couple + Henna Artist', groupIds:[], eventId:'ev-mehndi', priority:'nice-to-have', done:false, photographerId:null, location:'Hendrick Hall', notes:''},
+      {id:'shot-8', title:'Dhol performance, wide + candid crowd shots', groupLabel:'Guests', groupIds:[], eventId:'ev-mehndi', priority:'nice-to-have', done:false, photographerId:null, location:'Hendrick Hall', notes:''},
+      {id:'shot-9', title:'First dance', groupLabel:'Couple', groupIds:[], eventId:'ev-reception', priority:'must-have', done:false, photographerId:null, location:'Elmsley Estate — Ballroom', notes:'DJ will cue a spotlight — coordinate timing with Music/DJ ahead of time.'},
+      {id:'shot-10', title:'Speeches — candid reactions from head table', groupLabel:'Wedding Party + Family', groupIds:['amber','michael'], eventId:'ev-reception', priority:'nice-to-have', done:false, photographerId:null, location:'Elmsley Estate — Ballroom', notes:''},
+      {id:'shot-11', title:'Cake cutting', groupLabel:'Couple', groupIds:[], eventId:'ev-reception', priority:'must-have', done:false, photographerId:null, location:'Elmsley Estate — Ballroom', notes:''},
+      {id:'shot-12', title:'Candid guest shots during cocktail hour', groupLabel:'Guests', groupIds:[], eventId:'ev-reception', priority:'nice-to-have', done:false, photographerId:null, location:'Elmsley Estate — Terrace', notes:''}
     ],
     ceremonyOrder:{
       eventId:'ev-church',
@@ -2618,7 +2768,7 @@ function buildFromOnboarding(a){
     weddingParty:[], bachParties:[], broadcasts:[], unavailability:[], vendorBookings:[],
     keyRoles:[], vendorDirectory:[], delegateRoles:[], emergencyKit:{}, feedbackSubmissions:[],
     musicSelections:{}, ceremonyReadings:{}, decorPlans:{}, eventMenus:{}, flatLayLists:{}, hairMakeupSchedules:{},
-    playbookTimeline: evNames.map((name,i)=>({id:'auto'+i, eventId:null, day: hasDate ? 'See your Events workspace for exact timing' : 'Date TBD', time:'—', title:name, tags:['coordinator','weddingparty'], location:'TBD', notes:''})),
+    playbookTimeline: evNames.map((name,i)=>({id:'auto'+i, eventId:null, vendorId:null, day: hasDate ? 'See your Events workspace for exact timing' : 'Date TBD', time:'—', title:name, tags:['coordinator','weddingparty'], location:'TBD', notes:''})),
     playbookContacts:[],
     playbookNotes:{dietary:'No dietary notes yet — these appear once guests start RSVPing.', accessibility:'No accessibility notes yet.', rainPlan:'No rain plan set yet — add one from your venue\'s indoor options.', emergency:'Add an on-site emergency contact once your venue is booked.'},
     weddingProfile:{ traditions:[], colorPalette:['#38473B','#C7A467','#CBB2A6','#FAF6EE'], hashtag:'', aestheticNotes:'' },
@@ -2922,7 +3072,8 @@ function normalizeDashboardData(d){
   if(!d.flatLayLists || typeof d.flatLayLists!=='object') d.flatLayLists = {};
   if(!d.hairMakeupSchedules || typeof d.hairMakeupSchedules!=='object') d.hairMakeupSchedules = {};
   if(d.ceremonyOrder && d.ceremonyOrder.eventId===undefined) d.ceremonyOrder.eventId = null;
-  (d.playbookTimeline||[]).forEach(item=>{ if(item.eventId===undefined) item.eventId = null; });
+  // Ad-hoc timeline items + vendor linking (v1.26.0)
+  (d.playbookTimeline||[]).forEach(item=>{ if(item.eventId===undefined) item.eventId = null; if(item.vendorId===undefined) item.vendorId = null; });
   if(!Array.isArray(d.feedbackSubmissions)) d.feedbackSubmissions = [];
   if(!Array.isArray(d.vendors)) d.vendors = [];
   if(!Array.isArray(d.vendorRecommendations)) d.vendorRecommendations = [];
@@ -2939,10 +3090,13 @@ function normalizeDashboardData(d){
     if(!Array.isArray(vb.eventIds)) vb.eventIds = [];
     if(!Array.isArray(vb.communications)) vb.communications = [];
   });
+  if(!Array.isArray(d.budgetBreakdown)) d.budgetBreakdown = [];
+  d.budgetBreakdown.forEach(cat=> (cat.items||[]).forEach(it=>{ if(it.notes===undefined) it.notes = ''; }));
+  if(!Array.isArray(d.notifications)) d.notifications = []; // rich-text @mention notifications (v1.29.0), in-app only
   if(!d.savingsPlan) d.savingsPlan = {currentSavings:0, contributionAmount:0, contributionFrequency:'monthly', startDateISO: isoFromDate(new Date())};
   if(!Array.isArray(d.photographers)) d.photographers = [{id:'photog-a', label:'Photographer A', side:'partner1'}];
   if(!Array.isArray(d.shotList)) d.shotList = [];
-  d.shotList.forEach(s=>{ if(s.photographerId===undefined) s.photographerId = null; });
+  d.shotList.forEach(s=>{ if(s.photographerId===undefined) s.photographerId = null; if(s.location===undefined) s.location = ''; if(s.notes===undefined) s.notes = ''; });
   if(!d.ceremonyOrder) d.ceremonyOrder = {processional:[], recessional:[], altarLineup:{groomSide:[], brideSide:[]}};
   if(!Array.isArray(d.guestCategories)) d.guestCategories = [`${d.partner1}'s Side`, `${d.partner2}'s Side`, `${d.partner1}'s Family`, `${d.partner2}'s Family`, 'Friends'];
   if(!Array.isArray(d.guestHouseholds)) d.guestHouseholds = [];
@@ -3070,6 +3224,13 @@ function normalizeDashboardData(d){
     });
     d.guestHouseholds.forEach(h=>{ h.members.forEach(m=>{ if(!m.seating || typeof m.seating!=='object') m.seating = {}; }); });
   }
+  // Seating chart overhaul (chunk 5): freeform notes + floor-plan-backdrop backfill, applies
+  // whether the chart list above was just created fresh or already existed.
+  d.seatingCharts.forEach(c=>{
+    if(!Array.isArray(c.notes)) c.notes = [];
+    if(c.roomSetup.bgImage===undefined) c.roomSetup.bgImage = null;
+    if(c.roomSetup.bgOpacity===undefined) c.roomSetup.bgOpacity = 45;
+  });
   if(!d.weddingProfile) d.weddingProfile = {};
   if(!Array.isArray(d.weddingProfile.traditions)) d.weddingProfile.traditions = [];
   if(!Array.isArray(d.weddingProfile.colorPalette)) d.weddingProfile.colorPalette = ['#38473B','#C7A467','#CBB2A6','#FAF6EE'];
@@ -3528,6 +3689,7 @@ function renderRoute(key){
     guestsFilterRsvp = 'all'; guestsFilterTier = 'all'; guestsFilterCategory = 'all'; guestsFilterEvent = 'all'; guestsGroupBy = 'family'; guestAddFormOpen = false;
     document.getElementById('content').innerHTML = renderGuestsModule();
   } else if(key==='vendors'){
+    vendorAddFormOpen = false;
     document.getElementById('content').innerHTML = renderVendorsModule();
   } else if(key==='my-wedding'){
     document.getElementById('content').innerHTML = renderMyWeddingModule();
@@ -3550,6 +3712,7 @@ function renderRoute(key){
   }
   renderAssistant();
   renderFeedbackPanel();
+  renderNotificationsPanel();
 }
 
 function statusPill(status){
@@ -5183,38 +5346,120 @@ async function renderGeneratedMoodBoardBody(eventId){
   }).filter(Boolean);
   return { event:e, palette, sections };
 }
+// Round-robins one image from each category in turn, so adjacent tiles come from different
+// categories — a real juxtaposition of the inspiration, rather than one category block after another.
+function interleaveMoodBoardImages(sections){
+  const queues = sections.filter(s=>(s.images||[]).length).map(s=>({label:s.label, imgs:s.images.slice()}));
+  const out = [];
+  let more = true;
+  while(more){
+    more = false;
+    queues.forEach(q=>{
+      if(q.imgs.length){ out.push({src:q.imgs.shift().src, label:q.label}); more = true; }
+    });
+  }
+  return out;
+}
+const MOODBOARD_TILE_PATTERN = ['big','norm','norm','wide','norm','tall','norm','norm','wide','norm','big','norm'];
+function renderMoodBoardCollage(sections){
+  const items = interleaveMoodBoardImages(sections);
+  if(!items.length) return '';
+  return `<div class="moodboard-collage">
+    ${items.map((it,i)=>{
+      const shape = MOODBOARD_TILE_PATTERN[i % MOODBOARD_TILE_PATTERN.length];
+      const cls = shape==='big' ? 'mt-big' : shape==='wide' ? 'mt-wide' : shape==='tall' ? 'mt-tall' : '';
+      return `<div class="moodboard-tile ${cls}"><img src="${it.src}" loading="lazy"><span class="mt-tag">${escapeHtml(it.label)}</span></div>`;
+    }).join('')}
+  </div>`;
+}
+let moodBoardCache = null; // {event, palette, sections} for the mood board currently open, so colour selection can re-render without re-fetching
+let moodBoardSelectedColors = [];
+let moodBoardCommitMsg = '';
+function toggleMoodBoardColor(hex){
+  const i = moodBoardSelectedColors.indexOf(hex);
+  if(i>=0) moodBoardSelectedColors.splice(i,1);
+  else moodBoardSelectedColors.push(hex);
+  moodBoardCommitMsg = '';
+  renderMoodBoardModalFromCache();
+}
+function commitMoodBoardColorsToEvent(){
+  if(!moodBoardCache || !moodBoardSelectedColors.length) return;
+  const e = dashboardData.events.find(ev=>ev.id===moodBoardCache.event.id);
+  if(!e) return;
+  if(!Array.isArray(e.colorPalette)) e.colorPalette = [];
+  let added = 0;
+  moodBoardSelectedColors.forEach(hex=>{
+    if(!e.colorPalette.includes(hex)){ e.colorPalette.push(hex); added++; }
+  });
+  moodBoardCommitMsg = added ? `Added ${added} colour${added===1?'':'s'} to ${e.name}'s event palette.` : 'Those colours are already in this event\'s palette.';
+  moodBoardSelectedColors = [];
+  renderMoodBoardModalFromCache();
+}
+function renderMoodBoardModalFromCache(){
+  if(!moodBoardCache) return;
+  const overlay = document.getElementById('moodBoardOverlay');
+  if(overlay) overlay.innerHTML = buildMoodBoardModalHtml(moodBoardCache);
+}
+function buildMoodBoardModalHtml({event, palette, sections}){
+  const notesSections = sections.filter(s=>s.notes);
+  return `
+    <div class="item-modal item-modal-xl">
+      <button class="im-close" onclick="closeGeneratedMoodBoard();">✕</button>
+      <div class="eyebrow">Mood Board</div>
+      <h3 style="margin:4px 0 4px;">${escapeHtml(event.name)}</h3>
+      <p class="d-sub" style="margin:0 0 14px;">${event.dateISO?fmtDateLabel(event.dateISO):'Date to be decided'}</p>
+      ${palette.length ? `
+        <div class="d-sub" style="margin-bottom:8px;">Pulled from your images — select the ones you love, then commit them to this event's colour palette</div>
+        <div class="palette-band" style="margin-bottom:8px;">
+          ${palette.map(c=>`
+          <div class="mb-palette-swatch ${moodBoardSelectedColors.includes(c)?'selected':''}" style="background:${c};" onclick="toggleMoodBoardColor('${c}')">
+            <span class="mb-palette-check">${moodBoardSelectedColors.includes(c)?'✓':''}</span>
+            <span class="palette-hex" style="color:${contrastTextColor(c)};">${escapeHtml(c)}</span>
+          </div>`).join('')}
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px;">
+          <button class="btn btn-outline btn-sm" ${moodBoardSelectedColors.length?'':'disabled'} onclick="commitMoodBoardColorsToEvent()">Add Selected to Event Palette</button>
+          ${moodBoardCommitMsg ? `<span class="d-sub" style="color:var(--green);">${escapeHtml(moodBoardCommitMsg)}</span>` : ''}
+        </div>
+      ` : ''}
+      ${sections.length ? `
+        <div class="eyebrow" style="margin-bottom:8px;">All Your Inspiration, Mixed Together</div>
+        ${renderMoodBoardCollage(sections)}
+        ${notesSections.length ? `
+          <div style="margin-top:18px;">
+            <div class="eyebrow" style="margin-bottom:8px;">Notes</div>
+            ${notesSections.map(s=>`<p style="font-size:13px;color:var(--charcoal-soft);margin:0 0 8px;"><b>${escapeHtml(s.label)}:</b> ${escapeHtml(s.notes)}</p>`).join('')}
+          </div>
+        ` : ''}
+      ` : `<p class="d-sub">Nothing added yet for ${escapeHtml(event.name)} — add some images or notes above, then come back here.</p>`}
+      <div style="margin-top:6px;">
+        <button class="btn btn-outline btn-sm" onclick="printGeneratedMoodBoard('${event.id}')">🖨 Print / Save as PDF</button>
+      </div>
+    </div>
+  `;
+}
 async function openGeneratedMoodBoard(eventId){
   const overlay = document.getElementById('moodBoardOverlay');
   overlay.innerHTML = `<div class="item-modal item-modal-xl"><button class="im-close" onclick="closeGeneratedMoodBoard();">✕</button><p class="d-sub">Pulling together your mood board…</p></div>`;
   overlay.classList.add('open');
   const { event, palette, sections } = await renderGeneratedMoodBoardBody(eventId);
   if(!event){ closeGeneratedMoodBoard(); return; }
-  overlay.innerHTML = `
-    <div class="item-modal item-modal-xl">
-      <button class="im-close" onclick="closeGeneratedMoodBoard();">✕</button>
-      <div class="eyebrow">Mood Board</div>
-      <h3 style="margin:4px 0 4px;">${escapeHtml(event.name)}</h3>
-      <p class="d-sub" style="margin:0 0 14px;">${event.dateISO?fmtDateLabel(event.dateISO):'Date to be decided'}</p>
-      ${palette.length ? `<div class="palette-band" style="margin-bottom:16px;">${palette.map(c=>`<div class="palette-swatch" style="background:${c};"><span class="palette-hex" style="color:${contrastTextColor(c)};">${escapeHtml(c)}</span></div>`).join('')}</div>` : ''}
-      ${sections.length ? sections.map(s=>`
-        <div style="margin-bottom:16px;">
-          <div class="eyebrow">${escapeHtml(s.label)}</div>
-          ${s.images.length ? `<div style="display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;">${s.images.map(img=>`<img src="${img.src}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--line);">`).join('')}</div>` : ''}
-          ${s.notes ? `<p style="font-size:13px;color:var(--charcoal-soft);margin:4px 0 0;">${escapeHtml(s.notes)}</p>` : ''}
-        </div>`).join('') : `<p class="d-sub">Nothing added yet for ${escapeHtml(event.name)} — add some images or notes above, then come back here.</p>`}
-      <div style="margin-top:6px;">
-        <button class="btn btn-outline btn-sm" onclick="printGeneratedMoodBoard('${eventId}')">🖨 Print / Save as PDF</button>
-      </div>
-    </div>
-  `;
+  moodBoardCache = { event, palette, sections };
+  moodBoardSelectedColors = [];
+  moodBoardCommitMsg = '';
+  overlay.innerHTML = buildMoodBoardModalHtml(moodBoardCache);
 }
 function closeGeneratedMoodBoard(){
   document.getElementById('moodBoardOverlay').classList.remove('open');
+  moodBoardCache = null;
+  moodBoardSelectedColors = [];
+  moodBoardCommitMsg = '';
 }
 async function printGeneratedMoodBoard(eventId){
   const d = dashboardData;
   const { event, palette, sections } = await renderGeneratedMoodBoardBody(eventId);
   if(!event) return;
+  const notesSections = sections.filter(s=>s.notes);
   document.getElementById('printArea').innerHTML = `
     <div class="print-header">
       <h1>${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)}</h1>
@@ -5222,12 +5467,10 @@ async function printGeneratedMoodBoard(eventId){
       <p>${event.dateISO?fmtDateLabel(event.dateISO):'Date to be decided'}</p>
     </div>
     ${palette.length ? `<div class="palette-band" style="margin:16px 0;">${palette.map(c=>`<div class="palette-swatch" style="background:${c};"><span class="palette-hex" style="color:${contrastTextColor(c)};">${escapeHtml(c)}</span></div>`).join('')}</div>` : ''}
-    ${sections.length ? sections.map(s=>`
-      <div style="margin-bottom:16px; break-inside:avoid;">
-        <h3 style="font-size:14px; margin:0 0 6px;">${escapeHtml(s.label)}</h3>
-        ${s.images.length ? `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px;">${s.images.map(img=>`<img src="${img.src}" style="width:70px;height:70px;object-fit:cover;border-radius:6px;">`).join('')}</div>` : ''}
-        ${s.notes ? `<p style="font-size:12.5px;color:var(--charcoal-soft);margin:0;">${escapeHtml(s.notes)}</p>` : ''}
-      </div>`).join('') : '<p>Nothing added yet for this event.</p>'}
+    ${sections.length ? `
+      ${renderMoodBoardCollage(sections)}
+      ${notesSections.length ? `<div style="margin-top:16px;">${notesSections.map(s=>`<p style="font-size:12.5px;color:var(--charcoal-soft);margin:0 0 6px;break-inside:avoid;"><b>${escapeHtml(s.label)}:</b> ${escapeHtml(s.notes)}</p>`).join('')}</div>` : ''}
+    ` : '<p>Nothing added yet for this event.</p>'}
   `;
   document.body.classList.add('printing');
   window.print();
@@ -6045,6 +6288,213 @@ function vendorBookingsForEvent(e){
     return (e.vendorCategories||[]).includes(vb.category);
   });
 }
+/* ==================================================================
+   RICH TEXT NOTES + @MENTION TAGGING + IN-APP NOTIFICATIONS (v1.29.0)
+   Reusable across any notes field — currently wired into Vendor Booking
+   Notes and Budget line item Notes. Bold/Italic/Highlight via
+   document.execCommand (fine for this app's controlled browser context);
+   @mentions insert a styled, non-atomic chip (simpler & more robust than
+   a fully atomic contenteditable widget) and log an in-app notification —
+   there's no real email/push/SMS backend yet (see the Communications
+   Center backlog item), so this is honestly in-app only, surfaced from
+   the topbar bell that used to be purely decorative.
+================================================================== */
+function taggablePeople(){
+  const d = dashboardData;
+  const out = [];
+  if(d.partner1) out.push({id:'partner-1', name:d.partner1, type:'Partner'});
+  if(d.partner2) out.push({id:'partner-2', name:d.partner2, type:'Partner'});
+  (d.weddingParty||[]).forEach(m=> out.push({id:'wp-'+m.id, name:m.name, type:m.role||'Wedding Party'}));
+  (d.collaborators||[]).forEach(c=> out.push({id:'collab-'+c.id, name:c.name, type:c.role||'Collaborator'}));
+  (d.vendorBookings||[]).forEach(vb=>{
+    if(vb.contactName) out.push({id:'vendor-'+vb.id, name:`${vb.contactName} (${vb.vendorName||vb.category})`, type:'Vendor'});
+  });
+  const seen = new Set();
+  return out.filter(p=>{ if(seen.has(p.id)) return false; seen.add(p.id); return true; });
+}
+function rteInitialHtml(raw){
+  if(!raw) return '';
+  if(/<[a-z][\s\S]*>/i.test(raw)) return raw; // already rich HTML from a previous edit
+  return escapeHtml(raw).replace(/\n/g,'<br>'); // legacy plain-text note — display safely, unchanged
+}
+function renderRichNotesEditor(fieldKey, rawValue){
+  return `
+    <div class="rte-wrap">
+      <div class="rte-toolbar">
+        <button type="button" class="rte-btn" title="Bold" onmousedown="event.preventDefault();" onclick="rteExec('bold', this)"><b>B</b></button>
+        <button type="button" class="rte-btn" title="Italic" onmousedown="event.preventDefault();" onclick="rteExec('italic', this)"><i>I</i></button>
+        <button type="button" class="rte-btn" title="Highlight" onmousedown="event.preventDefault();" onclick="rteExec('hiliteColor', this)">✎</button>
+        <span class="rte-hint">Type @ to tag someone</span>
+      </div>
+      <div class="rte-editor" contenteditable="true" data-placeholder="Add a note…" data-field="${escapeAttr(fieldKey)}" oninput="onRteInput(this)" onkeyup="handleRteMentionKey(event, this)">${rteInitialHtml(rawValue)}</div>
+    </div>
+  `;
+}
+function rteExec(cmd, btn){
+  const wrap = btn.closest('.rte-wrap');
+  const editor = wrap.querySelector('.rte-editor');
+  editor.focus();
+  try{ document.execCommand('styleWithCSS', false, true); }catch(e){}
+  if(cmd==='hiliteColor') document.execCommand('hiliteColor', false, '#F6EDDB');
+  else document.execCommand(cmd, false, null);
+  rteCommit(editor);
+}
+function onRteInput(editor){ rteCommit(editor); }
+function rteCommit(editor){ saveRteField(editor.dataset.field, editor.innerHTML); }
+function saveRteField(field, html){
+  const [kind, ...rest] = field.split(':');
+  if(kind==='vendorNotes'){
+    const vb = dashboardData.vendorBookings.find(v=>v.id===rest[0]);
+    if(vb) vb.notes = html;
+  } else if(kind==='budgetItemNotes'){
+    const ci = Number(rest[0]), ii = Number(rest[1]);
+    const item = dashboardData.budgetBreakdown[ci] && dashboardData.budgetBreakdown[ci].items[ii];
+    if(item) item.notes = html;
+  }
+}
+let mentionSavedRange = null;
+let mentionActiveEditorId = null;
+function handleRteMentionKey(evt, editor){
+  if(evt.key==='@') setTimeout(()=>openMentionDropdown(editor), 0);
+  else if(evt.key==='Escape') closeMentionDropdown();
+}
+function openMentionDropdown(editor){
+  const sel = window.getSelection();
+  if(sel.rangeCount) mentionSavedRange = sel.getRangeAt(0).cloneRange();
+  mentionActiveEditorId = editor.dataset.field;
+  const rect = editor.getBoundingClientRect();
+  const panel = document.getElementById('mentionPanel');
+  panel.style.top = (rect.bottom+6)+'px';
+  panel.style.left = rect.left+'px';
+  panel.style.width = Math.max(220, Math.min(rect.width, 320))+'px';
+  renderMentionPanel();
+}
+function renderMentionPanel(){
+  const panel = document.getElementById('mentionPanel');
+  if(!panel) return;
+  panel.innerHTML = `
+    <input type="text" class="mention-filter" placeholder="Search people…" oninput="filterMentionList(this.value)">
+    <div class="mention-list" id="mentionList"></div>
+    <div class="mention-close-row"><a href="#" onmousedown="event.preventDefault();" onclick="closeMentionDropdown(); return false;">Cancel</a></div>
+  `;
+  panel.classList.add('open');
+  filterMentionList('');
+  const input = panel.querySelector('.mention-filter');
+  if(input) input.focus();
+}
+function filterMentionList(filterText){
+  const list = document.getElementById('mentionList');
+  if(!list) return;
+  const people = taggablePeople().filter(p=>p.name.toLowerCase().includes((filterText||'').toLowerCase()));
+  list.innerHTML = people.length ? people.map(p=>`<div class="mention-option" onmousedown="event.preventDefault(); selectMention('${p.id}', '${escapeAttr(p.name)}')"><span class="mention-name">${escapeHtml(p.name)}</span><span class="mention-type">${escapeHtml(p.type)}</span></div>`).join('') : '<div class="mention-empty">No matches</div>';
+}
+function selectMention(pid, name){
+  const editor = document.querySelector(`.rte-editor[data-field="${mentionActiveEditorId}"]`);
+  if(editor && mentionSavedRange){
+    editor.focus();
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(mentionSavedRange);
+    document.execCommand('delete', false, null); // remove the "@" that triggered this
+    document.execCommand('insertHTML', false, `<span class="note-mention" data-pid="${escapeAttr(pid)}" data-pname="${escapeAttr(name)}">@${escapeHtml(name)}</span>&nbsp;`);
+    rteCommit(editor);
+    notifyMention(mentionActiveEditorId, pid, name);
+  }
+  closeMentionDropdown();
+}
+function closeMentionDropdown(){
+  const panel = document.getElementById('mentionPanel');
+  if(panel) panel.classList.remove('open');
+  mentionSavedRange = null;
+  mentionActiveEditorId = null;
+}
+function notifyMention(field, personId, personName){
+  const d = dashboardData;
+  if(!Array.isArray(d.notifications)) d.notifications = [];
+  const [kind, ...rest] = field.split(':');
+  let context = 'a note';
+  if(kind==='vendorNotes'){
+    const vb = d.vendorBookings.find(v=>v.id===rest[0]);
+    context = vb ? `${vb.vendorName||vb.category}'s notes (Vendors)` : "a vendor's notes";
+  } else if(kind==='budgetItemNotes'){
+    const ci = Number(rest[0]), ii = Number(rest[1]);
+    const item = d.budgetBreakdown[ci] && d.budgetBreakdown[ci].items[ii];
+    context = item ? `the "${item.name}" line item's notes (Budget)` : "a budget line item's notes";
+  }
+  d.notifications.unshift({
+    id:'notif-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+    text:`You tagged ${personName} in ${context}.`,
+    field, personId, personName,
+    createdAt:new Date().toISOString(), read:false
+  });
+  renderNotificationsPanel();
+}
+function notificationUnreadCount(){ return (dashboardData.notifications||[]).filter(n=>!n.read).length; }
+function updateNotificationBadge(){
+  const bell = document.getElementById('tbNotifBell');
+  if(!bell) return;
+  const dot = bell.querySelector('.dot');
+  if(dot) dot.style.display = notificationUnreadCount()>0 ? '' : 'none';
+}
+function markAllNotificationsRead(){
+  let changed = false;
+  (dashboardData.notifications||[]).forEach(n=>{ if(!n.read){ n.read = true; changed = true; } });
+  if(changed) renderNotificationsPanel();
+}
+function toggleNotificationsPanel(force){
+  const panel = document.getElementById('notifPanel');
+  if(!panel) return;
+  const willOpen = typeof force==='boolean' ? force : !panel.classList.contains('open');
+  panel.classList.toggle('open', willOpen);
+  if(willOpen) markAllNotificationsRead();
+}
+function jumpToNotificationSource(field){
+  const [kind, ...rest] = field.split(':');
+  toggleNotificationsPanel(false);
+  if(kind==='vendorNotes'){
+    renderRoute('vendors');
+    setTimeout(()=>openVendorBookingDetail(rest[0]), 0);
+  } else if(kind==='budgetItemNotes'){
+    renderRoute('budget');
+    setTimeout(()=>openBudgetItemDetail(Number(rest[0]), Number(rest[1])), 0);
+  }
+}
+function renderNotificationsPanel(){
+  const el = document.getElementById('notifPanelBody');
+  if(!el) return;
+  const items = (dashboardData.notifications||[]).slice().sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+  el.innerHTML = `
+    <p class="d-sub" style="margin:0 0 14px;">In-app only for now — Evera doesn't send real emails, texts, or push notifications yet.</p>
+    ${items.length ? items.map(n=>`
+      <div class="notif-row ${n.read?'':'notif-unread'}" onclick="jumpToNotificationSource('${escapeAttr(n.field)}')">
+        <span class="notif-text">${escapeHtml(n.text)}</span>
+        <div class="notif-meta">${fmtDateLabel(isoFromDate(new Date(n.createdAt)))} · ${new Date(n.createdAt).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'})}</div>
+      </div>
+    `).join('') : '<div class="notif-empty">No notifications yet — tag someone in a note to see it here.</div>'}
+  `;
+  updateNotificationBadge();
+}
+
+let vendorAddFormOpen = false;
+function toggleVendorAddForm(){
+  vendorAddFormOpen = !vendorAddFormOpen;
+  document.getElementById('content').innerHTML = renderVendorsModule();
+}
+function renderVendorAddButton(){
+  return `<div class="module-header">
+    <div class="mh-copy"><h4 style="margin:0;">Vendors</h4><span class="d-sub">Your full vendor team, status, and recommendations</span></div>
+    <button class="btn btn-solid btn-sm" onclick="toggleVendorAddForm()">${vendorAddFormOpen ? 'Done Adding' : '+ Add Vendor'}</button>
+  </div>
+  ${vendorAddFormOpen ? `
+  <div class="card" style="margin-bottom:20px;">
+    <div class="custom-add-row" style="flex-wrap:wrap;">
+      <input type="text" id="newVBCategory" placeholder="Category (e.g. Hair & Makeup)">
+      <input type="text" id="newVBRole" placeholder="Role (optional — e.g. Bridesmaids)">
+      <input type="text" id="newVBName" placeholder="Vendor name">
+      <button class="btn btn-outline btn-sm" onclick="addVendorBooking()">+ Add Vendor Booking</button>
+    </div>
+  </div>` : ''}`;
+}
 function renderVendorTeamSection(){
   const d = dashboardData;
   const byCat = vendorBookingsByCategory();
@@ -6075,13 +6525,7 @@ function renderVendorTeamSection(){
               </div>`).join('')}
           </div>
         </div>
-      `).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No vendor bookings yet — add one below, or book straight from a recommendation.</p>`}
-      <div class="custom-add-row" style="margin-top:16px; flex-wrap:wrap;">
-        <input type="text" id="newVBCategory" placeholder="Category (e.g. Hair & Makeup)">
-        <input type="text" id="newVBRole" placeholder="Role (optional — e.g. Bridesmaids)">
-        <input type="text" id="newVBName" placeholder="Vendor name">
-        <button class="btn btn-outline btn-sm" onclick="addVendorBooking()">+ Add Vendor Booking</button>
-      </div>
+      `).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No vendor bookings yet — use "+ Add Vendor" at the top of the page, or book straight from a recommendation.</p>`}
     </div>
   `;
 }
@@ -6200,7 +6644,7 @@ function renderVendorBookingDetailModal(id){
           ${d.events.filter(e=>!(vb.eventIds||[]).includes(e.id)).map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
         </select>
       </div>
-      <div class="field-cell" style="margin-top:14px;"><label>Notes</label><textarea class="notes-field notes-field-sm" onchange="updateVendorBookingField('${vb.id}','notes',this.value)">${escapeAttr(vb.notes)}</textarea></div>
+      <div class="field-cell" style="margin-top:14px;"><label>Notes</label>${renderRichNotesEditor('vendorNotes:'+vb.id, vb.notes)}</div>
       <div class="detail-section" style="margin-top:18px;">
         <div class="detail-section-head"><h4 style="margin:0;">Communications</h4><span class="d-sub">Quotes, feedback, and contract messages — all in one place</span></div>
         ${(vb.communications&&vb.communications.length) ? vb.communications.slice().sort((a,b)=>(b.dateISO||'').localeCompare(a.dateISO||'')).map(c=>`
@@ -6237,6 +6681,7 @@ function renderVendorsModule(){
   const shortlistedCount = vendors.filter(v=>v.status==='shortlisted').length;
   const searchingCount = vendors.filter(v=>v.status==='searching').length;
   return `
+    ${renderVendorAddButton()}
     ${renderVendorTeamSection()}
     <div class="party-summary-strip">
       <div class="ps-stat"><div class="ps-num">${vendors.length}</div><div class="ps-label">Vendor Categories</div></div>
@@ -6667,6 +7112,20 @@ function renderPartyTimelineTab(){
 }
 
 /* ---- shared timeline rendering + drill-down ---- */
+function timeToMinutes(t){
+  if(!t) return 0;
+  const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i.exec(String(t).trim());
+  if(!m) return 0;
+  let h = parseInt(m[1],10);
+  const min = parseInt(m[2],10);
+  const ampm = (m[3]||'').toUpperCase();
+  if(ampm==='PM' && h!==12) h += 12;
+  if(ampm==='AM' && h===12) h = 0;
+  return h*60+min;
+}
+function sortByTime(items){
+  return items.slice().sort((a,b)=>timeToMinutes(a.time)-timeToMinutes(b.time));
+}
 function renderTimelineList(items, opts){
   opts = opts || {};
   const days = [];
@@ -6675,7 +7134,7 @@ function renderTimelineList(items, opts){
     <div class="playbook-day">
       <div class="playbook-day-label">${day}</div>
       <div class="${opts.numbered?'pb-numbered':''}">
-        ${items.filter(i=>i.day===day).map(i=>`
+        ${sortByTime(items.filter(i=>i.day===day)).map(i=>`
           <div class="pb-item" onclick="openItemDetail('${i.id}')">
             <div class="pb-time">${i.time}</div>
             <div><div class="pb-title">${i.title}</div>${opts.showTags?`<div class="pb-tags">${i.tags.map(t=>`<span>${t.replace('vendor:','')}</span>`).join('')}</div>`:''}</div>
@@ -6683,6 +7142,70 @@ function renderTimelineList(items, opts){
           </div>`).join('')}
       </div>
     </div>`).join('');
+}
+/* ---- ad-hoc timeline items, at the event level, with optional vendor linking (v1.26.0) ---- */
+function timelineDayLabelForEvent(e){
+  if(!e) return 'Date TBD';
+  if(!e.dateISO) return e.date || 'Date TBD';
+  const d = new Date(e.dateISO+'T12:00:00');
+  return d.toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric'});
+}
+function renderTimelineItemRow(item){
+  const vb = item.vendorId ? (dashboardData.vendorBookings||[]).find(v=>v.id===item.vendorId) : null;
+  const sub = [item.location, vb ? `Vendor: ${vb.vendorName||vb.category}` : null].filter(Boolean).join(' · ');
+  return `<div class="pb-contact-row" style="align-items:flex-start;">
+    <div><div style="font-weight:600;">${escapeHtml(item.title)}</div>${sub?`<div class="pc-role">${escapeHtml(sub)}</div>`:''}</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="d-sub">${escapeHtml(item.time)}</span>
+      <a href="#" class="danger-link" onclick="removeTimelineItem('${item.id}'); return false;">Remove</a>
+    </div>
+  </div>`;
+}
+function renderAddTimelineItemRow(eventId){
+  const vbOptions = (dashboardData.vendorBookings||[]).map(vb=>`<option value="${vb.id}">${escapeHtml(vb.vendorName||vb.category)} — ${escapeHtml(vb.category)}</option>`).join('');
+  return `
+    <div class="custom-add-row" style="margin-top:8px; flex-wrap:wrap;">
+      <input type="text" id="newTL-${eventId}-time" placeholder="Time (e.g. 3:15 PM)" style="max-width:130px;">
+      <input type="text" id="newTL-${eventId}-title" placeholder="What's happening" style="flex:2; min-width:180px;">
+      <input type="text" id="newTL-${eventId}-location" placeholder="Location (optional)" style="flex:1; min-width:140px;">
+      <select id="newTL-${eventId}-vendor" class="select-field-sm" style="width:auto;">
+        <option value="">Link a vendor (optional)</option>
+        ${vbOptions}
+      </select>
+      <label style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--charcoal-soft); white-space:nowrap;">
+        <input type="checkbox" id="newTL-${eventId}-wp" style="width:auto;"> Wedding party too
+      </label>
+      <button class="btn btn-outline btn-sm" onclick="addTimelineItem('${eventId}')">+ Add</button>
+    </div>
+  `;
+}
+function addTimelineItem(eventId){
+  const time = (document.getElementById(`newTL-${eventId}-time`).value||'').trim();
+  const title = (document.getElementById(`newTL-${eventId}-title`).value||'').trim();
+  if(!time || !title) return;
+  const location = (document.getElementById(`newTL-${eventId}-location`).value||'').trim();
+  const vendorId = document.getElementById(`newTL-${eventId}-vendor`).value || null;
+  const wpChecked = document.getElementById(`newTL-${eventId}-wp`).checked;
+  const e = dashboardData.events.find(ev=>ev.id===eventId);
+  const tags = ['coordinator'];
+  if(wpChecked) tags.push('weddingparty');
+  if(vendorId){
+    const vb = dashboardData.vendorBookings.find(v=>v.id===vendorId);
+    if(vb && vb.category) tags.push('vendor:'+vb.category);
+  }
+  dashboardData.playbookTimeline.push({
+    id:'tl-'+Date.now().toString(36),
+    eventId, vendorId: vendorId||null,
+    day: timelineDayLabelForEvent(e), time, title,
+    location: location || (e ? (e.location||'') : ''),
+    notes:'', tags
+  });
+  reRenderCurrent();
+}
+function removeTimelineItem(itemId){
+  const idx = dashboardData.playbookTimeline.findIndex(i=>i.id===itemId);
+  if(idx>-1) dashboardData.playbookTimeline.splice(idx,1);
+  reRenderCurrent();
 }
 function findTimelineItemById(id){
   const d = dashboardData;
@@ -6703,8 +7226,10 @@ function renderItemDetail(id){
   const d = dashboardData;
   const vendorTag = item.tags.find(t=>t.startsWith('vendor:'));
   const vendorCat = vendorTag ? vendorTag.slice(7) : null;
-  const relatedContact = vendorCat ? (d.playbookContacts||[]).find(c=>c.role.toLowerCase().includes(vendorCat.toLowerCase())) : null;
+  const linkedVendor = item.vendorId ? (d.vendorBookings||[]).find(v=>v.id===item.vendorId) : null;
+  const relatedContact = (!linkedVendor && vendorCat) ? emergencyKeyContacts().find(c=>c.category===vendorCat) : null;
   const relatedMembers = (d.weddingParty||[]).filter(m=>m.events.some(e=>item.title.includes(e)));
+  const isPlaybookItem = (d.playbookTimeline||[]).some(i=>i.id===item.id);
   return `
     <div class="item-modal">
       <button class="im-close" onclick="closeItemDetail()">✕</button>
@@ -6713,9 +7238,11 @@ function renderItemDetail(id){
       <div class="im-time">${item.time}</div>
       ${item.location?`<div class="im-row"><b>Location</b><span>${item.location}</span></div>`:''}
       <div class="im-row"><b>Visible to</b><span>${item.tags.map(t=>t.replace('vendor:','')).join(', ')}</span></div>
-      ${relatedContact?`<div class="im-row"><b>Vendor Contact</b><span>${relatedContact.name} · ${relatedContact.phone}</span></div>`:''}
+      ${relatedContact?`<div class="im-row"><b>Vendor Contact</b><span>${escapeHtml(relatedContact.business)} · ${escapeHtml(relatedContact.phone)}</span></div>`:''}
+      ${linkedVendor?`<div class="im-row"><b>Linked Vendor</b><span>${escapeHtml(linkedVendor.vendorName||linkedVendor.category)} (${escapeHtml(linkedVendor.category)}) — <a href="#" onclick="closeItemDetail(); renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${linkedVendor.id}'),0); return false;">view →</a></span></div>`:''}
       ${relatedMembers.length?`<div class="im-row"><b>Wedding Party</b><span>${relatedMembers.map(m=>m.name).join(', ')}</span></div>`:''}
       ${item.notes?`<div class="im-notes">${item.notes}</div>`:''}
+      ${isPlaybookItem?`<div style="margin-top:14px;"><a href="#" class="danger-link" onclick="removeTimelineItem('${item.id}'); closeItemDetail(); return false;">Remove this timeline item</a></div>`:''}
     </div>
   `;
 }
@@ -6901,13 +7428,35 @@ function renderPlaybook(){
         </div>
       </div>
     </div>
-    ${playbookSection==='timeline' ? renderPlaybookTimelineSection() : playbookSection==='shotlist' ? renderShotListSection() : playbookSection==='ceremony' ? renderCeremonyOrderSection() : playbookSection==='runbook' ? renderRunBookSection() : renderSeatingChartSection()}
+    ${playbookSection==='timeline' ? renderPlaybookTimelineSection() : playbookSection==='shotlist' ? renderShotListSection() : playbookSection==='ceremony' ? renderCeremonyOrderSection() : playbookSection==='runbook' ? renderRunBookSection() : renderPlaybookSeatingSection()}
   `;
 }
 function switchPlaybookSection(key){
   playbookSection = key;
   document.getElementById('content').innerHTML = renderPlaybook();
 }
+/* ---- Seating chart overhaul (chunk 5): the Playbook shows the chart view-only by
+   default (editing now lives in Guest Management) with an explicit unlock action. ---- */
+function renderPlaybookSeatingSection(){
+  return `${renderSeatingLockBanner()}${renderSeatingChartSection(!playbookSeatingUnlocked)}`;
+}
+function renderSeatingLockBanner(){
+  if(playbookSeatingUnlocked){
+    return `
+    <div class="card seating-lock-banner" style="background:var(--green-tint); border-color:var(--green-mid); margin-bottom:14px;">
+      <div class="card-head"><h4>✓ Editing unlocked here</h4><button class="btn btn-outline btn-sm" onclick="lockPlaybookSeating()">🔒 Lock (view-only)</button></div>
+      <p style="font-size:13px;color:var(--charcoal-faint);">Changes you make here save to the same chart shown in Guest Management.</p>
+    </div>`;
+  }
+  return `
+  <div class="card seating-lock-banner" style="background:var(--amber-tint); border-color:var(--champagne-dark); margin-bottom:14px;">
+    <div class="card-head"><h4>🔒 View-only here</h4><button class="btn btn-outline btn-sm" onclick="unlockPlaybookSeating()">Unlock to edit here</button></div>
+    <p style="font-size:13px;color:var(--charcoal-faint);">The Playbook shows your seating chart for quick reference during planning. <a href="#" class="ch-link" onclick="jumpToGuestSeating(); return false;">Open it in Guest Management →</a> to build tables, seat guests, or edit the layout — or unlock editing right here.</p>
+  </div>`;
+}
+function unlockPlaybookSeating(){ playbookSeatingUnlocked = true; reRenderCurrent(); }
+function lockPlaybookSeating(){ playbookSeatingUnlocked = false; reRenderCurrent(); }
+function jumpToGuestSeating(){ guestsModuleTab = 'seating'; renderRoute('guests'); }
 function renderPlaybookTimelineSection(){
   const d = dashboardData;
   if(!playbookVendorCategory){
@@ -6981,13 +7530,42 @@ function renderPlaybookTimeline(){
   }
   return renderTimelineList(items, {numbered: playbookRole==='coordinator', showTags: playbookRole==='couple'});
 }
+/* ---- Emergency & Key Contacts — full context (v1.27.0) ----
+   Derived live from real vendor bookings (single source of truth, same convention as the
+   Family Contact List) rather than a separately hand-typed list: every booking with a real
+   phone number surfaces here with its business name, contact person, category, and which
+   event(s) it's tied to (or "All Events" when a booking — like the venue — isn't scoped to
+   just one). Bookings with no phone yet (still shortlisted, not booked) are left off an
+   emergency/key contact sheet, since there's nothing to call. */
+function emergencyKeyContacts(){
+  const d = dashboardData;
+  return (d.vendorBookings||[])
+    .filter(vb=>(vb.phone||'').trim())
+    .map(vb=>({
+      id: vb.id,
+      business: vb.vendorName || vb.category,
+      contactName: vb.contactName || '',
+      category: vb.category,
+      phone: vb.phone,
+      eventLabel: (vb.eventIds && vb.eventIds.length)
+        ? vb.eventIds.map(id=>{ const e = d.events.find(x=>x.id===id); return e ? e.name : null; }).filter(Boolean).join(', ')
+        : 'All Events'
+    }));
+}
+function renderEmergencyContactRow(c){
+  return `<div class="pb-contact-row">
+    <div><div style="font-weight:600;">${escapeHtml(c.business)}</div><div class="pc-role">${c.contactName?escapeHtml(c.contactName)+' · ':''}${escapeHtml(c.category)} · ${escapeHtml(c.eventLabel)}</div></div>
+    <div>${escapeHtml(c.phone)}</div>
+  </div>`;
+}
 function renderPlaybookExtras(){
   const d = dashboardData;
+  const contacts = emergencyKeyContacts();
   return `
     <div class="grid-2">
       <div class="card">
-        <div class="card-head"><h4>Vendor Contacts</h4></div>
-        ${d.playbookContacts.length ? d.playbookContacts.map(c=>`<div class="pb-contact-row"><div><div style="font-weight:600;">${c.name}</div><div class="pc-role">${c.role}</div></div><div>${c.phone}</div></div>`).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">No vendor contacts yet.</p>'}
+        <div class="card-head"><h4>Vendor Contacts</h4><span class="d-sub">Full context — who, what, and which event</span></div>
+        ${contacts.length ? contacts.map(c=>renderEmergencyContactRow(c)).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">No vendor contacts yet.</p>'}
       </div>
       <div class="card">
         <div class="card-head"><h4>Special Notes</h4></div>
@@ -7001,9 +7579,10 @@ function renderPlaybookExtras(){
 }
 function renderPlaybookContactsCard(){
   const d = dashboardData;
+  const contacts = emergencyKeyContacts();
   return `<div class="card">
-    <div class="card-head"><h4>Emergency &amp; Key Contacts</h4></div>
-    ${d.playbookContacts.length ? d.playbookContacts.map(c=>`<div class="pb-contact-row"><div><div style="font-weight:600;">${c.name}</div><div class="pc-role">${c.role}</div></div><div>${c.phone}</div></div>`).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">No contacts yet.</p>'}
+    <div class="card-head"><h4>Emergency &amp; Key Contacts</h4><span class="d-sub">Full context — who, what, and which event</span></div>
+    ${contacts.length ? contacts.map(c=>renderEmergencyContactRow(c)).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">No contacts yet.</p>'}
     <div class="itinerary-row" style="margin-top:6px;"><div class="it-day">Emergency</div><div>${d.playbookNotes.emergency}</div></div>
   </div>`;
 }
@@ -7095,7 +7674,8 @@ function renderPerEventRunbookCard(e){
       ${collapsed ? '' : `
         <div class="detail-section" style="margin-top:0;padding-top:0;border-top:none;">
           <div class="detail-section-head"><h5 style="margin:0;">Timeline</h5><span class="ch-link" style="cursor:pointer;" onclick="event.stopPropagation(); switchPlaybookSection('timeline');">View in Timeline →</span></div>
-          ${timelineItems.length ? timelineItems.map(i=>runbookListRow(i.title, i.time, i.location)).join('') : '<p class="d-sub">No timeline items tagged to this event yet.</p>'}
+          ${timelineItems.length ? sortByTime(timelineItems).map(i=>renderTimelineItemRow(i)).join('') : '<p class="d-sub">No timeline items yet — add one below.</p>'}
+          ${renderAddTimelineItemRow(e.id)}
         </div>
         <div class="detail-section">
           <div class="detail-section-head"><h5 style="margin:0;">Photo Shot List</h5><span class="ch-link" style="cursor:pointer;" onclick="event.stopPropagation(); switchPlaybookSection('shotlist');">View in Shot List →</span></div>
@@ -7458,7 +8038,10 @@ function shotRowHtml(s, si){
       </select>
       <a href="#" class="danger-link" onclick="removeShot(${si}); return false;">Remove</a>
     </div>
-    ${s.notes ? `<div class="detail-hint" style="margin:2px 0 8px;">${escapeHtml(s.notes)}</div>` : ''}`;
+    <div class="custom-add-row" style="margin:2px 0 10px; flex-wrap:wrap;">
+      <input type="text" class="select-field-sm" placeholder="Location (e.g. Conservatory Garden)" style="flex:1; min-width:180px;" value="${escapeAttr(s.location||'')}" onchange="updateShotField(${si},'location',this.value)">
+      <input type="text" class="select-field-sm" placeholder="Details for the photographer (optional)" style="flex:2; min-width:220px;" value="${escapeAttr(s.notes||'')}" onchange="updateShotField(${si},'notes',this.value)">
+    </div>`;
 }
 function renderShotListSection(){
   const d = dashboardData;
@@ -7530,7 +8113,7 @@ function addShot(){
   const el = document.getElementById('newShotTitle');
   const title = (el.value||'').trim();
   if(!title) return;
-  dashboardData.shotList.push({id:'shot-'+Date.now().toString(36), title, notes:'', groupLabel:'', groupIds:[], eventId:null, priority:'nice-to-have', done:false, photographerId:null});
+  dashboardData.shotList.push({id:'shot-'+Date.now().toString(36), title, notes:'', location:'', groupLabel:'', groupIds:[], eventId:null, priority:'nice-to-have', done:false, photographerId:null});
   document.getElementById('content').innerHTML = renderPlaybook();
 }
 function removeShot(si){
@@ -7636,9 +8219,10 @@ function generateShotCombinations(){
       combos.push({title:`${s.partnerName} with full ${s.sideLabel} wedding party`, groupLabel:`${s.partnerName} + ${s.sideLabel} party`, groupIds:weddingPartyMembers.map(m=>m.id)});
     }
 
+    const ceremonyLocation = (d.events.find(ev=>ev.id===ceremonyEventId)||{}).location || '';
     combos.forEach(c=>{
       if(d.shotList.some(existing=>existing.title===c.title)) return;
-      d.shotList.push({id:'shot-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), title:c.title, notes:c.notes||'', groupLabel:c.groupLabel, groupIds:c.groupIds, eventId:ceremonyEventId, priority:'nice-to-have', done:false, photographerId:photogId});
+      d.shotList.push({id:'shot-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), title:c.title, notes:c.notes||'', location:ceremonyLocation, groupLabel:c.groupLabel, groupIds:c.groupIds, eventId:ceremonyEventId, priority:'nice-to-have', done:false, photographerId:photogId});
     });
   });
   document.getElementById('content').innerHTML = renderPlaybook();
@@ -7907,20 +8491,21 @@ function nextOpenSeatIndex(chart, tableId, seatable){
 }
 /* Each seat is its own labeled marker — not just a dot — so the exact seating order around
    a table is readable at a glance and easy to rearrange, not just "who's at this table". */
-function chairDotsHtml(chart, table, seatable){
+function chairDotsHtml(chart, table, seatable, readOnly){
   const shape = table.shape, n = Math.max(0, Math.min(table.capacity||0, 20));
   if(!n) return '';
   const seatedAt = (idx)=> seatable.find(r=>{ const si = memberSeatInfo(r.m, chart.id); return si && si.tableId===table.id && si.seatIndex===idx; });
   const marker = (x,y,idx)=>{
     const occ = seatedAt(idx);
     const cls = occ ? 'seat-marker seat-marker-filled' : 'seat-marker seat-marker-empty';
-    const title = occ ? escapeAttr(`Seat ${idx+1} — ${occ.displayName}`) : `Seat ${idx+1} — empty, drag a guest here`;
-    const dragAttrs = occ ? `draggable="true" ondragstart="onSeatedGuestDragStart(event,'${occ.h.id}','${occ.m.id}')"` : '';
+    const title = occ ? escapeAttr(`Seat ${idx+1} — ${occ.displayName}`) : (readOnly ? `Seat ${idx+1} — empty` : `Seat ${idx+1} — empty, drag a guest here`);
+    const dragAttrs = (!readOnly && occ) ? `draggable="true" ondragstart="onSeatedGuestDragStart(event,'${occ.h.id}','${occ.m.id}')"` : '';
+    const dropAttrs = readOnly ? '' : `ondragover="event.preventDefault(); event.stopPropagation();" ondrop="onSeatDrop(event,'${chart.id}','${table.id}',${idx})"`;
     const shortName = occ ? (occ.m.firstName || occ.displayName || '').trim() || occ.displayName : '';
     const inner = occ
       ? `<span class="seat-num">${idx+1}</span><span class="seat-name">${escapeHtml(shortName)}</span>`
       : `<span class="seat-num">${idx+1}</span>`;
-    return `<span class="${cls}" style="left:${x}%; top:${y}%;" title="${title}" ondragover="event.preventDefault(); event.stopPropagation();" ondrop="onSeatDrop(event,'${chart.id}','${table.id}',${idx})" ${dragAttrs}>${inner}</span>`;
+    return `<span class="${cls}" style="left:${x}%; top:${y}%;" title="${title}" ${dropAttrs} ${dragAttrs}>${inner}</span>`;
   };
   let dots = '';
   if(shape==='round'){
@@ -7966,11 +8551,11 @@ function renderChairOrderSummary(chart){
     </div>
   `;
 }
-function renderDecorItems(chart){
+function renderDecorItems(chart, readOnly){
   return (chart.decor||[]).map(dec=>`
-    <div class="decor-item" draggable="true" ondragstart="onDecorDragStart(event,'${dec.id}')" style="left:${dec.posX}%; top:${dec.posY}%; width:${dec.w||14}%; height:${dec.h||8}%;">
+    <div class="decor-item" data-resize-id="${dec.id}" ${readOnly?'':`draggable="true" ondragstart="onDecorDragStart(event,'${dec.id}')"`} style="left:${dec.posX}%; top:${dec.posY}%; width:${dec.w||14}%; height:${dec.h||8}%;">
       <span class="decor-label">${escapeHtml(dec.label)}</span>
-      <a href="#" class="decor-remove" onclick="removeDecorItem('${chart.id}','${dec.id}'); return false;" title="Remove">×</a>
+      ${readOnly ? '' : `<a href="#" class="decor-remove" onclick="removeDecorItem('${chart.id}','${dec.id}'); return false;" title="Remove">×</a><span class="resize-handle" onmousedown="startResize(event,'${chart.id}','${dec.id}','decor')" title="Drag to resize"></span>`}
     </div>
   `).join('');
 }
@@ -7995,6 +8580,99 @@ function removeDecorItem(chartId, decorId){
   chart.decor = (chart.decor||[]).filter(d=>d.id!==decorId);
   reRenderCurrent();
 }
+/* ---- Freeform notes (chunk 5) — draggable sticky notes placed directly on the floor
+   canvas, separate from décor (labelled zones) and separate from per-item detail notes
+   elsewhere in the app. */
+function renderFreeformNotes(chart, readOnly){
+  return (chart.notes||[]).map(n=>`
+    <div class="note-item" data-resize-id="${n.id}" style="left:${n.posX}%; top:${n.posY}%; width:${n.w||16}%; height:${n.h||11}%;">
+      ${readOnly
+        ? `<div class="note-drag-handle note-drag-handle-locked">📝 Note</div>`
+        : `<div class="note-drag-handle" draggable="true" ondragstart="onNoteDragStart(event,'${n.id}')" title="Drag to move">⠿ Note</div><a href="#" class="note-remove" onclick="removeFreeformNote('${chart.id}','${n.id}'); return false;" title="Remove">×</a>`}
+      ${readOnly
+        ? `<div class="note-text-readonly">${n.text ? escapeHtml(n.text) : '<span class="d-sub">(empty note)</span>'}</div>`
+        : `<textarea class="note-text-field" placeholder="Type a note…" onchange="updateNoteText('${chart.id}','${n.id}', this.value)">${escapeHtml(n.text||'')}</textarea>`}
+      ${readOnly ? '' : `<span class="resize-handle" onmousedown="startResize(event,'${chart.id}','${n.id}','note')" title="Drag to resize"></span>`}
+    </div>
+  `).join('');
+}
+function addFreeformNote(chartId){
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  if(!chart) return;
+  if(!Array.isArray(chart.notes)) chart.notes = [];
+  const n = chart.notes.length;
+  chart.notes.push({id:'note-'+Date.now().toString(36)+n, text:'', posX:6+(n%3)*30, posY:6+Math.floor(n/3)*10, w:18, h:12});
+  reRenderCurrent();
+}
+function removeFreeformNote(chartId, noteId){
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  if(!chart) return;
+  chart.notes = (chart.notes||[]).filter(n=>n.id!==noteId);
+  reRenderCurrent();
+}
+function updateNoteText(chartId, noteId, val){
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  const n = chart && (chart.notes||[]).find(x=>x.id===noteId);
+  if(!n) return;
+  n.text = val;
+  reRenderCurrent();
+}
+function onNoteDragStart(e, noteId){
+  draggingNoteId = noteId;
+  if(e.dataTransfer){ e.dataTransfer.setData('text/plain', '__note__'); e.dataTransfer.effectAllowed = 'move'; }
+}
+/* ---- Décor / note resizing (chunk 5) — a small corner handle drags via plain mouse
+   events (not HTML5 drag-and-drop, which is already used for repositioning), so an item
+   can be moved and resized independently without the two gestures conflicting. */
+let resizeState = null;
+function startResize(e, chartId, itemId, kind){
+  e.preventDefault();
+  e.stopPropagation();
+  const canvas = document.getElementById('floorCanvas');
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  const item = chart && (kind==='decor' ? (chart.decor||[]) : (chart.notes||[])).find(x=>x.id===itemId);
+  if(!canvas || !item) return;
+  resizeState = {chartId, itemId, kind, rect: canvas.getBoundingClientRect(), startW: item.w||14, startH: item.h||9, startX: e.clientX, startY: e.clientY};
+  document.addEventListener('mousemove', onResizeMove);
+  document.addEventListener('mouseup', onResizeEnd);
+}
+function onResizeMove(e){
+  if(!resizeState) return;
+  const dxPct = ((e.clientX - resizeState.startX) / resizeState.rect.width) * 100;
+  const dyPct = ((e.clientY - resizeState.startY) / resizeState.rect.height) * 100;
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===resizeState.chartId);
+  const item = chart && (resizeState.kind==='decor' ? (chart.decor||[]) : (chart.notes||[])).find(x=>x.id===resizeState.itemId);
+  if(!item) return;
+  item.w = Math.max(6, Math.min(70, Math.round((resizeState.startW + dxPct)*10)/10));
+  item.h = Math.max(4, Math.min(60, Math.round((resizeState.startH + dyPct)*10)/10));
+  const el = document.querySelector('[data-resize-id="'+item.id+'"]');
+  if(el){ el.style.width = item.w+'%'; el.style.height = item.h+'%'; }
+}
+function onResizeEnd(){
+  document.removeEventListener('mousemove', onResizeMove);
+  document.removeEventListener('mouseup', onResizeEnd);
+  if(resizeState){ resizeState = null; reRenderCurrent(); }
+}
+/* ---- Floor plan image import (chunk 5) — an uploaded image traced as a backdrop, not
+   real CAD/PDF parsing (per Natasha's own scoping answer). */
+function handleFloorPlanImageUpload(chartId, inputEl){
+  const file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+    if(chart){ chart.roomSetup.bgImage = ev.target.result; reRenderCurrent(); }
+  };
+  reader.readAsDataURL(file);
+}
+function removeFloorPlanImage(chartId){
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  if(chart){ chart.roomSetup.bgImage = null; reRenderCurrent(); }
+}
+function updateBgOpacity(chartId, val){
+  const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  if(chart){ chart.roomSetup.bgOpacity = Number(val)||45; reRenderCurrent(); }
+}
 function onDecorDragStart(e, decorId){
   draggingDecorId = decorId;
   if(e.dataTransfer){ e.dataTransfer.setData('text/plain', '__decor__'); e.dataTransfer.effectAllowed = 'move'; }
@@ -8007,7 +8685,7 @@ function onCanvasDrop(e, chartId){
   e.preventDefault();
   const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
   const canvas = document.getElementById('floorCanvas');
-  if(!chart || !canvas || (!draggingTableId && !draggingDecorId)) return;
+  if(!chart || !canvas || (!draggingTableId && !draggingDecorId && !draggingNoteId)) return;
   const rect = canvas.getBoundingClientRect();
   let x = ((e.clientX - rect.left) / rect.width) * 100;
   let y = ((e.clientY - rect.top) / rect.height) * 100;
@@ -8021,6 +8699,10 @@ function onCanvasDrop(e, chartId){
     const dec = (chart.decor||[]).find(dd=>dd.id===draggingDecorId);
     if(dec){ dec.posX = Math.round(x*10)/10; dec.posY = Math.round(y*10)/10; }
     draggingDecorId = null;
+  } else if(draggingNoteId){
+    const note = (chart.notes||[]).find(nn=>nn.id===draggingNoteId);
+    if(note){ note.posX = Math.round(x*10)/10; note.posY = Math.round(y*10)/10; }
+    draggingNoteId = null;
   }
   reRenderCurrent();
 }
@@ -8099,7 +8781,7 @@ function assignToChartTable(chartId, householdId, memberId, tableId){
   const seatIndex = nextOpenSeatIndex(chart, tableId, allSeatableMembers());
   assignSeat(chartId, tableId, seatIndex, householdId, memberId);
 }
-function renderFloorPlan(){
+function renderFloorPlan(readOnly){
   const d = dashboardData;
   const chart = currentSeatingChart();
   if(!chart) return `<div class="card"><p style="font-size:13px;color:var(--charcoal-faint);">Add a seating chart to get started.</p></div>`;
@@ -8117,6 +8799,7 @@ function renderFloorPlan(){
       <div class="seg-control seg-control-xs" style="margin-bottom:8px; flex-wrap:wrap;">
         ${(d.seatingCharts||[]).map(c=>`<button class="seg-btn ${c.id===chart.id?'active':''}" onclick="switchSeatingChart('${c.id}')">${escapeHtml(c.label)}</button>`).join('')}
       </div>
+      ${readOnly ? '' : `
       <div class="chip-grid" style="align-items:center; margin-bottom:10px;">
         <select id="newChartEvent" class="select-field-sm" style="width:auto; max-width:190px;">
           <option value="">+ Add chart for event…</option>
@@ -8124,8 +8807,13 @@ function renderFloorPlan(){
         </select>
         <button class="btn btn-outline btn-sm" onclick="addSeatingChart()">+ Add Seating Chart</button>
         ${!chart.isPrimary ? `<a href="#" class="danger-link" onclick="removeSeatingChart('${chart.id}'); return false;">Remove this chart</a>` : ''}
+      </div>`}
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">${readOnly ? "View-only reference — only guests who RSVP'd yes appear here." : "Only guests who RSVP'd yes appear here — pending and declined guests can't be seated. Each seat around a table shows its exact position and, once assigned, the guest's name — so you can see the seating order and rearrange it by dragging. Drag tables, décor, or notes into place, and drag a guest straight onto an open seat."}</p>
+      ${readOnly ? `
+      <div class="room-setup-row">
+        <div class="field-mini"><label>Room</label><span class="d-sub" style="font-weight:700;">${rs.shape==='square'?'Square':'Rectangular'} · ${rs.width}ft × ${rs.depth}ft</span></div>
       </div>
-      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Only guests who RSVP'd yes appear here — pending and declined guests can't be seated. Each seat around a table shows its exact position and, once assigned, the guest's name — so you can see the seating order and rearrange it by dragging. Drag tables or décor into place, and drag a guest straight onto an open seat.</p>
+      ` : `
       <div class="room-setup-row">
         <div class="field-mini"><label>Room Shape</label>
           <select onchange="updateRoomSetup('${chart.id}','shape',this.value)">
@@ -8135,28 +8823,39 @@ function renderFloorPlan(){
         </div>
         <div class="field-mini"><label>Width (ft)</label><input type="number" min="10" value="${rs.width}" onchange="updateRoomSetup('${chart.id}','width',this.value)"></div>
         <div class="field-mini"><label>Depth (ft)</label><input type="number" min="10" value="${rs.depth}" onchange="updateRoomSetup('${chart.id}','depth',this.value)"></div>
-        <div class="field-mini" style="justify-content:flex-end;"><span class="d-sub">Drag any table or décor piece to reposition it.</span></div>
+        <div class="field-mini"><label>Floor Plan Backdrop</label><input type="file" accept="image/*" style="width:150px;" onchange="handleFloorPlanImageUpload('${chart.id}', this)"></div>
+        ${rs.bgImage ? `
+        <div class="field-mini"><label>Backdrop Opacity</label><input type="range" min="10" max="90" value="${rs.bgOpacity!==undefined?rs.bgOpacity:45}" style="width:110px;" onchange="updateBgOpacity('${chart.id}', this.value)"></div>
+        <div class="field-mini" style="justify-content:flex-end;"><a href="#" class="danger-link" onclick="removeFloorPlanImage('${chart.id}'); return false;">Remove backdrop</a></div>
+        ` : `<div class="field-mini" style="justify-content:flex-end;"><span class="d-sub">Upload a floor plan from your venue to trace over.</span></div>`}
       </div>
-      <div class="floor-canvas" id="floorCanvas" style="aspect-ratio:${rs.width}/${rs.depth}; min-height:260px;" ondragover="event.preventDefault();" ondrop="onCanvasDrop(event,'${chart.id}')">
-        ${renderDecorItems(chart)}
+      `}
+      <div class="floor-canvas" id="floorCanvas" style="aspect-ratio:${rs.width}/${rs.depth}; min-height:260px;" ${readOnly ? '' : `ondragover="event.preventDefault();" ondrop="onCanvasDrop(event,'${chart.id}')"`}>
+        ${rs.bgImage ? `<img src="${rs.bgImage}" class="floor-canvas-bg" style="opacity:${(rs.bgOpacity!==undefined?rs.bgOpacity:45)/100};" alt="Floor plan backdrop">` : ''}
+        ${renderDecorItems(chart, readOnly)}
+        ${renderFreeformNotes(chart, readOnly)}
         ${chart.tables.map(t=>{
           const seated = seatedMembersForTable(chart, t.id, seatable);
           const vendorsHere = vendorsSeatedForTable(t);
           const over = (seated.length + vendorsHere.length) > t.capacity;
           return `
-          <div class="floor-table floor-table-${t.shape}" draggable="true" ondragstart="onTableDragStart(event,'${t.id}')"
+          <div class="floor-table floor-table-${t.shape}" ${readOnly ? '' : `draggable="true" ondragstart="onTableDragStart(event,'${t.id}')"`}
                style="left:${t.posX}%; top:${t.posY}%; ${tableSizeStyle(t)} ${over?'border-color:var(--terracotta);':''}" title="${escapeAttr(t.name)}">
-            ${chairDotsHtml(chart, t, seatable)}
+            ${chairDotsHtml(chart, t, seatable, readOnly)}
             <div class="floor-table-label"><span class="ftl-num">${t.number}</span><span class="ftl-sub">${seated.length + vendorsHere.length}/${t.capacity}</span></div>
           </div>`;
         }).join('')}
       </div>
+      ${readOnly ? '' : `
       <div class="decor-palette">
         <span class="pp-label" style="margin:0 8px 0 0;">Add décor:</span>
         ${DECOR_PRESETS.map(p=>`<button class="btn btn-outline btn-sm" onclick="addDecorItem('${chart.id}','${p}')">+ ${p}</button>`).join('')}
         <input type="text" id="newDecorLabel" placeholder="Custom label…" style="max-width:150px;">
         <button class="btn btn-outline btn-sm" onclick="addCustomDecorItem('${chart.id}')">+ Add</button>
+        <span style="width:1px; height:20px; background:var(--line-soft); margin:0 4px;"></span>
+        <button class="btn btn-outline btn-sm" onclick="addFreeformNote('${chart.id}')">+ Add Note</button>
       </div>
+      `}
     </div>
   `;
 }
@@ -8175,13 +8874,15 @@ function renderPrintFloorPlan(){
       <p>${rs.shape==='square'?'Square':'Rectangular'} room · ${rs.width}ft × ${rs.depth}ft · ${tables.length} table${tables.length===1?'':'s'} · ${seatable.length-unassigned.length} seated guest${(seatable.length-unassigned.length)===1?'':'s'}</p>
     </div>
     <div class="floor-canvas" style="aspect-ratio:${rs.width}/${rs.depth}; min-height:340px; max-width:680px; margin:0 auto;">
+      ${rs.bgImage ? `<img src="${rs.bgImage}" class="floor-canvas-bg" style="opacity:${(rs.bgOpacity!==undefined?rs.bgOpacity:45)/100};" alt="Floor plan backdrop">` : ''}
       ${(chart.decor||[]).map(dec=>`<div class="decor-item" style="left:${dec.posX}%; top:${dec.posY}%; width:${dec.w||14}%; height:${dec.h||8}%;"><span class="decor-label">${escapeHtml(dec.label)}</span></div>`).join('')}
+      ${(chart.notes||[]).filter(n=>n.text).map(n=>`<div class="note-item" style="left:${n.posX}%; top:${n.posY}%; width:${n.w||16}%; height:${n.h||11}%;"><div class="note-text-readonly">${escapeHtml(n.text)}</div></div>`).join('')}
       ${tables.map(t=>{
         const seated = seatedMembersForTable(chart, t.id, seatable);
         const vendorsHere = vendorsSeatedForTable(t);
         return `
         <div class="floor-table floor-table-${t.shape}" style="left:${t.posX}%; top:${t.posY}%; ${tableSizeStyle(t)}">
-          ${chairDotsHtml(chart, t, seatable)}
+          ${chairDotsHtml(chart, t, seatable, true)}
           <div class="floor-table-label"><span class="ftl-num">${t.number}</span><span class="ftl-sub">${seated.length + vendorsHere.length}/${t.capacity}</span></div>
         </div>`;
       }).join('')}
@@ -8216,26 +8917,27 @@ function printFloorPlan(){
   setTimeout(()=>{ document.body.classList.remove('printing'); }, 800);
 }
 window.addEventListener('afterprint', function(){ document.body.classList.remove('printing'); });
-function renderSeatingChartSection(){
+function renderSeatingChartSection(readOnly){
   const d = dashboardData;
   const chart = currentSeatingChart();
-  if(!chart) return renderFloorPlan();
+  if(!chart) return renderFloorPlan(readOnly);
   const seatable = allSeatableMembers();
   const unassigned = seatable.filter(r=>!memberSeatInfo(r.m, chart.id));
   return `
-    ${renderFloorPlan()}
+    ${renderFloorPlan(readOnly)}
     ${renderChairOrderSummary(chart)}
     <div class="card">
       <div class="card-head"><h4>Unassigned Guests — ${escapeHtml(chart.label)}</h4><span class="d-sub">${unassigned.length} not yet seated</span></div>
       ${unassigned.length ? unassigned.map(r=>`
         <div class="contact-row" style="cursor:default;">
-          <div draggable="true" ondragstart="onGuestDragStart(event,'${r.h.id}','${r.m.id}')" style="flex:1; cursor:grab;"><div style="font-weight:600;font-size:13.5px;">${escapeHtml(r.displayName)}</div><div class="pc-role">${escapeHtml(r.h.label)} · ${guestRsvpPill(r.h.rsvpStatus)}</div></div>
+          <div ${readOnly ? '' : `draggable="true" ondragstart="onGuestDragStart(event,'${r.h.id}','${r.m.id}')"`} style="flex:1; ${readOnly ? '' : 'cursor:grab;'}"><div style="font-weight:600;font-size:13.5px;">${escapeHtml(r.displayName)}</div><div class="pc-role">${escapeHtml(r.h.label)} · ${guestRsvpPill(r.h.rsvpStatus)}</div></div>
+          ${readOnly ? '' : `
           <select class="select-field-sm" style="max-width:220px;" onchange="if(this.value){assignToChartTable('${chart.id}','${r.h.id}','${r.m.id}',this.value); this.value='';}">
             <option value="">Seat at…</option>
             ${chart.tables.map(t=>`<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('')}
-          </select>
+          </select>`}
         </div>`).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">Everyone eligible to be seated has a seat on this chart.</p>'}
-      ${chart.isPrimary ? `
+      ${(!readOnly && chart.isPrimary) ? `
       <div class="custom-add-row" style="margin-top:14px;">
         <input type="text" id="newGuestName" placeholder="Guest or family name (e.g. Sam Rivera)">
         <select id="newGuestSide" class="select-field-sm" style="max-width:180px;">
@@ -8254,6 +8956,21 @@ function renderSeatingChartSection(){
         const vendorsHere = vendorsSeatedForTable(t);
         const over = (seated.length + vendorsHere.length) > t.capacity;
         const availableVendors = (dashboardData.vendorBookings||[]).filter(v=>!vendorSeatInfo(v.id, chart.id));
+        if(readOnly){
+          return `
+          <div class="card">
+            <div class="card-head" style="margin-bottom:8px;"><h4 style="font-size:17px;">${escapeHtml(t.name)}</h4></div>
+            <div class="d-sub" style="margin-bottom:10px;">Table ${t.number} · ${escapeHtml(t.shape)}${t.dimension?' · '+escapeHtml(t.dimension):''}${t.chairStyle?' · '+escapeHtml(t.chairStyle):''} · <span style="${over?'color:var(--terracotta);font-weight:700;':''}">${seated.length + vendorsHere.length}</span> / ${t.capacity} seated</div>
+            <div class="chip-grid">
+              ${seated.length ? seated.map(r=>`<span class="attach-chip">${escapeHtml(r.displayName)}</span>`).join('') : '<span class="d-sub">No one seated yet.</span>'}
+            </div>
+            ${vendorsHere.length ? `
+            <div class="d-sub" style="margin-top:14px; margin-bottom:8px;">Vendor seating</div>
+            <div class="chip-grid">
+              ${vendorsHere.map(v=>`<span class="attach-chip">${escapeHtml(v.vendorName)} <span style="opacity:0.65;">(${escapeHtml(v.category)})</span></span>`).join('')}
+            </div>` : ''}
+          </div>`;
+        }
         return `
         <div class="card">
           <div class="card-head" style="margin-bottom:8px;">
@@ -8289,6 +9006,7 @@ function renderSeatingChartSection(){
           <a href="#" class="danger-link" style="display:inline-block;margin-top:12px;" onclick="removeTable('${chart.id}','${t.id}'); return false;">Remove table</a>
         </div>`;
       }).join('')}
+      ${readOnly ? '' : `
       <div class="card">
         <div class="card-head"><h4>Add a Table</h4></div>
         <div class="custom-add-row" style="flex-wrap:wrap;">
@@ -8305,6 +9023,7 @@ function renderSeatingChartSection(){
           <button class="btn btn-outline btn-sm" onclick="addTable('${chart.id}')">+ Add</button>
         </div>
       </div>
+      `}
     </div>
     <datalist id="chairStylePresets">${CHAIR_STYLE_PRESETS.map(s=>`<option value="${escapeAttr(s)}">`).join('')}</datalist>
   `;
@@ -8384,6 +9103,7 @@ const MEAL_OPTIONS = ['Chicken','Fish','Vegetarian','Vegan','Kids Meal'];
 const SALUTATIONS = ['','Mr.','Mrs.','Ms.','Mx.','Dr.','Miss','Master'];
 const RELATIONSHIP_OPTIONS = [{v:'',l:'—'},{v:'mother',l:'Mother'},{v:'father',l:'Father'},{v:'sibling',l:'Sibling'},{v:'grandparent',l:'Grandparent'},{v:'other',l:'Other Family'}];
 const TIER_LABELS = {A:'Tier A — Core Invite List', B:'Tier B — Waitlist', C:'Tier C — Backup List'};
+let guestsModuleTab = 'list'; // 'list' | 'seating' — seating chart overhaul (chunk 5) moved the chart here
 let guestsGroupBy = 'family';
 let guestsFilterRsvp = 'all';
 let guestsFilterTier = 'all';
@@ -8584,6 +9304,20 @@ function renderWaitlistCard(){
   `;
 }
 function renderGuestsModule(){
+  return `
+    <div class="module-header">
+      <div class="mh-copy">
+        <div class="seg-control">
+          <button class="seg-btn ${guestsModuleTab==='list'?'active':''}" onclick="switchGuestsModuleTab('list')">Guest List</button>
+          <button class="seg-btn ${guestsModuleTab==='seating'?'active':''}" onclick="switchGuestsModuleTab('seating')">Seating Chart</button>
+        </div>
+      </div>
+    </div>
+    ${guestsModuleTab==='seating' ? renderSeatingChartSection(false) : renderGuestListTab()}
+  `;
+}
+function switchGuestsModuleTab(key){ guestsModuleTab = key; document.getElementById('content').innerHTML = renderGuestsModule(); }
+function renderGuestListTab(){
   const d = dashboardData;
   const stats = guestOverallStats();
   const households = filteredHouseholds();
@@ -9360,7 +10094,7 @@ function buildPlaybookExportModel(role){
   if(role==='weddingparty'){ items = items.filter(i=>i.tags.includes('weddingparty')); roleLabel = 'Wedding-Party Guide'; }
   const days = [];
   items.forEach(i=>{ if(!days.includes(i.day)) days.push(i.day); });
-  const dayGroups = days.map(day=>({ day, items: items.filter(i=>i.day===day) }));
+  const dayGroups = days.map(day=>({ day, items: sortByTime(items.filter(i=>i.day===day)) }));
 
   const showContacts = role!=='weddingparty';
   const showFullRunBook = role==='couple';
@@ -9382,7 +10116,7 @@ function buildPlaybookExportModel(role){
   }
   return {
     roleLabel, dayGroups, showContacts, showFullRunBook, showDelegatesAndKit,
-    contacts: d.playbookContacts||[],
+    contacts: emergencyKeyContacts(),
     vendorDirectory: d.vendorDirectory||[],
     delegateRoles: d.delegateRoles||[],
     emergencyKit: d.emergencyKit||{},
@@ -9435,7 +10169,7 @@ function renderPlaybookExportDocument(model){
     ${model.showContacts && model.contacts.length ? `
       <div class="pb-export-section-title">Key Contacts</div>
       <div class="pb-export-contact-grid">
-        ${model.contacts.map(c=>`<div class="pb-export-contact-row"><span>${escapeHtml(c.name)} <span style="color:var(--charcoal-faint);">(${escapeHtml(c.role)})</span></span><span>${escapeHtml(c.phone)}</span></div>`).join('')}
+        ${model.contacts.map(c=>`<div class="pb-export-contact-row"><span>${escapeHtml(c.business)}${c.contactName?' — '+escapeHtml(c.contactName):''} <span style="color:var(--charcoal-faint);">(${escapeHtml(c.category)} · ${escapeHtml(c.eventLabel)})</span></span><span>${escapeHtml(c.phone)}</span></div>`).join('')}
       </div>
     ` : ''}
     ${model.showFullRunBook && model.familyContacts ? `
@@ -9593,7 +10327,7 @@ function renderEventDetail(id){
   const linkedVendors = d.vendors.filter(v=>(e.vendorCategories||[]).includes(v.category));
   const linkedVendorBookings = vendorBookingsForEvent(e);
   const linkedParty = d.weddingParty.filter(m=>m.events.includes(e.name));
-  const linkedPlaybook = (d.playbookTimeline||[]).filter(i=>i.title.includes(e.name));
+  const linkedPlaybook = (d.playbookTimeline||[]).filter(i=>i.eventId===e.id);
   return `
     <button class="back-link" onclick="backToEventsList()" style="background:none;border:none;cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>Back to Events</button>
     <div class="member-detail-head" style="margin-bottom:18px;">
@@ -9667,7 +10401,8 @@ function renderEventDetail(id){
 
     <div class="card">
       <div class="card-head"><h4>Linked Playbook Moments</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('playbook')">Open Playbook</span></div>
-      ${linkedPlaybook.length ? linkedPlaybook.map(i=>`<div class="itinerary-row"><div class="it-day">${i.time}</div><div>${i.title}</div></div>`).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">This event does not have specific run-of-show moments yet — add them in the Playbook once timing is confirmed.</p>`}
+      ${linkedPlaybook.length ? sortByTime(linkedPlaybook).map(i=>renderTimelineItemRow(i)).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No run-of-show moments for this event yet — add one below.</p>`}
+      ${renderAddTimelineItemRow(e.id)}
     </div>
 
     <div style="margin-top:8px;"><a href="#" class="danger-link" onclick="removeEvent('${e.id}'); return false;">Remove this event</a></div>
@@ -9973,44 +10708,50 @@ function renderBudgetOverviewTab(){
       <div class="ps-stat"><div class="ps-num" style="${(d.budgetTotal-totalPlanned)<0?'color:var(--terracotta);':''}">${fmtMoney(d.budgetTotal-totalPlanned)}</div><div class="ps-label">Unallocated</div></div>
     </div>
 
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-head"><h4>Budget Pace</h4></div>
-        <div class="pace-row">
-          <div class="pace-stat"><div class="pace-num">${spendPct}%</div><div class="pace-label">of planned budget spent</div></div>
-          <div class="pace-stat"><div class="pace-num">${pacePct}%</div><div class="pace-label">through planning</div></div>
+    <div class="card">
+      <div class="card-head"><h4>Budget Breakdown &amp; Pace</h4></div>
+      <div class="bp-split">
+        <div>
+          <div class="bp-col-head">Allocation by Category</div>
+          <div class="donut-wrap">
+            <svg width="150" height="150" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--line-soft)" stroke-width="16"/>
+              ${donutSegs}
+            </svg>
+            <div class="donut-legend">
+              ${cats.map(c=>`<div class="legend-row"><span class="lr-left"><span class="legend-dot" style="background:${c.color};"></span><span>${c.category}</span></span><span class="lr-amt">${fmtMoney(categoryPlanned(c))}</span></div>`).join('')}
+            </div>
+          </div>
         </div>
-        <div class="pace-note">${paceNote}</div>
-      </div>
-      <div class="card">
-        <div class="card-head"><h4>Opportunities &amp; Watch List</h4></div>
-        ${hasFlags ? `
-          ${overBudgetCats.map(c=>`<div class="opp-row opp-alert">Over budget: <b>${c.category}</b> — ${fmtMoney(categorySpent(c)-categoryPlanned(c))} over plan.</div>`).join('')}
-          ${nearLimitCats.map(c=>`<div class="opp-row opp-warn">Nearing limit: <b>${c.category}</b> — only ${fmtMoney(categoryPlanned(c)-categorySpent(c))} left before you're over.</div>`).join('')}
-          ${opportunityCats.map(c=>`<div class="opp-row opp-ok">Not yet committed: <b>${c.category}</b> — ${fmtMoney(categoryPlanned(c))} allocated with no vendor booked yet. Good time to compare quotes.</div>`).join('')}
-        ` : `<p style="font-size:13px;color:var(--charcoal-faint);">${totalSpent>0 ? 'Nothing flagged right now — your spending looks healthy against your plan.' : 'Nothing to flag yet — once you start booking vendors and committing spend, Evera will highlight anything worth watching here.'}</p>`}
+        <div class="bp-divider">
+          <div class="bp-col-head">Spending Pace</div>
+          <div class="pace-row">
+            <div class="pace-stat"><div class="pace-num">${spendPct}%</div><div class="pace-label">of planned budget spent</div></div>
+            <div class="pace-stat"><div class="pace-num">${pacePct}%</div><div class="pace-label">through planning</div></div>
+          </div>
+          <div class="pace-note">${paceNote}</div>
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-head"><h4>Budget Breakdown</h4></div>
-      <div class="donut-wrap">
-        <svg width="150" height="150" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="48" fill="none" stroke="var(--line-soft)" stroke-width="16"/>
-          ${donutSegs}
-        </svg>
-        <div class="donut-legend">
-          ${cats.map(c=>`<div class="legend-row"><span class="lr-left"><span class="legend-dot" style="background:${c.color};"></span><span>${c.category}</span></span><span class="lr-amt">${fmtMoney(categoryPlanned(c))}</span></div>`).join('')}
-        </div>
-      </div>
+      <div class="card-head"><h4>Opportunities &amp; Watch List</h4></div>
+      ${hasFlags ? `
+        ${overBudgetCats.map(c=>`<div class="opp-row opp-alert">Over budget: <b>${c.category}</b> — ${fmtMoney(categorySpent(c)-categoryPlanned(c))} over plan.</div>`).join('')}
+        ${nearLimitCats.map(c=>`<div class="opp-row opp-warn">Nearing limit: <b>${c.category}</b> — only ${fmtMoney(categoryPlanned(c)-categorySpent(c))} left before you're over.</div>`).join('')}
+        ${opportunityCats.map(c=>`<div class="opp-row opp-ok">Not yet committed: <b>${c.category}</b> — ${fmtMoney(categoryPlanned(c))} allocated with no vendor booked yet. Good time to compare quotes.</div>`).join('')}
+      ` : `<p style="font-size:13px;color:var(--charcoal-faint);">${totalSpent>0 ? 'Nothing flagged right now — your spending looks healthy against your plan.' : 'Nothing to flag yet — once you start booking vendors and committing spend, Evera will highlight anything worth watching here.'}</p>`}
     </div>
 
     <div class="card">
       <div class="card-head">
         <h4>Master Budget</h4>
-        <div class="seg-control">
-          <button class="seg-btn ${budgetOverviewView==='category'?'active':''}" onclick="switchBudgetView('category')">By Category</button>
-          <button class="seg-btn ${budgetOverviewView==='event'?'active':''}" onclick="switchBudgetView('event')">By Event</button>
+        <div class="budget-cat-tools">
+          ${budgetOverviewView==='category' && cats.length>1 ? `<a href="#" class="expand-toggle" onclick="toggleAllBudgetCategories(); return false;">${cats.some(c=>!budgetCollapsedMap[c.category]) ? 'Collapse All' : 'Expand All'}</a>` : ''}
+          <div class="seg-control">
+            <button class="seg-btn ${budgetOverviewView==='category'?'active':''}" onclick="switchBudgetView('category')">By Category</button>
+            <button class="seg-btn ${budgetOverviewView==='event'?'active':''}" onclick="switchBudgetView('event')">By Event</button>
+          </div>
         </div>
       </div>
       ${budgetOverviewView==='category' ? renderBudgetCategories() : renderBudgetByEvent()}
@@ -10078,11 +10819,18 @@ function budgetVendorOptions(){
   const d = dashboardData;
   return d.vendorCategoriesSuggested && d.vendorCategoriesSuggested.length ? d.vendorCategoriesSuggested : Array.from(new Set((d.vendors||[]).map(v=>v.category)));
 }
+function toggleAllBudgetCategories(){
+  const cats = dashboardData.budgetBreakdown;
+  const anyOpen = cats.some(c=>!budgetCollapsedMap[c.category]);
+  cats.forEach(c=>{ budgetCollapsedMap[c.category] = anyOpen; });
+  document.getElementById('content').innerHTML = renderBudgetModule();
+}
 function renderBudgetCategories(){
   const d = dashboardData;
   const catsHtml = d.budgetBreakdown.map((c,ci)=>{
     const planned = categoryPlanned(c), spent = categorySpent(c);
     const over = spent > planned && planned>0;
+    const pct = planned>0 ? Math.min(100, Math.round(spent/planned*100)) : 0;
     const collapsed = !!budgetCollapsedMap[c.category];
     return `
     <div class="budget-cat-block">
@@ -10093,6 +10841,7 @@ function renderBudgetCategories(){
         ${over ? '<span class="pill pill-alert">Over Budget</span>' : (spent>0 ? '<span class="pill pill-ok">On Track</span>' : '<span class="pill pill-neutral">Not Started</span>')}
         <span class="bc-summary">${fmtMoney(spent)} / ${fmtMoney(planned)}</span>
       </div>
+      <div class="bc-progress-track"><div class="bc-progress-fill" style="width:${pct}%; background:${over?'var(--terracotta)':'var(--green)'};"></div></div>
       ${collapsed ? '' : `
       <div class="budget-items">
         <div class="budget-items-head"><span>Item</span><span>Planned</span><span>Spent</span><span>Vendor / Next Payment</span><span></span></div>
@@ -10105,7 +10854,10 @@ function renderBudgetCategories(){
             <span class="readonly-cell">${escapeHtml(it.name)}</span>
             <span>${fmtMoney(it.planned)}</span>
             <span>${fmtMoney(it.spent)}</span>
-            <span class="d-sub">${escapeHtml(vendorBit)}${eventBit?` · ${escapeHtml(eventBit)}`:''}${nextDue?` · Next due ${fmtDateLabel(nextDue.dueDateISO)} (${fmtMoney(nextDue.amount)})`:''}</span>
+            <span class="bi-meta">
+              <span class="d-sub">${escapeHtml(vendorBit)}${eventBit?` · ${escapeHtml(eventBit)}`:''}</span>
+              ${nextDue?`<span class="bi-due">Due ${fmtDateLabel(nextDue.dueDateISO)} · ${fmtMoney(nextDue.amount)}</span>`:''}
+            </span>
             <span class="cr-chevron-wrap"><svg class="icon cr-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></span>
           </div>`;
         }).join('')}
@@ -10157,7 +10909,7 @@ function addBudgetItem(ci){
   const name = (nameEl.value||'').trim();
   if(!name) return;
   const planned = Number(plannedEl.value)||0;
-  dashboardData.budgetBreakdown[ci].items.push({id:'bi-'+Date.now().toString(36), name, planned, spent:0, vendorCategory:null, eventId:null, vendorName:'', paymentFrequency:'one-time', attachmentIds:[], paymentSchedule:[], multiEvent:false, eventAllocations:[], contractedHours:null, overageRate:null});
+  dashboardData.budgetBreakdown[ci].items.push({id:'bi-'+Date.now().toString(36), name, planned, spent:0, vendorCategory:null, eventId:null, vendorName:'', paymentFrequency:'one-time', attachmentIds:[], paymentSchedule:[], multiEvent:false, eventAllocations:[], contractedHours:null, overageRate:null, notes:''});
   refreshBudgetBackground();
 }
 function removeBudgetItem(ci, ii){
@@ -10175,7 +10927,7 @@ function addBudgetCategory(){
   if(!name) return;
   const planned = Number(plannedEl.value)||0;
   const color = BUDGET_COLORS[dashboardData.budgetBreakdown.length % BUDGET_COLORS.length];
-  dashboardData.budgetBreakdown.push({category:name, color, items:[{id:'bi-'+Date.now().toString(36), name:'General Allocation', planned, spent:0, vendorCategory:null, eventId:null, vendorName:'', paymentFrequency:'one-time', attachmentIds:[], paymentSchedule:[], multiEvent:false, eventAllocations:[], contractedHours:null, overageRate:null}]});
+  dashboardData.budgetBreakdown.push({category:name, color, items:[{id:'bi-'+Date.now().toString(36), name:'General Allocation', planned, spent:0, vendorCategory:null, eventId:null, vendorName:'', paymentFrequency:'one-time', attachmentIds:[], paymentSchedule:[], multiEvent:false, eventAllocations:[], contractedHours:null, overageRate:null, notes:''}]});
   refreshBudgetBackground();
 }
 function removeBudgetCategory(idx){
@@ -10346,6 +11098,11 @@ function renderBudgetItemDetail(ci, ii){
           </select>
           <button class="btn btn-outline btn-sm" onclick="quickAddAttachment(${ci},${ii})">+ Attach</button>
         </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-head"><h4>Notes</h4><span class="d-sub">Tag anyone — your partner, wedding party, or a vendor contact — to flag it for them</span></div>
+        ${renderRichNotesEditor('budgetItemNotes:'+ci+':'+ii, item.notes)}
       </div>
 
       <a href="#" class="danger-link" style="display:inline-block;margin-top:20px;" onclick="removeBudgetItemFromDetail(${ci},${ii}); return false;">Remove this line item</a>
