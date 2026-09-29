@@ -498,6 +498,7 @@
 
   /* ---- wedding party hub ---- */
   .party-summary-strip{display:flex; gap:28px; flex-wrap:wrap; margin-bottom:24px; padding:18px 24px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);}
+  .budget-hero-card .budget-stat-strip{margin:0 0 20px; padding:0 0 20px; background:transparent; border:none; border-radius:0; border-bottom:1px solid var(--line-soft);}
   .ps-stat{}
   .ps-stat .ps-num{font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--green);}
   .ps-stat .ps-label{font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-top:2px;}
@@ -608,6 +609,21 @@
   .attach-chip{display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:999px; background:var(--ivory-deep); border:1px solid var(--line); font-size:11.5px; color:var(--charcoal-soft);}
   .attach-chip a{color:var(--terracotta); font-weight:700; margin-left:2px;}
   .attach-select{width:auto; flex:0 0 170px;}
+  /* Guest RSVP-by-event, tightened + person-level (v1.33.0) */
+  .rsvp-event-block{margin-bottom:10px;}
+  .rsvp-event-head{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:3px;}
+  .rsvp-event-name{font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:0.03em; color:var(--green-deep);}
+  .rsvp-event-bulk{width:auto; font-size:11px; padding:2px 6px;}
+  .rsvp-event-row{display:flex; align-items:center; gap:8px; padding:3px 0; border-bottom:1px solid var(--line-soft); font-size:12.5px;}
+  .rsvp-event-member{flex:1;}
+  .rsvp-event-select{width:112px; flex:0 0 112px;}
+  .rsvp-event-exclude{color:var(--charcoal-faint); font-size:11px; text-decoration:none;}
+  .rsvp-event-notinvited{font-size:11px; color:var(--charcoal-faint); margin-top:4px;}
+  .rsvp-event-notinvited a{color:var(--terracotta);}
+  .gl-sortable{cursor:pointer; user-select:none;}
+  .gl-sortable:hover{color:var(--green-deep);}
+  .tier-explain{font-size:11.5px; color:var(--charcoal-faint); margin-top:6px; line-height:1.5;}
+  .tier-explain strong{color:var(--charcoal-soft);}
   .attach-input{flex:0 0 190px; padding:6px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12px; color:var(--charcoal);}
   @media (max-width:900px){ .budget-item-row2 > input.select-field-sm, .budget-item-row2 > select.select-field-sm, .attach-select, .attach-input{flex:1 1 100%;} }
 
@@ -877,11 +893,14 @@
   .floor-table-row{border-radius:6px;}
   .floor-table-label{text-align:center; font-size:10.5px; font-weight:700; color:var(--green-deep); line-height:1.3; pointer-events:none;}
   .floor-table-label .ftl-num{font-family:'Cormorant Garamond',serif; font-size:16px; display:block;}
+  .floor-table-label .ftl-name{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 2px;}
+  .floor-table-label .ftl-name:hover{text-decoration:underline; text-decoration-style:dotted;}
   .floor-table-label .ftl-sub{font-size:9px; font-weight:600; color:var(--charcoal-soft);}
   .seat-marker{position:absolute; transform:translate(-50%,-50%); display:flex; align-items:center; gap:3px; padding:2px 5px; border-radius:999px; font-size:7.5px; font-weight:700; line-height:1.3; white-space:nowrap; max-width:112px; overflow:hidden; text-overflow:ellipsis; cursor:pointer; box-shadow:0 1px 3px rgba(43,42,38,0.18); z-index:2; transition:transform .12s ease;}
   .seat-marker:hover{transform:translate(-50%,-50%) scale(1.12); z-index:3;}
   .seat-marker-empty{background:var(--paper); border:1.3px dashed var(--charcoal-faint); color:var(--charcoal-faint);}
   .seat-marker-filled{background:var(--ok); border:1.3px solid var(--ok); color:#fff; cursor:grab;}
+  .seat-marker-vendor{background:var(--terracotta); border:1.3px solid var(--terracotta); cursor:default;}
   .seat-marker .seat-num{font-family:'Cormorant Garamond',serif; font-size:9px; opacity:0.85; flex-shrink:0;}
   .seat-marker .seat-name{overflow:hidden; text-overflow:ellipsis;}
   .decor-item{position:absolute; transform:translate(-50%,-50%); background:repeating-linear-gradient(135deg, var(--green-tint), var(--green-tint) 6px, var(--ivory-deep) 6px, var(--ivory-deep) 12px); border:1.5px dashed var(--green-mid); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:grab; min-width:44px; min-height:26px;}
@@ -912,7 +931,10 @@
   .seating-layout{display:grid; grid-template-columns:1fr 300px; gap:16px; align-items:start;}
   .seating-guest-pane{position:sticky; top:86px; max-height:calc(100vh - 110px); overflow-y:auto;}
   .sgp-search{width:100%; box-sizing:border-box; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px; margin-bottom:10px;}
-  .sgp-section-label{font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); font-weight:700; margin:12px 0 6px;}
+  .sgp-section-label{font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); font-weight:700; margin:0;}
+  .sgp-section-head{display:flex; align-items:center; gap:5px; cursor:pointer; margin:12px 0 6px; user-select:none;}
+  .sgp-section-head .bc-chevron{width:12px; height:12px;}
+  .sgp-group-label{font-size:10px; font-weight:700; color:var(--green-deep); text-transform:uppercase; letter-spacing:0.04em; margin:8px 0 3px 2px;}
   .sgp-list{display:flex; flex-direction:column; gap:4px;}
   .sgp-row{display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:10px; background:var(--ivory-deep); cursor:grab;}
   .sgp-row:active{cursor:grabbing;}
@@ -1467,7 +1489,7 @@
 <div id="view-app" class="view">
   <div class="sb-scrim" id="sbScrim" onclick="toggleSidebar(false)"></div>
   <nav class="sidebar" id="sidebar">
-    <div class="sb-brand"><span>Evera</span></div>
+    <div class="sb-brand" style="cursor:pointer;" onclick="renderRoute('home'); toggleSidebar(false);"><span>Evera</span></div>
     <div class="sb-nav" id="sbNav"><!-- injected --></div>
     <div class="sb-foot">
       <div class="sb-couple"><div class="sb-avatar" id="sbAvatar">P&amp;J</div><div><div style="font-weight:700; color:#EFE9DA;" id="sbCoupleName">Natasha &amp; Matteo</div><div>Couple Account</div></div><span id="sbLogoChip" class="sb-logo-chip"></span></div>
@@ -1500,7 +1522,9 @@
 <div class="item-overlay" id="householdOverlay" onclick="if(event.target===this) closeHouseholdDetail();"><!-- injected --></div>
 <div class="item-overlay" id="vendorBookingOverlay" onclick="if(event.target===this) closeVendorBookingDetail();"><!-- injected --></div>
 <div class="item-overlay" id="vendorAddOverlay" onclick="if(event.target===this) closeVendorAddModal();"><!-- injected --></div>
+<div class="item-overlay" id="eventAddOverlay" onclick="if(event.target===this) closeEventAddModal();"><!-- injected --></div>
 <div class="item-overlay" id="budgetCategoryDeleteOverlay" onclick="if(event.target===this) closeBudgetCategoryDelete();"><!-- injected --></div>
+<div class="item-overlay" id="collaboratorPermissionsOverlay" onclick="if(event.target===this) closeCollaboratorPermissions();"><!-- injected --></div>
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div class="item-overlay" id="calendarItemOverlay" onclick="if(event.target===this) closeCalendarItemDetail();"><!-- injected --></div>
@@ -1621,6 +1645,37 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.33.0', date:'2026-09-29',
+    title:'A real Add Event pop-up with guest targeting, person-level RSVP, an RSVP Survey subtab, custom guest tiers, and venue capacity alerts',
+    items:[
+      'Home: clicking the Evera wordmark in the sidebar always brings you back to Home, from anywhere in the app.',
+      'Events: "+ Add Event" now opens a full pop-up (like Add Vendor) — name, date (a real date picker), times, location, guest count, dress code, and who it\'s for, all up front. Choose "Select specific guests" to invite only some families — e.g. a bridal shower — and everyone else stays invited to your other events either way.',
+      'Events: each event has its own "Guest List & Invites" card — see and edit exactly who\'s invited, set a planned invite-send date and log when invites actually went out (simulated, since real sending isn\'t wired up yet — see the Twilio backlog item), set an optional venue capacity, and get an alert if your invited count runs over it.',
+      'Events: removed the "Wedding Party Attending" list in favour of the high-level guest counts already on the page; added a Meal Collection field (ask each guest, or preset to family-style/buffet) — dietary restrictions are still collected once per guest, not repeated per event.',
+      'Budget: the "By Event" view\'s target amount is now directly editable there, not just on the event\'s own page — set it from either place and it stays in sync, since both read and write the same field.',
+      'Guests: RSVP is now tracked per person, not just per household — e.g. Elena can confirm the Mehndi while Marco declines it, and both confirm the Church Ceremony. The "RSVP by Event" section is also tighter — compact per-person rows instead of a large chip grid, with a "Set all…" shortcut for the whole household at once.',
+      'Guests: the RSVP Survey builder moved out to its own "RSVP Survey" subtab, and gained a rich-text message (with sample wording to start from), an RSVP component toggle, an event date/time toggle, a "sends from" email address, and an option to embed your logo.',
+      'Guests: adding a new family, party, or guest now opens the full detail pop-up right away instead of a name-only quick-add row — there\'s more worth filling in anyway. Adding a new category is now part of the existing category picker ("+ Other…") instead of its own separate row.',
+      'Guests: Tier A/B/C now show an explanation of what each tier means, and you can add your own custom tiers from Settings (A/B/C stay the recommended defaults). The Waitlist card\'s "Move to Tier A" is now "Move to…", letting you move someone up to any tier above their current one.',
+      'Guests: the guest list\'s Family and First/Last Name columns are now clickable to sort (e.g. sort Individual view by last name). The Table grouping option was removed, since a wedding can now have more than one seating chart across its events.',
+      'Backlog (not built): Twilio for real email/SMS sending, and a Paperless Post integration on the Guest tab — both logged for later, see the project notes.'
+    ]
+  },
+  {
+    version:'1.32.0', date:'2026-09-29',
+    title:'Collapsible seating pane with table names & vendor seats, a tighter synced Budget, vendor websites, and granular collaborator access',
+    items:[
+      'Seating Chart: the Guests pane\'s "Not Yet Seated" and "Seated" sections now collapse, and can be grouped by Individual, Family, or Category/Tag — so it\'s easy to see who\'s left, or seat a whole group (like "the Sharmas") together.',
+      'Seating Chart: click any table\'s name right on the floor plan to give it a custom, free-text name — a family group, a place you\'ve visited, whatever you like — instead of just a number.',
+      'Seating Chart: a vendor seated at a table now shows up on the actual seat dot with their name, instead of leaving that chair looking empty.',
+      'Budget: the Total Budget stats now live inside the Budget Breakdown & Pace card itself, reading as one connected view instead of two separate boxes. "+ Add Line Item" is renamed "+ Add Budget Item," and every addition now goes through that one button — the per-category "+ Add Item" row is gone, keeping Master Budget tighter.',
+      'Budget: a new "Export Budget" button produces a styled, printable summary of every category and line item — Save as PDF from the print dialog, same as the Playbook exports.',
+      'Budget ↔ Vendors: once a line item is linked to a real Vendor Team booking, that vendor\'s own Cost and status now drive the item\'s Planned/Committed amounts automatically, and the vendor\'s name shows right on the budget row — no more typing the same cost twice and having it drift (fixes exactly the Hair & Makeup mismatch — Budget said $1,500 planned, the vendor was locked in at $1,200; Budget now shows $1,200, matching the vendor).',
+      'Vendors: added a Website field to every vendor booking, with a one-click "Visit" link.',
+      'Settings: Collaborators & Permissions now has a "Manage" action per person for granular, per-section access — No Access / View / Edit / Admin, set independently for Budget, Guests & Seating, Vendors, Plan, Wedding Blueprint, Wedding Party, Playbook, and Website. Budget defaults to No Access for anyone who isn\'t Couple or Wedding Planner, so it stays private from parents or the bridal party unless you open it up.'
+    ]
+  },
   {
     version:'1.31.0', date:'2026-09-25',
     title:'Drag-to-seat guests, flexible Budget categories, a real Add Vendor form, and a redesigned Wedding Blueprint',
@@ -2014,7 +2069,7 @@ let playbookExportRole = 'couple';
 let runbookCollapsedEvents = {}; // eventId -> collapsed boolean, defaults to collapsed the first time each event is seen (Run Book Phase 2, v1.25.0)
 let eventsView = 'list';     // 'list' | 'detail'
 let selectedEventId = null;
-let addingEvent = false;
+let eventAddFormOpen = false;
 let budgetCollapsedMap = {};
 let budgetItemQuickAddOpen = false;  // Budget: "+ Add Line Item" up top — add a line item without picking a category first
 let budgetCategoryAddOpen = false;   // Budget: "+ New Category" up top
@@ -2038,6 +2093,10 @@ let draggingGuest = null;     // seating chart: {householdId, memberId} currentl
 let seatPickerState = null;   // seating chart: {chartId, tableId, seatIndex} — open when an empty seat is clicked, so a guest can be picked instead of dragged
 let seatPickerSearch = '';    // seating chart: filter text for the seat-picker panel's guest list
 let seatingPaneSearch = '';   // seating chart: filter text for the seated/unassigned guest pane beside the floor plan
+let seatingPaneGroupBy = 'individual'; // seating chart: how the guest pane's rows are grouped — 'individual' | 'family' | 'category'
+let seatingPaneUnseatedCollapsed = false; // seating chart: collapse state for the guest pane's "Not Yet Seated" section
+let seatingPaneSeatedCollapsed = false;   // seating chart: collapse state for the guest pane's "Seated" section
+let tableRenameState = null;  // seating chart: {chartId, tableId} — open when a table's name on the floor plan is clicked, so it can be given a custom name
 let vendorBookingDetailId = null; // vendor booking id whose drill-in detail is open, if any
 let planFilterEvent = 'all', planFilterRole = 'all', planFilterPriority = 'all', planFilterStatus = 'open'; // Plan module task filters
 let planExpandedTaskId = null; // which task row shows its inline Notes/Dependency editor
@@ -3112,6 +3171,42 @@ async function loadAndApplyWeddingRecord(uid){
     return false;
   }
 }
+/* ---- Granular collaborator permissions (new, Sep 2026): Natasha's explicit ask — per-module,
+   per-collaborator access, so e.g. a parent can see Guests but not Budget. Prototype scope: this
+   configures and displays each person's intended access level; there's no separate per-person
+   login yet (see Pending: SSO), so it isn't independently enforced against a second logged-in
+   user today — it's the record of who should see what, ready for that when real multi-user
+   accounts exist. */
+const PERMISSION_MODULES = [
+  {key:'budget', label:'Budget'},
+  {key:'guests', label:'Guests & Seating'},
+  {key:'vendors', label:'Vendors'},
+  {key:'plan', label:'Plan & Timeline'},
+  {key:'blueprint', label:'Wedding Blueprint'},
+  {key:'weddingparty', label:'Wedding Party'},
+  {key:'playbook', label:'Playbook'},
+  {key:'website', label:'Website'}
+];
+const PERMISSION_LEVELS = [
+  {key:'none', label:'No Access'},
+  {key:'view', label:'View'},
+  {key:'edit', label:'Edit'},
+  {key:'admin', label:'Admin'}
+];
+function defaultPermissionsForRole(role){
+  const perms = {};
+  PERMISSION_MODULES.forEach(m=>{ perms[m.key] = 'view'; });
+  if(role==='Couple' || role==='Wedding Planner'){
+    PERMISSION_MODULES.forEach(m=>{ perms[m.key] = 'admin'; });
+  } else if(role==='Vendor'){
+    PERMISSION_MODULES.forEach(m=>{ perms[m.key] = 'none'; });
+  } else {
+    // Parent, Family, Wedding Party, or any custom role — can see most of the plan, but Budget
+    // stays private by default (Natasha's own example: keep it confidential from parents).
+    perms.budget = 'none';
+  }
+  return perms;
+}
 /* Defensively backfills fields added after the original data model was designed,
    so both the rich sample dataset and freshly-onboarded data always have them. */
 function normalizeDashboardData(d){
@@ -3172,6 +3267,7 @@ function normalizeDashboardData(d){
     if(vb.contactName===undefined) vb.contactName = '';
     if(vb.email===undefined) vb.email = '';
     if(vb.phone===undefined) vb.phone = '';
+    if(vb.website===undefined) vb.website = '';
     if(vb.cost===undefined) vb.cost = 0;
     if(vb.linkedBudgetItemId===undefined) vb.linkedBudgetItemId = null;
     if(vb.contractStatus===undefined) vb.contractStatus = 'not-started';
@@ -3189,9 +3285,10 @@ function normalizeDashboardData(d){
   if(!d.ceremonyOrder) d.ceremonyOrder = {processional:[], recessional:[], altarLineup:{groomSide:[], brideSide:[]}};
   if(!Array.isArray(d.guestCategories)) d.guestCategories = [`${d.partner1}'s Side`, `${d.partner2}'s Side`, `${d.partner1}'s Family`, `${d.partner2}'s Family`, 'Friends'];
   if(!Array.isArray(d.guestHouseholds)) d.guestHouseholds = [];
+  if(!Array.isArray(d.guestTiers) || !d.guestTiers.length) d.guestTiers = DEFAULT_GUEST_TIERS.map(t=>Object.assign({},t));
   d.guestHouseholds.forEach(h=>{
     if(!Array.isArray(h.categories)) h.categories = [];
-    if(h.tier===undefined) h.tier = 'A';
+    if(h.tier===undefined || !d.guestTiers.some(t=>t.key===h.tier)) h.tier = d.guestTiers[0].key;
     if(h.rsvpStatus===undefined) h.rsvpStatus = 'pending';
     if(h.email===undefined) h.email = '';
     if(!h.address || typeof h.address === 'string'){ const legacy = typeof h.address === 'string' ? h.address : ''; h.address = {street:legacy, city:'', region:'', postalCode:'', country:''}; }
@@ -3222,6 +3319,17 @@ function normalizeDashboardData(d){
       if(m.accessibilityNeeds===undefined) m.accessibilityNeeds = '';
       if(m.tableId===undefined) m.tableId = null;
       if(m.relationship===undefined) m.relationship = '';
+      // v1.33.0: RSVP moved to the person level (source of truth) — the household's per-event
+      // and overall status are now computed from each member's own status. Seed every invited
+      // member from the household's existing per-event value so old/sample data displays
+      // sensibly the first time the new per-person UI renders.
+      if(!m.eventRsvp || typeof m.eventRsvp !== 'object') m.eventRsvp = {};
+      (Array.isArray(d.events) ? d.events : []).forEach(ev=>{
+        if(m.eventRsvp[ev.id]===undefined){
+          const excluded = h.memberEventExclusions && h.memberEventExclusions[ev.id] && h.memberEventExclusions[ev.id].includes(m.id);
+          if(!excluded) m.eventRsvp[ev.id] = (h.eventRsvp && h.eventRsvp[ev.id]) || h.rsvpStatus || 'pending';
+        }
+      });
     });
   });
   if(!Array.isArray(d.rsvpSurveys)) d.rsvpSurveys = [];
@@ -3230,6 +3338,11 @@ function normalizeDashboardData(d){
     if(s.active===undefined) s.active = true;
     if(!Array.isArray(s.questions)) s.questions = [];
     if(!Array.isArray(s.sentLog)) s.sentLog = [];
+    if(s.rsvpComponent===undefined) s.rsvpComponent = true;
+    if(s.includeEventDateTime===undefined) s.includeEventDateTime = true;
+    if(s.messageHtml===undefined) s.messageHtml = DEFAULT_SURVEY_MESSAGE;
+    if(s.logoEnabled===undefined) s.logoEnabled = false;
+    if(s.fromEmail===undefined) s.fromEmail = '';
     s.questions.forEach(q=>{
       if(q.type===undefined) q.type = 'text';
       if(!Array.isArray(q.options)) q.options = [];
@@ -3344,7 +3457,13 @@ function normalizeDashboardData(d){
     {id:'collab-1', name:d.partner1||'Partner 1', email:'', role:'Couple'},
     {id:'collab-2', name:d.partner2||'Partner 2', email:'', role:'Couple'}
   ];
-  d.collaborators.forEach(c=>{ if(c.email===undefined) c.email=''; if(c.role===undefined) c.role='Collaborator'; });
+  d.collaborators.forEach(c=>{
+    if(c.email===undefined) c.email='';
+    if(c.role===undefined) c.role='Collaborator';
+    if(!c.permissions || typeof c.permissions!=='object') c.permissions = {};
+    const roleDefaults = defaultPermissionsForRole(c.role);
+    PERMISSION_MODULES.forEach(m=>{ if(c.permissions[m.key]===undefined) c.permissions[m.key] = roleDefaults[m.key]; });
+  });
   if(!Array.isArray(d.tasks)) d.tasks = [];
   d.tasks.forEach(t=>{ if(t.notes===undefined) t.notes=''; if(t.dependsOn===undefined) t.dependsOn=null; });
   d.tasks.forEach(t=>{
@@ -3439,6 +3558,13 @@ function normalizeDashboardData(d){
     // then left alone — after that it's a plain editable field like any other, so a later change
     // to the event's own date doesn't silently drag an already-set RSVP deadline along with it.
     if(e.rsvpDeadlineISO===undefined) e.rsvpDeadlineISO = e.dateISO ? addDaysISO(e.dateISO, -30) : '';
+    // v1.33.0: per-event guest selection (null = everyone), planned invite timing, venue
+    // capacity alert, and meal-collection mode — see the v1.33.0 changelog entry.
+    if(e.limitedGuestHouseholdIds===undefined) e.limitedGuestHouseholdIds = null;
+    if(e.inviteSendDateISO===undefined) e.inviteSendDateISO = '';
+    if(!Array.isArray(e.inviteSentLog)) e.inviteSentLog = [];
+    if(e.venueCapacity===undefined) e.venueCapacity = null;
+    if(e.mealCollectionMode===undefined) e.mealCollectionMode = 'ask';
   });
   if(!Array.isArray(d.tasks)) d.tasks = [];
   d.tasks.forEach(t=>{
@@ -3763,7 +3889,7 @@ function renderRoute(key){
     playbookSection = 'timeline';
     document.getElementById('content').innerHTML = renderPlaybook();
   } else if(key==='events'){
-    eventsView = 'list'; selectedEventId = null; addingEvent = false;
+    eventsView = 'list'; selectedEventId = null;
     document.getElementById('content').innerHTML = renderEventsModule();
   } else if(key==='budget'){
     budgetTab = 'overview'; budgetOverviewView = 'category'; budgetItemQuickAddOpen = false; budgetCategoryAddOpen = false;
@@ -3775,7 +3901,7 @@ function renderRoute(key){
     guidesView = 'list'; selectedArticleId = null; guidesCategory = 'All';
     document.getElementById('content').innerHTML = renderGuidesModule();
   } else if(key==='guests'){
-    guestsFilterRsvp = 'all'; guestsFilterTier = 'all'; guestsFilterCategory = 'all'; guestsFilterEvent = 'all'; guestsGroupBy = 'family'; guestAddFormOpen = false;
+    guestsFilterRsvp = 'all'; guestsFilterTier = 'all'; guestsFilterCategory = 'all'; guestsFilterEvent = 'all'; guestsGroupBy = 'family';
     document.getElementById('content').innerHTML = renderGuestsModule();
   } else if(key==='vendors'){
     vendorAddFormOpen = null;
@@ -4999,6 +5125,71 @@ function updateEventBudgetTarget(eventId, val){
   const n = Number(val);
   e.budgetTarget = (val==='' || isNaN(n)) ? null : n;
   document.getElementById('content').innerHTML = renderEventsModule();
+}
+let eventGuestPickerOpenId = null;
+function toggleEventGuestPicker(eventId){
+  eventGuestPickerOpenId = eventGuestPickerOpenId===eventId ? null : eventId;
+  if(currentRouteKey==='events' && selectedEventId===eventId) document.getElementById('content').innerHTML = renderEventDetail(eventId);
+}
+function toggleEventGuestHousehold(eventId, householdId){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e) return;
+  if(!Array.isArray(e.limitedGuestHouseholdIds)) e.limitedGuestHouseholdIds = (dashboardData.guestHouseholds||[]).map(h=>h.id);
+  const idx = e.limitedGuestHouseholdIds.indexOf(householdId);
+  if(idx>-1) e.limitedGuestHouseholdIds.splice(idx,1); else e.limitedGuestHouseholdIds.push(householdId);
+  if(currentRouteKey==='events' && selectedEventId===eventId) document.getElementById('content').innerHTML = renderEventDetail(eventId);
+}
+function resetEventGuestList(eventId){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e) return;
+  e.limitedGuestHouseholdIds = null;
+  if(currentRouteKey==='events' && selectedEventId===eventId) document.getElementById('content').innerHTML = renderEventDetail(eventId);
+}
+function markEventInvitesSent(eventId){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e) return;
+  if(!Array.isArray(e.inviteSentLog)) e.inviteSentLog = [];
+  e.inviteSentLog.push({sentAt:new Date().toISOString()});
+  if(currentRouteKey==='events' && selectedEventId===eventId) document.getElementById('content').innerHTML = renderEventDetail(eventId);
+}
+function renderEventGuestPicker(e){
+  const households = dashboardData.guestHouseholds||[];
+  const limited = Array.isArray(e.limitedGuestHouseholdIds);
+  return `
+    <div style="padding:10px; background:var(--ivory-deep); border-radius:var(--radius-sm); margin-top:6px;">
+      <div class="chip-grid" style="gap:5px;">
+        ${households.map(h=>{
+          const checked = limited ? e.limitedGuestHouseholdIds.includes(h.id) : true;
+          return `<label style="display:inline-flex; align-items:center; gap:5px; font-size:12px; background:var(--ivory); padding:4px 9px; border-radius:999px; border:1px solid var(--line);"><input type="checkbox" ${checked?'checked':''} onchange="toggleEventGuestHousehold('${e.id}','${h.id}')"> ${escapeHtml(h.label)}</label>`;
+        }).join('')}
+      </div>
+      <p class="detail-hint">Uncheck a family to leave them off this event's invite — e.g. only a few people for a bridal shower. They stay invited to your other events either way.</p>
+      ${limited ? `<a href="#" class="ch-link" onclick="resetEventGuestList('${e.id}'); return false;">Reset to everyone</a>` : ''}
+    </div>
+  `;
+}
+function renderEventGuestsCard(e){
+  const stats = eventGuestStats(e);
+  const limited = Array.isArray(e.limitedGuestHouseholdIds);
+  const totalHouseholds = (dashboardData.guestHouseholds||[]).length;
+  const overCapacity = e.venueCapacity && stats.invited > e.venueCapacity;
+  const lastSent = (e.inviteSentLog&&e.inviteSentLog.length) ? e.inviteSentLog[e.inviteSentLog.length-1] : null;
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Guest List &amp; Invites</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('guests')">Guests →</span></div>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">${limited ? `Invited: <strong>${(e.limitedGuestHouseholdIds||[]).length} of ${totalHouseholds}</strong> families/parties — a specific guest list for this event.` : `Invited: <strong>Everyone</strong> on your guest list, unless a family is individually excluded.`} <a href="#" onclick="toggleEventGuestPicker('${e.id}'); return false;">${eventGuestPickerOpenId===e.id?'Done':"Edit who's invited →"}</a></p>
+      ${eventGuestPickerOpenId===e.id ? renderEventGuestPicker(e) : ''}
+      <div class="room-setup-row" style="margin-top:10px; padding-top:10px; border-top:1px solid var(--line-soft);">
+        <div class="field-mini"><label>Venue Capacity (optional)</label><input type="number" min="0" style="max-width:110px;" value="${e.venueCapacity||''}" placeholder="e.g. 150" onchange="updateEventField('${e.id}','venueCapacity',Number(this.value)||null)"></div>
+        <div class="field-mini"><label>Planned Invite Send Date</label><input type="date" style="max-width:150px;" value="${e.inviteSendDateISO||''}" onchange="updateEventField('${e.id}','inviteSendDateISO',this.value)"></div>
+      </div>
+      ${overCapacity ? `<p class="detail-hint detail-hint-alert" style="margin-top:8px;">⚠ ${stats.invited} invited is over your ${e.venueCapacity} venue capacity — trim the guest list or confirm the venue can flex.</p>` : ''}
+      <div style="margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" onclick="markEventInvitesSent('${e.id}')">📨 Mark Invites Sent</button>
+        ${lastSent ? `<span class="d-sub">Sent ${new Date(lastSent.sentAt).toLocaleDateString()} — simulated, no real email/text goes out yet.</span>` : ''}
+      </div>
+    </div>
+  `;
 }
 function renderEventBudgetCard(e){
   const actuals = eventBudgetActuals(e.id);
@@ -6279,16 +6470,32 @@ function renderSettingsModule(){
     </div>
 
     <div class="card">
+      <div class="card-head"><div><h4>Guest Tiers</h4><span class="d-sub">Tier A, B, and C are the recommended defaults — add your own if you need more</span></div></div>
+      <div class="budget-items" style="padding-left:0;">
+        ${(d.guestTiers||[]).map(t=>`
+          <div class="budget-item-row" style="grid-template-columns:1.7fr 0.4fr;">
+            <input type="text" class="select-field-sm" value="${escapeAttr(t.label)}" onchange="updateGuestTierLabel('${escapeAttr(t.key)}', this.value)">
+            ${(d.guestTiers||[]).length>1 ? `<a href="#" class="danger-link" onclick="removeGuestTier('${escapeAttr(t.key)}'); return false;">✕</a>` : `<span></span>`}
+          </div>`).join('')}
+      </div>
+      <div class="custom-add-row" style="margin-top:12px;">
+        <input type="text" id="newGuestTierLabel" placeholder="New tier (e.g. Tier D — Neighbours)">
+        <button class="btn btn-outline btn-sm" onclick="addGuestTier()">+ Add Tier</button>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-head"><h4>Collaborators &amp; Permissions</h4><span class="d-sub">Everyone with access to this Evera workspace</span></div>
       <div class="budget-items" style="padding-left:0;">
-        <div class="budget-items-head" style="grid-template-columns:1.3fr 1.5fr 1fr 0.4fr;"><span>Name</span><span>Email</span><span>Role</span><span></span></div>
+        <div class="budget-items-head" style="grid-template-columns:1.1fr 1.3fr 0.9fr 0.7fr 0.4fr;"><span>Name</span><span>Email</span><span>Role</span><span>Access</span><span></span></div>
         ${d.collaborators.map(c=>`
-          <div class="budget-item-row" style="grid-template-columns:1.3fr 1.5fr 1fr 0.4fr;">
+          <div class="budget-item-row" style="grid-template-columns:1.1fr 1.3fr 0.9fr 0.7fr 0.4fr; align-items:center;">
             <input type="text" class="select-field-sm" value="${escapeAttr(c.name)}" onchange="updateCollaboratorField('${c.id}','name',this.value)">
             <input type="text" class="select-field-sm" value="${escapeAttr(c.email)}" onchange="updateCollaboratorField('${c.id}','email',this.value)">
             <select class="select-field-sm" onchange="updateCollaboratorField('${c.id}','role',this.value)">
               ${['Couple','Wedding Planner','Parent','Family','Wedding Party','Vendor'].map(r=>`<option value="${r}" ${c.role===r?'selected':''}>${r}</option>`).join('')}
             </select>
+            <a href="#" style="font-size:12px;font-weight:700;color:var(--green);border-bottom:1px solid var(--champagne);" onclick="openCollaboratorPermissions('${c.id}'); return false;">Manage →</a>
             <a href="#" class="danger-link" onclick="removeCollaborator('${c.id}'); return false;">✕</a>
           </div>`).join('')}
       </div>
@@ -6297,7 +6504,50 @@ function renderSettingsModule(){
         <input type="text" id="newCollabEmail" placeholder="Email">
         <button class="btn btn-outline btn-sm" onclick="addCollaborator()">+ Invite Collaborator</button>
       </div>
-      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Evera doesn't send real email invitations in this prototype — adding someone here just adds their record to your workspace.</p>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Set exactly what each person can see and do, per section — click "Manage" on a row above. Evera doesn't send real email invitations in this prototype — adding someone here just adds their record to your workspace.</p>
+    </div>
+  `;
+}
+/* ---- Per-collaborator access modal (new, Sep 2026): one module-by-module grid per person,
+   reusing the app's existing .item-overlay/.item-modal pattern rather than a dense always-open
+   matrix across every collaborator at once. */
+let collaboratorPermissionsState = null; // collaborator id whose access modal is open, if any
+function openCollaboratorPermissions(id){
+  collaboratorPermissionsState = id;
+  document.getElementById('collaboratorPermissionsOverlay').innerHTML = renderCollaboratorPermissionsModal();
+  document.getElementById('collaboratorPermissionsOverlay').classList.add('open');
+}
+function closeCollaboratorPermissions(){
+  collaboratorPermissionsState = null;
+  document.getElementById('collaboratorPermissionsOverlay').classList.remove('open');
+}
+function updateCollaboratorPermission(id, moduleKey, val){
+  const c = dashboardData.collaborators.find(x=>x.id===id);
+  if(!c) return;
+  if(!c.permissions || typeof c.permissions!=='object') c.permissions = {};
+  c.permissions[moduleKey] = val;
+  document.getElementById('collaboratorPermissionsOverlay').innerHTML = renderCollaboratorPermissionsModal();
+}
+function renderCollaboratorPermissionsModal(){
+  const c = dashboardData.collaborators.find(x=>x.id===collaboratorPermissionsState);
+  if(!c) return '';
+  const perms = c.permissions || {};
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="closeCollaboratorPermissions()">✕</button>
+      <div class="eyebrow">Manage Access</div>
+      <h3 style="margin-top:4px;">${escapeHtml(c.name)}</h3>
+      <p class="detail-hint" style="margin-top:-4px;">Set what ${escapeHtml(c.name.split(' ')[0]||c.name)} can see and do in each section. Budget defaults to No Access for anyone who isn't Couple or Wedding Planner, so it stays private unless you open it up.</p>
+      <div class="budget-items" style="padding-left:0; margin-top:10px;">
+        <div class="budget-items-head" style="grid-template-columns:1.4fr 1fr;"><span>Section</span><span>Access</span></div>
+        ${PERMISSION_MODULES.map(m=>`
+          <div class="budget-item-row" style="grid-template-columns:1.4fr 1fr; align-items:center;">
+            <span class="readonly-cell">${escapeHtml(m.label)}</span>
+            <select class="select-field-sm" onchange="updateCollaboratorPermission('${c.id}','${m.key}',this.value)">
+              ${PERMISSION_LEVELS.map(l=>`<option value="${l.key}" ${(perms[m.key]||'view')===l.key?'selected':''}>${l.label}</option>`).join('')}
+            </select>
+          </div>`).join('')}
+      </div>
     </div>
   `;
 }
@@ -6316,7 +6566,7 @@ function addCollaborator(){
   const name = (nEl.value||'').trim();
   if(!name) return;
   if(!Array.isArray(dashboardData.collaborators)) dashboardData.collaborators=[];
-  dashboardData.collaborators.push({id:'collab-'+Date.now().toString(36), name, email:(eEl.value||'').trim(), role:'Family'});
+  dashboardData.collaborators.push({id:'collab-'+Date.now().toString(36), name, email:(eEl.value||'').trim(), role:'Family', permissions: defaultPermissionsForRole('Family')});
   document.getElementById('content').innerHTML = renderSettingsModule();
 }
 
@@ -6452,6 +6702,11 @@ function linkedBudgetItemForBooking(vb){
   }
   return null;
 }
+function normalizeWebsiteUrl(url){
+  const trimmed = (url||'').trim();
+  if(!trimmed) return '';
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
 function vendorBookingsForEvent(e){
   // a booking that explicitly limits itself to certain events (e.g. a different Transportation
   // vendor per day) is authoritative for those events; an unrestricted booking falls back to
@@ -6523,6 +6778,9 @@ function saveRteField(field, html){
     const ci = Number(rest[0]), ii = Number(rest[1]);
     const item = dashboardData.budgetBreakdown[ci] && dashboardData.budgetBreakdown[ci].items[ii];
     if(item) item.notes = html;
+  } else if(kind==='surveyMessage'){
+    const s = (dashboardData.rsvpSurveys||[]).find(x=>x.id===rest.join(':'));
+    if(s) s.messageHtml = html;
   }
 }
 let mentionSavedRange = null;
@@ -6681,6 +6939,7 @@ function renderVendorAddModal(){
         <div class="field-cell"><label>Contact Name</label><input type="text" id="newVBContact" placeholder="Who you deal with"></div>
         <div class="field-cell"><label>Email</label><input type="text" id="newVBEmail" placeholder="name@example.com"></div>
         <div class="field-cell"><label>Phone</label><input type="text" id="newVBPhone" placeholder="(555) 555-5555"></div>
+        <div class="field-cell"><label>Website</label><input type="text" id="newVBWebsite" placeholder="https://…"></div>
         <div class="field-cell"><label>Cost</label><input type="number" min="0" id="newVBCost" placeholder="0"></div>
         <div class="field-cell"><label>Status</label>
           <select id="newVBStatus">
@@ -6726,6 +6985,7 @@ function submitVendorAddModal(){
   const contactEl = document.getElementById('newVBContact');
   const emailEl = document.getElementById('newVBEmail');
   const phoneEl = document.getElementById('newVBPhone');
+  const websiteEl = document.getElementById('newVBWebsite');
   const costEl = document.getElementById('newVBCost');
   const statusEl = document.getElementById('newVBStatus');
   const contractEl = document.getElementById('newVBContractStatus');
@@ -6736,7 +6996,7 @@ function submitVendorAddModal(){
   const vb = {
     id:'vb-'+Date.now().toString(36), category, role:(roleEl.value||'').trim(), vendorName:(nameEl.value||'').trim(),
     status: statusEl.value, contactName:(contactEl.value||'').trim(), email:(emailEl.value||'').trim(), phone:(phoneEl.value||'').trim(),
-    cost: Number(costEl.value)||0, linkedBudgetItemId: linkedEl.value||null, contractStatus: contractEl.value,
+    website:(websiteEl.value||'').trim(), cost: Number(costEl.value)||0, linkedBudgetItemId: linkedEl.value||null, contractStatus: contractEl.value,
     notes:(notesEl.value||'').trim(), eventIds, communications:[]
   };
   dashboardData.vendorBookings.push(vb);
@@ -6861,6 +7121,12 @@ function renderVendorBookingDetailModal(id){
         <div class="field-cell"><label>Contact Name</label><input type="text" value="${escapeAttr(vb.contactName)}" onchange="updateVendorBookingField('${vb.id}','contactName',this.value)"></div>
         <div class="field-cell"><label>Email</label><input type="text" value="${escapeAttr(vb.email)}" onchange="updateVendorBookingField('${vb.id}','email',this.value)"></div>
         <div class="field-cell"><label>Phone</label><input type="text" value="${escapeAttr(vb.phone)}" onchange="updateVendorBookingField('${vb.id}','phone',this.value)"></div>
+        <div class="field-cell"><label>Website</label>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <input type="text" placeholder="https://…" value="${escapeAttr(vb.website||'')}" onchange="updateVendorBookingField('${vb.id}','website',this.value)">
+            ${vb.website ? `<a href="${escapeAttr(normalizeWebsiteUrl(vb.website))}" target="_blank" rel="noopener noreferrer" style="flex-shrink:0; font-size:12px; font-weight:700; color:var(--green); border-bottom:1px solid var(--champagne); white-space:nowrap;" title="Open vendor website">Visit ↗</a>` : ''}
+          </div>
+        </div>
         <div class="field-cell"><label>Cost</label><input type="number" min="0" value="${vb.cost||0}" onchange="updateVendorBookingField('${vb.id}','cost',this.value)"></div>
         <div class="field-cell"><label>Contract Status</label>
           <select onchange="updateVendorBookingField('${vb.id}','contractStatus',this.value)">
@@ -6876,7 +7142,7 @@ function renderVendorBookingDetailModal(id){
           </select>
         </div>
       </div>
-      ${linkedItem ? `<p class="detail-hint">Pulled from Budget: <strong>${escapeHtml(linkedItem.name)}</strong> — planned ${fmtMoney(linkedItem.planned)}, spent ${fmtMoney(linkedItem.spent)}. <a href="#" onclick="closeVendorBookingDetail(); renderRoute('budget'); return false;">Open in Budget</a>.</p>` : `<p class="detail-hint">Not linked to a Budget line item yet — link one above so cost and payment status pull straight from your real Budget data instead of being tracked twice.</p>`}
+      ${linkedItem ? `<p class="detail-hint">🔗 Linked to Budget's <strong>${escapeHtml(linkedItem.name)}</strong> line item — this vendor's Cost above now drives that item's Planned/Spent amounts automatically, so update the cost here rather than in Budget. <a href="#" onclick="closeVendorBookingDetail(); renderRoute('budget'); return false;">Open in Budget</a>.</p>` : `<p class="detail-hint">Not linked to a Budget line item yet — link one above so this vendor's cost and status drive that line item automatically instead of being tracked twice.</p>`}
       <div class="chip-grid" style="margin-top:8px; gap:4px;">
         <span class="pp-label" style="width:100%;">Which events does this vendor cover?</span>
         ${(vb.eventIds&&vb.eventIds.length) ? vb.eventIds.map(eid=>{ const ev = d.events.find(e=>e.id===eid); return ev ? `<span class="attach-chip">${escapeHtml(ev.name)}<a href="#" onclick="toggleVendorBookingEvent('${vb.id}','${eid}'); return false;">×</a></span>` : ''; }).join('') : '<span class="d-sub">All events (not limited to a specific date)</span>'}
@@ -8736,15 +9002,25 @@ function chairDotsHtml(chart, table, seatable, readOnly){
   const shape = table.shape, n = Math.max(0, Math.min(table.capacity||0, 20));
   if(!n) return '';
   const seatedAt = (idx)=> seatable.find(r=>{ const si = memberSeatInfo(r.m, chart.id); return si && si.tableId===table.id && si.seatIndex===idx; });
+  // Vendors are tracked per-table, not per-seat-index (see assignVendorToTable) — so for display
+  // only, fold them onto the next open seat dots in order, so a seated vendor actually shows up
+  // on the visual instead of leaving those chairs looking empty. Nothing is persisted from this.
+  const vendorsHere = vendorsSeatedForTable(table);
+  const vendorSeatMap = {};
+  if(vendorsHere.length){
+    let vi = 0;
+    for(let idx=0; idx<n && vi<vendorsHere.length; idx++){ if(!seatedAt(idx)){ vendorSeatMap[idx] = vendorsHere[vi]; vi++; } }
+  }
   const marker = (x,y,idx)=>{
     const occ = seatedAt(idx);
-    const cls = occ ? 'seat-marker seat-marker-filled' : 'seat-marker seat-marker-empty';
-    const title = occ ? escapeAttr(`Seat ${idx+1} — ${occ.displayName}`) : (readOnly ? `Seat ${idx+1} — empty` : `Seat ${idx+1} — empty, drag a guest here or click to choose`);
+    const vendorOcc = !occ ? vendorSeatMap[idx] : null;
+    const cls = occ ? 'seat-marker seat-marker-filled' : (vendorOcc ? 'seat-marker seat-marker-filled seat-marker-vendor' : 'seat-marker seat-marker-empty');
+    const title = occ ? escapeAttr(`Seat ${idx+1} — ${occ.displayName}`) : vendorOcc ? escapeAttr(`Seat ${idx+1} — ${vendorOcc.vendorName||vendorOcc.category} (vendor)`) : (readOnly ? `Seat ${idx+1} — empty` : `Seat ${idx+1} — empty, drag a guest here or click to choose`);
     const dragAttrs = (!readOnly && occ) ? `draggable="true" ondragstart="onSeatedGuestDragStart(event,'${occ.h.id}','${occ.m.id}')"` : '';
-    const dropAttrs = readOnly ? '' : `ondragover="event.preventDefault(); event.stopPropagation();" ondrop="onSeatDrop(event,'${chart.id}','${table.id}',${idx})"`;
-    const clickAttrs = (!readOnly && !occ) ? `onclick="event.stopPropagation(); openSeatPicker('${chart.id}','${table.id}',${idx});"` : '';
-    const shortName = occ ? (occ.m.firstName || occ.displayName || '').trim() || occ.displayName : '';
-    const inner = occ
+    const dropAttrs = (readOnly || vendorOcc) ? '' : `ondragover="event.preventDefault(); event.stopPropagation();" ondrop="onSeatDrop(event,'${chart.id}','${table.id}',${idx})"`;
+    const clickAttrs = (!readOnly && !occ && !vendorOcc) ? `onclick="event.stopPropagation(); openSeatPicker('${chart.id}','${table.id}',${idx});"` : '';
+    const shortName = occ ? (occ.m.firstName || occ.displayName || '').trim() || occ.displayName : (vendorOcc ? (vendorOcc.vendorName || vendorOcc.category) : '');
+    const inner = (occ || vendorOcc)
       ? `<span class="seat-num">${idx+1}</span><span class="seat-name">${escapeHtml(shortName)}</span>`
       : `<span class="seat-num">${idx+1}</span>`;
     return `<span class="${cls}" style="left:${x}%; top:${y}%;" title="${title}" ${dropAttrs} ${dragAttrs} ${clickAttrs}>${inner}</span>`;
@@ -9056,11 +9332,108 @@ function renderSeatPickerPanel(chart){
     </div>
   `;
 }
+/* ---- Click-to-rename a table right on the floor plan (new, Sep 2026): clicking a table's
+   name/number chip opens a small popover — same pattern as the seat picker above — so a table
+   can be given a custom, free-text name ("Natasha's Family", "Paris") without leaving the canvas.
+   Persists via the same updateTableField() already used by the table cards below the floor plan. */
+function openTableRename(chartId, tableId){
+  tableRenameState = {chartId, tableId};
+  reRenderCurrent();
+  setTimeout(()=>{ const el = document.getElementById('tableRenameInput'); if(el){ el.focus(); el.select(); } }, 0);
+}
+function closeTableRename(){
+  tableRenameState = null;
+  reRenderCurrent();
+}
+function submitTableRename(val){
+  if(!tableRenameState) return;
+  const {chartId, tableId} = tableRenameState;
+  const trimmed = (val||'').trim();
+  if(trimmed) updateTableField(chartId, tableId, 'name', trimmed);
+  tableRenameState = null;
+  reRenderCurrent();
+}
+function renderTableRenamePanel(chart){
+  if(!tableRenameState || tableRenameState.chartId !== chart.id) return '';
+  const table = chart.tables.find(t=>t.id===tableRenameState.tableId);
+  if(!table) return '';
+  return `
+    <div class="seat-picker-panel">
+      <div class="seat-picker-head">
+        <span>Rename ${escapeHtml(table.name || ('Table '+table.number))}</span>
+        <a href="#" onclick="closeTableRename(); return false;" class="seat-picker-close" title="Cancel">×</a>
+      </div>
+      <input type="text" id="tableRenameInput" class="sgp-search" placeholder="e.g. Natasha's Family, Paris…" value="${escapeAttr(table.name||'')}" onkeydown="if(event.key==='Enter'){ submitTableRename(this.value); } else if(event.key==='Escape'){ closeTableRename(); }">
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button class="btn btn-solid btn-sm" onclick="submitTableRename(document.getElementById('tableRenameInput').value)">Save</button>
+        <button class="btn btn-outline btn-sm" onclick="closeTableRename()">Cancel</button>
+      </div>
+      <p class="detail-hint" style="margin-bottom:0;">Give it a fun name — a family group, a place you've visited — or leave it as a plain table number.</p>
+    </div>
+  `;
+}
 /* ---- Seated/unassigned guest pane (new, Sep 25 2026): sits beside the floor plan so guests
    can be dragged straight onto a seat, or reviewed at a glance for who's seated vs. remaining. */
 function updateSeatingPaneSearch(val){
   seatingPaneSearch = val;
   reRenderCurrent();
+}
+function updateSeatingPaneGroupBy(val){
+  seatingPaneGroupBy = val;
+  reRenderCurrent();
+}
+/* ---- Collapsible pane sections (new, Sep 2026): so "who's left to seat" can be checked at a
+   glance without scrolling past everyone who's already placed, and vice versa. */
+function toggleSeatingPaneSection(section){
+  if(section==='unassigned') seatingPaneUnseatedCollapsed = !seatingPaneUnseatedCollapsed;
+  else seatingPaneSeatedCollapsed = !seatingPaneSeatedCollapsed;
+  reRenderCurrent();
+}
+/* ---- Group-by for the guest pane (new, Sep 2026): Individual (flat), Family (by household —
+   so a whole party can be seated together at a glance), or Category/Tag (the same Guest
+   Categories used in Guest List — "the Sharmas," colleagues, friends, etc.). A household can
+   carry more than one category, so it can legitimately appear in more than one group here —
+   that's the point, it's a filter/lens for seating decisions, not a second source of truth. */
+function groupSeatingPaneRows(rows, groupBy){
+  if(groupBy==='family'){
+    const map = new Map();
+    rows.forEach(r=>{
+      if(!map.has(r.h.id)) map.set(r.h.id, {label:r.h.label, rows:[]});
+      map.get(r.h.id).rows.push(r);
+    });
+    return Array.from(map.values()).sort((a,b)=>(a.label||'').localeCompare(b.label||''));
+  }
+  if(groupBy==='category'){
+    const cats = dashboardData.guestCategories||[];
+    const groups = cats.map(cat=>({label:cat, rows: rows.filter(r=>(r.h.categories||[]).includes(cat))})).filter(g=>g.rows.length);
+    const other = rows.filter(r=>!(r.h.categories||[]).length);
+    if(other.length) groups.push({label:'Uncategorized', rows: other});
+    return groups;
+  }
+  return [{label:null, rows}];
+}
+function sgpRowHtml(r, kind, chartId, readOnly){
+  if(kind==='unassigned'){
+    return `
+      <div class="sgp-row sgp-row-unassigned" ${readOnly?'':`draggable="true" ondragstart="onGuestDragStart(event,'${r.h.id}','${r.m.id}')"`} title="${readOnly?'':'Drag onto an open seat'}">
+        <span class="sgp-dot sgp-dot-open"></span>
+        <div class="sgp-info"><div class="sgp-name">${escapeHtml(r.displayName)}</div><div class="sgp-meta">${escapeHtml(r.h.label)}</div></div>
+      </div>`;
+  }
+  return `
+    <div class="sgp-row sgp-row-seated" ${readOnly?'':`draggable="true" ondragstart="onSeatedGuestDragStart(event,'${r.h.id}','${r.m.id}')"`} title="${readOnly?'':'Drag onto a different seat'}">
+      <span class="sgp-dot sgp-dot-seated">✓</span>
+      <div class="sgp-info"><div class="sgp-name">${escapeHtml(r.displayName)}</div><div class="sgp-meta">${escapeHtml(r.tableName)} · Seat ${r.seatIndex+1}</div></div>
+      ${readOnly?'':`<a href="#" class="sgp-unseat" title="Unseat" onclick="unassignSeat('${r.h.id}','${r.m.id}','${chartId}'); return false;">×</a>`}
+    </div>`;
+}
+function sgpGroupedListHtml(rows, kind, chart, readOnly, emptyMsg){
+  if(!rows.length) return `<p class="d-sub" style="padding:4px 2px;">${emptyMsg}</p>`;
+  const groups = groupSeatingPaneRows(rows, seatingPaneGroupBy);
+  return groups.map(g=>`
+    ${g.label ? `<div class="sgp-group-label">${escapeHtml(g.label)} (${g.rows.length})</div>` : ''}
+    ${g.rows.map(r=>sgpRowHtml(r, kind, chart.id, readOnly)).join('')}
+  `).join('');
 }
 function renderSeatingGuestPane(chart, seatable, readOnly){
   const q = seatingPaneSearch.trim().toLowerCase();
@@ -9077,23 +9450,21 @@ function renderSeatingGuestPane(chart, seatable, readOnly){
     <div class="card seating-guest-pane">
       <div class="card-head"><h4>Guests</h4><span class="d-sub">${seatedAll.length}/${seatable.length} seated</span></div>
       <input type="text" class="sgp-search" placeholder="Search guests…" value="${escapeAttr(seatingPaneSearch)}" oninput="updateSeatingPaneSearch(this.value)">
-      <div class="sgp-section-label">Not Yet Seated (${unassigned.length})</div>
-      <div class="sgp-list">
-        ${unassigned.length ? unassigned.map(r=>`
-          <div class="sgp-row sgp-row-unassigned" ${readOnly?'':`draggable="true" ondragstart="onGuestDragStart(event,'${r.h.id}','${r.m.id}')"`} title="${readOnly?'':'Drag onto an open seat'}">
-            <span class="sgp-dot sgp-dot-open"></span>
-            <div class="sgp-info"><div class="sgp-name">${escapeHtml(r.displayName)}</div><div class="sgp-meta">${escapeHtml(r.h.label)}</div></div>
-          </div>`).join('') : `<p class="d-sub" style="padding:4px 2px;">${q ? 'No matches.' : 'Everyone eligible is seated.'}</p>`}
+      <select class="select-field-sm" style="width:100%; margin-top:8px;" onchange="updateSeatingPaneGroupBy(this.value)">
+        <option value="individual" ${seatingPaneGroupBy==='individual'?'selected':''}>Group by: Individual</option>
+        <option value="family" ${seatingPaneGroupBy==='family'?'selected':''}>Group by: Family</option>
+        <option value="category" ${seatingPaneGroupBy==='category'?'selected':''}>Group by: Category / Tag</option>
+      </select>
+      <div class="sgp-section-head" onclick="toggleSeatingPaneSection('unassigned')">
+        <svg class="bc-chevron ${seatingPaneUnseatedCollapsed?'':'open'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="sgp-section-label">Not Yet Seated (${unassigned.length})</span>
       </div>
-      <div class="sgp-section-label">Seated (${seated.length})</div>
-      <div class="sgp-list">
-        ${seated.length ? seated.map(r=>`
-          <div class="sgp-row sgp-row-seated" ${readOnly?'':`draggable="true" ondragstart="onSeatedGuestDragStart(event,'${r.h.id}','${r.m.id}')"`} title="${readOnly?'':'Drag onto a different seat'}">
-            <span class="sgp-dot sgp-dot-seated">✓</span>
-            <div class="sgp-info"><div class="sgp-name">${escapeHtml(r.displayName)}</div><div class="sgp-meta">${escapeHtml(r.tableName)} · Seat ${r.seatIndex+1}</div></div>
-            ${readOnly?'':`<a href="#" class="sgp-unseat" title="Unseat" onclick="unassignSeat('${r.h.id}','${r.m.id}','${chart.id}'); return false;">×</a>`}
-          </div>`).join('') : `<p class="d-sub" style="padding:4px 2px;">${q ? 'No matches.' : 'No one seated yet.'}</p>`}
+      ${seatingPaneUnseatedCollapsed ? '' : `<div class="sgp-list">${sgpGroupedListHtml(unassigned, 'unassigned', chart, readOnly, q ? 'No matches.' : 'Everyone eligible is seated.')}</div>`}
+      <div class="sgp-section-head" onclick="toggleSeatingPaneSection('seated')">
+        <svg class="bc-chevron ${seatingPaneSeatedCollapsed?'':'open'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="sgp-section-label">Seated (${seated.length})</span>
       </div>
+      ${seatingPaneSeatedCollapsed ? '' : `<div class="sgp-list">${sgpGroupedListHtml(seated, 'seated', chart, readOnly, q ? 'No matches.' : 'No one seated yet.')}</div>`}
       ${(!readOnly && chart.isPrimary) ? `
       <div class="sgp-add-row">
         <input type="text" id="newGuestName" placeholder="Add a guest or family…">
@@ -9149,6 +9520,7 @@ function renderFloorPlan(readOnly){
       </div>`}
       <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">${readOnly ? "View-only reference — only guests who RSVP'd yes appear here." : "Only guests who RSVP'd yes appear here — pending and declined guests can't be seated. Each seat around a table shows its exact position and, once assigned, the guest's name — so you can see the seating order and rearrange it by dragging. Drag a guest from the pane onto an open seat, or click an open seat to pick a name."}</p>
       ${readOnly ? '' : renderSeatPickerPanel(chart)}
+      ${readOnly ? '' : renderTableRenamePanel(chart)}
       ${readOnly ? `
       <div class="room-setup-row">
         <div class="field-mini"><label>Room</label><span class="d-sub" style="font-weight:700;">${rs.shape==='square'?'Square':'Rectangular'} · ${rs.width}ft × ${rs.depth}ft</span></div>
@@ -9182,7 +9554,10 @@ function renderFloorPlan(readOnly){
           <div class="floor-table floor-table-${t.shape}" ${readOnly ? '' : `draggable="true" ondragstart="onTableDragStart(event,'${t.id}')"`}
                style="left:${t.posX}%; top:${t.posY}%; ${tableSizeStyle(t)} ${over?'border-color:var(--terracotta);':''}" title="${escapeAttr(t.name)}">
             ${chairDotsHtml(chart, t, seatable, readOnly)}
-            <div class="floor-table-label"><span class="ftl-num">${t.number}</span><span class="ftl-sub">${seated.length + vendorsHere.length}/${t.capacity}</span></div>
+            <div class="floor-table-label">
+              <span class="ftl-num ftl-name" ${readOnly ? '' : `onclick="event.stopPropagation(); openTableRename('${chart.id}','${t.id}');" style="pointer-events:auto; cursor:pointer;" title="Click to rename this table"`}>${escapeHtml(t.name || ('Table '+t.number))}</span>
+              <span class="ftl-sub">${seated.length + vendorsHere.length}/${t.capacity}</span>
+            </div>
           </div>`;
         }).join('')}
       </div>
@@ -9225,7 +9600,7 @@ function renderPrintFloorPlan(){
         return `
         <div class="floor-table floor-table-${t.shape}" style="left:${t.posX}%; top:${t.posY}%; ${tableSizeStyle(t)}">
           ${chairDotsHtml(chart, t, seatable, true)}
-          <div class="floor-table-label"><span class="ftl-num">${t.number}</span><span class="ftl-sub">${seated.length + vendorsHere.length}/${t.capacity}</span></div>
+          <div class="floor-table-label"><span class="ftl-num ftl-name">${escapeHtml(t.name || ('Table '+t.number))}</span><span class="ftl-sub">${seated.length + vendorsHere.length}/${t.capacity}</span></div>
         </div>`;
       }).join('')}
     </div>
@@ -9419,14 +9794,19 @@ function updateTableField(chartId, tableId, field, val){
 const MEAL_OPTIONS = ['Chicken','Fish','Vegetarian','Vegan','Kids Meal'];
 const SALUTATIONS = ['','Mr.','Mrs.','Ms.','Mx.','Dr.','Miss','Master'];
 const RELATIONSHIP_OPTIONS = [{v:'',l:'—'},{v:'mother',l:'Mother'},{v:'father',l:'Father'},{v:'sibling',l:'Sibling'},{v:'grandparent',l:'Grandparent'},{v:'other',l:'Other Family'}];
-const TIER_LABELS = {A:'Tier A — Core Invite List', B:'Tier B — Waitlist', C:'Tier C — Backup List'};
+const DEFAULT_GUEST_TIERS = [
+  {key:'A', label:'Tier A — Core Invite List', desc:'Your definite, must-invite list.'},
+  {key:'B', label:'Tier B — Waitlist', desc:"Invited if space opens up from Tier A declines."},
+  {key:'C', label:'Tier C — Backup List', desc:"A backup list you may not get to — move people up as seats free up."}
+];
 let guestsModuleTab = 'list'; // 'list' | 'seating' — seating chart overhaul (chunk 5) moved the chart here
 let guestsGroupBy = 'family';
+let guestsSortBy = null; // null | 'family' | 'first' | 'last'
+let guestsSortDir = 'asc';
 let guestsFilterRsvp = 'all';
 let guestsFilterTier = 'all';
 let guestsFilterCategory = 'all';
 let guestsFilterEvent = 'all';
-let guestAddFormOpen = false;
 let householdDetailId = null; // household id whose drill-in detail is open, if any
 function householdPartySize(h){ return (h.members||[]).filter(m=>m.attending!==false).length; }
 function guestOverallStats(){
@@ -9443,9 +9823,17 @@ function guestOverallStats(){
 }
 function waitlistInfo(){
   const households = dashboardData.guestHouseholds||[];
+  const tiers = dashboardData.guestTiers||[];
+  const topTierKey = tiers.length ? tiers[0].key : 'A';
+  const tierRank = k => { const i = tiers.findIndex(t=>t.key===k); return i===-1 ? 999 : i; };
   const seatsFreed = households.filter(h=>h.rsvpStatus==='declined').reduce((s,h)=>s+(h.members||[]).length,0);
-  const waiting = households.filter(h=>h.tier!=='A').slice().sort((a,b)=> a.tier.localeCompare(b.tier));
+  const waiting = households.filter(h=>h.tier!==topTierKey).slice().sort((a,b)=> tierRank(a.tier)-tierRank(b.tier));
   return {seatsFreed, waiting};
+}
+function tiersAboveCurrent(currentTierKey){
+  const tiers = dashboardData.guestTiers||[];
+  const idx = tiers.findIndex(t=>t.key===currentTierKey);
+  return idx<=0 ? [] : tiers.slice(0, idx);
 }
 function membersNeedingSeats(){
   const rows = [];
@@ -9463,19 +9851,52 @@ function guestRsvpPill(status){
   return '<span class="pill pill-warn">Pending</span>';
 }
 function tierPill(tier){
-  const cls = tier==='A' ? 'pill-ok' : tier==='B' ? 'pill-warn' : 'pill-neutral';
-  return `<span class="pill ${cls}">Tier ${tier}</span>`;
+  const tiers = dashboardData.guestTiers||[];
+  const idx = tiers.findIndex(t=>t.key===tier);
+  const cls = idx===0 ? 'pill-ok' : idx===1 ? 'pill-warn' : 'pill-neutral';
+  return `<span class="pill ${cls}">Tier ${escapeHtml(tier)}</span>`;
 }
 function hasMultipleEvents(){ return (dashboardData.events||[]).length > 1; }
 function householdInvitedEventIds(h){
   const d = dashboardData;
   const allIds = (d.events||[]).map(e=>e.id);
-  if(!h.invitedEvents || !h.invitedEvents.length) return allIds;
-  return h.invitedEvents.filter(id=>allIds.includes(id));
+  let ids = (!h.invitedEvents || !h.invitedEvents.length) ? allIds : h.invitedEvents.filter(id=>allIds.includes(id));
+  // v1.33.0: an event can also carry its own specific guest list (limitedGuestHouseholdIds) —
+  // e.g. a bridal shower for just a few families — which further narrows who's invited,
+  // independent of that household's own invitedEvents setting.
+  ids = ids.filter(id=>{
+    const ev = (d.events||[]).find(x=>x.id===id);
+    return !(ev && Array.isArray(ev.limitedGuestHouseholdIds)) || ev.limitedGuestHouseholdIds.includes(h.id);
+  });
+  return ids;
+}
+function getMemberEventRsvp(h, m, eventId){
+  // Person is the source of truth (v1.33.0) — fall back to the legacy household-level value
+  // only for data saved before this version.
+  if(m.eventRsvp && m.eventRsvp[eventId]!==undefined) return m.eventRsvp[eventId];
+  if(h.eventRsvp && h.eventRsvp[eventId]!==undefined) return h.eventRsvp[eventId];
+  return 'pending';
+}
+function setMemberEventRsvp(householdId, memberId, eventId, status){
+  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+  if(!h) return;
+  const m = (h.members||[]).find(x=>x.id===memberId);
+  if(!m) return;
+  if(!m.eventRsvp) m.eventRsvp = {};
+  m.eventRsvp[eventId] = status;
+  recomputeHouseholdRsvpStatus(h);
+  refreshGuestsBackground();
+  refreshHouseholdDetail();
 }
 function getEventRsvpStatus(h, eventId){
-  if(!h.eventRsvp) return 'pending';
-  return h.eventRsvp[eventId] || 'pending';
+  // Household-level-per-event status, now derived by rolling up every invited, non-excluded
+  // member's own RSVP for that event (person is the source of truth, v1.33.0).
+  const members = (h.members||[]).filter(m=>!isMemberExcludedFromEvent(h, m.id, eventId));
+  if(!members.length) return (h.eventRsvp && h.eventRsvp[eventId]) || 'pending';
+  const statuses = members.map(m=>getMemberEventRsvp(h, m, eventId));
+  if(statuses.every(s=>s==='confirmed')) return 'confirmed';
+  if(statuses.every(s=>s==='declined')) return 'declined';
+  return 'pending';
 }
 function isMemberExcludedFromEvent(h, memberId, eventId){
   return !!(h.memberEventExclusions && h.memberEventExclusions[eventId] && h.memberEventExclusions[eventId].includes(memberId));
@@ -9495,10 +9916,17 @@ function recomputeHouseholdRsvpStatus(h){
   if(h.rsvpStatus!=='confirmed'){ (h.members||[]).forEach(m=>{ m.seating = {}; }); }
 }
 function setHouseholdEventRsvp(householdId, eventId, status){
+  // Bulk-set convenience — applies status to every invited, non-excluded member at once
+  // (person is still the underlying source of truth, this just writes to all of them).
   const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
   if(!h) return;
+  (h.members||[]).forEach(m=>{
+    if(isMemberExcludedFromEvent(h, m.id, eventId)) return;
+    if(!m.eventRsvp) m.eventRsvp = {};
+    m.eventRsvp[eventId] = status;
+  });
   if(!h.eventRsvp) h.eventRsvp = {};
-  h.eventRsvp[eventId] = status;
+  h.eventRsvp[eventId] = status; // keep the legacy field in sync for any older code path still reading it directly
   recomputeHouseholdRsvpStatus(h);
   refreshGuestsBackground();
   refreshHouseholdDetail();
@@ -9572,13 +10000,6 @@ function filteredHouseholds(){
     return true;
   });
 }
-function toggleGuestAddForm(){
-  guestAddFormOpen = !guestAddFormOpen;
-  document.getElementById('content').innerHTML = renderGuestsModule();
-  if(guestAddFormOpen){
-    setTimeout(()=>{ const el=document.getElementById('newHouseholdLabel'); if(el) el.focus(); },0);
-  }
-}
 function switchGuestsGroupBy(g){ guestsGroupBy = g; document.getElementById('content').innerHTML = renderGuestsModule(); }
 function switchGuestsRsvpFilter(f){ guestsFilterRsvp = f; document.getElementById('content').innerHTML = renderGuestsModule(); }
 function updateGuestsTierFilter(v){ guestsFilterTier = v; document.getElementById('content').innerHTML = renderGuestsModule(); }
@@ -9611,11 +10032,17 @@ function renderWaitlistCard(){
       <div class="card-head"><h4>Waitlist &amp; Capacity</h4>${info.seatsFreed ? `<span class="d-sub">${info.seatsFreed} seat${info.seatsFreed===1?'':'s'} freed by declines</span>` : ''}</div>
       ${info.waiting.length ? `
         <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">As Tier A declines come in, work down this list to fill the seats they freed up.</p>
-        ${info.waiting.map(h=>`
+        ${info.waiting.map(h=>{
+          const above = tiersAboveCurrent(h.tier);
+          return `
           <div class="contact-row" style="cursor:default;">
             <div style="flex:1;"><div style="font-weight:600;font-size:13.5px;">${escapeHtml(h.label)}</div><div class="pc-role">${tierPill(h.tier)} · ${householdPartySize(h)} people · ${guestRsvpPill(h.rsvpStatus)}</div></div>
-            <button class="btn btn-outline btn-sm" onclick="updateHouseholdField('${h.id}','tier','A')">Move to Tier A</button>
-          </div>`).join('')}
+            ${above.length ? `<select class="select-field-sm" style="width:auto;" onchange="if(this.value){updateHouseholdField('${h.id}','tier',this.value); this.value='';}">
+              <option value="">Move to…</option>
+              ${above.map(t=>`<option value="${escapeAttr(t.key)}">Tier ${escapeHtml(t.key)}</option>`).join('')}
+            </select>` : ''}
+          </div>`;
+        }).join('')}
       ` : `<p style="font-size:13px;color:var(--charcoal-faint);">Nobody is waitlisted right now.</p>`}
     </div>
   `;
@@ -9627,10 +10054,11 @@ function renderGuestsModule(){
         <div class="seg-control">
           <button class="seg-btn ${guestsModuleTab==='list'?'active':''}" onclick="switchGuestsModuleTab('list')">Guest List</button>
           <button class="seg-btn ${guestsModuleTab==='seating'?'active':''}" onclick="switchGuestsModuleTab('seating')">Seating Chart</button>
+          <button class="seg-btn ${guestsModuleTab==='survey'?'active':''}" onclick="switchGuestsModuleTab('survey')">RSVP Survey</button>
         </div>
       </div>
     </div>
-    ${guestsModuleTab==='seating' ? renderSeatingChartSection(false) : renderGuestListTab()}
+    ${guestsModuleTab==='seating' ? renderSeatingChartSection(false) : guestsModuleTab==='survey' ? renderGuestSurveyTab() : renderGuestListTab()}
   `;
 }
 function switchGuestsModuleTab(key){ guestsModuleTab = key; document.getElementById('content').innerHTML = renderGuestsModule(); }
@@ -9639,6 +10067,7 @@ function renderGuestListTab(){
   const stats = guestOverallStats();
   const households = filteredHouseholds();
   const categories = d.guestCategories||[];
+  const tiers = dashboardData.guestTiers||[];
   return `
     <div class="party-summary-strip">
       <div class="ps-stat"><div class="ps-num">${stats.households}</div><div class="ps-label">Families / Parties</div></div>
@@ -9650,7 +10079,6 @@ function renderGuestListTab(){
     </div>
     ${d.guestCount ? `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:-10px;">You've added ${stats.totalIndividuals} of your estimated ${d.guestCount} guests individually — add the rest as you collect names and RSVPs.</p>` : ''}
     ${renderEventRsvpBreakdownCard()}
-    ${renderSurveyBuilderCard()}
     ${renderNeedsSeatCard()}
     <div class="card">
       <div class="card-head">
@@ -9663,33 +10091,14 @@ function renderGuestListTab(){
             <button class="seg-btn ${guestsFilterRsvp==='declined'?'active':''}" onclick="switchGuestsRsvpFilter('declined')">Declined</button>
           </div>
           <button class="btn btn-outline btn-sm" onclick="exportMailingList()">⬇ Export Mailing List (CSV)</button>
-          <button class="btn btn-solid btn-sm" onclick="toggleGuestAddForm()">${guestAddFormOpen ? 'Done Adding' : '+ Add a Family, Party, or Guest'}</button>
+          <button class="btn btn-solid btn-sm" onclick="quickAddHousehold()">+ Add a Family, Party, or Guest</button>
         </div>
       </div>
-      ${guestAddFormOpen ? `
-      <div class="detail-section" style="margin-top:0; padding-top:14px;">
-        <div class="custom-add-row">
-          <input type="text" id="newHouseholdLabel" placeholder="e.g. The Cesario Family, or a single guest's name">
-          <select id="newHouseholdCategory" class="select-field-sm" style="max-width:180px;">
-            ${categories.map(c=>`<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join('')}
-          </select>
-          <button class="btn btn-outline btn-sm" onclick="addHousehold()">+ Add</button>
-        </div>
-        <p class="detail-hint" style="margin-top:6px;">After you add a name, its full detail card opens right away so you can fill in email, address, RSVP, and everyone in the party.</p>
-        <div class="custom-add-row" style="margin-top:10px;">
-          <input type="text" id="newCategoryLabel" placeholder="New category (e.g. Colleagues, Dance Friends)">
-          <button class="btn btn-outline btn-sm" onclick="addGuestCategory()">+ Add Category</button>
-        </div>
-        <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Manage or remove existing categories any time in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Settings →</span></p>
-      </div>
-      ` : ''}
       <div class="room-setup-row">
         <div class="field-mini"><label>Tier</label>
           <select onchange="updateGuestsTierFilter(this.value)">
             <option value="all">All Tiers</option>
-            <option value="A" ${guestsFilterTier==='A'?'selected':''}>Tier A</option>
-            <option value="B" ${guestsFilterTier==='B'?'selected':''}>Tier B</option>
-            <option value="C" ${guestsFilterTier==='C'?'selected':''}>Tier C</option>
+            ${tiers.map(t=>`<option value="${escapeAttr(t.key)}" ${guestsFilterTier===t.key?'selected':''}>Tier ${escapeHtml(t.key)}</option>`).join('')}
           </select>
         </div>
         <div class="field-mini"><label>Category</label>
@@ -9708,7 +10117,6 @@ function renderGuestListTab(){
           <select style="width:130px;" onchange="switchGuestsGroupBy(this.value)">
             <option value="family" ${guestsGroupBy==='family'?'selected':''}>Family</option>
             <option value="individual" ${guestsGroupBy==='individual'?'selected':''}>Individual</option>
-            <option value="table" ${guestsGroupBy==='table'?'selected':''}>Table</option>
             <option value="tier" ${guestsGroupBy==='tier'?'selected':''}>Hierarchy (Tier)</option>
             <option value="category" ${guestsGroupBy==='category'?'selected':''}>Category</option>
           </select>
@@ -9719,19 +10127,46 @@ function renderGuestListTab(){
     ${renderWaitlistCard()}
   `;
 }
+function quickAddHousehold(){
+  // v1.33.0: skip the inline name-only quick-add row entirely and go straight to the full
+  // detail popout, since there's more worth filling in right away anyway (email, address,
+  // members, RSVP) than just a label.
+  const d = dashboardData;
+  const id = 'hh-'+Date.now().toString(36);
+  const newHousehold = {
+    id, label:'New Family or Guest', categories:[], tier:(dashboardData.guestTiers&&dashboardData.guestTiers[0]?dashboardData.guestTiers[0].key:'A'), rsvpStatus:'pending',
+    email:'', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:[],
+    eventRsvp:{}, memberEventExclusions:{}, surveyResponses:{},
+    members:[{id:id+'-m1', salutation:'', firstName:'', lastName:'', attending:true, mealChoice:'', dietaryRestrictions:'', accessibilityNeeds:'', tableId:null, relationship:'', seating:{}, eventRsvp:{}}]
+  };
+  (d.events||[]).forEach(ev=>{ newHousehold.eventRsvp[ev.id] = 'pending'; newHousehold.members[0].eventRsvp[ev.id] = 'pending'; });
+  d.guestHouseholds.push(newHousehold);
+  refreshGuestsBackground();
+  openHouseholdDetail(id);
+}
+function toggleGuestsSort(field){
+  if(guestsSortBy===field) guestsSortDir = guestsSortDir==='asc' ? 'desc' : 'asc';
+  else { guestsSortBy = field; guestsSortDir = 'asc'; }
+  document.getElementById('content').innerHTML = renderGuestsModule();
+}
+function guestsSortIcon(field){
+  if(guestsSortBy!==field) return '';
+  return guestsSortDir==='asc' ? ' ▲' : ' ▼';
+}
 function renderGuestsGroupedView(households){
   if(guestsGroupBy==='family') return renderFamilyGroup(households);
   if(guestsGroupBy==='individual') return renderIndividualGroup(households);
-  if(guestsGroupBy==='table') return renderTableGroup(households);
   if(guestsGroupBy==='tier') return renderTierGroup(households);
   return renderCategoryGroup(households);
 }
 function renderFamilyGroup(households){
   if(!households.length) return `<p style="font-size:13px;color:var(--charcoal-faint);">No families or guests match this filter yet.</p>`;
+  const rows = households.slice();
+  if(guestsSortBy==='family') rows.sort((a,b)=> a.label.localeCompare(b.label) * (guestsSortDir==='asc'?1:-1));
   return `
     <div class="budget-items" style="padding-left:0;">
-      <div class="budget-items-head" style="grid-template-columns:1.6fr 0.9fr 1.4fr 0.7fr 0.9fr 0.4fr;"><span>Family / Party</span><span>Size</span><span>Categories</span><span>Tier</span><span>RSVP</span><span></span></div>
-      ${households.map(h=>renderHouseholdSummaryRow(h)).join('')}
+      <div class="budget-items-head" style="grid-template-columns:1.6fr 0.9fr 1.4fr 0.7fr 0.9fr 0.4fr;"><span class="gl-sortable" onclick="toggleGuestsSort('family')">Family / Party${guestsSortIcon('family')}</span><span>Size</span><span>Categories</span><span>Tier</span><span>RSVP</span><span></span></div>
+      ${rows.map(h=>renderHouseholdSummaryRow(h)).join('')}
     </div>
   `;
 }
@@ -9752,51 +10187,33 @@ function renderIndividualGroup(households){
   const rows = [];
   households.forEach(h=>{ (h.members||[]).forEach(m=>{ rows.push({h,m}); }); });
   if(!rows.length) return `<p style="font-size:13px;color:var(--charcoal-faint);">No guests in this view.</p>`;
-  const chart = primarySeatingChart();
+  // Split into First/Last Name columns (v1.33.0) so sorting by last name is possible — a
+  // seating "Table" column no longer applies here since an event can have its own seating
+  // chart, so there's no longer one single table per guest.
+  if(guestsSortBy==='first') rows.sort((a,b)=> (a.m.firstName||'').localeCompare(b.m.firstName||'') * (guestsSortDir==='asc'?1:-1));
+  else if(guestsSortBy==='last') rows.sort((a,b)=> (a.m.lastName||'').localeCompare(b.m.lastName||'') * (guestsSortDir==='asc'?1:-1));
   return `
     <div class="budget-items" style="padding-left:0;">
-      <div class="budget-items-head" style="grid-template-columns:1.4fr 1.2fr 0.8fr 0.9fr 1fr 0.5fr;"><span>Guest</span><span>Family / Party</span><span>RSVP</span><span>Attending</span><span>Table</span><span></span></div>
-      ${rows.map(r=>{
-        const si = chart ? memberSeatInfo(r.m, chart.id) : null;
-        const table = si && chart.tables.find(t=>t.id===si.tableId);
-        return `
-        <div class="budget-item-row" style="grid-template-columns:1.4fr 1.2fr 0.8fr 0.9fr 1fr 0.5fr; align-items:center;">
-          <span class="readonly-cell">${escapeHtml(memberDisplayName(r.m))}</span>
+      <div class="budget-items-head" style="grid-template-columns:0.9fr 0.9fr 1.2fr 0.8fr 0.7fr 0.4fr;"><span class="gl-sortable" onclick="toggleGuestsSort('first')">First Name${guestsSortIcon('first')}</span><span class="gl-sortable" onclick="toggleGuestsSort('last')">Last Name${guestsSortIcon('last')}</span><span>Family / Party</span><span>RSVP</span><span>Attending</span><span></span></div>
+      ${rows.map(r=>`
+        <div class="budget-item-row" style="grid-template-columns:0.9fr 0.9fr 1.2fr 0.8fr 0.7fr 0.4fr; align-items:center;">
+          <span class="readonly-cell">${escapeHtml(r.m.firstName||'—')}</span>
+          <span class="readonly-cell">${escapeHtml(r.m.lastName||'—')}</span>
           <span class="d-sub">${escapeHtml(r.h.label)}</span>
           <span>${guestRsvpPill(r.h.rsvpStatus)}</span>
           <span class="d-sub">${r.m.attending===false?'No':'Yes'}</span>
-          <span class="d-sub">${table ? escapeHtml(table.name) : 'Not seated'}</span>
           <span></span>
-        </div>`;
-      }).join('')}
-    </div>
-  `;
-}
-function renderTableGroup(households){
-  const chart = primarySeatingChart();
-  const rows = [];
-  households.forEach(h=>{ (h.members||[]).forEach(m=>{ if(m.attending!==false) rows.push({h,m}); }); });
-  const tables = chart ? chart.tables : [];
-  const buckets = tables.map(t=>({t, rows: rows.filter(r=>{ const si = chart && memberSeatInfo(r.m, chart.id); return si && si.tableId===t.id; })}));
-  const unassigned = rows.filter(r=>!(chart && memberSeatInfo(r.m, chart.id)));
-  return buckets.map(b=>`
-    <div class="detail-section" style="margin-top:16px; padding-top:14px;">
-      <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(b.t.name)}</h4><span class="d-sub">${b.rows.length} / ${b.t.capacity} seated</span></div>
-      ${b.rows.length ? `<div class="chip-grid">${b.rows.map(r=>`<span class="attach-chip">${escapeHtml(memberDisplayName(r.m))} <span class="d-sub">(${escapeHtml(r.h.label)})</span></span>`).join('')}</div>` : `<p style="font-size:12.5px;color:var(--charcoal-faint);">No one seated here yet.</p>`}
-    </div>
-  `).join('') + `
-    <div class="detail-section" style="margin-top:16px; padding-top:14px;">
-      <div class="detail-section-head"><h4 style="margin:0;">Unassigned</h4><span class="d-sub">${unassigned.length}</span></div>
-      ${unassigned.length ? `<div class="chip-grid">${unassigned.map(r=>`<span class="attach-chip">${escapeHtml(memberDisplayName(r.m))} <span class="d-sub">(${escapeHtml(r.h.label)})</span></span>`).join('')}</div>` : `<p style="font-size:12.5px;color:var(--charcoal-faint);">Everyone eligible has a table.</p>`}
+        </div>`).join('')}
     </div>
   `;
 }
 function renderTierGroup(households){
-  return ['A','B','C'].map(tier=>{
+  return (dashboardData.guestTiers||[]).map(t=>{
+    const tier = t.key;
     const list = households.filter(h=>h.tier===tier);
     return `
     <div class="detail-section" style="margin-top:16px; padding-top:14px;">
-      <div class="detail-section-head"><h4 style="margin:0;">${TIER_LABELS[tier]}</h4><span class="d-sub">${list.length} families · ${list.reduce((s,h)=>s+householdPartySize(h),0)} people</span></div>
+      <div class="detail-section-head"><h4 style="margin:0;">${(dashboardData.guestTiers.find(t=>t.key===tier)||{}).label || ('Tier '+tier)}</h4><span class="d-sub">${list.length} families · ${list.reduce((s,h)=>s+householdPartySize(h),0)} people</span></div>
       ${list.length ? list.map(h=>`
         <div class="contact-row" onclick="openHouseholdDetail('${h.id}')">
           <div style="flex:1;"><div style="font-weight:600;font-size:13.5px;">${escapeHtml(h.label)}</div><div class="pc-role">${(h.categories||[]).join(', ')||'No category'} · ${householdPartySize(h)} people</div></div>
@@ -9848,30 +10265,40 @@ function renderHouseholdEventRsvpSection(h){
   const events = d.events.filter(e=>invitedIds.includes(e.id));
   if(!events.length) return '';
   const multiMember = (h.members||[]).length > 1;
+  // Tightened in v1.33.0 (was a large chip grid + paragraph per event) and moved to
+  // person-level RSVP: each member gets their own compact status select per event, since
+  // RSVP is now tracked per person, not just per household (e.g. one person can attend the
+  // Mehndi and skip the Sangeet while another in the same household does the opposite).
   return `
     <div class="detail-section" style="margin-top:14px; padding-top:14px;">
-      <div class="detail-section-head"><h4 style="margin:0;">RSVP by Event</h4><span class="d-sub">Since this wedding has multiple events, ${escapeHtml(h.label)} can RSVP separately for each</span></div>
-      ${events.map(e=>`
-        <div style="padding:10px 0; border-bottom:1px solid var(--line-soft);">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-            <div style="font-weight:600; font-size:13.5px;">${escapeHtml(e.name)}</div>
-            <select class="select-field-sm" style="width:auto;" onchange="setHouseholdEventRsvp('${h.id}','${e.id}',this.value)">
-              <option value="pending" ${getEventRsvpStatus(h,e.id)==='pending'?'selected':''}>Pending</option>
-              <option value="confirmed" ${getEventRsvpStatus(h,e.id)==='confirmed'?'selected':''}>Confirmed</option>
-              <option value="declined" ${getEventRsvpStatus(h,e.id)==='declined'?'selected':''}>Declined</option>
-            </select>
+      <div class="detail-section-head"><h4 style="margin:0;">RSVP by Event</h4><span class="d-sub">Each person's own status per event — the Overall pill above is computed from these</span></div>
+      ${events.map(e=>{
+        const rows = (h.members||[]).filter(m=>!isMemberExcludedFromEvent(h, m.id, e.id));
+        const excludedRows = multiMember ? (h.members||[]).filter(m=>isMemberExcludedFromEvent(h, m.id, e.id)) : [];
+        return `
+        <div class="rsvp-event-block">
+          <div class="rsvp-event-head">
+            <span class="rsvp-event-name">${escapeHtml(e.name)}</span>
+            ${rows.length>1 ? `<select class="select-field-sm rsvp-event-bulk" onchange="if(this.value){setHouseholdEventRsvp('${h.id}','${e.id}',this.value); this.value='';}">
+              <option value="">Set all…</option>
+              <option value="confirmed">All Confirmed</option>
+              <option value="declined">All Declined</option>
+              <option value="pending">All Pending</option>
+            </select>` : ''}
           </div>
-          ${multiMember ? `
-          <div class="chip-grid" style="margin-top:8px; gap:6px;">
-            ${(h.members||[]).map(m=>{
-              const invited = !isMemberExcludedFromEvent(h, m.id, e.id);
-              return `<span class="attach-chip" style="cursor:pointer; ${invited?'background:var(--green-tint);border-color:var(--green-mid);':'opacity:0.55;'}" title="Click to ${invited?'exclude from':'include in'} this event" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}')">${escapeHtml(memberDisplayName(m))}${invited?' ✓':' (not invited)'}</span>`;
-            }).join('')}
-          </div>
-          <p class="detail-hint" style="margin-top:4px;">Click a name to include or exclude just that person from this event — e.g. only some of a household invited to a shower.</p>
-          ` : ''}
-        </div>
-      `).join('')}
+          ${rows.map(m=>`
+            <div class="rsvp-event-row">
+              <span class="rsvp-event-member">${escapeHtml(memberDisplayName(m))}</span>
+              <select class="select-field-sm rsvp-event-select" onchange="setMemberEventRsvp('${h.id}','${m.id}','${e.id}',this.value)">
+                <option value="pending" ${getMemberEventRsvp(h,m,e.id)==='pending'?'selected':''}>Pending</option>
+                <option value="confirmed" ${getMemberEventRsvp(h,m,e.id)==='confirmed'?'selected':''}>Confirmed</option>
+                <option value="declined" ${getMemberEventRsvp(h,m,e.id)==='declined'?'selected':''}>Declined</option>
+              </select>
+              ${multiMember ? `<a href="#" class="rsvp-event-exclude" title="Not invited to this event" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">✕</a>` : ''}
+            </div>`).join('')}
+          ${excludedRows.length ? `<div class="rsvp-event-notinvited">Not invited: ${excludedRows.map(m=>`<a href="#" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">+ ${escapeHtml(memberDisplayName(m))}</a>`).join(' · ')}</div>` : ''}
+        </div>`;
+      }).join('')}
     </div>
   `;
 }
@@ -9898,16 +10325,22 @@ function renderHouseholdDetailModal(householdId){
           </select>
           `}
           <select class="select-field-sm" style="width:auto;" onchange="updateHouseholdField('${h.id}','tier',this.value)">
-            <option value="A" ${h.tier==='A'?'selected':''}>Tier A</option>
-            <option value="B" ${h.tier==='B'?'selected':''}>Tier B</option>
-            <option value="C" ${h.tier==='C'?'selected':''}>Tier C</option>
+            ${(dashboardData.guestTiers||[]).map(t=>`<option value="${escapeAttr(t.key)}" ${h.tier===t.key?'selected':''}>Tier ${escapeHtml(t.key)}</option>`).join('')}
           </select>
           <span class="d-sub">${partySize} of ${h.members.length} attending</span>
         </div>
+        <p class="tier-explain">${(dashboardData.guestTiers||[]).map(t=>`<strong>Tier ${escapeHtml(t.key)}:</strong> ${escapeHtml(t.desc||t.label)}`).join('  ·  ')} — manage tiers any time in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Settings →</span></p>
       </div>
       <div class="chip-grid" style="margin:10px 0;">
         ${categories.map(c=>`<span class="attach-chip" style="cursor:pointer; ${(h.categories||[]).includes(c)?'background:var(--green-tint);border-color:var(--green-mid);':''}" onclick="toggleHouseholdCategory('${h.id}','${escapeAttr(c)}')">${escapeHtml(c)}${(h.categories||[]).includes(c)?' ✓':''}</span>`).join('')}
+        <span class="attach-chip" style="cursor:pointer; border-style:dashed;" onclick="toggleHouseholdCategoryPrompt('${h.id}')">+ Other…</span>
       </div>
+      ${householdCategoryPromptOpen===h.id ? `
+      <div class="custom-add-row" style="margin:-4px 0 10px;">
+        <input type="text" id="newHouseholdCategoryInline" placeholder="New category name" onkeydown="if(event.key==='Enter'){submitHouseholdCategoryPrompt('${h.id}');}">
+        <button class="btn btn-outline btn-sm" onclick="submitHouseholdCategoryPrompt('${h.id}')">+ Add &amp; Apply</button>
+      </div>
+      ` : ''}
       <div class="field-grid">
         <div class="field-cell"><label>Street Address</label><input type="text" placeholder="e.g. 42 Rosewood Ave" value="${escapeAttr(addr.street)}" onchange="updateHouseholdAddressField('${h.id}','street',this.value)"></div>
         <div class="field-cell"><label>City</label><input type="text" placeholder="e.g. Toronto" value="${escapeAttr(addr.city)}" onchange="updateHouseholdAddressField('${h.id}','city',this.value)"></div>
@@ -9982,6 +10415,19 @@ function updateHouseholdAddressField(householdId, subfield, val){
   refreshGuestsBackground();
   refreshHouseholdDetail();
 }
+let householdCategoryPromptOpen = null;
+function toggleHouseholdCategoryPrompt(householdId){
+  householdCategoryPromptOpen = householdCategoryPromptOpen===householdId ? null : householdId;
+  refreshHouseholdDetail();
+}
+function submitHouseholdCategoryPrompt(householdId){
+  const el = document.getElementById('newHouseholdCategoryInline');
+  const label = (el && el.value || '').trim();
+  if(!label) return;
+  if(!dashboardData.guestCategories.includes(label)) dashboardData.guestCategories.push(label);
+  householdCategoryPromptOpen = null;
+  toggleHouseholdCategory(householdId, label);
+}
 function toggleHouseholdCategory(householdId, category){
   const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
   if(!h) return;
@@ -10024,44 +10470,10 @@ function removeFamilyMember(householdId, memberId){
   refreshGuestsBackground();
   refreshHouseholdDetail();
 }
-function addHousehold(){
-  const labelEl = document.getElementById('newHouseholdLabel');
-  const catEl = document.getElementById('newHouseholdCategory');
-  const label = (labelEl.value||'').trim();
-  if(!label) return;
-  const id = 'hh-'+Date.now().toString(36);
-  const newHousehold = {
-    id, label, categories: catEl && catEl.value ? [catEl.value] : [], tier:'A', rsvpStatus:'pending',
-    email:'', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:[],
-    eventRsvp:{}, memberEventExclusions:{}, surveyResponses:{},
-    members:[{id:id+'-m1', salutation:'', firstName:'', lastName:'', attending:true, mealChoice:'', dietaryRestrictions:'', accessibilityNeeds:'', tableId:null, relationship:'', seating:{}}]
-  };
-  (dashboardData.events||[]).forEach(ev=>{ newHousehold.eventRsvp[ev.id] = 'pending'; });
-  dashboardData.guestHouseholds.push(newHousehold);
-  // Previously this just re-rendered the background list and refocused the name field for
-  // rapid-fire adding — but the quick-add form only ever captured a name and a category, so
-  // there was no way to tell the couple *how* to add anything else (email, address, RSVP,
-  // additional members). Opening the full detail card immediately fixes that: the new record
-  // is right there, editable, the moment it's created.
-  guestAddFormOpen = false;
-  refreshGuestsBackground();
-  openHouseholdDetail(id);
-}
 function removeHousehold(householdId){
   dashboardData.guestHouseholds = dashboardData.guestHouseholds.filter(h=>h.id!==householdId);
   closeHouseholdDetail();
   refreshGuestsBackground();
-}
-function addGuestCategory(){
-  const el = document.getElementById('newCategoryLabel');
-  const label = (el.value||'').trim();
-  if(!label) return;
-  if(!dashboardData.guestCategories.includes(label)) dashboardData.guestCategories.push(label);
-  document.getElementById('content').innerHTML = renderGuestsModule();
-  const catEl = document.getElementById('newHouseholdCategory');
-  if(catEl) catEl.value = label;
-  const labelEl = document.getElementById('newHouseholdLabel');
-  if(labelEl) labelEl.focus();
 }
 function renameGuestCategory(oldLabel, newLabel){
   newLabel = (newLabel||'').trim();
@@ -10092,6 +10504,33 @@ function addGuestCategoryFromSettings(){
   if(!dashboardData.guestCategories.includes(label)) dashboardData.guestCategories.push(label);
   document.getElementById('content').innerHTML = renderSettingsModule();
 }
+function updateGuestTierLabel(key, newLabel){
+  const t = (dashboardData.guestTiers||[]).find(x=>x.key===key);
+  if(t) t.label = (newLabel||'').trim() || t.label;
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function removeGuestTier(key){
+  const d = dashboardData;
+  if(!Array.isArray(d.guestTiers) || d.guestTiers.length<=1) return; // always keep at least one tier
+  d.guestTiers = d.guestTiers.filter(t=>t.key!==key);
+  const fallback = d.guestTiers[0].key;
+  (d.guestHouseholds||[]).forEach(h=>{ if(h.tier===key) h.tier = fallback; });
+  if(guestsFilterTier===key) guestsFilterTier = 'all';
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function addGuestTier(){
+  const el = document.getElementById('newGuestTierLabel');
+  const label = (el.value||'').trim();
+  if(!label) return;
+  const d = dashboardData;
+  if(!Array.isArray(d.guestTiers)) d.guestTiers = [];
+  const usedKeys = new Set(d.guestTiers.map(t=>t.key));
+  let key = null;
+  for(let i=0;i<26;i++){ const cand = String.fromCharCode(65+i); if(!usedKeys.has(cand)){ key = cand; break; } }
+  if(!key) key = 'tier-'+Date.now().toString(36);
+  d.guestTiers.push({key, label, desc:''});
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
 /* ---- RSVP Surveys (chunk 3 of the Guest Management & RSVP redesign) ----
    A survey lives in Guest Management; assigning it to a specific event lets the
    couple send different surveys at different points (e.g. one for the shower,
@@ -10104,8 +10543,12 @@ function toggleSurveyBuilder(id){
   surveyBuilderOpenId = surveyBuilderOpenId===id ? null : id;
   document.getElementById('content').innerHTML = renderGuestsModule();
 }
+const DEFAULT_SURVEY_MESSAGE = "We can't wait to celebrate with you! Please RSVP below and let us know if you'll be able to join us. If anything changes or you have questions, just reach out — we're so glad you're part of this.";
 function addRsvpSurvey(){
-  const s = {id:'survey-'+Date.now().toString(36), name:'New Survey', eventId:null, active:true, sentLog:[], questions:[]};
+  const s = {
+    id:'survey-'+Date.now().toString(36), name:'New Survey', eventId:null, active:true, sentLog:[], questions:[],
+    rsvpComponent:true, includeEventDateTime:true, messageHtml: DEFAULT_SURVEY_MESSAGE, logoEnabled:false, fromEmail:''
+  };
   dashboardData.rsvpSurveys.push(s);
   surveyBuilderOpenId = s.id;
   document.getElementById('content').innerHTML = renderGuestsModule();
@@ -10114,6 +10557,12 @@ function updateSurveyField(id, field, val){
   const s = dashboardData.rsvpSurveys.find(x=>x.id===id);
   if(!s) return;
   s[field] = field==='eventId' ? (val || null) : val;
+  refreshGuestsBackground();
+}
+function toggleSurveyBoolField(id, field){
+  const s = dashboardData.rsvpSurveys.find(x=>x.id===id);
+  if(!s) return;
+  s[field] = !s[field];
   refreshGuestsBackground();
 }
 function removeRsvpSurvey(id){
@@ -10187,6 +10636,7 @@ function renderSurveyRow(s){
 }
 function renderSurveyEditor(s){
   const d = dashboardData;
+  const hasLogo = !!d.coupleLogo;
   return `
     <div style="margin-top:10px; padding:12px; background:var(--ivory-deep); border-radius:var(--radius-sm);">
       <div class="field-grid">
@@ -10197,11 +10647,23 @@ function renderSurveyEditor(s){
             ${d.events.map(e=>`<option value="${e.id}" ${s.eventId===e.id?'selected':''}>${escapeHtml(e.name)}</option>`).join('')}
           </select>
         </div>
+        <div class="field-cell"><label>Sends From (email)</label><input type="text" placeholder="e.g. natasha.matteo@evera.wedding" value="${escapeAttr(s.fromEmail||'')}" onchange="updateSurveyField('${s.id}','fromEmail',this.value)"></div>
       </div>
-      <div style="margin-top:10px;">
+      <div class="detail-section" style="margin-top:12px; padding-top:12px;">
+        <label style="font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--green-deep);">Your Message</label>
+        <p class="detail-hint" style="margin-top:2px;">A sample is filled in below — write your own, or keep it and just edit the details.</p>
+        ${renderRichNotesEditor('surveyMessage:'+s.id, s.messageHtml!==undefined ? s.messageHtml : DEFAULT_SURVEY_MESSAGE)}
+      </div>
+      <div style="display:flex; gap:16px; align-items:center; margin-top:12px; flex-wrap:wrap;">
+        <label style="display:flex; align-items:center; gap:6px; font-size:12.5px;"><input type="checkbox" ${s.rsvpComponent!==false?'checked':''} onchange="toggleSurveyBoolField('${s.id}','rsvpComponent')"> Include an RSVP component</label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:12.5px;"><input type="checkbox" ${s.includeEventDateTime!==false?'checked':''} onchange="toggleSurveyBoolField('${s.id}','includeEventDateTime')"> Show event date &amp; time</label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:12.5px;" title="${hasLogo?'':'Design a logo on My Wedding Blueprint first'}"><input type="checkbox" ${s.logoEnabled?'checked':''} ${hasLogo?'':'disabled'} onchange="toggleSurveyBoolField('${s.id}','logoEnabled')"> Embed our logo${hasLogo?'':' (no logo designed yet)'}</label>
+      </div>
+      <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--line-soft);">
+        <label style="font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--green-deep);">Questions</label>
         ${s.questions.map(q=>renderSurveyQuestionRow(s.id,q)).join('')}
+        <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addSurveyQuestion('${s.id}')">+ Add Question</button>
       </div>
-      <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addSurveyQuestion('${s.id}')">+ Add Question</button>
       <div style="display:flex; gap:14px; align-items:center; margin-top:14px; padding-top:12px; border-top:1px solid var(--line-soft); flex-wrap:wrap;">
         <label style="display:flex; align-items:center; gap:6px; font-size:13px;"><input type="checkbox" ${s.active?'checked':''} onchange="toggleSurveyActive('${s.id}')"> Active</label>
         <button class="btn btn-outline btn-sm" onclick="sendSurveySimulated('${s.id}')">📨 Send to Invited Guests</button>
@@ -10209,6 +10671,14 @@ function renderSurveyEditor(s){
       </div>
       ${s.sentLog.length ? `<p class="d-sub" style="margin-top:6px;">Sent ${s.sentLog.length} time${s.sentLog.length===1?'':'s'} — most recently ${new Date(s.sentLog[s.sentLog.length-1].sentAt).toLocaleDateString()}. This logs a simulated send (same as the Website's photo-notify button) — no real email or text goes out yet.</p>` : ''}
     </div>
+  `;
+}
+function renderGuestSurveyTab(){
+  return `
+    <div class="module-header">
+      <div class="mh-copy"><p style="margin-top:0;">Build your RSVP experience per event — your own message (with a sample to start from), an RSVP component, event date &amp; time, your logo, and the email address it sends from.</p></div>
+    </div>
+    ${renderSurveyBuilderCard()}
   `;
 }
 function renderSurveyQuestionRow(surveyId, q){
@@ -10561,9 +11031,8 @@ function renderEventsList(){
   return `
     <div class="module-header">
       <div class="mh-copy"><p style="margin-top:0;">Every event in your wedding is its own workspace — its own timing, location, vendors and guest count.</p></div>
-      <button class="btn btn-solid btn-sm" onclick="toggleAddEvent(true)">+ Add Event</button>
+      <button class="btn btn-solid btn-sm" onclick="openEventAddModal()">+ Add Event</button>
     </div>
-    ${addingEvent ? renderAddEventForm() : ''}
     ${events.length ? `
     <div class="party-summary-strip">
       <div class="ps-stat"><div class="ps-num">${events.length}</div><div class="ps-label">Events</div></div>
@@ -10585,47 +11054,106 @@ function renderEventsList(){
     </div>`}
   `;
 }
-function toggleAddEvent(open){
-  addingEvent = open;
-  document.getElementById('content').innerHTML = renderEventsModule();
-  if(open) document.getElementById('addEventCustom')?.focus();
+/* ---- Add Event modal (v1.33.0) — mirrors the Add Vendor pop-up modal pattern rather than
+   the old inline card, so every event-related field (not just a name) can be set up front,
+   including which guests this event is for and when invites are planned to go out. ---- */
+function openEventAddModal(){
+  eventAddFormOpen = true;
+  document.getElementById('eventAddOverlay').innerHTML = renderEventAddModal();
+  document.getElementById('eventAddOverlay').classList.add('open');
 }
-function renderAddEventForm(){
+function closeEventAddModal(){
+  eventAddFormOpen = false;
+  document.getElementById('eventAddOverlay').classList.remove('open');
+}
+function toggleEventAddGuestMode(mode){
+  const box = document.getElementById('eventAddGuestPicker');
+  if(box) box.style.display = mode==='specific' ? 'block' : 'none';
+}
+function renderEventAddModal(){
+  if(!eventAddFormOpen) return '';
   const d = dashboardData;
   const existing = new Set(d.events.map(e=>e.name));
+  const households = d.guestHouseholds||[];
   return `
-    <div class="card" id="addEventCard">
-      <div class="card-head"><h4>Add an Event</h4><span class="ch-link" style="cursor:pointer;" onclick="toggleAddEvent(false)">Cancel</span></div>
-      <div class="custom-add-row">
-        <select id="addEventSelect" class="select-field">
-          <option value="">Choose a common event…</option>
-          ${EVENT_CATALOG.map(g=>{
-            const opts = g.events.filter(e=>!existing.has(e));
-            return opts.length ? `<optgroup label="${g.group}">${opts.map(e=>`<option value="${e}">${e}</option>`).join('')}</optgroup>` : '';
-          }).join('')}
-        </select>
+    <div class="item-modal item-modal-lg">
+      <button class="im-close" onclick="closeEventAddModal()">✕</button>
+      <div class="eyebrow">New Event</div>
+      <h3 style="margin-top:4px;">Add an Event</h3>
+      <p class="detail-hint" style="margin-top:-4px;">Fill in what you know now — everything here can be changed later from the event's own page.</p>
+      <div class="field-grid" style="margin-top:14px;">
+        <div class="field-cell"><label>Event</label>
+          <select id="newEvSelect">
+            <option value="">Choose a common event…</option>
+            ${EVENT_CATALOG.map(g=>{
+              const opts = g.events.filter(e=>!existing.has(e));
+              return opts.length ? `<optgroup label="${g.group}">${opts.map(e=>`<option value="${e}">${e}</option>`).join('')}</optgroup>` : '';
+            }).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>…or a custom name</label><input type="text" id="newEvCustom" placeholder="e.g. Farewell Brunch"></div>
+        <div class="field-cell"><label>Date</label><input type="date" id="newEvDate"></div>
+        <div class="field-cell"><label>Start Time</label><input type="text" id="newEvStart" placeholder="e.g. 4:00 PM"></div>
+        <div class="field-cell"><label>End Time</label><input type="text" id="newEvEnd" placeholder="e.g. 4:30 PM"></div>
+        <div class="field-cell"><label>Location</label><input type="text" id="newEvLocation" placeholder="Venue or address"></div>
+        <div class="field-cell"><label>Guest Count (Estimate)</label><input type="number" min="0" id="newEvGuestCount" placeholder="0"></div>
+        <div class="field-cell"><label>Dress Code</label>
+          <select id="newEvDressCode">
+            <option value="">— Not set —</option>
+            ${DRESS_CODE_OPTIONS.filter(o=>o.value!=='__custom__').map(o=>`<option value="${escapeAttr(o.value)}">${escapeHtml(o.value)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>Planned Invite Send Date (optional)</label><input type="date" id="newEvInviteDate"></div>
       </div>
-      <div class="custom-add-row" style="margin-top:12px;">
-        <input type="text" id="addEventCustom" placeholder="…or type a custom event name">
-        <button class="btn btn-outline btn-sm" onclick="submitAddEvent()">+ Add Event</button>
+      <div class="detail-section" style="margin-top:14px; padding-top:14px;">
+        <label style="font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--green-deep);">Who's this event for?</label>
+        <div style="display:flex; gap:16px; margin-top:8px; flex-wrap:wrap;">
+          <label style="display:flex; align-items:center; gap:6px; font-size:13px;"><input type="radio" name="newEvGuestMode" value="everyone" checked onchange="toggleEventAddGuestMode('everyone')"> Everyone on my guest list</label>
+          <label style="display:flex; align-items:center; gap:6px; font-size:13px;"><input type="radio" name="newEvGuestMode" value="specific" onchange="toggleEventAddGuestMode('specific')"> Select specific guests — e.g. a shower or small gathering</label>
+        </div>
+        <div id="eventAddGuestPicker" style="display:none; margin-top:10px;">
+          ${households.length ? `
+          <div class="chip-grid" style="gap:5px;">
+            ${households.map(h=>`<label style="display:inline-flex; align-items:center; gap:5px; font-size:12px; background:var(--ivory-deep); padding:4px 9px; border-radius:999px;"><input type="checkbox" class="newEvHousehold" value="${h.id}"> ${escapeHtml(h.label)}</label>`).join('')}
+          </div>
+          <p class="detail-hint">Only checked families/guests will be invited to this event — you can change this any time from the event's own page.</p>
+          ` : `<p class="detail-hint">Add families to your guest list first, then come back here to pick who's invited.</p>`}
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+        <button class="btn btn-outline btn-sm" onclick="closeEventAddModal()">Cancel</button>
+        <button class="btn btn-solid btn-sm" onclick="submitEventAddModal()">+ Add Event</button>
       </div>
     </div>
   `;
 }
-function submitAddEvent(){
-  const sel = document.getElementById('addEventSelect');
-  const custom = document.getElementById('addEventCustom');
-  const name = (custom.value||'').trim() || sel.value;
-  if(!name) return;
+function submitEventAddModal(){
+  const selEl = document.getElementById('newEvSelect');
+  const customEl = document.getElementById('newEvCustom');
+  const name = (customEl.value||'').trim() || selEl.value;
+  if(!name){ customEl.focus(); return; }
   const d = dashboardData;
   if(d.events.some(e=>e.name.toLowerCase()===name.toLowerCase())) return;
+  const dateEl = document.getElementById('newEvDate');
+  const startEl = document.getElementById('newEvStart');
+  const endEl = document.getElementById('newEvEnd');
+  const locEl = document.getElementById('newEvLocation');
+  const guestCountEl = document.getElementById('newEvGuestCount');
+  const dressEl = document.getElementById('newEvDressCode');
+  const inviteDateEl = document.getElementById('newEvInviteDate');
+  const guestMode = (document.querySelector('input[name="newEvGuestMode"]:checked')||{}).value || 'everyone';
+  const dateISO = dateEl.value || null;
   const id = 'ev-' + name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '-' + Math.random().toString(36).slice(2,6);
+  let limitedGuestHouseholdIds = null;
+  if(guestMode==='specific') limitedGuestHouseholdIds = Array.from(document.querySelectorAll('.newEvHousehold:checked')).map(el=>el.value);
   d.events.push({
-    id, name, date:'Date TBD', dateISO:null, startTime:'', endTime:'', accessTime:'', location:'', status:'planning',
-    guestCount: d.guestCount || 0, notes:'', dressCode:'', description:'', specialRituals:'', rsvpDeadlineISO:'',
+    id, name, date: dateISO ? shortDateLabel(dateISO) : 'Date TBD', dateISO, startTime:(startEl.value||'').trim(), endTime:(endEl.value||'').trim(), accessTime:'', location:(locEl.value||'').trim(), status:'planning',
+    guestCount: Number(guestCountEl.value)||d.guestCount||0, notes:'', dressCode: dressEl.value||'', description:'', specialRituals:'', rsvpDeadlineISO: dateISO ? addDaysISO(dateISO,-30) : '',
+    limitedGuestHouseholdIds, inviteSendDateISO: inviteDateEl.value||'', inviteSentLog:[], venueCapacity:null, mealCollectionMode:'ask',
+    colorPalette:[], budgetTarget:null, publicVisibility:true,
     vendorCategories: EVENT_VENDOR_MAP[name] ? [EVENT_VENDOR_MAP[name]] : []
   });
-  addingEvent = false;
+  closeEventAddModal();
   document.getElementById('content').innerHTML = renderEventsModule();
 }
 function openEventDetail(id){
@@ -10659,7 +11187,7 @@ function renderEventDetail(id){
     <div class="card" style="padding:20px 22px;">
       <div class="card-head" style="margin-bottom:14px;"><h4>Details</h4></div>
       <div class="field-grid">
-        <div class="field-cell"><label>Date</label><input type="text" value="${escapeAttr(e.date)}" onchange="updateEventField('${e.id}','date',this.value)"></div>
+        <div class="field-cell"><label>Date</label><input type="date" value="${e.dateISO||''}" onchange="updateEventField('${e.id}','dateISO',this.value)"></div>
         <div class="field-cell"><label>Start Time</label><input type="text" value="${escapeAttr(e.startTime||'')}" placeholder="e.g. 4:00 PM" onchange="updateEventField('${e.id}','startTime',this.value)"></div>
         <div class="field-cell"><label>End Time</label><input type="text" value="${escapeAttr(e.endTime||'')}" placeholder="e.g. 4:30 PM" onchange="updateEventField('${e.id}','endTime',this.value)"></div>
         <div class="field-cell"><label>Venue Access Time</label><input type="text" value="${escapeAttr(e.accessTime||'')}" placeholder="e.g. 1:30 PM for setup" onchange="updateEventField('${e.id}','accessTime',this.value)"></div>
@@ -10697,6 +11225,14 @@ function renderEventDetail(id){
         <div class="card-head" style="margin-bottom:12px;"><h4>About This Event</h4></div>
         <div class="field-cell" style="margin-bottom:14px;"><label>Description</label><textarea class="notes-field notes-field-sm" onchange="updateEventField('${e.id}','description',this.value)" placeholder="What is this event, for guests or vendors reading about it…">${escapeAttr(e.description||'')}</textarea></div>
         <div class="field-cell"><label>Special Rituals</label><textarea class="notes-field notes-field-sm" onchange="updateEventField('${e.id}','specialRituals',this.value)" placeholder="Any cultural or religious rituals happening at this event…">${escapeAttr(e.specialRituals||'')}</textarea></div>
+        <div class="field-cell" style="margin-top:14px;"><label>Meal Collection</label>
+          <select onchange="updateEventField('${e.id}','mealCollectionMode',this.value)">
+            <option value="ask" ${!e.mealCollectionMode||e.mealCollectionMode==='ask'?'selected':''}>Ask each guest to choose</option>
+            <option value="family-style" ${e.mealCollectionMode==='family-style'?'selected':''}>Family-style — no per-guest choice needed</option>
+            <option value="buffet" ${e.mealCollectionMode==='buffet'?'selected':''}>Buffet — no per-guest choice needed</option>
+          </select>
+          <p class="detail-hint">Dietary restrictions are collected once per guest on their profile, not repeated for every event.</p>
+        </div>
       </div>
       <div class="card" style="padding:20px 22px;">
         <div class="card-head" style="margin-bottom:12px;"><h4>Planning Notes</h4></div>
@@ -10710,10 +11246,7 @@ function renderEventDetail(id){
         ${linkedVendorBookings.length ? linkedVendorBookings.map(vb=>`<div class="event-mini-row" style="cursor:pointer;" onclick="renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${vb.id}'),0);"><div><div class="em-name">${escapeHtml(vb.category)}${vb.role?` — ${escapeHtml(vb.role)}`:''}</div><div class="em-date">${escapeHtml(vb.vendorName||'—')}</div></div>${statusPill(vb.status)}</div>`).join('') : (linkedVendors.length ? linkedVendors.map(v=>`<div class="event-mini-row"><div><div class="em-name">${escapeHtml(v.category)}</div><div class="em-date">${escapeHtml(v.name)}</div></div>${statusPill(v.status)}</div>`).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">No vendors linked to this event yet.</p>')}
         ${linkedVendorBookings.length && (e.vendorCategories||[]).length>1 ? `<p class="detail-hint">Some categories can have a different vendor for a different day — set that per booking's "Which events does this vendor cover?" field in My Vendor Team.</p>` : ''}
       </div>
-      <div class="card">
-        <div class="card-head"><h4>Wedding Party Attending</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('wedding-party')">Wedding Party Hub</span></div>
-        ${linkedParty.length ? linkedParty.map(m=>`<div class="event-mini-row"><div><div class="em-name">${m.name}</div><div class="em-date">${m.role}</div></div></div>`).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">No wedding party members assigned to this event yet.</p>'}
-      </div>
+      ${renderEventGuestsCard(e)}
     </div>
 
     <div class="card">
@@ -10731,10 +11264,15 @@ function toggleEventStatus(id){
   e.status = e.status==='booked' ? 'planning' : 'booked';
   document.getElementById('content').innerHTML = renderEventsModule();
 }
+function shortDateLabel(iso){
+  if(!iso) return 'Date TBD';
+  return new Date(iso+'T12:00:00').toLocaleDateString('en-US',{weekday:'short', month:'short', day:'numeric'});
+}
 function updateEventField(id, field, value){
   const e = dashboardData.events.find(x=>x.id===id);
   if(!e) return;
   e[field] = value;
+  if(field==='dateISO') e.date = value ? shortDateLabel(value) : 'Date TBD';
   if(currentRouteKey==='events' && selectedEventId===id) document.getElementById('content').innerHTML = renderEventDetail(id);
 }
 function eventGuestStats(e){
@@ -10942,8 +11480,30 @@ function escapeAttr(s){
    BUDGET
 ================================================================== */
 const BUDGET_COLORS = ['#38473B','#C7A467','#CBB2A6','#4C6355','#A8834A','#8B8577','#B5793A','#AE5B41','#E7DFCF','#6B4E3D','#7A8B76','#D4A574'];
-function categoryPlanned(cat){ return (cat.items||[]).reduce((s,i)=>s+i.planned,0); }
-function categorySpent(cat){ return (cat.items||[]).reduce((s,i)=>s+i.spent,0); }
+/* ---- Vendor↔Budget sync (new, Sep 2026): Natasha's explicit call — "vendor is the source of
+   truth." Once a real Vendor Team booking is linked to a Budget line item (vb.linkedBudgetItemId),
+   that vendor's own Cost and booking status drive the item's effective planned/committed amounts
+   everywhere in Budget, rather than the two being tracked (and drifting) independently. The item's
+   own planned/spent fields stay in the data model as a fallback for items with no real vendor
+   linked yet, and as history if the vendor link is ever removed. */
+function vendorBookingForBudgetItem(itemId){
+  if(!itemId) return null;
+  return (dashboardData.vendorBookings||[]).find(vb=>vb.linkedBudgetItemId===itemId) || null;
+}
+function isVendorCommitted(vb){
+  return vb.status==='booked' || vb.contractStatus==='signed';
+}
+function effectiveItemPlanned(item){
+  const vb = vendorBookingForBudgetItem(item.id);
+  return vb ? (vb.cost||0) : item.planned;
+}
+function effectiveItemSpent(item){
+  const vb = vendorBookingForBudgetItem(item.id);
+  if(vb) return isVendorCommitted(vb) ? (vb.cost||0) : 0;
+  return item.spent;
+}
+function categoryPlanned(cat){ return (cat.items||[]).reduce((s,i)=>s+effectiveItemPlanned(i),0); }
+function categorySpent(cat){ return (cat.items||[]).reduce((s,i)=>s+effectiveItemSpent(i),0); }
 function vendorStatusFor(category){
   const v = (dashboardData.vendors||[]).find(v=>v.category===category);
   return v ? v.status : null;
@@ -11015,18 +11575,17 @@ function renderBudgetOverviewTab(){
         </div>
       </div>
     ` : ''}
-    <div class="party-summary-strip">
-      <div class="ps-stat">
-        <div class="ps-label" style="margin-bottom:4px;">Total Budget</div>
-        <input type="number" min="0" class="budget-total-input" value="${d.budgetTotal||0}" onchange="updateBudgetTotal(this.value)">
-      </div>
-      <div class="ps-stat"><div class="ps-num">${fmtMoney(totalPlanned)}</div><div class="ps-label">Planned</div></div>
-      <div class="ps-stat"><div class="ps-num">${fmtMoney(totalSpent)}</div><div class="ps-label">Committed / Paid</div></div>
-      <div class="ps-stat"><div class="ps-num" style="${(d.budgetTotal-totalPlanned)<0?'color:var(--terracotta);':''}">${fmtMoney(d.budgetTotal-totalPlanned)}</div><div class="ps-label">Unallocated</div></div>
-    </div>
-
-    <div class="card">
+    <div class="card budget-hero-card">
       <div class="card-head"><h4>Budget Breakdown &amp; Pace</h4></div>
+      <div class="party-summary-strip budget-stat-strip">
+        <div class="ps-stat">
+          <div class="ps-label" style="margin-bottom:4px;">Total Budget</div>
+          <input type="number" min="0" class="budget-total-input" value="${d.budgetTotal||0}" onchange="updateBudgetTotal(this.value)">
+        </div>
+        <div class="ps-stat"><div class="ps-num">${fmtMoney(totalPlanned)}</div><div class="ps-label">Planned</div></div>
+        <div class="ps-stat"><div class="ps-num">${fmtMoney(totalSpent)}</div><div class="ps-label">Committed / Paid</div></div>
+        <div class="ps-stat"><div class="ps-num" style="${(d.budgetTotal-totalPlanned)<0?'color:var(--terracotta);':''}">${fmtMoney(d.budgetTotal-totalPlanned)}</div><div class="ps-label">Unallocated</div></div>
+      </div>
       <div class="bp-split">
         <div>
           <div class="bp-col-head">Allocation by Category</div>
@@ -11072,8 +11631,9 @@ function renderBudgetOverviewTab(){
         </div>
       </div>
       <div class="chip-grid" style="margin:0 0 12px;">
-        <button class="btn btn-outline btn-sm" onclick="toggleBudgetItemQuickAdd()">${budgetItemQuickAddOpen ? 'Cancel' : '+ Add Line Item'}</button>
+        <button class="btn btn-outline btn-sm" onclick="toggleBudgetItemQuickAdd()">${budgetItemQuickAddOpen ? 'Cancel' : '+ Add Budget Item'}</button>
         <button class="btn btn-outline btn-sm" onclick="toggleBudgetCategoryAdd()">${budgetCategoryAddOpen ? 'Cancel' : '+ New Category'}</button>
+        <button class="btn btn-outline btn-sm" onclick="printBudgetExport()">🖶 Export Budget</button>
       </div>
       ${budgetItemQuickAddOpen ? renderBudgetItemQuickAddRow() : ''}
       ${budgetCategoryAddOpen ? renderBudgetCategoryAddRow() : ''}
@@ -11088,20 +11648,21 @@ function eventBudgetSummary(){
   const unassigned = {id:null, name:'Unallocated / Shared', dateISO:null, planned:0, spent:0, items:[]};
   d.budgetBreakdown.forEach((cat,ci)=>{
     (cat.items||[]).forEach((it,ii)=>{
+      const ePlanned = effectiveItemPlanned(it), eSpent = effectiveItemSpent(it);
       if(it.multiEvent && (it.eventAllocations||[]).length){
         const totalHours = it.eventAllocations.reduce((s,a)=>s+(a.hours||0),0);
         it.eventAllocations.forEach(alloc=>{
           const bucket = alloc.eventId && buckets.has(alloc.eventId) ? buckets.get(alloc.eventId) : unassigned;
           const share = totalHours ? (alloc.hours||0)/totalHours : 0;
-          bucket.planned += it.planned*share;
-          bucket.spent += it.spent*share;
-          bucket.items.push(Object.assign({}, it, {ci, ii, categoryName:cat.category, categoryColor:cat.color, planned: it.planned*share, spent: it.spent*share, shareLabel: `${alloc.hours||0} of ${it.contractedHours||totalHours} contracted hrs`}));
+          bucket.planned += ePlanned*share;
+          bucket.spent += eSpent*share;
+          bucket.items.push(Object.assign({}, it, {ci, ii, categoryName:cat.category, categoryColor:cat.color, planned: ePlanned*share, spent: eSpent*share, shareLabel: `${alloc.hours||0} of ${it.contractedHours||totalHours} contracted hrs`}));
         });
       } else {
         const bucket = it.eventId && buckets.has(it.eventId) ? buckets.get(it.eventId) : unassigned;
-        bucket.planned += it.planned;
-        bucket.spent += it.spent;
-        bucket.items.push(Object.assign({ci, ii, categoryName:cat.category, categoryColor:cat.color}, it));
+        bucket.planned += ePlanned;
+        bucket.spent += eSpent;
+        bucket.items.push(Object.assign({ci, ii, categoryName:cat.category, categoryColor:cat.color}, it, {planned: ePlanned, spent: eSpent}));
       }
     });
   });
@@ -11122,18 +11683,23 @@ function renderBudgetByEvent(){
         <span class="bc-name">${escapeHtml(g.name)}</span>
         ${g.dateISO ? `<span class="d-sub" style="margin-left:8px;">${escapeHtml(fmtDateLabel(g.dateISO))}</span>` : ''}
         ${over ? '<span class="pill pill-alert">Over Budget</span>' : (g.spent>0 ? '<span class="pill pill-ok">On Track</span>' : '<span class="pill pill-neutral">Not Started</span>')}
-        <span class="bc-summary">${fmtMoney(g.spent)} / ${fmtMoney(g.planned)}${target ? ` <span class="d-sub">(target ${fmtMoney(target)})</span>` : ''}</span>
+        <span class="bc-summary">${fmtMoney(g.spent)} / ${fmtMoney(g.planned)}</span>
+        ${eventRecord ? `<span class="d-sub" style="display:inline-flex; align-items:center; gap:4px;">target $<input type="number" min="0" class="select-field-sm" style="width:80px;" value="${target!==null&&target!==undefined?target:''}" placeholder="—" onchange="updateEventBudgetTarget('${eventRecord.id}',this.value)"></span>` : ''}
       </div>
       <div class="budget-items">
         <div class="budget-items-head"><span>Item</span><span>Category</span><span>Planned</span><span>Spent</span><span>Vendor</span></div>
-        ${g.items.map(it=>`
+        ${g.items.map(it=>{
+          const linkedVb = vendorBookingForBudgetItem(it.id);
+          const vendorBit = linkedVb ? (linkedVb.vendorName || linkedVb.category) : (it.vendorName || it.vendorCategory || '—');
+          return `
           <div class="budget-item-row" style="grid-template-columns: 1.6fr 1.2fr 0.9fr 0.9fr 1.2fr; cursor:pointer;" onclick="openBudgetItemDetail(${it.ci},${it.ii})">
             <span class="readonly-cell">${escapeHtml(it.name)}${it.shareLabel?`<span class="d-sub" style="margin-left:6px;">(${it.shareLabel})</span>`:''}</span>
             <span class="d-sub"><span class="legend-dot" style="background:${it.categoryColor};margin-right:6px;"></span>${escapeHtml(it.categoryName)}</span>
             <span>${fmtMoney(it.planned)}</span>
             <span>${fmtMoney(it.spent)}</span>
-            <span class="d-sub">${escapeHtml(it.vendorName || it.vendorCategory || '—')}</span>
-          </div>`).join('')}
+            <span class="d-sub">${linkedVb ? '🔗 ' : ''}${escapeHtml(vendorBit)}</span>
+          </div>`;
+        }).join('')}
       </div>
     </div>`;
   }).join('');
@@ -11141,6 +11707,47 @@ function renderBudgetByEvent(){
 function budgetVendorOptions(){
   const d = dashboardData;
   return d.vendorCategoriesSuggested && d.vendorCategoriesSuggested.length ? d.vendorCategoriesSuggested : Array.from(new Set((d.vendors||[]).map(v=>v.category)));
+}
+/* ---- Budget export (new, Sep 2026) — a styled, printable summary of the whole Master Budget,
+   reusing the app's existing #printArea / body.printing mechanism (same pattern as the Seating
+   Chart floor plan and the Playbook exports), so "Save as PDF" comes from the browser's own
+   print dialog. Reuses the .pb-export-* print typography already built for Playbook exports. */
+function renderBudgetExportDocument(){
+  const d = dashboardData;
+  const cats = d.budgetBreakdown;
+  const totalPlanned = cats.reduce((s,c)=>s+categoryPlanned(c),0);
+  const totalSpent = cats.reduce((s,c)=>s+categorySpent(c),0);
+  return `
+    <div class="pb-export-header">
+      <div class="pb-export-brand">Evera</div>
+      <div class="pb-export-title">Wedding Budget</div>
+      <div class="pb-export-sub">${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} · ${escapeHtml(d.weddingDateLabel||'')}</div>
+    </div>
+    <div class="pb-export-contact-grid" style="margin-top:10px;">
+      <div class="pb-export-contact-row"><span>Total Budget</span><span>${fmtMoney(d.budgetTotal||0)}</span></div>
+      <div class="pb-export-contact-row"><span>Planned</span><span>${fmtMoney(totalPlanned)}</span></div>
+      <div class="pb-export-contact-row"><span>Committed / Paid</span><span>${fmtMoney(totalSpent)}</span></div>
+      <div class="pb-export-contact-row"><span>Unallocated</span><span>${fmtMoney((d.budgetTotal||0)-totalPlanned)}</span></div>
+    </div>
+    ${cats.map(c=>{
+      const planned = categoryPlanned(c), spent = categorySpent(c);
+      return `
+      <div class="pb-export-section-title">${escapeHtml(c.category)} — ${fmtMoney(spent)} / ${fmtMoney(planned)}</div>
+      ${(c.items||[]).length ? (c.items||[]).map(it=>{
+        const linkedVb = vendorBookingForBudgetItem(it.id);
+        const vendorBit = linkedVb ? (linkedVb.vendorName||linkedVb.category) : (it.vendorName || it.vendorCategory || '—');
+        return `<div class="pb-export-contact-row"><span>${escapeHtml(it.name)}${linkedVb?' 🔗':''} <span style="color:var(--charcoal-faint);">(${escapeHtml(vendorBit)})</span></span><span>${fmtMoney(effectiveItemSpent(it))} / ${fmtMoney(effectiveItemPlanned(it))}</span></div>`;
+      }).join('') : '<p class="d-sub">No line items yet.</p>'}
+      `;
+    }).join('')}
+    <div class="pb-export-foot">Generated by Evera · ${escapeHtml(fmtDateLabel(isoFromDate(new Date())))}</div>
+  `;
+}
+function printBudgetExport(){
+  document.getElementById('printArea').innerHTML = `<div class="pb-export-doc pb-export-print">${renderBudgetExportDocument()}</div>`;
+  document.body.classList.add('printing');
+  window.print();
+  setTimeout(()=>{ document.body.classList.remove('printing'); }, 800);
 }
 function toggleAllBudgetCategories(){
   const cats = dashboardData.budgetBreakdown;
@@ -11175,25 +11782,21 @@ function renderBudgetCategories(){
         <div class="budget-items-head"><span>Item</span><span>Planned</span><span>Spent</span><span>Vendor / Next Payment</span><span></span></div>
         ${(c.items||[]).map((it,ii)=>{
           const nextDue = (it.paymentSchedule||[]).filter(p=>!p.paid && p.dueDateISO).sort((a,b)=> new Date(a.dueDateISO)-new Date(b.dueDateISO))[0];
-          const vendorBit = it.vendorName || it.vendorCategory || 'No vendor yet';
+          const linkedVb = vendorBookingForBudgetItem(it.id);
+          const vendorBit = linkedVb ? (linkedVb.vendorName || linkedVb.category) : (it.vendorName || it.vendorCategory || 'No vendor yet');
           const eventBit = it.multiEvent ? `${(it.eventAllocations||[]).length} events` : (it.eventId ? (d.events.find(e=>e.id===it.eventId)||{}).name : null);
           return `
           <div class="budget-item-row budget-item-row-clean" onclick="openBudgetItemDetail(${ci},${ii})">
             <span class="readonly-cell">${escapeHtml(it.name)}</span>
-            <span>${fmtMoney(it.planned)}</span>
-            <span>${fmtMoney(it.spent)}</span>
+            <span>${fmtMoney(effectiveItemPlanned(it))}</span>
+            <span>${fmtMoney(effectiveItemSpent(it))}</span>
             <span class="bi-meta">
-              <span class="d-sub">${escapeHtml(vendorBit)}${eventBit?` · ${escapeHtml(eventBit)}`:''}</span>
+              <span class="d-sub">${linkedVb ? '🔗 ' : ''}${escapeHtml(vendorBit)}${eventBit?` · ${escapeHtml(eventBit)}`:''}</span>
               ${nextDue?`<span class="bi-due">Due ${fmtDateLabel(nextDue.dueDateISO)} · ${fmtMoney(nextDue.amount)}</span>`:''}
             </span>
             <span class="cr-chevron-wrap"><svg class="icon cr-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></span>
           </div>`;
         }).join('')}
-        <div class="custom-add-row" style="margin-top:10px;">
-          <input type="text" id="newItemName-${ci}" placeholder="New line item name">
-          <input type="number" min="0" id="newItemPlanned-${ci}" placeholder="Planned" style="max-width:120px;">
-          <button class="btn btn-outline btn-sm" onclick="addBudgetItem(${ci})">+ Add Item</button>
-        </div>
       </div>`}
     </div>`;
   }).join('');
@@ -11224,15 +11827,6 @@ function updateBudgetItem(ci, ii, field, val){
   else item[field] = (val===''||val===undefined) ? null : val;
   refreshBudgetBackground();
   refreshBudgetItemDetail();
-}
-function addBudgetItem(ci){
-  const nameEl = document.getElementById('newItemName-'+ci);
-  const plannedEl = document.getElementById('newItemPlanned-'+ci);
-  const name = (nameEl.value||'').trim();
-  if(!name) return;
-  const planned = Number(plannedEl.value)||0;
-  dashboardData.budgetBreakdown[ci].items.push({id:'bi-'+Date.now().toString(36), name, planned, spent:0, vendorCategory:null, eventId:null, vendorName:'', paymentFrequency:'one-time', attachmentIds:[], paymentSchedule:[], multiEvent:false, eventAllocations:[], contractedHours:null, overageRate:null, notes:''});
-  refreshBudgetBackground();
 }
 function removeBudgetItem(ci, ii){
   dashboardData.budgetBreakdown[ci].items.splice(ii,1);
@@ -11349,7 +11943,7 @@ function renderBudgetItemQuickAddRow(){
   return `
     <div class="card" style="margin-bottom:14px; background:var(--ivory-deep); box-shadow:none;">
       <div class="custom-add-row" style="flex-wrap:wrap;">
-        <input type="text" id="quickItemName" placeholder="Line item name">
+        <input type="text" id="quickItemName" placeholder="Budget item name">
         <input type="number" min="0" id="quickItemPlanned" placeholder="Planned" style="max-width:120px;">
         <select id="quickItemCategory" class="select-field-sm" style="max-width:220px;">
           <option value="">— Uncategorized —</option>
@@ -11357,7 +11951,7 @@ function renderBudgetItemQuickAddRow(){
         </select>
         <button class="btn btn-solid btn-sm" onclick="submitBudgetItemQuickAdd()">+ Add</button>
       </div>
-      <p class="detail-hint" style="margin-bottom:0;">Leave the category as "Uncategorized" to sort it later, or pick one now — either way, you can move it afterward from the line item itself.</p>
+      <p class="detail-hint" style="margin-bottom:0;">Leave the category as "Uncategorized" to sort it later, or pick one now — either way, you can move it afterward from the budget item itself.</p>
     </div>
   `;
 }
@@ -11440,8 +12034,10 @@ function renderBudgetItemDetail(ci, ii){
   const item = cat && cat.items[ii];
   if(!item) return '';
   const vendorOptions = budgetVendorOptions();
+  const linkedVb = vendorBookingForBudgetItem(item.id);
+  const ePlanned = effectiveItemPlanned(item), eSpent = effectiveItemSpent(item);
   const scheduleTotal = (item.paymentSchedule||[]).reduce((s,p)=>s+(p.amount||0),0);
-  const scheduleMismatch = (item.paymentSchedule||[]).length>0 && scheduleTotal !== item.planned;
+  const scheduleMismatch = (item.paymentSchedule||[]).length>0 && scheduleTotal !== ePlanned;
   const totalAllocHours = (item.eventAllocations||[]).reduce((s,a)=>s+(a.hours||0),0);
   const overHours = item.contractedHours!=null && totalAllocHours > item.contractedHours;
   const overageAmt = overHours && item.overageRate!=null ? (totalAllocHours-item.contractedHours)*item.overageRate : null;
@@ -11452,8 +12048,13 @@ function renderBudgetItemDetail(ci, ii){
       <input type="text" class="budget-detail-title" value="${escapeAttr(item.name)}" onchange="updateBudgetItem(${ci},${ii},'name',this.value)">
 
       <div class="field-grid" style="margin-top:16px;">
-        <div class="field-cell"><label>Planned</label><input type="number" min="0" value="${item.planned}" onchange="updateBudgetItem(${ci},${ii},'planned',this.value)"></div>
-        <div class="field-cell"><label>Spent</label><input type="number" min="0" value="${item.spent}" onchange="updateBudgetItem(${ci},${ii},'spent',this.value)"></div>
+        <div class="field-cell"><label>Planned</label>${linkedVb
+          ? `<input type="number" value="${ePlanned}" disabled style="opacity:0.7; cursor:not-allowed;">`
+          : `<input type="number" min="0" value="${item.planned}" onchange="updateBudgetItem(${ci},${ii},'planned',this.value)">`}</div>
+        <div class="field-cell"><label>Spent</label>${linkedVb
+          ? `<input type="number" value="${eSpent}" disabled style="opacity:0.7; cursor:not-allowed;">`
+          : `<input type="number" min="0" value="${item.spent}" onchange="updateBudgetItem(${ci},${ii},'spent',this.value)">`}</div>
+        ${linkedVb ? '' : `
         <div class="field-cell"><label>Vendor Category</label>
           <select onchange="updateBudgetItem(${ci},${ii},'vendorCategory',this.value||null)">
             <option value="">— None —</option>
@@ -11461,12 +12062,16 @@ function renderBudgetItemDetail(ci, ii){
           </select>
         </div>
         <div class="field-cell"><label>Vendor Name</label><input type="text" placeholder="Who gets paid" value="${escapeAttr(item.vendorName||'')}" onchange="updateBudgetItem(${ci},${ii},'vendorName',this.value)"></div>
+        `}
         <div class="field-cell"><label>Payment Frequency</label>
           <select onchange="updateBudgetItem(${ci},${ii},'paymentFrequency',this.value)">
             ${PAYMENT_FREQUENCIES.map(f=>`<option value="${f.key}" ${(item.paymentFrequency||'one-time')===f.key?'selected':''}>${f.label}</option>`).join('')}
           </select>
         </div>
       </div>
+      ${linkedVb ? `
+      <p class="detail-hint">🔗 Linked to <strong>${escapeHtml(linkedVb.vendorName||linkedVb.category)}</strong> ${statusPill(linkedVb.status)} — Planned and Spent above now follow this vendor's own Cost field, so they can't drift apart. <a href="#" onclick="closeBudgetItemDetail(); renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${linkedVb.id}'),0); return false;">Edit cost on the Vendor page →</a></p>
+      ` : `<p class="detail-hint">Not linked to a real Vendor Team booking yet — link one from that vendor's own detail page ("Linked Budget Line Item") so its cost and status drive Planned/Spent here automatically instead of being typed twice.</p>`}
 
       <div class="detail-section">
         <div class="detail-section-head">
@@ -11523,7 +12128,7 @@ function renderBudgetItemDetail(ci, ii){
               <a href="#" class="danger-link" onclick="removeScheduleEntry(${ci},${ii},${si}); return false;">Remove</a>
             </div>`).join('')}
         </div>
-        <div class="detail-hint ${scheduleMismatch?'detail-hint-alert':''}">Schedule total: ${fmtMoney(scheduleTotal)}${scheduleMismatch ? ` — doesn't match the planned amount of ${fmtMoney(item.planned)} yet.` : ' — matches the planned amount.'}</div>
+        <div class="detail-hint ${scheduleMismatch?'detail-hint-alert':''}">Schedule total: ${fmtMoney(scheduleTotal)}${scheduleMismatch ? ` — doesn't match the planned amount of ${fmtMoney(ePlanned)} yet.` : ' — matches the planned amount.'}</div>
         ` : `<p class="detail-hint" style="margin-top:0;">No payment schedule yet — add a deposit, installments, or a single due date so this shows up on your Calendar and Savings Plan.</p>`}
         <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addScheduleEntry(${ci},${ii})">+ Add Payment</button>
       </div>
