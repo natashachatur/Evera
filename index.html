@@ -377,6 +377,82 @@
   .vision-swatch{width:26px; height:26px; border-radius:50%; border:2px solid var(--paper); box-shadow:0 0 0 1px var(--line);}
   .vision-note{font-size:13px; color:var(--charcoal-soft); line-height:1.55; font-style:italic;}
 
+  /* ---- v1.35.0: photo-forward Home hero ---- */
+  .home-photo-hero{position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:22px; box-shadow:var(--shadow-lg); min-height:270px; display:flex; align-items:flex-end;}
+  .home-photo-hero .hph-bg{position:absolute; inset:0; background-size:cover; background-position:center;}
+  .home-photo-hero:not(.has-photo) .hph-bg{background:linear-gradient(135deg, var(--green-deep), var(--green) 55%, var(--champagne-dark));}
+  .home-photo-hero .hph-scrim{position:absolute; inset:0; background:linear-gradient(0deg, rgba(20,24,18,0.80) 0%, rgba(20,24,18,0.38) 55%, rgba(20,24,18,0.06) 100%);}
+  .home-photo-hero .hph-content{position:relative; z-index:1; padding:30px 32px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; width:100%;}
+  .home-photo-hero h1{font-family:'Cormorant Garamond',serif; font-weight:600; font-size:29px; color:#fff; margin-bottom:5px; text-wrap:balance;}
+  .home-photo-hero .hph-days{font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--champagne-light); font-weight:600;}
+  .home-photo-hero .hph-meta{font-size:12.5px; color:#EFE9DA; margin-top:6px; opacity:0.92;}
+  .home-photo-hero .hph-priority{font-size:13.5px; color:#F4EFE3; margin-top:12px; max-width:460px; line-height:1.5;}
+  .home-photo-hero .hph-priority b{color:var(--champagne-light);}
+  .home-photo-hero .hph-photo-btn{position:relative; z-index:2; display:inline-flex; align-items:center; gap:7px; background:rgba(244,239,227,0.14); border:1px solid rgba(244,239,227,0.45); color:#fff; font-size:11.5px; font-weight:700; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer;}
+  .home-photo-hero .hph-photo-btn:hover{background:rgba(244,239,227,0.24);}
+  .hph-actions{display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
+
+  /* ---- v1.35.0: Budget Snapshot + Planning Progress two-up row ---- */
+  .home-status-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:22px; align-items:stretch;}
+  @media (max-width:860px){ .home-status-grid{grid-template-columns:1fr;} }
+  .budget-snap-sub{font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-bottom:3px;}
+  .budget-snap-hero{font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:700; color:var(--green-deep); line-height:1.1;}
+  .budget-snap-row{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft);}
+  .budget-snap-stat .num{font-size:15px; font-weight:700; color:var(--charcoal);}
+  .budget-snap-stat .lbl{font-size:10px; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); margin-top:2px;}
+  .budget-snap-alert{margin-top:14px; padding:10px 14px; background:var(--terracotta-tint); color:var(--terracotta); border-radius:var(--radius-sm); font-size:12.5px; font-weight:600;}
+  .progress-checklist{display:flex; flex-direction:column; gap:0; margin-top:2px;}
+  .pc-row{display:flex; align-items:center; gap:12px; padding:9px 0; border-top:1px solid var(--line-soft); cursor:pointer;}
+  .pc-row:first-child{border-top:none;}
+  .pc-row:hover .pc-label{color:var(--green-deep);}
+  .pc-label{font-size:12.5px; font-weight:600; color:var(--charcoal); flex:0 0 76px;}
+  .pc-track{flex:1; height:6px; border-radius:4px; background:var(--line-soft); overflow:hidden;}
+  .pc-fill{height:100%; background:var(--green); border-radius:4px;}
+  .pc-fill.pc-complete{background:var(--green-deep);}
+  .pc-fill.pc-attention{background:var(--terracotta);}
+  .pc-detail{flex:0 0 auto; font-size:11.5px; color:var(--charcoal-faint); white-space:nowrap; min-width:92px; text-align:right;}
+  .pc-check{color:var(--green-deep); font-weight:700; font-size:12.5px; min-width:92px; text-align:right; display:inline-block;}
+
+  /* ---- v1.35.0: Upcoming timeline ---- */
+  .upcoming-timeline{margin-top:2px;}
+  .ut-row{display:flex; gap:13px; align-items:flex-start; position:relative; padding-bottom:15px;}
+  .ut-row:last-child{padding-bottom:0;}
+  .ut-rail{flex:0 0 auto; width:8px; display:flex; flex-direction:column; align-items:center; padding-top:4px; align-self:stretch;}
+  .ut-dot{width:8px; height:8px; border-radius:50%; background:var(--champagne-dark); flex-shrink:0;}
+  .ut-rail-line{width:1px; flex:1; background:var(--line-soft); margin-top:4px;}
+  .ut-date{flex:0 0 60px; font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--charcoal-faint); padding-top:1px;}
+  .ut-body{flex:1; cursor:pointer; min-width:0;}
+  .ut-title{font-size:13.5px; font-weight:600; color:var(--charcoal);}
+  .ut-sub{font-size:11.5px; color:var(--charcoal-faint); margin-top:2px;}
+  .ut-amt{flex:0 0 auto; font-size:12.5px; font-weight:700; color:var(--charcoal-soft);}
+
+  /* ---- v1.35.0: Your Wedding Weekend photo strip — shared by Home (compact) and Events (full) ---- */
+  .event-photo-strip{display:flex; gap:16px; overflow-x:auto; padding-bottom:8px; margin-top:2px; scroll-snap-type:x proximity;}
+  .event-photo-card{position:relative; flex:0 0 240px; height:200px; border-radius:var(--radius-sm); overflow:hidden; cursor:pointer; scroll-snap-align:start; box-shadow:var(--shadow);}
+  .event-photo-card.epc-compact{flex-basis:186px; height:154px;}
+  .epc-bg{position:absolute; inset:0; background-size:cover; background-position:center;}
+  .epc-noPhoto{background:linear-gradient(150deg, var(--epc-c1, var(--green-deep)), var(--epc-c2, var(--green)));}
+  .epc-scrim{position:absolute; inset:0; background:linear-gradient(0deg, rgba(20,24,18,0.82) 0%, rgba(20,24,18,0.18) 62%, rgba(20,24,18,0) 100%);}
+  .epc-content{position:absolute; left:0; right:0; bottom:0; padding:13px 15px; color:#fff;}
+  .epc-name{font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:700; line-height:1.15;}
+  .event-photo-card.epc-compact .epc-name{font-size:15.5px;}
+  .epc-meta{font-size:10.5px; color:#EFE9DA; opacity:0.92; margin-top:3px;}
+  .epc-progress-track{height:3px; border-radius:2px; background:rgba(255,255,255,0.3); margin-top:9px; overflow:hidden;}
+  .epc-progress-fill{height:100%; background:var(--champagne-light);}
+  .epc-progress-label{font-size:10px; color:#EFE9DA; opacity:0.88; margin-top:5px;}
+  .epc-photo-btn{position:absolute; top:9px; right:9px; z-index:2; background:rgba(20,24,18,0.55); color:#fff; border:1px solid rgba(255,255,255,0.4); border-radius:999px; font-size:10px; font-weight:700; padding:4px 9px; cursor:pointer;}
+  .epc-photo-btn:hover{background:rgba(20,24,18,0.75);}
+  .epc-photo-input{position:absolute; inset:0; opacity:0; cursor:pointer; z-index:3;}
+
+  /* ---- v1.35.0: Blueprint — bigger moodboard strip + chaptered Details ---- */
+  .bp-moodboard-strip{display:flex; gap:12px; overflow-x:auto; padding-bottom:6px; margin-bottom:22px; scroll-snap-type:x proximity;}
+  .bp-moodboard-strip img{flex:0 0 210px; height:150px; object-fit:cover; border-radius:var(--radius-sm); scroll-snap-align:start; box-shadow:var(--shadow);}
+  .bp-moodboard-empty{border:1.5px dashed var(--line); border-radius:var(--radius-sm); padding:22px; text-align:center; color:var(--charcoal-faint); font-size:13px; margin-bottom:22px;}
+  .bp-chapter-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--green-deep); margin:28px 0 10px; display:flex; align-items:center; gap:10px;}
+  .bp-section-label + .bp-chapter-label{margin-top:0;}
+  .bp-chapter-label::after{content:''; flex:1; height:1px; background:var(--line-soft);}
+  .trad-chip-cloud .chip{display:inline-flex; align-items:center; gap:6px;}
+
   /* ---- My Wedding Blueprint redesign (Sep 25 2026): a visual vision hero + guided details ---- */
   .bp-hero{border-radius:var(--radius); box-shadow:var(--shadow-lg); margin-bottom:18px; padding:36px 38px; display:flex; gap:32px; align-items:center; justify-content:space-between; flex-wrap:wrap; position:relative;}
   .bp-hero-copy{flex:1 1 320px; min-width:260px;}
@@ -1650,6 +1726,20 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.35.0', date:'2026-09-29',
+    title:'A warmer, photo-forward Home, a real Wedding Weekend photo strip on Events, and a bigger moodboard on Blueprint',
+    items:[
+      'Home: rebuilt around a real photo hero — your own couple photo (upload it right from the hero) over your greeting, countdown, wedding date, and venue, instead of a plain text banner.',
+      'Home: reordered so Budget Snapshot, Planning Progress, and Upcoming now come before Next Moves — the overview you\'d want first, ahead of the task list.',
+      'Home: new Budget Snapshot (Total Budget, Planned, Committed/Paid, Unallocated, with a payments-due or over-budget alert when relevant) and Planning Progress (Venue, Vendors, Guest List, Budget, Events, Timeline, each with a real progress bar) cards, replacing the old plain Wedding Health strip.',
+      'Home: "Coming Up" is now "Upcoming," shown as a real dotted timeline instead of a plain list.',
+      'Home: "Your Celebrations" is now "Your Wedding Weekend" — a real photo strip of your events instead of plain name/date cards, matching the new Events page.',
+      'Events: rebuilt as a horizontal Wedding Weekend photo strip — every event is now a large photo card (upload a real photo for any event right from its card) showing its date, time, and how much of it is planned, instead of a plain list of cards.',
+      'My Wedding Blueprint: the vision hero now sits above a real, scrollable moodboard strip of up to 10 photos from your Inspiration board — a much bigger visual role than the hero\'s own small collage.',
+      '"The Details" is now organized into three chapters — The Basics, Your Style, and Who\'s Involved — instead of one long flat list of cards, and traditions now show a small icon alongside each one.'
+    ]
+  },
   {
     version:'1.34.0', date:'2026-09-29',
     title:'A dedicated Manage Guest List screen, a broader Messages hub, drillable RSVP numbers, a mixed-RSVP fix, and address lookup everywhere',
@@ -3589,6 +3679,10 @@ function normalizeDashboardData(d){
     if(!Array.isArray(e.inviteSentLog)) e.inviteSentLog = [];
     if(e.venueCapacity===undefined) e.venueCapacity = null;
     if(e.mealCollectionMode===undefined) e.mealCollectionMode = 'ask';
+    // v1.35.0: an optional real cover photo per event (null = honest gradient placeholder,
+    // never a fabricated stock photo) for the Events page's wedding-weekend photo strip and
+    // its condensed copy on Home — see the v1.35.0 changelog entry.
+    if(e.coverPhoto===undefined) e.coverPhoto = null;
   });
   if(!Array.isArray(d.tasks)) d.tasks = [];
   d.tasks.forEach(t=>{
@@ -4016,26 +4110,109 @@ function renderHome(){
     .map(dl=>({...dl, _amt: parseMoneyAmount(dl.amount)}))
     .filter(dl=>dl._amt!==null && dl.dateISO)
     .sort((a,b)=> new Date(a.dateISO) - new Date(b.dateISO))
-    .slice(0,3);
+    .slice(0,5);
   const now = new Date();
   const in30 = new Date(now.getTime()+30*86400000);
   const dueSoonTotal = upcomingPayments.filter(dl=>{ const t=new Date(dl.dateISO+'T00:00:00'); return t>=now && t<=in30; }).reduce((s,dl)=>s+dl._amt,0);
   const hasInspoImages = hasInspirationImages();
+  const venueEntry = (d.vendors||[]).find(v=>v.category==='Venue');
+  const eventsPlanned = d.events.filter(e=>eventCompleteness(e).pct>=60).length;
+  const overdueTasks = (d.tasks||[]).filter(t=>!t.done && t.dueDateISO && new Date(t.dueDateISO+'T00:00:00')<now).length;
+  const unallocated = (d.budgetTotal||0) - totalPlanned;
+  const isOverBudget = totalSpent > (d.budgetTotal||0) && (d.budgetTotal||0) > 0;
 
   return `
-    <div class="home-hero">
-      <div>
-        <h1>${homeGreeting()}, ${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)}</h1>
-        <div class="hh-status">${escapeHtml(homeStatusSentence(d.healthStatus))}${days!==null ? ` <span class="hh-days">· ${days} days to go</span>` : ''}</div>
-        ${topAction ? `<div class="hh-priority">Your biggest priority right now: <b>${escapeHtml(topAction.priorityPhrase || topAction.title.toLowerCase())}</b>.</div>` : ''}
-        <div class="hh-stats">${d.events.length} celebration${d.events.length===1?'':'s'} · ${d.guestCount} guests · ${fmtMoney(d.budgetTotal||totalPlanned)} budget</div>
+    <div class="home-photo-hero ${d.couplePhoto ? 'has-photo' : ''}">
+      <div class="hph-bg" style="${d.couplePhoto ? `background-image:url('${escapeAttr(d.couplePhoto)}');` : ''}"></div>
+      <div class="hph-scrim"></div>
+      <div class="hph-content">
+        <div>
+          <h1>${homeGreeting()}, ${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} ♥</h1>
+          ${days!==null ? `<div class="hph-days">${days} day${days===1?'':'s'} until your wedding</div>` : ''}
+          <div class="hph-meta">${d.weddingDateLabel ? escapeHtml(d.weddingDateLabel) : 'Date to be decided'}${d.location ? ' · '+escapeHtml(d.location) : ''}</div>
+          ${topAction ? `<div class="hph-priority">Your biggest priority right now: <b>${escapeHtml(topAction.priorityPhrase || topAction.title.toLowerCase())}</b>.</div>` : ''}
+        </div>
+        <div class="hph-actions">
+          <button class="home-ask-btn" onclick="toggleAssistant()"><svg viewBox="0 0 24 24">${ICONS.assistant}</svg> Ask Evera</button>
+          <label class="hph-photo-btn" onclick="event.stopPropagation();">
+            ${d.couplePhoto ? 'Change photo' : '+ Add a photo'}
+            <input type="file" accept="image/*" style="position:absolute; inset:0; opacity:0; cursor:pointer;" onchange="handleCouplePhotoUpload(event)">
+          </label>
+        </div>
       </div>
-      <button class="home-ask-btn" onclick="toggleAssistant()"><svg viewBox="0 0 24 24">${ICONS.assistant}</svg> Ask Evera</button>
     </div>
+
+    <div class="home-status-grid">
+      <div class="card">
+        <div class="card-head"><h4>Budget Snapshot</h4><span class="ch-link" onclick="renderRoute('budget')" style="cursor:pointer;">View full budget →</span></div>
+        <div class="budget-snap-sub">Total Budget</div>
+        <div class="budget-snap-hero">${fmtMoney(d.budgetTotal||totalPlanned)}</div>
+        <div class="budget-snap-row">
+          <div class="budget-snap-stat"><div class="num">${fmtMoney(totalPlanned)}</div><div class="lbl">Planned</div></div>
+          <div class="budget-snap-stat"><div class="num">${fmtMoney(totalSpent)}</div><div class="lbl">Committed / Paid</div></div>
+          <div class="budget-snap-stat"><div class="num" style="${unallocated<0?'color:var(--terracotta);':''}">${fmtMoney(unallocated)}</div><div class="lbl">Unallocated</div></div>
+        </div>
+        ${dueSoonTotal>0 ? `<div class="budget-snap-alert">${fmtMoney(dueSoonTotal)} in payments due in the next 30 days</div>` : isOverBudget ? `<div class="budget-snap-alert">You're over budget by ${fmtMoney(totalSpent-d.budgetTotal)}</div>` : ''}
+      </div>
+      <div class="card">
+        <div class="card-head"><h4>Planning Progress</h4></div>
+        <div class="progress-checklist">
+          <div class="pc-row" onclick="renderRoute('vendors')">
+            <span class="pc-label">Venue</span>
+            <div class="pc-track"><div class="pc-fill ${venueEntry && venueEntry.status==='booked' ? 'pc-complete' : ''}" style="width:${venueEntry && venueEntry.status==='booked' ? 100 : 15}%;"></div></div>
+            <span class="pc-check">${venueEntry && venueEntry.status==='booked' ? '✓ Complete' : 'Not booked yet'}</span>
+          </div>
+          <div class="pc-row" onclick="renderRoute('vendors')">
+            <span class="pc-label">Vendors</span>
+            <div class="pc-track"><div class="pc-fill" style="width:${vb.total?Math.round(vb.booked/vb.total*100):0}%;"></div></div>
+            <span class="pc-detail">${vb.booked} of ${vb.total} booked</span>
+          </div>
+          <div class="pc-row" onclick="renderRoute('guests')">
+            <span class="pc-label">Guest List</span>
+            <div class="pc-track"><div class="pc-fill" style="width:${d.guestCount ? Math.min(100,Math.round((d.rsvp.invited||0)/d.guestCount*100)) : 0}%;"></div></div>
+            <span class="pc-detail">${d.rsvp.invited||0} invited</span>
+          </div>
+          <div class="pc-row" onclick="renderRoute('budget')">
+            <span class="pc-label">Budget</span>
+            <div class="pc-track"><div class="pc-fill ${isOverBudget?'pc-attention':''}" style="width:${d.budgetTotal ? Math.min(100,Math.round(totalSpent/d.budgetTotal*100)) : 0}%;"></div></div>
+            <span class="pc-detail">${fmtMoney(totalSpent)} of ${fmtMoney(d.budgetTotal||totalPlanned)}</span>
+          </div>
+          <div class="pc-row" onclick="renderRoute('events')">
+            <span class="pc-label">Events</span>
+            <div class="pc-track"><div class="pc-fill" style="width:${d.events.length?Math.round(eventsPlanned/d.events.length*100):0}%;"></div></div>
+            <span class="pc-detail">${eventsPlanned} of ${d.events.length} planned</span>
+          </div>
+          <div class="pc-row" onclick="renderRoute('plan')">
+            <span class="pc-label">Timeline</span>
+            <div class="pc-track"><div class="pc-fill ${overdueTasks>0?'pc-attention':''}" style="width:${overdueTasks>0?100:60}%;"></div></div>
+            <span class="pc-detail">${overdueTasks>0 ? `${pluralize(overdueTasks,'task','tasks')} need attention` : 'On track'}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    ${upcomingPayments.length ? `
+    <div class="card">
+      <div class="card-head"><h4>Upcoming</h4><span class="d-sub" style="margin-right:auto; margin-left:10px;">Next 60 days</span><span class="ch-link" onclick="renderRoute('budget')" style="cursor:pointer;">View full budget →</span></div>
+      <div class="upcoming-timeline">
+        ${upcomingPayments.map((dl,i)=>`
+          <div class="ut-row">
+            <div class="ut-date">${escapeHtml(dl.date)}</div>
+            <div class="ut-rail"><div class="ut-dot"></div>${i<upcomingPayments.length-1?'<div class="ut-rail-line"></div>':''}</div>
+            <div class="ut-body" onclick="renderRoute('budget')">
+              <div class="ut-title">${escapeHtml(dl.title)}</div>
+              <div class="ut-sub">${escapeHtml(dl.sub)}</div>
+            </div>
+            <div class="ut-amt">${escapeHtml(dl.amount)}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="comingup-total">${dueSoonTotal>0 ? `${fmtMoney(dueSoonTotal)} due in the next 30 days` : 'Nothing due in the next 30 days'}</div>
+    </div>` : ''}
 
     ${nextUp.length ? `
     <div class="nextup-card">
-      <div class="nextup-head"><span class="nextup-label">Next Up</span></div>
+      <div class="nextup-head"><span class="nextup-label">Next Moves</span></div>
       ${nextUp.map((a,i)=>`
         <div class="nextup-item">
           <div class="nextup-num">${String(i+1).padStart(2,'0')}</div>
@@ -4049,16 +4226,9 @@ function renderHome(){
       <div class="nextup-viewall"><span class="ch-link" onclick="renderRoute('plan')" style="cursor:pointer;">View full plan →</span></div>
     </div>` : ''}
 
-    <div class="health-strip">
-      <div class="hs-row" onclick="renderRoute('plan')"><span class="hs-label">Timeline</span><span class="hs-value">${d.healthStatus==='On Track' ? '✓ On track' : escapeHtml(d.healthStatus)}</span></div>
-      <div class="hs-row" onclick="renderRoute('budget')"><span class="hs-label">Budget</span><span class="hs-value">${fmtMoney(d.budgetTotal||totalPlanned)} · ${fmtMoney(totalSpent)} committed</span></div>
-      <div class="hs-row" onclick="renderRoute('guests')"><span class="hs-label">Guests</span><span class="hs-value">${d.rsvp.attending} / ~${d.guestCount}</span></div>
-      <div class="hs-row" onclick="renderRoute('vendors')"><span class="hs-label">Vendors</span><span class="hs-value">${vb.booked} / ${vb.total} booked</span></div>
-    </div>
-
     ${(d.aiSuggestions||[]).length ? `
     <div class="notice-card">
-      <div class="card-head"><h4>✦ Evera Noticed</h4></div>
+      <div class="card-head"><h4>✦ Evera Says...</h4></div>
       ${d.aiSuggestions.map(s=>`
         <div class="notice-item">
           <div class="notice-ico"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px; stroke:#fff;">${ICONS.assistant}</svg></div>
@@ -4071,18 +4241,11 @@ function renderHome(){
     </div>` : ''}
 
     <div class="card">
-      <div class="card-head"><h4>Your Celebrations</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">View wedding →</span></div>
-      <div class="celeb-scroll">
-        ${d.events.map(e=>`<div class="celeb-card"><div class="celeb-name">${escapeHtml(e.name)}</div><div class="celeb-date">${escapeHtml(e.date)}</div><div class="celeb-guests">${e.guestCount} guests</div></div>`).join('')}
+      <div class="card-head"><h4>Your Wedding Weekend</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">View all events →</span></div>
+      <div class="event-photo-strip">
+        ${d.events.slice(0,4).map(e=>renderEventPhotoCard(e,true)).join('')}
       </div>
     </div>
-
-    ${upcomingPayments.length ? `
-    <div class="card">
-      <div class="card-head"><h4>Coming Up</h4><span class="ch-link" onclick="renderRoute('budget')" style="cursor:pointer;">View payments →</span></div>
-      ${upcomingPayments.map(dl=>`<div class="deadline-row"><div><div class="d-title">${escapeHtml(dl.title)}</div><div class="d-sub">${escapeHtml(dl.sub)}</div></div><div class="d-date">${escapeHtml(dl.date)}</div><div class="d-amt">${escapeHtml(dl.amount)}</div></div>`).join('')}
-      <div class="comingup-total">${dueSoonTotal>0 ? `${fmtMoney(dueSoonTotal)} due in the next 30 days` : 'Nothing due in the next 30 days'}</div>
-    </div>` : ''}
 
     <div class="card">
       <div class="card-head"><h4>Your Vision</h4><span class="ch-link" onclick="renderRoute('inspiration')" style="cursor:pointer;">Continue your board →</span></div>
@@ -4862,13 +5025,31 @@ function renderBlueprintProgressStrip(){
     </div>
   `;
 }
+/* ---- v1.35.0: a real, bigger moodboard strip beneath the vision hero — up to 10 photos
+   from Inspiration, scrollable, versus the hero's own tighter 1-3 image collage. Honest empty
+   state when nothing's been added yet, same "no fabricated photos" convention as everywhere else. ---- */
+function renderBlueprintMoodboardStrip(){
+  const images = blueprintCollageImages(10);
+  if(!images.length){
+    return `<div class="bp-moodboard-empty">Your moodboard starts with photos — add a few to Inspiration and they'll show here as a real strip across your Blueprint. <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('inspiration')">+ Add Inspiration Photos →</span></div>`;
+  }
+  return `<div class="bp-moodboard-strip">${images.map(src=>`<img src="${escapeAttr(src)}" alt="A photo from your Inspiration board">`).join('')}</div>`;
+}
+const TRADITION_ICONS = {
+  'Western':'💍', 'South Asian / Hindu':'🪔', 'Muslim':'☪️', 'Sikh':'🪯', 'Jewish':'✡️',
+  'Catholic / Christian':'✝️', 'Chinese':'🧧', 'Korean':'🎎', 'Persian':'🔥', 'Filipino':'🌺',
+  'Nigerian':'🥁', 'Jamaican':'🌴'
+};
+function traditionIcon(name){ return TRADITION_ICONS[name] || '✦'; }
 function renderMyWeddingModule(){
   const d = dashboardData;
   const wp = d.weddingProfile;
   return `
     ${renderBlueprintVisionHero()}
+    ${renderBlueprintMoodboardStrip()}
     ${renderBlueprintProgressStrip()}
     <div class="bp-section-label">The Details</div>
+    <div class="bp-chapter-label">The Basics</div>
     <div class="card">
       <div class="card-head"><div><h4>Your Wedding Details</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${currentUser?'<span id="weddingSaveStatus" class="save-status"></span>':'<span class="save-status save-status-demo">Sample mode — not saved</span>'}</div>
       <div class="field-grid">
@@ -4904,11 +5085,12 @@ function renderMyWeddingModule(){
 
     ${renderNameChangeCard()}
 
+    <div class="bp-chapter-label">Your Style</div>
     <div class="card">
       <div class="card-head"><h4>Traditions &amp; Culture</h4><span class="d-sub">Shapes which events and vendor categories Evera suggests</span></div>
-      <div class="chip-grid">
-        ${TRADITION_PRESETS.map(t=>`<span class="chip ${wp.traditions.includes(t)?'selected':''}" onclick="toggleWeddingTradition('${t.replace(/'/g,"\\'")}')">${escapeHtml(t)}</span>`).join('')}
-        ${wp.traditions.filter(t=>!TRADITION_PRESETS.includes(t)).map(t=>`<span class="chip selected" onclick="toggleWeddingTradition('${t.replace(/'/g,"\\'")}')">${escapeHtml(t)}</span>`).join('')}
+      <div class="chip-grid trad-chip-cloud">
+        ${TRADITION_PRESETS.map(t=>`<span class="chip ${wp.traditions.includes(t)?'selected':''}" onclick="toggleWeddingTradition('${t.replace(/'/g,"\\'")}')">${traditionIcon(t)} ${escapeHtml(t)}</span>`).join('')}
+        ${wp.traditions.filter(t=>!TRADITION_PRESETS.includes(t)).map(t=>`<span class="chip selected" onclick="toggleWeddingTradition('${t.replace(/'/g,"\\'")}')">${traditionIcon(t)} ${escapeHtml(t)}</span>`).join('')}
       </div>
       <div class="custom-add-row" style="margin-top:12px;">
         <input type="text" id="newTraditionInput" placeholder="Add another tradition...">
@@ -4953,6 +5135,7 @@ function renderMyWeddingModule(){
       <textarea class="notes-field" placeholder="Describe the overall look and feel you're going for..." onchange="updateWeddingProfileField('aestheticNotes',this.value)">${escapeHtml(wp.aestheticNotes)}</textarea>
     </div>
 
+    <div class="bp-chapter-label">Who's Involved</div>
     <div class="card">
       <div class="card-head"><h4>Collaborators</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Manage in Settings →</span></div>
       <div class="budget-items" style="padding-left:0;">
@@ -11303,6 +11486,61 @@ function renderEventsModule(){
   if(eventsView==='detail' && selectedEventId) return renderEventDetail(selectedEventId);
   return renderEventsList();
 }
+/* ---- v1.35.0: shared "wedding weekend" photo card — used both on the Events page (full size)
+   and condensed on Home. An event's cover photo is real and couple-uploaded, same pattern as
+   couplePhoto — never a fabricated stock image; an event with no photo yet gets an honest
+   gradient (from that event's own colour palette) instead. ---- */
+function eventCompleteness(e){
+  const d = dashboardData;
+  const vendorBooked = (d.vendorBookings||[]).some(v => (v.eventIds||[]).includes(e.id) && v.status==='booked');
+  const checks = [
+    !!e.dateISO,
+    !!(e.location && e.location.trim()),
+    !!(e.budgetTarget && e.budgetTarget>0),
+    vendorBooked,
+    (e.inviteSentLog||[]).length>0
+  ];
+  const done = checks.filter(Boolean).length;
+  return {done, total: checks.length, pct: Math.round(done/checks.length*100), remaining: checks.length-done};
+}
+function eventCoverGradientStyle(e){
+  const pal = (e.colorPalette||[]).filter(Boolean);
+  const c1 = pal[0] || '#2F3B2C', c2 = pal[1] || pal[0] || '#4C5F45';
+  return `--epc-c1:${escapeAttr(c1)}; --epc-c2:${escapeAttr(c2)};`;
+}
+function renderEventPhotoCard(e, compact){
+  const stats = eventCompleteness(e);
+  const cls = 'event-photo-card' + (compact ? ' epc-compact' : '');
+  return `
+    <div class="${cls}" onclick="openEventDetail('${e.id}')" ${e.coverPhoto ? '' : `style="${eventCoverGradientStyle(e)}"`}>
+      ${e.coverPhoto ? `<div class="epc-bg" style="background-image:url('${escapeAttr(e.coverPhoto)}');"></div>` : `<div class="epc-bg epc-noPhoto"></div>`}
+      <div class="epc-scrim"></div>
+      <label class="epc-photo-btn" onclick="event.stopPropagation();" title="${e.coverPhoto?'Change this event\'s photo':'Add a photo for this event'}">
+        ${e.coverPhoto?'Change':'+ Photo'}
+        <input type="file" accept="image/*" class="epc-photo-input" onchange="handleEventCoverPhotoUpload('${e.id}', event)">
+      </label>
+      <div class="epc-content">
+        <div class="epc-name">${escapeHtml(e.name)}</div>
+        <div class="epc-meta">${escapeHtml(e.date||'Date TBD')}${eventTimeRangeLabel(e) ? ' · '+escapeHtml(eventTimeRangeLabel(e)) : ''}</div>
+        <div class="epc-progress-track"><div class="epc-progress-fill" style="width:${stats.pct}%;"></div></div>
+        <div class="epc-progress-label">${stats.pct}% planned${stats.remaining>0 ? ` · ${pluralize(stats.remaining,'detail','details')} left` : ' · all set'}</div>
+      </div>
+    </div>
+  `;
+}
+function handleEventCoverPhotoUpload(eventId, evt){
+  const file = evt.target.files && evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const e = dashboardData.events.find(x=>x.id===eventId);
+    if(e) e.coverPhoto = ev.target.result;
+    if(currentRouteKey==='home') document.getElementById('content').innerHTML = renderHome();
+    else if(currentRouteKey==='events') document.getElementById('content').innerHTML = renderEventsModule();
+    updateChrome();
+  };
+  reader.readAsDataURL(file);
+}
 function renderEventsList(){
   const d = dashboardData;
   const events = d.events;
@@ -11310,7 +11548,7 @@ function renderEventsList(){
   const totalGuestVisits = events.reduce((s,e)=>s+(e.guestCount||0),0);
   return `
     <div class="module-header">
-      <div class="mh-copy"><p style="margin-top:0;">Every event in your wedding is its own workspace — its own timing, location, vendors and guest count.</p></div>
+      <div class="mh-copy"><p style="margin-top:0;">Your wedding weekend, at a glance — click into any event for its own timing, location, vendors and guest count.</p></div>
       <button class="btn btn-solid btn-sm" onclick="openEventAddModal()">+ Add Event</button>
     </div>
     ${events.length ? `
@@ -11319,13 +11557,8 @@ function renderEventsList(){
       <div class="ps-stat"><div class="ps-num">${bookedCount}</div><div class="ps-label">Venue Booked</div></div>
       <div class="ps-stat"><div class="ps-num">${totalGuestVisits}</div><div class="ps-label">Total Guest Visits</div></div>
     </div>
-    <div class="party-grid">
-      ${events.map(e=>`
-        <div class="pm-card" onclick="openEventDetail('${e.id}')">
-          <div class="pm-top"><div class="pm-avatar" style="background:var(--green-tint);"><svg class="icon" viewBox="0 0 24 24" style="width:18px;height:18px; color:var(--green-deep);">${ICONS.events}</svg></div><div><div class="pm-name">${e.name}</div><div class="pm-role">${e.date}${eventTimeRangeLabel(e) ? ' · '+eventTimeRangeLabel(e) : ''}</div></div></div>
-          <div class="pm-events">${(e.vendorCategories||[]).length ? e.vendorCategories.map(c=>`<span>${c}</span>`).join('') : '<span>No vendors linked yet</span>'}</div>
-          <div class="pm-foot">${statusPill(e.status)}<span style="font-size:11.5px; color:var(--charcoal-faint); font-weight:700;">View →</span></div>
-        </div>`).join('')}
+    <div class="event-photo-strip">
+      ${events.map(e=>renderEventPhotoCard(e,false)).join('')}
     </div>` : `
     <div class="empty-state">
       <svg class="icon" viewBox="0 0 24 24">${ICONS.events}</svg>
@@ -11419,7 +11652,7 @@ function submitEventAddModal(){
     id, name, date: dateISO ? shortDateLabel(dateISO) : 'Date TBD', dateISO, startTime:(startEl.value||'').trim(), endTime:(endEl.value||'').trim(), accessTime:'', location:(locEl.value||'').trim(), status:'planning',
     guestCount: Number(guestCountEl.value)||d.guestCount||0, notes:'', dressCode, description:'', specialRituals:'', rsvpDeadlineISO: dateISO ? addDaysISO(dateISO,-30) : '',
     limitedGuestHouseholdIds: null, inviteSendDateISO: inviteDateEl.value||'', inviteSentLog:[], venueCapacity:null, mealCollectionMode:'ask',
-    colorPalette:[], budgetTarget:null, publicVisibility:true,
+    colorPalette:[], budgetTarget:null, publicVisibility:true, coverPhoto:null,
     vendorCategories: EVENT_VENDOR_MAP[name] ? [EVENT_VENDOR_MAP[name]] : []
   });
   closeEventAddModal();
