@@ -453,6 +453,76 @@
   .bp-chapter-label::after{content:''; flex:1; height:1px; background:var(--line-soft);}
   .trad-chip-cloud .chip{display:inline-flex; align-items:center; gap:6px;}
 
+  /* ---- v1.36.0: Plan merged into Blueprint — Roadmap phase track & Current Phase card ---- */
+  .phase-track{display:flex; align-items:flex-start; gap:4px; margin:6px 0 8px; overflow-x:auto; padding-bottom:4px;}
+  .phase-node{display:flex; flex-direction:column; align-items:center; text-align:center; flex:1 1 0; min-width:104px; position:relative; padding:0 4px;}
+  .phase-node:not(:last-child)::after{content:''; position:absolute; top:17px; left:calc(50% + 20px); right:calc(-50% + 20px); height:0; border-top:2px dashed var(--line); z-index:0;}
+  .phase-dot{width:34px; height:34px; border-radius:50%; background:var(--ivory-deep); border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--charcoal-faint); position:relative; z-index:1; flex-shrink:0;}
+  .phase-dot.pd-complete{background:var(--green-deep); border-color:var(--green-deep); color:#fff;}
+  .phase-dot.pd-current{background:var(--champagne); border-color:var(--green-deep); color:var(--green-deep); box-shadow:0 0 0 4px var(--champagne-light);}
+  .phase-label{font-size:12px; font-weight:700; color:var(--charcoal); margin-top:9px;}
+  .phase-node.pn-current .phase-label{color:var(--green-deep);}
+  .phase-sub{font-size:10.5px; color:var(--charcoal-faint); margin-top:2px;}
+  .phase-range{font-size:9.5px; color:var(--charcoal-faint); opacity:0.85; margin-top:1px;}
+  .current-phase-card{display:flex; gap:22px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px; margin-bottom:22px; flex-wrap:wrap;}
+  .cpc-photo{flex:0 0 200px; height:180px; border-radius:var(--radius-sm); background-size:cover; background-position:center; box-shadow:var(--shadow);}
+  .cpc-body{flex:1 1 260px; min-width:220px;}
+  .cpc-eyebrow{font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; color:var(--terracotta);}
+  .cpc-title{font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:var(--green-deep); margin-top:4px;}
+  .cpc-range{font-size:12.5px; color:var(--charcoal-faint); margin-top:2px;}
+  .cpc-blurb{font-size:13px; color:var(--charcoal-soft); margin-top:10px; line-height:1.5;}
+  .cpc-outcomes{flex:1 1 240px; min-width:220px; border-left:1px solid var(--line-soft); padding-left:22px;}
+  @media (max-width:760px){ .cpc-outcomes{border-left:none; padding-left:0; border-top:1px solid var(--line-soft); padding-top:14px; margin-top:6px;} }
+  .cpc-outcomes-label{font-size:11px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700; color:var(--charcoal-faint); margin-bottom:8px;}
+  .cpc-outcome-row{display:flex; align-items:center; gap:9px; padding:5px 0; font-size:12.5px; cursor:pointer;}
+  .cpc-outcome-row.done{color:var(--charcoal-faint); text-decoration:line-through;}
+  .tools-guides-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  @media (max-width:760px){ .tools-guides-grid{grid-template-columns:1fr;} }
+  .tg-card{display:flex; gap:14px; align-items:flex-start; padding:16px 18px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); cursor:pointer; transition:box-shadow .15s ease;}
+  .tg-card:hover{box-shadow:var(--shadow);}
+  .tg-ico{width:36px; height:36px; border-radius:50%; background:var(--green-tint); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px;}
+  .tg-title{font-size:13.5px; font-weight:700; color:var(--charcoal);}
+  .tg-desc{font-size:11.5px; color:var(--charcoal-faint); margin-top:2px; line-height:1.45;}
+
+  /* ---- v1.36.0: RSVPs by Event — icon+colour chips with a legend, replacing a bulky
+     Confirmed/Pending/Declined header row (tighter, per Natasha's feedback) ---- */
+  .rsvp-legend{display:flex; gap:16px; font-size:11px; color:var(--charcoal-faint); margin:-2px 0 10px; flex-wrap:wrap;}
+  .rsvp-legend span{display:inline-flex; align-items:center; gap:5px;}
+  .rsvp-dot{width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0;}
+  .rsvp-dot-ok{background:var(--ok);}
+  .rsvp-dot-pending{background:var(--amber);}
+  .rsvp-dot-declined{background:var(--terracotta);}
+  .rsvp-event-rows{display:flex; flex-direction:column;}
+  .rsvp-event-row{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:7px 2px; border-top:1px solid var(--line-soft);}
+  .rsvp-event-row:first-child{border-top:none;}
+  .rsvp-event-name{font-size:12.5px; font-weight:600; color:var(--charcoal); display:flex; flex-direction:column; gap:1px; min-width:0;}
+  .rsvp-event-deadline{font-size:10.5px; font-weight:400; color:var(--charcoal-faint);}
+  .rsvp-event-deadline.passed{color:var(--terracotta);}
+  .rsvp-event-counts{display:flex; gap:6px; flex-shrink:0;}
+  .rsvp-count{font-size:12px; font-weight:700; text-decoration:none; padding:3px 8px; border-radius:999px; display:inline-flex; align-items:center; gap:3px; min-width:32px; justify-content:center;}
+  .rsvp-count-ok{color:var(--ok); background:var(--ok-tint);}
+  .rsvp-count-pending{color:var(--amber); background:var(--amber-tint);}
+  .rsvp-count-declined{color:var(--terracotta); background:var(--terracotta-tint);}
+
+  /* ---- v1.36.0: Events — vertical, photo-left list layout ---- */
+  .event-list{display:flex; flex-direction:column; gap:14px; margin-top:2px;}
+  .event-list-card{display:flex; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; cursor:pointer;}
+  .elc-photo{flex:0 0 220px; position:relative; background-size:cover; background-position:center; min-height:150px;}
+  .elc-photo.elc-noPhoto{background:linear-gradient(150deg, var(--epc-c1, var(--green-deep)), var(--epc-c2, var(--green)));}
+  .elc-photo-btn{position:absolute; top:9px; right:9px; z-index:2; background:rgba(20,24,18,0.55); color:#fff; border:1px solid rgba(255,255,255,0.4); border-radius:999px; font-size:10px; font-weight:700; padding:4px 9px; cursor:pointer;}
+  .elc-photo-btn:hover{background:rgba(20,24,18,0.75);}
+  .elc-photo-input{position:absolute; inset:0; opacity:0; cursor:pointer; z-index:3;}
+  .elc-body{flex:1; min-width:0; padding:18px 22px; display:flex; flex-direction:column; justify-content:center; gap:7px;}
+  .elc-name{font-family:'Cormorant Garamond',serif; font-size:21px; font-weight:700; color:var(--charcoal);}
+  .elc-meta{font-size:12px; color:var(--charcoal-faint);}
+  .elc-progress-track{height:5px; border-radius:4px; background:var(--line-soft); overflow:hidden; margin-top:2px; max-width:320px;}
+  .elc-progress-fill{height:100%; background:var(--green); border-radius:4px;}
+  .elc-progress-label{font-size:11px; color:var(--charcoal-faint);}
+  .elc-stats-row{display:flex; gap:18px; font-size:12px; color:var(--charcoal-soft); margin-top:4px;}
+  .elc-arrow-wrap{flex:0 0 auto; display:flex; align-items:center; padding:0 22px;}
+  .elc-arrow{width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--ivory-deep); display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--green-deep); cursor:pointer;}
+  @media (max-width:640px){ .event-list-card{flex-direction:column;} .elc-photo{flex-basis:160px; width:100%;} .elc-arrow-wrap{display:none;} }
+
   /* ---- My Wedding Blueprint redesign (Sep 25 2026): a visual vision hero + guided details ---- */
   .bp-hero{border-radius:var(--radius); box-shadow:var(--shadow-lg); margin-bottom:18px; padding:36px 38px; display:flex; gap:32px; align-items:center; justify-content:space-between; flex-wrap:wrap; position:relative;}
   .bp-hero-copy{flex:1 1 320px; min-width:260px;}
@@ -1685,7 +1755,6 @@ const NAV_ITEMS = [
   {key:'wedding-party', label:'Wedding Party', icon:'party'},
   {key:'vendors', label:'Vendors', icon:'vendors'},
   {key:'budget', label:'Budget', icon:'budget'},
-  {key:'plan', label:'Plan', icon:'plan'},
   {key:'inspiration', label:'Inspiration', icon:'inspiration'},
   {key:'messages', label:'Messages', icon:'messages'},
   {key:'website', label:'Website', icon:'website'},
@@ -1695,13 +1764,12 @@ const NAV_ITEMS = [
 ];
 
 const MODULE_INFO = {
-  'my-wedding':{title:'My Wedding Blueprint', desc:"Your wedding details — couple profile, dates, location, traditions, planning style, and overall aesthetic, all in one place.", bullets:['Couple profile & wedding settings','Master color palette & aesthetic','Collaborators & permissions']},
+  'my-wedding':{title:'My Wedding Blueprint', desc:"Your whole plan in one place — vision, roadmap, checklist, key milestones, and calendar, alongside your couple profile, dates, traditions, and overall aesthetic.", bullets:['Roadmap, checklist, milestones & calendar','Couple profile & wedding settings','Master color palette & aesthetic']},
   'events':{title:'Events', desc:"Every event in your wedding is its own workspace — with its own guests, vendors, budget, timeline, and look & feel.", bullets:['Unlimited custom events','Per-event guest eligibility & RSVP','Per-event budget, vendors & timeline']},
   'guests':{title:'Guests', desc:"Granular guest and household management connected to every event, RSVP, and seating chart.", bullets:['Households & individual guests','Per-event invitation & RSVP status','Dietary, accessibility & travel needs']},
   'wedding-party':{title:'Wedding Party Hub', desc:"A dedicated, reduced-access portal for your wedding party — their events, tasks, attire, and itinerary.", bullets:['Custom roles, not just bridesmaids/groomsmen','Personal itinerary & task list per member','Lookbook, attire & order status']},
   'vendors':{title:'Vendors', desc:"Curated, explainable vendor recommendations plus a home for every vendor record — booked or not.", bullets:['Why-this-vendor match explanations','Quotes, contracts, invoices & payments','Emerging vendor discovery']},
   'budget':{title:'Budget', desc:"One master budget with event-level rollups, so you always know where your money is going.", bullets:['Planned vs. committed vs. paid','Category-level breakdown','AI-flagged over/under-budget areas']},
-  'plan':{title:'Plan', desc:"Your planning roadmap, tasks, and checklists — filterable by event, role, and priority.", bullets:['Long-range planning roadmap','Event-specific & role-specific checklists','AI-generated and custom tasks']},
   'inspiration':{title:'Inspiration', desc:"One board per event, covering florals, stationery, photography, attire, decor, guest gifts, tablescapes, and hair & makeup — the starting point everything else builds from.", bullets:['One board per event, by category','Feeds your Master Colour Palette','Generate a one-page mood board']},
   'messages':{title:'Messages', desc:"Every important wedding conversation — with vendors, planners, and your wedding party — kept in one retrievable history.", bullets:['Vendor & planner communication history','Wedding-party group threads','Searchable, associated with the right event']},
   'website':{title:'Website', desc:"Your public wedding website — design, pages and access, generated from the same live data as your planning space — no duplicate entry. RSVPs themselves are managed in Guests.", bullets:['Fully customizable look & feel','Event-specific page visibility','Custom domain & password protection']},
@@ -1726,6 +1794,23 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.36.0', date:'2026-09-29',
+    title:'Plan folded into your Wedding Blueprint, a redesigned Events page, and worldwide address search',
+    items:[
+      'My Wedding Blueprint: the standalone Plan module is gone from the sidebar — your roadmap, checklist, key milestones, and Calendar at a Glance all now live here, as subtabs alongside your existing Blueprint content (now under a new "Your Details" subtab).',
+      'Blueprint: a new Roadmap subtab — Days to Go, Overall Progress, and an on-track/overdue note, a six-stage phase timeline built from your real task data, a Current Phase card (with your actual tasks in that phase as a live checklist), and an Upcoming Tasks preview.',
+      'Blueprint: a new Milestones subtab lists every RSVP deadline and planning milestone you\'ve set — the same ones already plotted on Calendar, just as a clean upcoming/passed list.',
+      'Blueprint: a new Tools & Guides subtab — quick links into Planning Guides, Budget, Vendors, and Playbook.',
+      'Events: rebuilt around a vertical, photo-left list — a stats row (Total Events, Total Expected Guests, Events on Track, Total Budget Allocated) and filter tabs for Wedding Weekend, Pre-Wedding, Post-Wedding, and Custom, replacing the horizontal photo strip from v1.35.0. Each event\'s weekend timing is auto-set from its date and editable from its own Details card.',
+      'Home: "Your Wedding Weekend" moved up to sit right after the photo hero, above Budget Snapshot and Planning Progress. Its title now reflects the real shape of your events — "Your Wedding Day" for a single day, "Your Wedding Weekend" for a short multi-day stretch, or "Your Wedding Week" for anything six days or longer.',
+      'Home: Budget Snapshot now shows a payments-due alert and an over-budget alert together when both apply, instead of one silently hiding the other.',
+      'Fixed a real bug: the free address lookup (event locations and household Street Address) was never restricted to the U.S. in code, but Nominatim\'s global relevance ranking was crowding out Canadian and international matches within the old 5-result limit — raised to 10 results with de-duplication off, and the search hint now says so explicitly.',
+      'Guests: RSVPs by Event is far more compact — a small color-coded legend up top, then one tight row per event with ✓/⏳/✕ counts instead of a wide Confirmed/Pending/Declined table, so the whole card fits without the extra empty space.',
+      'Guests: in the family-grouped Guest List, each household now just shows whether responses have been received — "Responded" or "Awaiting Response" — instead of "Confirmed," "Mixed Response," or "Declined."',
+      'Guests: the Waitlist & Capacity card now shares the exact same row layout and type size as the Guest List, instead of its own smaller, denser styling.'
+    ]
+  },
   {
     version:'1.35.0', date:'2026-09-29',
     title:'A warmer, photo-forward Home, a real Wedding Weekend photo strip on Events, and a bigger moodboard on Blueprint',
@@ -2184,6 +2269,7 @@ let runbookCollapsedEvents = {}; // eventId -> collapsed boolean, defaults to co
 let eventsView = 'list';     // 'list' | 'detail'
 let selectedEventId = null;
 let eventAddFormOpen = false;
+let eventsPhaseFilter = 'all'; // v1.36.0: 'all' | 'weekend' | 'pre' | 'post' | 'custom'
 let budgetCollapsedMap = {};
 let budgetItemQuickAddOpen = false;  // Budget: "+ Add Line Item" up top — add a line item without picking a category first
 let budgetCategoryAddOpen = false;   // Budget: "+ New Category" up top
@@ -2214,7 +2300,6 @@ let tableRenameState = null;  // seating chart: {chartId, tableId} — open when
 let vendorBookingDetailId = null; // vendor booking id whose drill-in detail is open, if any
 let planFilterEvent = 'all', planFilterRole = 'all', planFilterPriority = 'all', planFilterStatus = 'open'; // Plan module task filters
 let planExpandedTaskId = null; // which task row shows its inline Notes/Dependency editor
-let planTab = 'tasks'; // 'tasks' | 'calendar' — Calendar at a Glance now lives inside Plan
 let planCollapsedPhases = {}; // phase key -> collapsed boolean, lazily defaulted the first time each phase is seen
 let calendarAddFormOpen = false; // toggles the "+ Add an Event" inline form on Calendar at a Glance
 let unavailAddFormOpen = false; // toggles the "+ Add Unavailability" inline form on Calendar at a Glance
@@ -3295,8 +3380,7 @@ const PERMISSION_MODULES = [
   {key:'budget', label:'Budget'},
   {key:'guests', label:'Guests & Seating'},
   {key:'vendors', label:'Vendors'},
-  {key:'plan', label:'Plan & Timeline'},
-  {key:'blueprint', label:'Wedding Blueprint'},
+  {key:'blueprint', label:'Wedding Blueprint & Timeline'},
   {key:'weddingparty', label:'Wedding Party'},
   {key:'playbook', label:'Playbook'},
   {key:'website', label:'Website'}
@@ -3683,6 +3767,11 @@ function normalizeDashboardData(d){
     // never a fabricated stock photo) for the Events page's wedding-weekend photo strip and
     // its condensed copy on Home — see the v1.35.0 changelog entry.
     if(e.coverPhoto===undefined) e.coverPhoto = null;
+    // v1.36.0: which part of the wedding an event falls in, auto-computed once from its date
+    // relative to the wedding day, then left alone — a later date edit doesn't silently
+    // recategorize it, same convention as rsvpDeadlineISO above. Drives the Events page's
+    // Wedding Week(end)/Pre/Post/Custom filter tabs — see the v1.36.0 changelog entry.
+    if(e.weekendPhase===undefined) e.weekendPhase = autoEventWeekendPhase(e, d.weddingDateISO);
   });
   if(!Array.isArray(d.tasks)) d.tasks = [];
   d.tasks.forEach(t=>{
@@ -3974,7 +4063,6 @@ function reRenderCurrent(){
   else if(currentRouteKey==='guests') document.getElementById('content').innerHTML = renderGuestsModule();
   else if(currentRouteKey==='vendors') document.getElementById('content').innerHTML = renderVendorsModule();
   else if(currentRouteKey==='my-wedding') document.getElementById('content').innerHTML = renderMyWeddingModule();
-  else if(currentRouteKey==='plan') document.getElementById('content').innerHTML = renderPlanModule();
   else if(currentRouteKey==='inspiration') document.getElementById('content').innerHTML = renderInspirationModule();
   else if(currentRouteKey==='messages') document.getElementById('content').innerHTML = renderMessagesModule();
   else if(currentRouteKey==='website') document.getElementById('content').innerHTML = renderWebsiteModule();
@@ -4006,7 +4094,7 @@ function renderRoute(key){
     playbookSection = 'timeline';
     document.getElementById('content').innerHTML = renderPlaybook();
   } else if(key==='events'){
-    eventsView = 'list'; selectedEventId = null;
+    eventsView = 'list'; selectedEventId = null; eventsPhaseFilter = 'all';
     document.getElementById('content').innerHTML = renderEventsModule();
   } else if(key==='budget'){
     budgetTab = 'overview'; budgetOverviewView = 'category'; budgetItemQuickAddOpen = false; budgetCategoryAddOpen = false;
@@ -4024,10 +4112,8 @@ function renderRoute(key){
     vendorAddFormOpen = null;
     document.getElementById('content').innerHTML = renderVendorsModule();
   } else if(key==='my-wedding'){
+    blueprintTab='roadmap'; planFilterEvent='all'; planFilterRole='all'; planFilterPriority='all'; planFilterStatus='open';
     document.getElementById('content').innerHTML = renderMyWeddingModule();
-  } else if(key==='plan'){
-    planFilterEvent='all'; planFilterRole='all'; planFilterPriority='all'; planFilterStatus='open';
-    document.getElementById('content').innerHTML = renderPlanModule();
   } else if(key==='inspiration'){
     document.getElementById('content').innerHTML = renderInspirationModule();
   } else if(key==='messages'){
@@ -4098,6 +4184,17 @@ function vendorsBookedCount(){
   const list = d.vendors||[];
   return {booked: list.filter(v=>v.status==='booked').length, total: list.length};
 }
+/* ---- v1.36.0: the wedding-weekend photo strip's own card title now reflects the real shape
+   of the couple's events — a single day, a short weekend, or a longer week-of stretch — rather
+   than always saying "Weekend" regardless of how the events actually fall. ---- */
+function weddingWeekendCardLabel(){
+  const dates = (dashboardData.events||[]).map(e=>e.dateISO).filter(Boolean).sort();
+  if(dates.length<=1) return 'Your Wedding Day';
+  const span = Math.round((new Date(dates[dates.length-1]+'T00:00:00') - new Date(dates[0]+'T00:00:00'))/86400000);
+  if(span<=0) return 'Your Wedding Day';
+  if(span>=6) return 'Your Wedding Week';
+  return 'Your Wedding Weekend';
+}
 function renderHome(){
   const d = dashboardData;
   const totalPlanned = d.budgetBreakdown.reduce((s,c)=>s+categoryPlanned(c),0);
@@ -4142,6 +4239,13 @@ function renderHome(){
       </div>
     </div>
 
+    <div class="card">
+      <div class="card-head"><h4>${escapeHtml(weddingWeekendCardLabel())}</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">View all events →</span></div>
+      <div class="event-photo-strip">
+        ${d.events.slice(0,4).map(e=>renderEventPhotoCard(e,true)).join('')}
+      </div>
+    </div>
+
     <div class="home-status-grid">
       <div class="card">
         <div class="card-head"><h4>Budget Snapshot</h4><span class="ch-link" onclick="renderRoute('budget')" style="cursor:pointer;">View full budget →</span></div>
@@ -4152,7 +4256,8 @@ function renderHome(){
           <div class="budget-snap-stat"><div class="num">${fmtMoney(totalSpent)}</div><div class="lbl">Committed / Paid</div></div>
           <div class="budget-snap-stat"><div class="num" style="${unallocated<0?'color:var(--terracotta);':''}">${fmtMoney(unallocated)}</div><div class="lbl">Unallocated</div></div>
         </div>
-        ${dueSoonTotal>0 ? `<div class="budget-snap-alert">${fmtMoney(dueSoonTotal)} in payments due in the next 30 days</div>` : isOverBudget ? `<div class="budget-snap-alert">You're over budget by ${fmtMoney(totalSpent-d.budgetTotal)}</div>` : ''}
+        ${dueSoonTotal>0 ? `<div class="budget-snap-alert">${fmtMoney(dueSoonTotal)} in payments due in the next 30 days</div>` : ''}
+        ${isOverBudget ? `<div class="budget-snap-alert">You're over budget by ${fmtMoney(totalSpent-d.budgetTotal)}</div>` : ''}
       </div>
       <div class="card">
         <div class="card-head"><h4>Planning Progress</h4></div>
@@ -4182,7 +4287,7 @@ function renderHome(){
             <div class="pc-track"><div class="pc-fill" style="width:${d.events.length?Math.round(eventsPlanned/d.events.length*100):0}%;"></div></div>
             <span class="pc-detail">${eventsPlanned} of ${d.events.length} planned</span>
           </div>
-          <div class="pc-row" onclick="renderRoute('plan')">
+          <div class="pc-row" onclick="renderRoute('my-wedding')">
             <span class="pc-label">Timeline</span>
             <div class="pc-track"><div class="pc-fill ${overdueTasks>0?'pc-attention':''}" style="width:${overdueTasks>0?100:60}%;"></div></div>
             <span class="pc-detail">${overdueTasks>0 ? `${pluralize(overdueTasks,'task','tasks')} need attention` : 'On track'}</span>
@@ -4223,7 +4328,7 @@ function renderHome(){
             ${a.ctaRoute ? `<span class="nextup-cta" onclick="renderRoute('${a.ctaRoute}')">${escapeHtml(a.ctaLabel||'View')} →</span>` : ''}
           </div>
         </div>`).join('')}
-      <div class="nextup-viewall"><span class="ch-link" onclick="renderRoute('plan')" style="cursor:pointer;">View full plan →</span></div>
+      <div class="nextup-viewall"><span class="ch-link" onclick="renderRoute('my-wedding'); switchBlueprintTab('checklist');" style="cursor:pointer;">View full plan →</span></div>
     </div>` : ''}
 
     ${(d.aiSuggestions||[]).length ? `
@@ -4239,13 +4344,6 @@ function renderHome(){
           </div>
         </div>`).join('')}
     </div>` : ''}
-
-    <div class="card">
-      <div class="card-head"><h4>Your Wedding Weekend</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">View all events →</span></div>
-      <div class="event-photo-strip">
-        ${d.events.slice(0,4).map(e=>renderEventPhotoCard(e,true)).join('')}
-      </div>
-    </div>
 
     <div class="card">
       <div class="card-head"><h4>Your Vision</h4><span class="ch-link" onclick="renderRoute('inspiration')" style="cursor:pointer;">Continue your board →</span></div>
@@ -5041,11 +5139,42 @@ const TRADITION_ICONS = {
   'Nigerian':'🥁', 'Jamaican':'🌴'
 };
 function traditionIcon(name){ return TRADITION_ICONS[name] || '✦'; }
+/* ---- v1.36.0: Plan folded into My Wedding Blueprint, per Natasha's direction — "the Blueprint
+   tab should be where the overall project plan also lives, rather than it being in its own
+   separate plan tab." The vision hero stays constant at the top; everything else now lives in
+   one of six subtabs. Calendar at a Glance (renderCalendarCard(), untouched) is one of them.
+   The existing 6-stage PLAN_PHASES is reused as the single phase taxonomy for both the new
+   Roadmap timeline and the Checklist tab, rather than inventing a second, parallel one. ---- */
+let blueprintTab = 'roadmap'; // 'roadmap' | 'checklist' | 'milestones' | 'calendar' | 'guides' | 'details'
+function switchBlueprintTab(tab){ blueprintTab = tab; document.getElementById('content').innerHTML = renderMyWeddingModule(); }
 function renderMyWeddingModule(){
+  return `
+    ${renderBlueprintVisionHero()}
+    <div class="seg-control" style="margin:4px 0 22px; flex-wrap:wrap;">
+      <button class="seg-btn ${blueprintTab==='roadmap'?'active':''}" onclick="switchBlueprintTab('roadmap')">Roadmap</button>
+      <button class="seg-btn ${blueprintTab==='checklist'?'active':''}" onclick="switchBlueprintTab('checklist')">Checklist</button>
+      <button class="seg-btn ${blueprintTab==='milestones'?'active':''}" onclick="switchBlueprintTab('milestones')">Milestones</button>
+      <button class="seg-btn ${blueprintTab==='calendar'?'active':''}" onclick="switchBlueprintTab('calendar')">Calendar</button>
+      <button class="seg-btn ${blueprintTab==='guides'?'active':''}" onclick="switchBlueprintTab('guides')">Tools &amp; Guides</button>
+      <button class="seg-btn ${blueprintTab==='details'?'active':''}" onclick="switchBlueprintTab('details')">Your Details</button>
+    </div>
+    ${blueprintTab==='roadmap' ? renderBlueprintRoadmapTab()
+      : blueprintTab==='checklist' ? renderPlanTasksTab()
+      : blueprintTab==='milestones' ? renderBlueprintMilestonesTab()
+      : blueprintTab==='calendar' ? renderCalendarCard()
+      : blueprintTab==='guides' ? renderBlueprintToolsGuidesTab()
+      : renderBlueprintDetailsTab()}
+  `;
+}
+// v1.36.0: kept as a thin compatibility re-render helper, since every existing calendar/task
+// mutation handler (toggling a task, editing an unavailability window, etc.) already calls
+// renderPlanModule() after changing data — this way none of those many call sites needed to
+// change, and the currently-active Blueprint subtab always gets refreshed correctly.
+function renderPlanModule(){ return renderMyWeddingModule(); }
+function renderBlueprintDetailsTab(){
   const d = dashboardData;
   const wp = d.weddingProfile;
   return `
-    ${renderBlueprintVisionHero()}
     ${renderBlueprintMoodboardStrip()}
     ${renderBlueprintProgressStrip()}
     <div class="bp-section-label">The Details</div>
@@ -5141,6 +5270,176 @@ function renderMyWeddingModule(){
       <div class="budget-items" style="padding-left:0;">
         <div class="budget-items-head" style="grid-template-columns:1.4fr 1.4fr 1fr;"><span>Name</span><span>Email</span><span>Role</span></div>
         ${d.collaborators.map(c=>`<div class="budget-item-row budget-item-row-clean" style="grid-template-columns:1.4fr 1.4fr 1fr;"><span class="readonly-cell">${escapeHtml(c.name)}</span><span class="d-sub">${escapeHtml(c.email||'—')}</span><span class="d-sub">${escapeHtml(c.role)}</span></div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+/* ---- v1.36.0: Roadmap tab — a real phase timeline built off PLAN_PHASES/phaseForDueDate,
+   a Current Phase card whose "key outcomes" are the actual tasks in that phase (not a fabricated
+   text list), and an upcoming-tasks preview. All numbers are derived from real task data. ---- */
+function planPhaseRangeLabel(key){
+  const wed = dashboardData.weddingDateISO;
+  const specs = {
+    foundations:{low:270, high:null},
+    p6to9:{low:180, high:269},
+    p3to6:{low:90, high:179},
+    p1to3:{low:30, high:89},
+    finalmonth:{low:8, high:29},
+    weekof:{low:0, high:7}
+  };
+  const s = specs[key];
+  if(!s || !wed) return '';
+  const fmt = iso => new Date(iso+'T12:00:00').toLocaleDateString('en-US',{month:'short', year:'numeric'});
+  const nearISO = addDaysISO(wed, -s.low);
+  if(key==='foundations') return `Through ${fmt(nearISO)}`;
+  if(key==='weekof') return `${fmt(nearISO)} – your wedding day`;
+  const farISO = addDaysISO(wed, -s.high);
+  return `${fmt(farISO)} – ${fmt(nearISO)}`;
+}
+function currentPlanPhaseKey(){
+  for(const ph of PLAN_PHASES){
+    const hasOpen = (dashboardData.tasks||[]).some(t=>(t.phase||'unphased')===ph.key && !t.done);
+    if(hasOpen) return ph.key;
+  }
+  return PLAN_PHASES[PLAN_PHASES.length-1].key;
+}
+function planPhaseStatus(key){
+  const idxCurrent = PLAN_PHASES.findIndex(p=>p.key===currentPlanPhaseKey());
+  const idx = PLAN_PHASES.findIndex(p=>p.key===key);
+  if(idx<idxCurrent) return 'complete';
+  if(idx===idxCurrent) return 'current';
+  return 'upcoming';
+}
+function renderBlueprintRoadmapTab(){
+  const d = dashboardData;
+  const stats = planStats();
+  const days = daysToWedding();
+  const overallPct = stats.total ? Math.round(stats.done/stats.total*100) : 0;
+  const currentKey = currentPlanPhaseKey();
+  const currentPhase = PLAN_PHASES.find(p=>p.key===currentKey);
+  const tasksInCurrent = (d.tasks||[]).filter(t=>(t.phase||'unphased')===currentKey);
+  const doneInCurrent = tasksInCurrent.filter(t=>t.done).length;
+  const currentPct = tasksInCurrent.length ? Math.round(doneInCurrent/tasksInCurrent.length*100) : 0;
+  const outcomeTasks = tasksInCurrent.slice().sort((a,b)=>{ if(a.done!==b.done) return a.done?1:-1; const ad=a.dueDateISO||'9999', bd=b.dueDateISO||'9999'; return ad<bd?-1:ad>bd?1:0; }).slice(0,6);
+  const images = blueprintCollageImages(6);
+  const photoIdx = Math.max(0, PLAN_PHASES.findIndex(p=>p.key===currentKey));
+  const photoSrc = images.length ? images[photoIdx % images.length] : null;
+  const upcoming = (d.tasks||[]).filter(t=>!t.done && t.dueDateISO).sort((a,b)=>a.dueDateISO<b.dueDateISO?-1:1).slice(0,6);
+  return `
+    <div class="grid-3">
+      <div class="card" style="margin-bottom:0;">
+        <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.05em; font-size:11px;">Days to go</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:700; color:var(--green-deep); margin-top:4px;">${days!==null?days:'—'}</div>
+        <div class="d-sub" style="margin-top:2px;">${d.weddingDateLabel?escapeHtml(d.weddingDateLabel):'Date to be decided'}</div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.05em; font-size:11px;">Overall progress</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:700; color:var(--green-deep); margin-top:4px;">${overallPct}%</div>
+        <div class="d-sub" style="margin-top:2px;">${stats.done} of ${stats.total} tasks complete</div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.05em; font-size:11px;">${stats.overdue>0 ? 'Needs attention' : "You're on track"}</div>
+        <div style="font-size:13px; color:var(--charcoal-soft); margin-top:8px; line-height:1.5;">${stats.overdue>0 ? `${pluralize(stats.overdue,'task','tasks')} overdue — worth a look.` : `Your current focus is ${currentPhase?currentPhase.label.toLowerCase():'finishing up'}.`}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>Your Roadmap</h4><span class="d-sub">Six stretches from today to your wedding day</span></div>
+      <div class="phase-track">
+        ${PLAN_PHASES.map(ph=>{
+          const status = planPhaseStatus(ph.key);
+          const tasksHere = (d.tasks||[]).filter(t=>(t.phase||'unphased')===ph.key);
+          return `
+          <div class="phase-node pn-${status}">
+            <div class="phase-dot ${status==='complete'?'pd-complete':status==='current'?'pd-current':''}">${status==='complete'?'✓':''}</div>
+            <div class="phase-label">${escapeHtml(ph.label)}</div>
+            <div class="phase-sub">${tasksHere.length ? `${tasksHere.filter(t=>t.done).length}/${tasksHere.length} tasks` : 'No tasks yet'}</div>
+            <div class="phase-range">${planPhaseRangeLabel(ph.key)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    ${currentPhase ? `
+    <div class="current-phase-card">
+      <div class="cpc-photo" ${photoSrc?`style="background-image:url('${escapeAttr(photoSrc)}');"`:`style="background:linear-gradient(150deg, var(--green-deep), var(--green));"`}></div>
+      <div class="cpc-body">
+        <div class="cpc-eyebrow">Current Phase</div>
+        <div class="cpc-title">${escapeHtml(currentPhase.label)}</div>
+        <div class="cpc-range">${planPhaseRangeLabel(currentKey)}</div>
+        <div class="cpc-blurb">${escapeHtml(currentPhase.hint)}</div>
+        <div class="bp-progress-track" style="margin-top:14px;"><div class="bp-progress-fill" style="width:${currentPct}%;"></div></div>
+        <div class="d-sub" style="margin-top:6px;">${doneInCurrent} of ${tasksInCurrent.length} tasks complete</div>
+        <button class="btn btn-outline btn-sm" style="margin-top:14px;" onclick="switchBlueprintTab('checklist')">View all tasks →</button>
+      </div>
+      <div class="cpc-outcomes">
+        <div class="cpc-outcomes-label">Tasks in this phase</div>
+        ${outcomeTasks.length ? outcomeTasks.map(t=>`
+          <div class="cpc-outcome-row ${t.done?'done':''}" onclick="toggleTaskDone('${t.id}')">
+            <input type="checkbox" style="width:14px;height:14px;" ${t.done?'checked':''} onclick="event.stopPropagation(); toggleTaskDone('${t.id}');">
+            <span>${escapeHtml(t.title)}</span>
+          </div>`).join('') : `<p class="detail-hint" style="margin:0;">No tasks in this phase yet — add one from the Checklist tab.</p>`}
+      </div>
+    </div>` : ''}
+
+    ${upcoming.length ? `
+    <div class="card">
+      <div class="card-head"><h4>Upcoming Tasks</h4><span class="ch-link" style="cursor:pointer;" onclick="switchBlueprintTab('checklist')">View full checklist →</span></div>
+      <div class="budget-items" style="padding-left:0;">
+        <div class="budget-items-head" style="grid-template-columns:0.9fr 2fr 1fr;"><span>Due</span><span>Task</span><span>Event</span></div>
+        ${upcoming.map(t=>`<div class="budget-item-row budget-item-row-clean" style="grid-template-columns:0.9fr 2fr 1fr; cursor:pointer;" onclick="blueprintTab='checklist'; expandPlanTaskFromCalendar('${t.id}');">
+          <span class="d-sub">${t.dueDateISO ? new Date(t.dueDateISO+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—'}</span>
+          <span class="readonly-cell">${escapeHtml(t.title)}</span>
+          <span class="d-sub">${escapeHtml(taskEventLabel(t))}</span>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="notice-card" style="cursor:pointer;" onclick="toggleAssistant()">
+      <div class="card-head"><h4>✦ Need guidance?</h4></div>
+      <p style="font-size:13px; color:var(--charcoal-soft); margin:0;">Ask Evera for personalized recommendations based on where you are in your planning.</p>
+    </div>
+  `;
+}
+/* ---- v1.36.0: Milestones tab — reuses the exact same "deadline" items already plotted on
+   Calendar at a Glance (RSVP cutoffs + planning milestones), just as a clean upcoming/passed
+   list rather than a calendar grid — no separate data source, so it can never drift from Calendar. ---- */
+function renderBlueprintMilestonesTab(){
+  const items = getCalendarItems().filter(it=>it.type==='deadline').sort((a,b)=>a.dateISO<b.dateISO?-1:1);
+  const today = isoFromDate(new Date());
+  const upcoming = items.filter(it=>it.dateISO>=today);
+  const past = items.filter(it=>it.dateISO<today);
+  const renderRow = it => `
+    <div class="event-mini-row" style="cursor:pointer;" onclick="openCalendarItemDetail('deadline','${escapeAttr(it.id)}');">
+      <div><div class="em-name">${escapeHtml(it.title)}</div><div class="em-date">${new Date(it.dateISO+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div></div>
+      ${it.dateISO<today ? '<span class="pill pill-neutral">Passed</span>' : ''}
+    </div>`;
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Key Milestones</h4><span class="d-sub">RSVP cutoffs and planning milestones you've set — the same ones plotted on Calendar</span></div>
+      ${upcoming.length ? upcoming.map(renderRow).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No upcoming milestones right now.</p>`}
+      ${past.length ? `<div class="bp-chapter-label" style="margin-top:22px;">Passed</div>${past.slice().reverse().map(renderRow).join('')}` : ''}
+    </div>
+  `;
+}
+/* ---- v1.36.0: Tools & Guides tab — a launcher into real existing modules (never fabricated
+   content), matching the reference's "Key resources" idea with destinations Evera actually has. ---- */
+function renderBlueprintToolsGuidesTab(){
+  const tiles = [
+    {ico:'📖', title:'Planning Guides', desc:'Curated best practices — budgeting, etiquette, and day-of logistics.', route:'guides'},
+    {ico:'💰', title:'Budget Tracker', desc:'Your master budget, category breakdown, and per-event rollups.', route:'budget'},
+    {ico:'🤝', title:'Vendor Directory', desc:'Every vendor record — booked or not — with quotes and contracts.', route:'vendors'},
+    {ico:'🗓️', title:'Playbook & Timeline', desc:'Your living run-of-show, generated straight from your real planning data.', route:'playbook'}
+  ];
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Tools &amp; Guides</h4><span class="d-sub">Quick links into everything else that supports your plan</span></div>
+      <div class="tools-guides-grid">
+        ${tiles.map(t=>`
+          <div class="tg-card" onclick="renderRoute('${t.route}')">
+            <div class="tg-ico">${t.ico}</div>
+            <div><div class="tg-title">${escapeHtml(t.title)}</div><div class="tg-desc">${escapeHtml(t.desc)}</div></div>
+          </div>`).join('')}
       </div>
     </div>
   `;
@@ -5581,23 +5880,6 @@ function planStats(){
     overdue: tasks.filter(t=>!t.done && t.dueDateISO && t.dueDateISO<today).length
   };
 }
-function renderPlanModule(){
-  const stats = planStats();
-  return `
-    <div class="party-summary-strip">
-      <div class="ps-stat"><div class="ps-num">${stats.total}</div><div class="ps-label">Total Tasks</div></div>
-      <div class="ps-stat"><div class="ps-num">${stats.open}</div><div class="ps-label">Open</div></div>
-      <div class="ps-stat"><div class="ps-num">${stats.done}</div><div class="ps-label">Completed</div></div>
-      <div class="ps-stat"><div class="ps-num">${stats.overdue}</div><div class="ps-label">Overdue</div></div>
-    </div>
-    <div class="seg-control" style="margin-bottom:20px;">
-      <button class="seg-btn ${planTab==='tasks'?'active':''}" onclick="switchPlanTab('tasks')">Tasks &amp; Checklists</button>
-      <button class="seg-btn ${planTab==='calendar'?'active':''}" onclick="switchPlanTab('calendar')">Calendar at a Glance</button>
-    </div>
-    ${planTab==='calendar' ? renderCalendarCard() : renderPlanTasksTab()}
-  `;
-}
-function switchPlanTab(tab){ planTab = tab; document.getElementById('content').innerHTML = renderPlanModule(); }
 /* Groups the filtered task list into digestible, collapsible sections by how far out they
    fall from the wedding date (see PLAN_PHASES), instead of one long running list. Each
    section is collapsed by default except the earliest one that still has open work — the
@@ -5624,12 +5906,14 @@ function renderPlanTasksTab(){
   if(otherTasks.length) groups.push({phase:{key:'unphased', label:'Other Tasks', hint:''}, tasks:otherTasks});
   ensurePlanPhaseDefaults(groups.map(g=>g.phase.key));
   const allExpanded = groups.length>0 && groups.every(g=>!planCollapsedPhases[g.phase.key]);
+  const stats = planStats();
   return `
-    ${d.roadmap && d.roadmap.length ? `
-    <div class="card">
-      <div class="card-head"><h4>Getting You Married</h4><span class="d-sub">Your long-range path to the big day</span></div>
-      <div class="mini-roadmap">${d.roadmap.map(r=>`<div class="mr-item"><div class="mr-dot"></div><div><div class="mr-label">${escapeHtml(r.label)}</div><div class="mr-date">${escapeHtml(r.date)}</div></div></div>`).join('')}</div>
-    </div>` : ''}
+    <div class="party-summary-strip">
+      <div class="ps-stat"><div class="ps-num">${stats.total}</div><div class="ps-label">Total Tasks</div></div>
+      <div class="ps-stat"><div class="ps-num">${stats.open}</div><div class="ps-label">Open</div></div>
+      <div class="ps-stat"><div class="ps-num">${stats.done}</div><div class="ps-label">Completed</div></div>
+      <div class="ps-stat"><div class="ps-num">${stats.overdue}</div><div class="ps-label">Overdue</div></div>
+    </div>
     <div class="card">
       <div class="card-head">
         <h4>Tasks &amp; Checklists</h4>
@@ -10161,6 +10445,14 @@ function guestRsvpPill(status){
   if(status==='mixed') return '<span class="pill pill-warn" title="A response was received, but not the same answer for every event or every person in this household">Mixed Response</span>';
   return '<span class="pill pill-warn">Pending</span>';
 }
+/* v1.36.0: the Guest List's own Family grouping just needs to say whether a family has
+   responded at all, not the specific confirmed/mixed/declined breakdown — that detail is still
+   one click away (this row opens the household, and Individual/Tier/Category views and the RSVP
+   by Event drilldown all keep the granular guestRsvpPill() above). */
+function guestResponseReceivedPill(status){
+  if(status==='pending') return '<span class="pill pill-warn">Awaiting Response</span>';
+  return '<span class="pill pill-ok">Responded</span>';
+}
 function tierPill(tier){
   const tiers = dashboardData.guestTiers||[];
   const idx = tiers.findIndex(t=>t.key===tier);
@@ -10274,23 +10566,32 @@ function eventRsvpBreakdown(){
     return {event:e, confirmed:stats.confirmed, pending:stats.pending, declined:stats.declined};
   });
 }
+/* v1.36.0: tightened — icon+number chips with a small colour legend instead of a full
+   Confirmed/Pending/Declined header row, and less padding per row, per Natasha's "less bulky /
+   too much negative space" feedback. Same data, same drilldown, just denser. */
 function renderEventRsvpBreakdownCard(){
   if(!hasMultipleEvents()) return '';
   const rows = eventRsvpBreakdown();
   return `
     <div class="card">
       <div class="card-head"><h4>RSVPs by Event</h4><span class="d-sub">Click a number to see exactly who</span></div>
-      <div class="budget-items" style="padding-left:0;">
-        <div class="budget-items-head" style="grid-template-columns:1.5fr 0.7fr 0.7fr 0.7fr; padding:4px 0;"><span>Event</span><span>Confirmed</span><span>Pending</span><span>Declined</span></div>
+      <div class="rsvp-legend">
+        <span><span class="rsvp-dot rsvp-dot-ok"></span>Confirmed</span>
+        <span><span class="rsvp-dot rsvp-dot-pending"></span>Pending</span>
+        <span><span class="rsvp-dot rsvp-dot-declined"></span>Declined</span>
+      </div>
+      <div class="rsvp-event-rows">
         ${rows.map(r=>`
-          <div class="budget-item-row" style="grid-template-columns:1.5fr 0.7fr 0.7fr 0.7fr; padding:5px 0; align-items:center;">
-            <span class="readonly-cell" style="flex-direction:column; align-items:flex-start; gap:0; line-height:1.25;">
-              <span style="font-size:13px;">${escapeHtml(r.event.name)}</span>
-              ${r.event.rsvpDeadlineISO ? `<span class="d-sub" style="font-weight:400; font-size:11px; ${isRsvpDeadlinePassed(r.event) ? 'color:var(--terracotta);' : ''}">RSVP ${isRsvpDeadlinePassed(r.event) ? 'closed' : 'by'} ${fmtDateLabel(r.event.rsvpDeadlineISO)}</span>` : ''}
-            </span>
-            <a href="#" onclick="openEventRsvpDrilldown('${r.event.id}','confirmed'); return false;" style="color:var(--ok); font-weight:700; font-size:14px;">${r.confirmed}</a>
-            <a href="#" onclick="openEventRsvpDrilldown('${r.event.id}','pending'); return false;" style="color:var(--amber); font-weight:700; font-size:14px;">${r.pending}</a>
-            <a href="#" onclick="openEventRsvpDrilldown('${r.event.id}','declined'); return false;" style="color:var(--terracotta); font-weight:700; font-size:14px;">${r.declined}</a>
+          <div class="rsvp-event-row">
+            <div class="rsvp-event-name">
+              <span>${escapeHtml(r.event.name)}</span>
+              ${r.event.rsvpDeadlineISO ? `<span class="rsvp-event-deadline ${isRsvpDeadlinePassed(r.event)?'passed':''}">RSVP ${isRsvpDeadlinePassed(r.event) ? 'closed' : 'by'} ${fmtDateLabel(r.event.rsvpDeadlineISO)}</span>` : ''}
+            </div>
+            <div class="rsvp-event-counts">
+              <a href="#" class="rsvp-count rsvp-count-ok" title="${r.confirmed} confirmed" onclick="openEventRsvpDrilldown('${r.event.id}','confirmed'); return false;">✓ ${r.confirmed}</a>
+              <a href="#" class="rsvp-count rsvp-count-pending" title="${r.pending} pending" onclick="openEventRsvpDrilldown('${r.event.id}','pending'); return false;">⏳ ${r.pending}</a>
+              <a href="#" class="rsvp-count rsvp-count-declined" title="${r.declined} declined" onclick="openEventRsvpDrilldown('${r.event.id}','declined'); return false;">✕ ${r.declined}</a>
+            </div>
           </div>`).join('')}
       </div>
     </div>
@@ -10374,6 +10675,9 @@ function renderNeedsSeatCard(){
     </div>
   `;
 }
+/* v1.36.0: rows now share the Guest List's own typography (readonly-cell/d-sub sizes) instead
+   of a slightly larger inline size, per Natasha's "should all be the same relative to the guest
+   list" feedback. */
 function renderWaitlistCard(){
   const info = waitlistInfo();
   if(!info.waiting.length && !info.seatsFreed) return '';
@@ -10381,18 +10685,21 @@ function renderWaitlistCard(){
     <div class="card">
       <div class="card-head"><h4>Waitlist &amp; Capacity</h4>${info.seatsFreed ? `<span class="d-sub">${info.seatsFreed} seat${info.seatsFreed===1?'':'s'} freed by declines</span>` : ''}</div>
       ${info.waiting.length ? `
-        <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">As Tier A declines come in, work down this list to fill the seats they freed up.</p>
-        ${info.waiting.map(h=>{
-          const above = tiersAboveCurrent(h.tier);
-          return `
-          <div class="contact-row" style="cursor:default;">
-            <div style="flex:1;"><div style="font-weight:600;font-size:13.5px;">${escapeHtml(h.label)}</div><div class="pc-role">${tierPill(h.tier)} · ${pluralize(householdPartySize(h),'person','people')} · ${guestRsvpPill(h.rsvpStatus)}</div></div>
-            ${above.length ? `<select class="select-field-sm" style="width:auto;" onchange="if(this.value){updateHouseholdField('${h.id}','tier',this.value); this.value='';}">
-              <option value="">Move to…</option>
-              ${above.map(t=>`<option value="${escapeAttr(t.key)}">Tier ${escapeHtml(t.key)}</option>`).join('')}
-            </select>` : ''}
-          </div>`;
-        }).join('')}
+        <p class="d-sub" style="margin-top:0;">As Tier A declines come in, work down this list to fill the seats they freed up.</p>
+        <div class="budget-items" style="padding-left:0;">
+          ${info.waiting.map(h=>{
+            const above = tiersAboveCurrent(h.tier);
+            return `
+            <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:1.6fr 1.4fr 1fr; cursor:default;">
+              <span class="readonly-cell">${escapeHtml(h.label)}</span>
+              <span class="d-sub">${tierPill(h.tier)} · ${pluralize(householdPartySize(h),'person','people')} · ${guestRsvpPill(h.rsvpStatus)}</span>
+              ${above.length ? `<select class="select-field-sm" style="width:auto;" onchange="if(this.value){updateHouseholdField('${h.id}','tier',this.value); this.value='';}">
+                <option value="">Move to…</option>
+                ${above.map(t=>`<option value="${escapeAttr(t.key)}">Tier ${escapeHtml(t.key)}</option>`).join('')}
+              </select>` : '<span></span>'}
+            </div>`;
+          }).join('')}
+        </div>
       ` : `<p style="font-size:13px;color:var(--charcoal-faint);">Nobody is waitlisted right now.</p>`}
     </div>
   `;
@@ -10529,7 +10836,7 @@ function renderHouseholdSummaryRow(h){
       <span class="d-sub">${partySize} of ${h.members.length}</span>
       <span class="d-sub">${(h.categories||[]).join(', ') || '—'}</span>
       <span>${tierPill(h.tier)}</span>
-      <span>${guestRsvpPill(h.rsvpStatus)}</span>
+      <span>${guestResponseReceivedPill(h.rsvpStatus)}</span>
       <span class="cr-chevron-wrap"><svg class="icon cr-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></span>
     </div>
   `;
@@ -10737,7 +11044,7 @@ function renderHouseholdDetailModal(householdId){
       <div class="field-grid" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);">
         <div class="field-cell" style="position:relative;"><label>Street Address</label><input type="text" id="householdAddrInput-${h.id}" placeholder="Search an address…" autocomplete="off" value="${escapeAttr(addr.street)}" oninput="onAddressLookupInput('household','${h.id}', this.value)" onchange="updateHouseholdAddressField('${h.id}','street',this.value)">
           <div class="loc-suggest-dropdown" id="locSuggest-household-${h.id}"></div>
-          <div class="loc-suggest-attribution">Address search powered by OpenStreetMap — free, no API key needed. Picking a result fills in City/Province/Postal/Country below too.</div>
+          <div class="loc-suggest-attribution">Address search powered by OpenStreetMap — free, no API key needed, and not limited to the U.S. Include the city (and country, for addresses outside North America) for the best match. Picking a result fills in City/Province/Postal/Country below too.</div>
         </div>
         <div class="field-cell"><label>City</label><input type="text" placeholder="e.g. Toronto" value="${escapeAttr(addr.city)}" onchange="updateHouseholdAddressField('${h.id}','city',this.value)"></div>
         <div class="field-cell"><label>Province / State</label><input type="text" placeholder="e.g. ON" value="${escapeAttr(addr.region)}" onchange="updateHouseholdAddressField('${h.id}','region',this.value)"></div>
@@ -11508,6 +11815,26 @@ function eventCoverGradientStyle(e){
   const c1 = pal[0] || '#2F3B2C', c2 = pal[1] || pal[0] || '#4C5F45';
   return `--epc-c1:${escapeAttr(c1)}; --epc-c2:${escapeAttr(c2)};`;
 }
+/* ---- v1.36.0: which part of the wedding an event falls in — auto-computed from its date
+   relative to the wedding day, then editable from the event's own Details card. A day either
+   side of the wedding date counts as part of the wedding weekend itself (matching how couples
+   actually talk about a "wedding weekend"), not just the exact day. ---- */
+function autoEventWeekendPhase(e, weddingDateISO){
+  const wed = weddingDateISO!==undefined ? weddingDateISO : dashboardData.weddingDateISO;
+  if(!e.dateISO || !wed) return 'custom';
+  const diffDays = Math.round((new Date(e.dateISO+'T00:00:00') - new Date(wed+'T00:00:00'))/86400000);
+  if(diffDays>=-1 && diffDays<=1) return 'weekend';
+  return diffDays<0 ? 'pre' : 'post';
+}
+const EVENT_WEEKEND_PHASES = [
+  {key:'all', label:'All Events'},
+  {key:'weekend', label:'Wedding Weekend'},
+  {key:'pre', label:'Pre-Wedding'},
+  {key:'post', label:'Post-Wedding'},
+  {key:'custom', label:'Custom'}
+];
+function eventWeekendPhaseLabel(key){ return (EVENT_WEEKEND_PHASES.find(p=>p.key===key)||{}).label || 'Custom'; }
+function switchEventsPhaseFilter(key){ eventsPhaseFilter = key; document.getElementById('content').innerHTML = renderEventsModule(); }
 function renderEventPhotoCard(e, compact){
   const stats = eventCompleteness(e);
   const cls = 'event-photo-card' + (compact ? ' epc-compact' : '');
@@ -11541,25 +11868,59 @@ function handleEventCoverPhotoUpload(eventId, evt){
   };
   reader.readAsDataURL(file);
 }
+/* ---- v1.36.0: the vertical, photo-left list card used on the Events page itself — a different
+   layout from the horizontal renderEventPhotoCard() strip (kept as-is, still used on Home). ---- */
+function renderEventListCard(e){
+  const stats = eventCompleteness(e);
+  return `
+    <div class="event-list-card" onclick="openEventDetail('${e.id}')">
+      <div class="elc-photo ${e.coverPhoto?'':'elc-noPhoto'}" ${e.coverPhoto ? `style="background-image:url('${escapeAttr(e.coverPhoto)}');"` : `style="${eventCoverGradientStyle(e)}"`}>
+        <label class="elc-photo-btn" onclick="event.stopPropagation();" title="${e.coverPhoto?'Change this event\'s photo':'Add a photo for this event'}">
+          ${e.coverPhoto?'Change':'+ Photo'}
+          <input type="file" accept="image/*" class="elc-photo-input" onchange="handleEventCoverPhotoUpload('${e.id}', event)">
+        </label>
+      </div>
+      <div class="elc-body">
+        <div class="elc-name">${escapeHtml(e.name)}</div>
+        <div class="elc-meta">${escapeHtml(e.date||'Date TBD')}${eventTimeRangeLabel(e) ? ' · '+escapeHtml(eventTimeRangeLabel(e)) : ''}${e.location ? ' · '+escapeHtml(e.location) : ''}</div>
+        <div class="elc-progress-track"><div class="elc-progress-fill" style="width:${stats.pct}%;"></div></div>
+        <div class="elc-progress-label">${stats.pct}% planned${stats.remaining>0 ? ` · ${pluralize(stats.remaining,'detail','details')} left` : ' · all set'}</div>
+        <div class="elc-stats-row">
+          <span>👥 ${e.guestCount||0} guests</span>
+          ${e.budgetTarget ? `<span>💰 ${fmtMoney(e.budgetTarget)} budget</span>` : ''}
+        </div>
+      </div>
+      <div class="elc-arrow-wrap"><button class="elc-arrow" onclick="event.stopPropagation(); openEventDetail('${e.id}');">→</button></div>
+    </div>
+  `;
+}
 function renderEventsList(){
   const d = dashboardData;
   const events = d.events;
-  const bookedCount = events.filter(e=>e.status==='booked').length;
   const totalGuestVisits = events.reduce((s,e)=>s+(e.guestCount||0),0);
+  const onTrackCount = events.filter(e=>eventCompleteness(e).pct>=60).length;
+  const totalBudgetAllocated = events.reduce((s,e)=>s+(e.budgetTarget||0),0);
+  const shown = eventsPhaseFilter==='all' ? events : events.filter(e=>(e.weekendPhase||'custom')===eventsPhaseFilter);
   return `
     <div class="module-header">
-      <div class="mh-copy"><p style="margin-top:0;">Your wedding weekend, at a glance — click into any event for its own timing, location, vendors and guest count.</p></div>
+      <div class="mh-copy"><p style="margin-top:0;">Plan every celebration, all in one place — click into any event for its own timing, location, vendors and guest count.</p></div>
       <button class="btn btn-solid btn-sm" onclick="openEventAddModal()">+ Add Event</button>
     </div>
     ${events.length ? `
     <div class="party-summary-strip">
-      <div class="ps-stat"><div class="ps-num">${events.length}</div><div class="ps-label">Events</div></div>
-      <div class="ps-stat"><div class="ps-num">${bookedCount}</div><div class="ps-label">Venue Booked</div></div>
-      <div class="ps-stat"><div class="ps-num">${totalGuestVisits}</div><div class="ps-label">Total Guest Visits</div></div>
+      <div class="ps-stat"><div class="ps-num">${events.length}</div><div class="ps-label">Total Events</div></div>
+      <div class="ps-stat"><div class="ps-num">${totalGuestVisits}</div><div class="ps-label">Total Expected Guests</div></div>
+      <div class="ps-stat"><div class="ps-num">${onTrackCount} of ${events.length}</div><div class="ps-label">Events on Track</div></div>
+      <div class="ps-stat"><div class="ps-num">${fmtMoney(totalBudgetAllocated)}</div><div class="ps-label">Total Budget Allocated</div></div>
     </div>
-    <div class="event-photo-strip">
-      ${events.map(e=>renderEventPhotoCard(e,false)).join('')}
-    </div>` : `
+    <div class="seg-control" style="margin-bottom:20px; flex-wrap:wrap;">
+      ${EVENT_WEEKEND_PHASES.map(p=>`<button class="seg-btn ${eventsPhaseFilter===p.key?'active':''}" onclick="switchEventsPhaseFilter('${p.key}')">${escapeHtml(p.label)}</button>`).join('')}
+    </div>
+    ${shown.length ? `
+    <div class="event-list">
+      ${shown.map(e=>renderEventListCard(e)).join('')}
+    </div>` : `<p style="font-size:13px;color:var(--charcoal-faint);">No events in this view yet.</p>`}
+    ` : `
     <div class="empty-state">
       <svg class="icon" viewBox="0 0 24 24">${ICONS.events}</svg>
       <h4>No events yet</h4>
@@ -11690,6 +12051,11 @@ function renderEventDetail(id){
       <div class="card-head" style="margin-bottom:14px;"><h4>Details</h4></div>
       <div class="field-grid">
         <div class="field-cell"><label>Date</label><input type="date" value="${e.dateISO||''}" onchange="updateEventField('${e.id}','dateISO',this.value)"></div>
+        <div class="field-cell"><label>Weekend</label>
+          <select onchange="updateEventField('${e.id}','weekendPhase',this.value)">
+            ${EVENT_WEEKEND_PHASES.filter(p=>p.key!=='all').map(p=>`<option value="${p.key}" ${(e.weekendPhase||'custom')===p.key?'selected':''}>${escapeHtml(p.label)}</option>`).join('')}
+          </select>
+        </div>
         <div class="field-cell"><label>Start Time</label><input type="text" value="${escapeAttr(e.startTime||'')}" placeholder="e.g. 4:00 PM" onchange="updateEventField('${e.id}','startTime',this.value)"></div>
         <div class="field-cell"><label>End Time</label><input type="text" value="${escapeAttr(e.endTime||'')}" placeholder="e.g. 4:30 PM" onchange="updateEventField('${e.id}','endTime',this.value)"></div>
         <div class="field-cell"><label>Venue Access Time</label><input type="text" value="${escapeAttr(e.accessTime||'')}" placeholder="e.g. 1:30 PM for setup" onchange="updateEventField('${e.id}','accessTime',this.value)"></div>
@@ -11697,7 +12063,7 @@ function renderEventDetail(id){
           <label>Location</label>
           <input type="text" id="eventLocInput-${e.id}" value="${escapeAttr(e.location||'')}" placeholder="Search an address…" autocomplete="off" oninput="onAddressLookupInput('event','${e.id}', this.value)" onchange="updateEventField('${e.id}','location',this.value)">
           <div class="loc-suggest-dropdown" id="locSuggest-event-${e.id}"></div>
-          <div class="loc-suggest-attribution">Address search powered by OpenStreetMap — free, no API key needed.</div>
+          <div class="loc-suggest-attribution">Address search powered by OpenStreetMap — free, no API key needed, and not limited to the U.S. Include the city (and country, for addresses outside North America) for the best match.</div>
         </div>
         <div class="field-cell"><label>RSVP Deadline</label><input type="date" value="${e.rsvpDeadlineISO||''}" onchange="updateEventField('${e.id}','rsvpDeadlineISO',this.value)"></div>
         ${renderDressCodeField(e)}
@@ -11825,12 +12191,20 @@ function onAddressLookupInput(kind, id, val){
   if(!val || val.trim().length < 3){ addressLookupSuggestions[key] = []; renderAddressLookupSuggestions(kind, id); return; }
   addressLookupTimer = setTimeout(()=> fetchAddressLookupSuggestions(kind, id, val), 450);
 }
+/* ---- v1.36.0: fixed a real "only U.S. addresses show up" report. The lookup was never
+   restricted to the U.S. in code — there's no countrycodes param — but Nominatim's free-text
+   search ranks matches by a global "importance" score, and with only 5 slots requested, those
+   US-heavy top-ranked results were crowding out Canadian/international matches that DID exist
+   further down the list. Asking for more candidates (limit 5→10) and turning off result
+   de-duplication (dedupe=0, which Nominatim otherwise uses to collapse similarly-named places —
+   often merging a lower-ranked Canadian/international match into a higher-ranked U.S. one) gives
+   those matches real room to surface instead of being silently absorbed. ---- */
 function fetchAddressLookupSuggestions(kind, id, query){
   const key = kind+'-'+id;
   const el = document.getElementById('locSuggest-'+key);
   if(el) el.innerHTML = `<div class="loc-suggest-status">Searching…</div>`;
   const wantsDetails = kind==='household';
-  fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=${wantsDetails?1:0}&limit=5&q=${encodeURIComponent(query)}`)
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=${wantsDetails?1:0}&limit=10&dedupe=0&q=${encodeURIComponent(query)}`)
     .then(res => { if(!res.ok) throw new Error('bad response'); return res.json(); })
     .then(results => { addressLookupSuggestions[key] = results; renderAddressLookupSuggestions(kind, id); })
     .catch(() => { addressLookupSuggestions[key] = null; renderAddressLookupSuggestions(kind, id); });
@@ -13210,7 +13584,7 @@ function renderCalendarItemDetail(type, id){
           ${blockedBy ? calDetailRow('Blocked By', escapeHtml(blockedBy.title)) : ''}
         </div>
         ${t.notes ? `<div class="detail-section" style="margin-top:18px;"><div class="detail-section-head"><h4 style="margin:0;">Notes</h4></div><p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6;">${escapeHtml(t.notes)}</p></div>` : ''}
-        <div style="margin-top:20px;"><a href="#" class="ch-link" onclick="closeCalendarItemDetail(); renderRoute('plan'); switchPlanTab('tasks'); expandPlanTaskFromCalendar('${t.id}'); return false;">View in Plan →</a></div>
+        <div style="margin-top:20px;"><a href="#" class="ch-link" onclick="closeCalendarItemDetail(); renderRoute('my-wedding'); switchBlueprintTab('checklist'); expandPlanTaskFromCalendar('${t.id}'); return false;">View in Blueprint →</a></div>
       </div>
     `;
   }
