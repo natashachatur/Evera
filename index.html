@@ -299,6 +299,17 @@
   .pill-neutral{background:var(--green-tint); color:var(--green);}
   .pill::before{content:''; width:6px; height:6px; border-radius:50%; background:currentColor;}
 
+  /* v1.37.0: RSVP-by-event iconography — replaces the confirmed/pending/declined <select>
+     dropdowns inside a guest record with a compact 3-icon toggle group, so a household's
+     whole per-event RSVP grid reads at a glance instead of eating horizontal space. */
+  .rsvp-icon-group{display:inline-flex; align-items:center; gap:3px;}
+  .rsvp-icon-btn{display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:7px; border:1px solid var(--line-soft); background:var(--paper); cursor:pointer; font-size:12px; line-height:1; opacity:0.45; transition:opacity 0.12s, transform 0.12s;}
+  .rsvp-icon-btn:hover{opacity:0.85; transform:translateY(-1px);}
+  .rsvp-icon-btn.active{opacity:1; border-color:transparent;}
+  .rsvp-icon-btn.active.rsvp-ic-confirmed{background:var(--ok-tint); color:var(--ok);}
+  .rsvp-icon-btn.active.rsvp-ic-pending{background:var(--amber-tint); color:var(--amber);}
+  .rsvp-icon-btn.active.rsvp-ic-declined{background:var(--terracotta-tint); color:var(--terracotta);}
+
   /* health banner */
   .health-banner{
     display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
@@ -961,6 +972,22 @@
   /* ---- timeline item drill-down ---- */
   .item-overlay{position:fixed; inset:0; background:rgba(35,46,39,0.55); z-index:410; display:none; align-items:center; justify-content:center; padding:20px;}
   .item-overlay.open{display:flex;}
+  /* ---- v1.37.0: a right-edge slide-out drawer variant, for panels that feel like a companion
+     to the page behind them (e.g. Pending RSVPs) rather than a centered interruption. ---- */
+  .item-overlay-right{justify-content:flex-end; padding:0;}
+  .side-drawer{background:var(--paper); width:100%; max-width:400px; height:100%; box-shadow:var(--shadow-lg); position:relative; overflow-y:auto; padding:0; animation:drawerSlideIn 0.22s ease;}
+  @keyframes drawerSlideIn{from{transform:translateX(24px); opacity:0;} to{transform:translateX(0); opacity:1;}}
+  .sd-header{position:relative; padding:20px 22px 16px;}
+  .sd-header-photo{height:120px; margin:-1px -1px 0; background-size:cover; background-position:center; position:relative;}
+  .sd-header-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,24,18,0.05), rgba(20,24,18,0.35));}
+  .sd-close{position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.85); border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; color:var(--charcoal); font-size:14px; z-index:2;}
+  .sd-title-row{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .sd-badge{flex-shrink:0; text-align:center; background:var(--champagne-tint,var(--amber-tint)); border-radius:50%; width:56px; height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .sd-badge-num{font-family:'Cormorant Garamond',serif; font-weight:700; font-size:19px; line-height:1;}
+  .sd-badge-lbl{font-size:8px; text-transform:uppercase; letter-spacing:0.02em; color:var(--charcoal-faint); line-height:1.2;}
+  .sd-body{padding:4px 22px 24px;}
+  .sd-guest-row{display:flex; align-items:center; gap:10px; padding:9px 0; border-top:1px solid var(--line-soft);}
+  .sd-guest-avatar{width:32px; height:32px; border-radius:50%; background:var(--green-tint); color:var(--green-deep); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0;}
   .item-modal{background:var(--paper); border-radius:var(--radius); max-width:440px; width:100%; padding:30px 28px; box-shadow:var(--shadow-lg); position:relative;}
   .item-modal h3{font-size:21px; margin-top:8px; line-height:1.3;}
   .item-modal .im-close{position:absolute; top:16px; right:16px; background:none; border:none; cursor:pointer; color:var(--charcoal-faint); font-size:16px; line-height:1;}
@@ -1681,6 +1708,7 @@
 <div class="item-overlay" id="playbookExportOverlay" onclick="if(event.target===this) closePlaybookExportPreview();"><!-- injected --></div>
 <div class="item-overlay" id="rsvpDrilldownOverlay" onclick="if(event.target===this) closeEventRsvpDrilldown();"><!-- injected --></div>
 <div class="item-overlay" id="surveyPreviewOverlay" onclick="if(event.target===this) closeSurveyPreview();"><!-- injected --></div>
+<div class="item-overlay item-overlay-right" id="pendingRsvpDrawerOverlay" onclick="if(event.target===this) closePendingRsvpDrawer();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
 
 <!-- ============ FEEDBACK ============ -->
@@ -1749,7 +1777,7 @@ const ICONS = {
 
 const NAV_ITEMS = [
   {key:'home', label:'Home', icon:'home'},
-  {key:'my-wedding', label:'My Wedding Blueprint', icon:'wedding'},
+  {key:'my-wedding', label:'Wedding Blueprint', icon:'wedding'},
   {key:'events', label:'Events', icon:'events'},
   {key:'guests', label:'Guests', icon:'guests'},
   {key:'wedding-party', label:'Wedding Party', icon:'party'},
@@ -1764,7 +1792,7 @@ const NAV_ITEMS = [
 ];
 
 const MODULE_INFO = {
-  'my-wedding':{title:'My Wedding Blueprint', desc:"Your whole plan in one place — vision, roadmap, checklist, key milestones, and calendar, alongside your couple profile, dates, traditions, and overall aesthetic.", bullets:['Roadmap, checklist, milestones & calendar','Couple profile & wedding settings','Master color palette & aesthetic']},
+  'my-wedding':{title:'Wedding Blueprint', desc:"Your whole plan in one place — vision, roadmap, checklist, key milestones, and calendar, alongside your couple profile, dates, traditions, and overall aesthetic.", bullets:['Roadmap, checklist, milestones & calendar','Couple profile & wedding settings','Master color palette & aesthetic']},
   'events':{title:'Events', desc:"Every event in your wedding is its own workspace — with its own guests, vendors, budget, timeline, and look & feel.", bullets:['Unlimited custom events','Per-event guest eligibility & RSVP','Per-event budget, vendors & timeline']},
   'guests':{title:'Guests', desc:"Granular guest and household management connected to every event, RSVP, and seating chart.", bullets:['Households & individual guests','Per-event invitation & RSVP status','Dietary, accessibility & travel needs']},
   'wedding-party':{title:'Wedding Party Hub', desc:"A dedicated, reduced-access portal for your wedding party — their events, tasks, attire, and itinerary.", bullets:['Custom roles, not just bridesmaids/groomsmen','Personal itinerary & task list per member','Lookbook, attire & order status']},
@@ -1794,6 +1822,23 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.37.0', date:'2026-09-29',
+    title:'A rebuilt Guest Management space, user-set Event categories, a Checklist you can view by timeline, assignee, or category, and icon-based RSVP',
+    items:[
+      'Guests: rebuilt around a new Overview tab — Guests Added, RSVP Status, and Events stat cards, plus an "RSVPs by Event" table you can click into for a slide-out Pending RSVPs drawer (who hasn\'t responded, with a "Send Reminder to All" — clearly labeled as simulated, no real email/text is sent yet).',
+      'Guests: the guest table (now "All Guests") drops its inline filter row for a real sidebar Filters panel — Category, Event, RSVP Status, Tier, Party Size, and a "Needs attention only" toggle — with an Export CSV and Add Guest action alongside it.',
+      'Guests: Waitlist is now its own tab, not a card at the bottom of the list — same guest info, plus an honest "Added" date (real for any household added from now on, "—" for existing ones, never backfilled) and an editable Notes field per person. Auto-move rules and move history aren\'t built yet, so we left them out rather than show controls with nothing behind them.',
+      'Guests: RSVP by Event inside a household\'s own record now uses a compact ✓ / • / ✕ icon toggle instead of a Confirmed/Pending/Declined dropdown per person per event — the same three icons for both the "set everyone at once" header control and each individual\'s own status, so a big household\'s whole RSVP picture reads at a glance instead of a wall of dropdowns.',
+      'Checklist: adding a task now puts it at the top of the list, not the bottom, and you can switch how the whole checklist is grouped — by Timeline (the existing phase view), by Assignee, or by Category — from a new "View By" selector. Any task can be tagged 🏁 Milestone, and assigned to anyone on your wedding party or vendor list.',
+      'Events: Category and Subcategory replace the fixed Pre-Wedding/Weekend/Post-Wedding split — set your own category names (Settings has a new Event Categories card, identical to Guest Categories), add one inline from any event\'s own Details card, and give any event an optional subcategory like "Golf Outing" or "Welcome Brunch."',
+      'Events: Dress Code now covers White Tie, Black Tie, Black Tie Optional, Garden Party Attire, Beach Formal, Western, Traditional/Cultural Attire, and Costume/Themed, alongside the existing options — and fixed a real bug where "Beach Formal" incorrectly triggered the Black-Tie tuxedo/gown illustration because of a substring match.',
+      'Home: "Your Wedding Weekend" moved back below Budget Snapshot and Planning Progress.',
+      '"My Wedding Blueprint" is now just "Wedding Blueprint" throughout the app.',
+      'Wedding Blueprint: the hero is a single flat color with no gradient at all, instead of the multi-color blend it used before.',
+      'Backlog (not built): moving Inspiration boards into each event\'s own page instead of a standalone Inspiration tab (your idea — next batch), and full Pinterest account integration via OAuth, which needs real backend infrastructure Evera doesn\'t have yet.'
+    ]
+  },
   {
     version:'1.36.0', date:'2026-09-29',
     title:'Plan folded into your Wedding Blueprint, a redesigned Events page, and worldwide address search',
@@ -2269,7 +2314,8 @@ let runbookCollapsedEvents = {}; // eventId -> collapsed boolean, defaults to co
 let eventsView = 'list';     // 'list' | 'detail'
 let selectedEventId = null;
 let eventAddFormOpen = false;
-let eventsPhaseFilter = 'all'; // v1.36.0: 'all' | 'weekend' | 'pre' | 'post' | 'custom'
+let eventsCategoryFilter = 'all'; // 'all' or one of dashboardData.eventCategories
+let newEventCategoryPromptOpenFor = null; // event id currently showing the inline "+ new category" input, or null
 let budgetCollapsedMap = {};
 let budgetItemQuickAddOpen = false;  // Budget: "+ Add Line Item" up top — add a line item without picking a category first
 let budgetCategoryAddOpen = false;   // Budget: "+ New Category" up top
@@ -2299,6 +2345,8 @@ let seatingPaneSeatedCollapsed = false;   // seating chart: collapse state for t
 let tableRenameState = null;  // seating chart: {chartId, tableId} — open when a table's name on the floor plan is clicked, so it can be given a custom name
 let vendorBookingDetailId = null; // vendor booking id whose drill-in detail is open, if any
 let planFilterEvent = 'all', planFilterRole = 'all', planFilterPriority = 'all', planFilterStatus = 'open'; // Plan module task filters
+let planViewMode = 'timeline'; // 'timeline' | 'assignee' | 'category' — how the Checklist groups tasks
+let planCollapsedGroups = {}; // collapse state for the assignee/category view modes, keyed 'assignee:<id>' / 'category:<role>'
 let planExpandedTaskId = null; // which task row shows its inline Notes/Dependency editor
 let planCollapsedPhases = {}; // phase key -> collapsed boolean, lazily defaulted the first time each phase is seen
 let calendarAddFormOpen = false; // toggles the "+ Add an Event" inline form on Calendar at a Glance
@@ -3496,6 +3544,11 @@ function normalizeDashboardData(d){
     if(h.address.postalCode===undefined) h.address.postalCode = '';
     if(h.address.country===undefined) h.address.country = '';
     if(h.songRequest===undefined) h.songRequest = '';
+    // v1.37.0: a real add-date going forward, for the Waitlist card's "Added" column — existing
+    // households honestly show "—" rather than a fabricated date, since Evera never tracked this
+    // before now. A genuine note field too, editable right on the Waitlist row.
+    if(h.dateAddedISO===undefined) h.dateAddedISO = null;
+    if(h.waitlistNote===undefined) h.waitlistNote = '';
     if(!Array.isArray(h.invitedEvents)) h.invitedEvents = [];
     if(!h.eventRsvp || typeof h.eventRsvp !== 'object') h.eventRsvp = {};
     if(!h.memberEventExclusions || typeof h.memberEventExclusions !== 'object') h.memberEventExclusions = {};
@@ -3671,6 +3724,8 @@ function normalizeDashboardData(d){
     if(t.done===undefined) t.done = false;
     if(t.dueDateISO===undefined) t.dueDateISO = null;
     if(t.notes===undefined) t.notes = '';
+    if(t.assignedTo===undefined) t.assignedTo = null;
+    if(t.milestone===undefined) t.milestone = false;
   });
   if(!Array.isArray(d.bachParties)) d.bachParties = [];
   if(!Array.isArray(d.customCalendarEvents)) d.customCalendarEvents = [];
@@ -3761,6 +3816,7 @@ function normalizeDashboardData(d){
     if(e.limitedGuestHouseholdIds===undefined) e.limitedGuestHouseholdIds = null;
     if(e.inviteSendDateISO===undefined) e.inviteSendDateISO = '';
     if(!Array.isArray(e.inviteSentLog)) e.inviteSentLog = [];
+    if(!Array.isArray(e.reminderSentLog)) e.reminderSentLog = [];
     if(e.venueCapacity===undefined) e.venueCapacity = null;
     if(e.mealCollectionMode===undefined) e.mealCollectionMode = 'ask';
     // v1.35.0: an optional real cover photo per event (null = honest gradient placeholder,
@@ -3769,10 +3825,21 @@ function normalizeDashboardData(d){
     if(e.coverPhoto===undefined) e.coverPhoto = null;
     // v1.36.0: which part of the wedding an event falls in, auto-computed once from its date
     // relative to the wedding day, then left alone — a later date edit doesn't silently
-    // recategorize it, same convention as rsvpDeadlineISO above. Drives the Events page's
-    // Wedding Week(end)/Pre/Post/Custom filter tabs — see the v1.36.0 changelog entry.
+    // recategorize it, same convention as rsvpDeadlineISO above. Superseded as the Events page's
+    // own filter/label by the user-editable Category below, but kept on the record since it's
+    // still a genuine, honestly-computed fact about the event.
     if(e.weekendPhase===undefined) e.weekendPhase = autoEventWeekendPhase(e, d.weddingDateISO);
+    // Natasha's own follow-up ask: category + subcategory she can name herself, rather than a
+    // fixed Weekend/Pre/Post/Custom enum. Seeded once from the auto-computed weekendPhase above
+    // so existing events land somewhere sensible, then it's a plain editable field from then on.
+    if(e.category===undefined){
+      e.category = e.weekendPhase==='weekend' ? 'Wedding Weekend' : e.weekendPhase==='pre' ? 'Pre-Wedding' : e.weekendPhase==='post' ? 'Post-Wedding' : 'Other';
+    }
+    if(e.subcategory===undefined) e.subcategory = '';
   });
+  if(!Array.isArray(d.eventCategories)) d.eventCategories = ['Pre-Wedding','Wedding Weekend','Post-Wedding','Bachelor Party','Bachelorette Party','Other'];
+  // if any event's category isn't in the list yet (e.g. seeded above, or from older data), fold it in
+  d.events.forEach(e=>{ if(e.category && !d.eventCategories.includes(e.category)) d.eventCategories.push(e.category); });
   if(!Array.isArray(d.tasks)) d.tasks = [];
   d.tasks.forEach(t=>{
     if(t.dependsOn===undefined) t.dependsOn = null;
@@ -4094,7 +4161,7 @@ function renderRoute(key){
     playbookSection = 'timeline';
     document.getElementById('content').innerHTML = renderPlaybook();
   } else if(key==='events'){
-    eventsView = 'list'; selectedEventId = null; eventsPhaseFilter = 'all';
+    eventsView = 'list'; selectedEventId = null; eventsCategoryFilter = 'all';
     document.getElementById('content').innerHTML = renderEventsModule();
   } else if(key==='budget'){
     budgetTab = 'overview'; budgetOverviewView = 'category'; budgetItemQuickAddOpen = false; budgetCategoryAddOpen = false;
@@ -4239,13 +4306,6 @@ function renderHome(){
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-head"><h4>${escapeHtml(weddingWeekendCardLabel())}</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">View all events →</span></div>
-      <div class="event-photo-strip">
-        ${d.events.slice(0,4).map(e=>renderEventPhotoCard(e,true)).join('')}
-      </div>
-    </div>
-
     <div class="home-status-grid">
       <div class="card">
         <div class="card-head"><h4>Budget Snapshot</h4><span class="ch-link" onclick="renderRoute('budget')" style="cursor:pointer;">View full budget →</span></div>
@@ -4293,6 +4353,13 @@ function renderHome(){
             <span class="pc-detail">${overdueTasks>0 ? `${pluralize(overdueTasks,'task','tasks')} need attention` : 'On track'}</span>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h4>${escapeHtml(weddingWeekendCardLabel())}</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">View all events →</span></div>
+      <div class="event-photo-strip">
+        ${d.events.slice(0,4).map(e=>renderEventPhotoCard(e,true)).join('')}
       </div>
     </div>
 
@@ -5073,7 +5140,7 @@ function weddingBlueprintCompleteness(){
 function renderBlueprintVisionHero(){
   const d = dashboardData, wp = d.weddingProfile;
   const palette = wp.colorPalette||[];
-  const c1 = palette[0] || '#38473B', c2 = palette[1] || palette[0] || '#8B8577', c3 = palette[2] || palette[1] || palette[0] || '#C7A467';
+  const c1 = palette[0] || '#38473B';
   const textColor = contrastTextColor(c1)==='#FFFFFF' ? '#FBF8F1' : '#241F16';
   const days = daysToWedding();
   const images = blueprintCollageImages(3);
@@ -5092,7 +5159,7 @@ function renderBlueprintVisionHero(){
     collageHtml = `<div class="bp-hero-collage"><img class="bph-img-1" src="${escapeAttr(images[0])}" alt="A photo from your Inspiration board"><img class="bph-img-2" src="${escapeAttr(images[1])}" alt="A photo from your Inspiration board"><img class="bph-img-3" src="${escapeAttr(images[2])}" alt="A photo from your Inspiration board"></div>`;
   }
   return `
-    <div class="bp-hero" style="background:linear-gradient(125deg, ${escapeAttr(c1)}, ${escapeAttr(c2)}, ${escapeAttr(c3)}); color:${textColor};">
+    <div class="bp-hero" style="background:${escapeAttr(c1)}; color:${textColor};">
       <div class="bp-hero-copy">
         <div class="bp-hero-eyebrow">Your Wedding Blueprint</div>
         <div class="bp-hero-names">${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)}</div>
@@ -5897,16 +5964,99 @@ function ensurePlanPhaseDefaults(presentKeys){
   });
   if(presentKeys.includes('unphased') && planCollapsedPhases.unphased===undefined) planCollapsedPhases.unphased = false;
 }
+/* Generic collapsible task-group block, shared by all three view modes (Timeline/Assignee/
+   Category) so they render and behave identically — only how tasks get bucketed differs. */
+function renderTaskGroupBlock(label, hint, tasksInGroup, collapsed, toggleOnclick){
+  const doneCount = tasksInGroup.filter(t=>t.done).length;
+  const allDone = tasksInGroup.length>0 && doneCount===tasksInGroup.length;
+  return `
+    <div class="budget-cat-block">
+      <div class="budget-cat-head" onclick="${toggleOnclick}">
+        <svg class="bc-chevron ${collapsed?'':'open'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="bc-name">${escapeHtml(label)}</span>
+        ${hint ? `<span class="d-sub" style="font-weight:400;">${escapeHtml(hint)}</span>` : ''}
+        ${allDone ? '<span class="pill pill-ok">All Done</span>' : ''}
+        <span class="bc-summary">${doneCount} of ${tasksInGroup.length} done</span>
+      </div>
+      ${collapsed ? '' : `
+      <div class="budget-items" style="padding-left:0;">
+        <div class="budget-items-head" style="grid-template-columns:0.4fr 2fr 1fr 0.9fr 0.8fr 0.8fr 0.4fr;"><span></span><span>Task</span><span>Event</span><span>Role</span><span>Priority</span><span>Due</span><span></span></div>
+        ${tasksInGroup.map(t=>renderPlanTaskRow(t)).join('')}
+      </div>`}
+    </div>
+  `;
+}
+function renderPlanPhaseGroup(phase, tasksInPhase){
+  return renderTaskGroupBlock(phase.label, phase.hint, tasksInPhase, !!planCollapsedPhases[phase.key], `togglePlanPhase('${phase.key}')`);
+}
+function togglePlanGroup(key){
+  planCollapsedGroups[key] = !planCollapsedGroups[key];
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+/* Assignee view: bucket by t.assignedTo, resolved against the same taggablePeople() list used
+   for @mentions elsewhere in the app — one wedding-wide roster instead of a second one just for
+   tasks. Untitled/unassigned tasks land in a trailing "Unassigned" bucket rather than being hidden. */
+function renderPlanAssigneeGroups(tasks){
+  const nameById = {};
+  taggablePeople().forEach(p=>{ nameById[p.id]=p.name; });
+  const buckets = {};
+  tasks.forEach(t=>{
+    const key = t.assignedTo || 'unassigned';
+    (buckets[key] = buckets[key]||[]).push(t);
+  });
+  const keys = Object.keys(buckets).filter(k=>k!=='unassigned')
+    .sort((a,b)=> (nameById[a]||a).localeCompare(nameById[b]||b));
+  if(buckets.unassigned) keys.push('unassigned');
+  return keys.map(k=>{
+    const label = k==='unassigned' ? 'Unassigned' : (nameById[k] || 'Unassigned');
+    const groupKey = `assignee:${k}`;
+    return renderTaskGroupBlock(label, '', buckets[k], !!planCollapsedGroups[groupKey], `togglePlanGroup('${groupKey}')`);
+  }).join('');
+}
+/* Category view: reuses the existing t.role taxonomy (Couple/Wedding Party/Vendor/Planner) —
+   the same one already driving the Role filter and column — rather than inventing a second,
+   parallel categorization. */
+function renderPlanCategoryGroups(tasks){
+  const order = ['Couple','Wedding Party','Vendor','Planner'];
+  const buckets = {};
+  tasks.forEach(t=>{
+    const key = t.role || 'Couple';
+    (buckets[key] = buckets[key]||[]).push(t);
+  });
+  const keys = order.filter(k=>buckets[k]&&buckets[k].length)
+    .concat(Object.keys(buckets).filter(k=>!order.includes(k)));
+  return keys.map(k=>{
+    const groupKey = `category:${k}`;
+    return renderTaskGroupBlock(k, '', buckets[k], !!planCollapsedGroups[groupKey], `togglePlanGroup('${groupKey}')`);
+  }).join('');
+}
+function switchPlanViewMode(mode){ planViewMode = mode; document.getElementById('content').innerHTML = renderPlanModule(); }
 function renderPlanTasksTab(){
   const d = dashboardData;
   const tasks = filteredTasks();
-  const knownKeys = new Set(PLAN_PHASES.map(p=>p.key));
-  const groups = PLAN_PHASES.map(ph=>({phase:ph, tasks: tasks.filter(t=>(t.phase||'unphased')===ph.key)})).filter(g=>g.tasks.length);
-  const otherTasks = tasks.filter(t=>!knownKeys.has(t.phase||'unphased'));
-  if(otherTasks.length) groups.push({phase:{key:'unphased', label:'Other Tasks', hint:''}, tasks:otherTasks});
-  ensurePlanPhaseDefaults(groups.map(g=>g.phase.key));
-  const allExpanded = groups.length>0 && groups.every(g=>!planCollapsedPhases[g.phase.key]);
+  let groupsHtml = '', allExpanded = true, hasGroups = false;
+  if(planViewMode==='timeline'){
+    const knownKeys = new Set(PLAN_PHASES.map(p=>p.key));
+    const groups = PLAN_PHASES.map(ph=>({phase:ph, tasks: tasks.filter(t=>(t.phase||'unphased')===ph.key)})).filter(g=>g.tasks.length);
+    const otherTasks = tasks.filter(t=>!knownKeys.has(t.phase||'unphased'));
+    if(otherTasks.length) groups.push({phase:{key:'unphased', label:'Other Tasks', hint:''}, tasks:otherTasks});
+    ensurePlanPhaseDefaults(groups.map(g=>g.phase.key));
+    hasGroups = groups.length>0;
+    allExpanded = hasGroups && groups.every(g=>!planCollapsedPhases[g.phase.key]);
+    groupsHtml = groups.map(g=>renderPlanPhaseGroup(g.phase, g.tasks)).join('');
+  } else if(planViewMode==='assignee'){
+    const presentKeys = Array.from(new Set(tasks.map(t=>'assignee:'+(t.assignedTo||'unassigned'))));
+    hasGroups = tasks.length>0;
+    allExpanded = presentKeys.length>0 && presentKeys.every(k=>!planCollapsedGroups[k]);
+    groupsHtml = renderPlanAssigneeGroups(tasks);
+  } else {
+    const presentKeys = Array.from(new Set(tasks.map(t=>'category:'+(t.role||'Couple'))));
+    hasGroups = tasks.length>0;
+    allExpanded = presentKeys.length>0 && presentKeys.every(k=>!planCollapsedGroups[k]);
+    groupsHtml = renderPlanCategoryGroups(tasks);
+  }
   const stats = planStats();
+  const people = taggablePeople();
   return `
     <div class="party-summary-strip">
       <div class="ps-stat"><div class="ps-num">${stats.total}</div><div class="ps-label">Total Tasks</div></div>
@@ -5923,7 +6073,38 @@ function renderPlanTasksTab(){
           <button class="seg-btn ${planFilterStatus==='all'?'active':''}" onclick="switchPlanStatusFilter('all')">All</button>
         </div>
       </div>
+      <div class="detail-section" style="margin-top:0; padding-top:4px;">
+        <div class="detail-section-head"><h4 style="margin:0;">Add a Task</h4></div>
+        <div class="custom-add-row" style="flex-wrap:wrap;">
+          <input type="text" id="newTaskTitle" placeholder="Task title" style="flex:2; min-width:200px;">
+          <select id="newTaskEvent" class="select-field-sm" style="width:auto;">
+            <option value="">General</option>
+            ${d.events.map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
+          </select>
+          <select id="newTaskRole" class="select-field-sm" style="width:auto;">
+            ${['Couple','Wedding Party','Vendor','Planner'].map(r=>`<option value="${r}">${r}</option>`).join('')}
+          </select>
+          <select id="newTaskAssignee" class="select-field-sm" style="width:auto;">
+            <option value="">Unassigned</option>
+            ${people.map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
+          </select>
+          <select id="newTaskPriority" class="select-field-sm" style="width:auto;">
+            ${['Medium','High','Low'].map(p=>`<option value="${p}">${p}</option>`).join('')}
+          </select>
+          <input type="date" id="newTaskDue" class="select-field-sm" style="width:auto;">
+          <label class="d-sub" style="display:flex; align-items:center; gap:5px; white-space:nowrap; font-weight:600; cursor:pointer;"><input type="checkbox" id="newTaskMilestone" style="width:14px;height:14px;"> 🏁 Milestone</label>
+          <button class="btn btn-outline btn-sm" onclick="addTask()">+ Add Task</button>
+        </div>
+        <p class="detail-hint">New tasks are automatically sorted into the right section above based on their due date.</p>
+      </div>
       <div class="room-setup-row">
+        <div class="field-mini"><label>View By</label>
+          <select onchange="switchPlanViewMode(this.value)">
+            <option value="timeline" ${planViewMode==='timeline'?'selected':''}>Timeline</option>
+            <option value="assignee" ${planViewMode==='assignee'?'selected':''}>Assignee</option>
+            <option value="category" ${planViewMode==='category'?'selected':''}>Category</option>
+          </select>
+        </div>
         <div class="field-mini"><label>Event</label>
           <select onchange="updatePlanFilter('event',this.value)">
             <option value="all">All Events</option>
@@ -5944,65 +6125,32 @@ function renderPlanTasksTab(){
           </select>
         </div>
       </div>
-      ${groups.length ? `
+      ${hasGroups ? `
       <div style="display:flex;justify-content:flex-end;margin:-6px 0 12px;">
         <a href="#" class="ch-link" onclick="toggleAllPlanPhases(); return false;">${allExpanded ? 'Collapse all sections' : 'Expand all sections — see everything at a glance'}</a>
       </div>
-      ${groups.map(g=>renderPlanPhaseGroup(g.phase, g.tasks)).join('')}
+      ${groupsHtml}
       ` : `<p style="font-size:13px;color:var(--charcoal-faint);">No tasks match this filter.</p>`}
-      <div class="detail-section">
-        <div class="detail-section-head"><h4 style="margin:0;">Add a Task</h4></div>
-        <div class="custom-add-row" style="flex-wrap:wrap;">
-          <input type="text" id="newTaskTitle" placeholder="Task title" style="flex:2; min-width:200px;">
-          <select id="newTaskEvent" class="select-field-sm" style="width:auto;">
-            <option value="">General</option>
-            ${d.events.map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
-          </select>
-          <select id="newTaskRole" class="select-field-sm" style="width:auto;">
-            ${['Couple','Wedding Party','Vendor','Planner'].map(r=>`<option value="${r}">${r}</option>`).join('')}
-          </select>
-          <select id="newTaskPriority" class="select-field-sm" style="width:auto;">
-            ${['Medium','High','Low'].map(p=>`<option value="${p}">${p}</option>`).join('')}
-          </select>
-          <input type="date" id="newTaskDue" class="select-field-sm" style="width:auto;">
-          <button class="btn btn-outline btn-sm" onclick="addTask()">+ Add Task</button>
-        </div>
-        <p class="detail-hint">New tasks are automatically sorted into the right section above based on their due date.</p>
-      </div>
     </div>
   `;
 }
-function renderPlanPhaseGroup(phase, tasksInPhase){
-  const collapsed = !!planCollapsedPhases[phase.key];
-  const doneCount = tasksInPhase.filter(t=>t.done).length;
-  const allDone = tasksInPhase.length>0 && doneCount===tasksInPhase.length;
-  return `
-    <div class="budget-cat-block">
-      <div class="budget-cat-head" onclick="togglePlanPhase('${phase.key}')">
-        <svg class="bc-chevron ${collapsed?'':'open'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        <span class="bc-name">${escapeHtml(phase.label)}</span>
-        ${phase.hint ? `<span class="d-sub" style="font-weight:400;">${escapeHtml(phase.hint)}</span>` : ''}
-        ${allDone ? '<span class="pill pill-ok">All Done</span>' : ''}
-        <span class="bc-summary">${doneCount} of ${tasksInPhase.length} done</span>
-      </div>
-      ${collapsed ? '' : `
-      <div class="budget-items" style="padding-left:0;">
-        <div class="budget-items-head" style="grid-template-columns:0.4fr 2fr 1fr 0.9fr 0.8fr 0.8fr 0.4fr;"><span></span><span>Task</span><span>Event</span><span>Role</span><span>Priority</span><span>Due</span><span></span></div>
-        ${tasksInPhase.map(t=>renderPlanTaskRow(t)).join('')}
-      </div>`}
-    </div>
-  `;
+function taskAssigneeLabel(t){
+  if(!t.assignedTo) return null;
+  const p = taggablePeople().find(x=>x.id===t.assignedTo);
+  return p ? p.name : null;
 }
 function renderPlanTaskRow(t){
   const blockedBy = taskBlockedBy(t);
+  const assigneeName = taskAssigneeLabel(t);
   return `
     <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:0.4fr 2fr 1fr 0.9fr 0.8fr 0.8fr 0.4fr; ${t.done?'opacity:0.55;':''}">
       <span><input type="checkbox" style="width:16px;height:16px;" ${t.done?'checked':''} ${blockedBy&&!t.done?'disabled title="Blocked until its dependency is done"':''} onchange="toggleTaskDone('${t.id}')"></span>
       <span class="readonly-cell" style="cursor:pointer; ${t.done?'text-decoration:line-through;':''}" onclick="toggleTaskExpanded('${t.id}')">
-        ${escapeHtml(t.title)}
+        ${t.milestone?'<span class="pill pill-neutral" style="font-size:9px; padding:2px 6px; margin-right:5px; vertical-align:1px;">🏁 Milestone</span>':''}${escapeHtml(t.title)}
         ${blockedBy ? `<br><span class="d-sub" style="font-weight:600; color:var(--terracotta);">🔒 Blocked by: ${escapeHtml(blockedBy.title)}</span>` : ''}
+        ${assigneeName ? `<br><span class="d-sub" style="font-weight:400;">👤 ${escapeHtml(assigneeName)}</span>` : ''}
         ${t.notes?`<br><span class="d-sub" style="font-weight:400;">${escapeHtml(t.notes)}</span>`:''}
-        <span class="d-sub" style="font-weight:400;"> · ${planExpandedTaskId===t.id?'Hide':'Edit'} notes &amp; dependency</span>
+        <span class="d-sub" style="font-weight:400;"> · ${planExpandedTaskId===t.id?'Hide':'Edit'} details</span>
       </span>
       <span class="d-sub">${escapeHtml(taskEventLabel(t))}</span>
       <span class="d-sub">${escapeHtml(t.role)}</span>
@@ -6013,11 +6161,23 @@ function renderPlanTaskRow(t){
     ${planExpandedTaskId===t.id ? `
     <div class="detail-hint" style="background:var(--ivory-deep); border-radius:var(--radius-sm); padding:12px 14px; margin:2px 0 10px;">
       <div class="field-cell" style="margin-bottom:10px;"><label>Notes</label><textarea class="notes-field" style="min-height:56px;" placeholder="Any detail worth remembering about this task..." onchange="updateTaskField('${t.id}','notes',this.value)">${escapeHtml(t.notes)}</textarea></div>
-      <div class="field-cell" style="max-width:280px;"><label>Depends On</label>
-        <select onchange="updateTaskField('${t.id}','dependsOn',this.value||null)">
-          <option value="">No dependency</option>
-          ${tasksThatCanDependOn(t).map(o=>`<option value="${o.id}" ${t.dependsOn===o.id?'selected':''}>${escapeHtml(o.title)}</option>`).join('')}
-        </select>
+      <div style="display:flex; gap:14px; flex-wrap:wrap;">
+        <div class="field-cell" style="max-width:280px;"><label>Depends On</label>
+          <select onchange="updateTaskField('${t.id}','dependsOn',this.value||null)">
+            <option value="">No dependency</option>
+            ${tasksThatCanDependOn(t).map(o=>`<option value="${o.id}" ${t.dependsOn===o.id?'selected':''}>${escapeHtml(o.title)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell" style="max-width:220px;"><label>Assigned To</label>
+          <select onchange="updateTaskField('${t.id}','assignedTo',this.value||null)">
+            <option value="">Unassigned</option>
+            ${taggablePeople().map(p=>`<option value="${p.id}" ${t.assignedTo===p.id?'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell" style="max-width:160px;">
+          <label>Milestone</label>
+          <label class="d-sub" style="display:flex; align-items:center; gap:6px; font-weight:600; cursor:pointer; margin-top:6px;"><input type="checkbox" style="width:14px;height:14px;" ${t.milestone?'checked':''} onchange="updateTaskField('${t.id}','milestone',this.checked)"> 🏁 Tag as milestone</label>
+        </div>
       </div>
     </div>` : ''}
   `;
@@ -6028,10 +6188,20 @@ function togglePlanPhase(key){
 }
 function toggleAllPlanPhases(){
   const tasks = filteredTasks();
-  const knownKeys = new Set(PLAN_PHASES.map(p=>p.key));
-  const presentKeys = Array.from(new Set(tasks.map(t=> knownKeys.has(t.phase) ? t.phase : 'unphased')));
-  const allExpanded = presentKeys.length>0 && presentKeys.every(k=>!planCollapsedPhases[k]);
-  presentKeys.forEach(k=>{ planCollapsedPhases[k] = allExpanded; });
+  if(planViewMode==='timeline'){
+    const knownKeys = new Set(PLAN_PHASES.map(p=>p.key));
+    const presentKeys = Array.from(new Set(tasks.map(t=> knownKeys.has(t.phase) ? t.phase : 'unphased')));
+    const allExpanded = presentKeys.length>0 && presentKeys.every(k=>!planCollapsedPhases[k]);
+    presentKeys.forEach(k=>{ planCollapsedPhases[k] = allExpanded; });
+  } else if(planViewMode==='assignee'){
+    const presentKeys = Array.from(new Set(tasks.map(t=>'assignee:'+(t.assignedTo||'unassigned'))));
+    const allExpanded = presentKeys.length>0 && presentKeys.every(k=>!planCollapsedGroups[k]);
+    presentKeys.forEach(k=>{ planCollapsedGroups[k] = allExpanded; });
+  } else {
+    const presentKeys = Array.from(new Set(tasks.map(t=>'category:'+(t.role||'Couple'))));
+    const allExpanded = presentKeys.length>0 && presentKeys.every(k=>!planCollapsedGroups[k]);
+    presentKeys.forEach(k=>{ planCollapsedGroups[k] = allExpanded; });
+  }
   document.getElementById('content').innerHTML = renderPlanModule();
 }
 function switchPlanStatusFilter(v){ planFilterStatus=v; document.getElementById('content').innerHTML = renderPlanModule(); }
@@ -6084,10 +6254,12 @@ function addTask(){
   if(!title) return;
   const eventId = document.getElementById('newTaskEvent').value || null;
   const role = document.getElementById('newTaskRole').value;
+  const assignedTo = document.getElementById('newTaskAssignee').value || null;
   const priority = document.getElementById('newTaskPriority').value;
   const dueDateISO = document.getElementById('newTaskDue').value || null;
+  const milestone = document.getElementById('newTaskMilestone').checked;
   if(!Array.isArray(dashboardData.tasks)) dashboardData.tasks=[];
-  dashboardData.tasks.push({id:'task-'+Date.now().toString(36), title, eventId, role, priority, done:false, dueDateISO, notes:'', dependsOn:null, phase: phaseForDueDate(dueDateISO)});
+  dashboardData.tasks.push({id:'task-'+Date.now().toString(36), title, eventId, role, assignedTo, priority, done:false, dueDateISO, notes:'', dependsOn:null, milestone, phase: phaseForDueDate(dueDateISO)});
   document.getElementById('content').innerHTML = renderPlanModule();
 }
 
@@ -6141,7 +6313,7 @@ function renderInspirationModule(){
   return `
     <div class="card">
       <div class="card-head"><h4>Inspiration</h4><span class="d-sub">One board per event, so the look stays connected to your plan</span></div>
-      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Upload your own reference images for each category below — Evera doesn't fabricate inspiration photos for you. Once you've added some, your Master Colour Palette (on My Wedding Blueprint) can pull real colours straight from them.</p>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Upload your own reference images for each category below — Evera doesn't fabricate inspiration photos for you. Once you've added some, your Master Colour Palette (on Wedding Blueprint) can pull real colours straight from them.</p>
     </div>
     ${d.events.length ? `
     <div style="display:flex;justify-content:flex-end;margin:-6px 0 12px;">
@@ -6725,7 +6897,7 @@ function renderWebsiteModule(){
             <input type="text" id="newWebsiteHexColor" placeholder="#RRGGBB" maxlength="7" style="max-width:130px; text-transform:uppercase;">
             <button class="btn btn-outline btn-sm" onclick="addWebsiteCustomPaletteColor()">+ Add by Hex Code</button>
           </div>
-        ` : `<p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Using your Master Colour Palette from My Wedding Blueprint (${d.weddingProfile.colorPalette.map(c=>c.toUpperCase()).join(', ')}).</p>`}
+        ` : `<p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Using your Master Colour Palette from Wedding Blueprint (${d.weddingProfile.colorPalette.map(c=>c.toUpperCase()).join(', ')}).</p>`}
       </div>
     </div>
 
@@ -6998,7 +7170,7 @@ function renderSettingsModule(){
         <div class="field-cell"><label>Your Name</label><input type="text" value="${escapeAttr(d.partner1)}" disabled></div>
         <div class="field-cell"><label>Partner's Name</label><input type="text" value="${escapeAttr(d.partner2)}" disabled></div>
       </div>
-      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:10px;">Names are split into first &amp; last name in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('my-wedding')">My Wedding Blueprint →</span></p>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:10px;">Names are split into first &amp; last name in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('my-wedding')">Wedding Blueprint →</span></p>
     </div>
 
     <div class="card">
@@ -7060,6 +7232,22 @@ function renderSettingsModule(){
         <button class="btn btn-outline btn-sm" onclick="addGuestCategoryFromSettings()">+ Add Category</button>
       </div>
       <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">You can also add a new category on the fly from Guest Management while adding a guest.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h4>Event Categories</h4><span class="d-sub">Rename or remove the categories available on each event's Details card</span></div></div>
+      <div class="budget-items" style="padding-left:0;">
+        ${(dashboardData.eventCategories||[]).map(cat=>`
+          <div class="budget-item-row" style="grid-template-columns:1fr 0.4fr;">
+            <input type="text" class="select-field-sm" value="${escapeAttr(cat)}" onchange="renameEventCategory('${escapeAttr(cat)}', this.value)">
+            <a href="#" class="danger-link" onclick="removeEventCategory('${escapeAttr(cat)}'); return false;">✕</a>
+          </div>`).join('') || `<p style="font-size:13px;color:var(--charcoal-faint);">No categories yet — add one below.</p>`}
+      </div>
+      <div class="custom-add-row" style="margin-top:12px;">
+        <input type="text" id="newSettingsEventCategoryLabel" placeholder="New category (e.g. Bachelor Party, Welcome Brunch)">
+        <button class="btn btn-outline btn-sm" onclick="addEventCategoryFromSettings()">+ Add Category</button>
+      </div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">You can also add a new category on the fly from an event's own Details card.</p>
     </div>
 
     <div class="card">
@@ -10392,7 +10580,7 @@ const DEFAULT_GUEST_TIERS = [
   {key:'B', label:'Tier B — Waitlist', desc:"Invited if space opens up from Tier A declines."},
   {key:'C', label:'Tier C — Backup List', desc:"A backup list you may not get to — move people up as seats free up."}
 ];
-let guestsModuleTab = 'list'; // 'list' | 'seating' — seating chart overhaul (chunk 5) moved the chart here
+let guestsModuleTab = 'overview'; // 'overview' | 'list' | 'waitlist' | 'seating' | 'messages'
 let guestsGroupBy = 'family';
 let guestsSortBy = null; // null | 'family' | 'first' | 'last'
 let guestsSortDir = 'asc';
@@ -10401,6 +10589,10 @@ let guestsFilterTier = 'all';
 let guestsFilterCategory = 'all';
 let guestsFilterEvent = 'all';
 let householdDetailId = null; // household id whose drill-in detail is open, if any
+let pendingRsvpDrawerEventId = null; // v1.37.0: Overview tab's "click an event to see who's pending" drawer
+let guestsFiltersPanelOpen = false;
+let guestsFilterPartySize = 'all'; // 'all' | '1' | '2-4' | '5+'
+let guestsNeedsAttentionOnly = false;
 function householdPartySize(h){ return (h.members||[]).filter(m=>m.attending!==false).length; }
 function pluralize(n, singular, plural){ return `${n} ${n===1 ? singular : (plural||singular+'s')}`; }
 function guestOverallStats(){
@@ -10540,6 +10732,19 @@ function setHouseholdEventRsvp(householdId, eventId, status){
   refreshGuestsBackground();
   refreshHouseholdDetail();
 }
+function rsvpIconGroup(currentStatus, onClickBuilder){
+  // v1.37.0: shared iconography for confirmed/pending/declined — onClickBuilder(status) returns
+  // the onclick JS for that icon, so this one renderer serves both the per-member cells and the
+  // per-event "set all" header control.
+  const opts = [
+    {status:'confirmed', icon:'✓', cls:'rsvp-ic-confirmed', title:'Confirmed'},
+    {status:'pending', icon:'•', cls:'rsvp-ic-pending', title:'Pending'},
+    {status:'declined', icon:'✕', cls:'rsvp-ic-declined', title:'Declined'},
+  ];
+  return `<span class="rsvp-icon-group">${opts.map(o=>`
+    <button type="button" class="rsvp-icon-btn ${o.cls} ${currentStatus===o.status?'active':''}" title="${o.title}" onclick="${onClickBuilder(o.status)}">${o.icon}</button>
+  `).join('')}</span>`;
+}
 function toggleMemberEventExclusion(householdId, memberId, eventId){
   const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
   if(!h) return;
@@ -10641,6 +10846,9 @@ function householdEventChips(h){
   if(!h.invitedEvents || !h.invitedEvents.length) return '<span class="d-sub">All events</span>';
   return h.invitedEvents.map(id=>{ const e = d.events.find(x=>x.id===id); return e ? `<span class="pill pill-neutral">${escapeHtml(e.name)}</span>` : ''; }).join(' ');
 }
+function householdNeedsAttention(h){
+  return h.rsvpStatus==='pending' || h.rsvpStatus==='mixed' || !h.email;
+}
 function filteredHouseholds(){
   const d = dashboardData;
   return (d.guestHouseholds||[]).filter(h=>{
@@ -10648,6 +10856,13 @@ function filteredHouseholds(){
     if(guestsFilterTier!=='all' && h.tier!==guestsFilterTier) return false;
     if(guestsFilterCategory!=='all' && !(h.categories||[]).includes(guestsFilterCategory)) return false;
     if(guestsFilterEvent!=='all' && (h.invitedEvents||[]).length && !h.invitedEvents.includes(guestsFilterEvent)) return false;
+    if(guestsFilterPartySize!=='all'){
+      const size = householdPartySize(h);
+      if(guestsFilterPartySize==='1' && size!==1) return false;
+      if(guestsFilterPartySize==='2-4' && (size<2||size>4)) return false;
+      if(guestsFilterPartySize==='5+' && size<5) return false;
+    }
+    if(guestsNeedsAttentionOnly && !householdNeedsAttention(h)) return false;
     return true;
   });
 }
@@ -10656,6 +10871,13 @@ function switchGuestsRsvpFilter(f){ guestsFilterRsvp = f; document.getElementByI
 function updateGuestsTierFilter(v){ guestsFilterTier = v; document.getElementById('content').innerHTML = renderGuestsModule(); }
 function updateGuestsCategoryFilter(v){ guestsFilterCategory = v; document.getElementById('content').innerHTML = renderGuestsModule(); }
 function updateGuestsEventFilter(v){ guestsFilterEvent = v; document.getElementById('content').innerHTML = renderGuestsModule(); }
+function updateGuestsPartySizeFilter(v){ guestsFilterPartySize = v; document.getElementById('content').innerHTML = renderGuestsModule(); }
+function toggleGuestsNeedsAttentionOnly(v){ guestsNeedsAttentionOnly = v; document.getElementById('content').innerHTML = renderGuestsModule(); }
+function toggleGuestsFiltersPanel(){ guestsFiltersPanelOpen = !guestsFiltersPanelOpen; document.getElementById('content').innerHTML = renderGuestsModule(); }
+function clearGuestsFilters(){
+  guestsFilterRsvp='all'; guestsFilterTier='all'; guestsFilterCategory='all'; guestsFilterEvent='all'; guestsFilterPartySize='all'; guestsNeedsAttentionOnly=false;
+  document.getElementById('content').innerHTML = renderGuestsModule();
+}
 function renderNeedsSeatCard(){
   const rows = membersNeedingSeats();
   if(!rows.length) return '';
@@ -10675,32 +10897,43 @@ function renderNeedsSeatCard(){
     </div>
   `;
 }
-/* v1.36.0: rows now share the Guest List's own typography (readonly-cell/d-sub sizes) instead
-   of a slightly larger inline size, per Natasha's "should all be the same relative to the guest
-   list" feedback. */
-function renderWaitlistCard(){
+/* v1.37.0: promoted from a card at the bottom of All Guests to its own tab, with the fuller
+   column set (Size/Category/Tier/Added/Notes) Natasha's reference showed — "Added" is honestly
+   "—" for any household predating this version (Evera never tracked it before), and Notes is a
+   real, editable field rather than fabricated sample text. Auto-move rules, move history and a
+   "Manage rules" button from the reference are intentionally left out for now — no real logic
+   backs them yet, and Evera doesn't show UI for things that aren't real. */
+function renderWaitlistTab(){
   const info = waitlistInfo();
-  if(!info.waiting.length && !info.seatsFreed) return '';
   return `
     <div class="card">
-      <div class="card-head"><h4>Waitlist &amp; Capacity</h4>${info.seatsFreed ? `<span class="d-sub">${info.seatsFreed} seat${info.seatsFreed===1?'':'s'} freed by declines</span>` : ''}</div>
+      <div class="card-head">
+        <div><h4>Waitlist &amp; Capacity</h4><span class="d-sub">As RSVPs decline, move guests from your waitlist to fill available spots.</span></div>
+        ${info.seatsFreed ? `<span class="pill pill-warn">${info.seatsFreed} seat${info.seatsFreed===1?'':'s'} freed by declines</span>` : ''}
+      </div>
       ${info.waiting.length ? `
-        <p class="d-sub" style="margin-top:0;">As Tier A declines come in, work down this list to fill the seats they freed up.</p>
-        <div class="budget-items" style="padding-left:0;">
-          ${info.waiting.map(h=>{
-            const above = tiersAboveCurrent(h.tier);
-            return `
-            <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:1.6fr 1.4fr 1fr; cursor:default;">
-              <span class="readonly-cell">${escapeHtml(h.label)}</span>
-              <span class="d-sub">${tierPill(h.tier)} · ${pluralize(householdPartySize(h),'person','people')} · ${guestRsvpPill(h.rsvpStatus)}</span>
-              ${above.length ? `<select class="select-field-sm" style="width:auto;" onchange="if(this.value){updateHouseholdField('${h.id}','tier',this.value); this.value='';}">
-                <option value="">Move to…</option>
-                ${above.map(t=>`<option value="${escapeAttr(t.key)}">Tier ${escapeHtml(t.key)}</option>`).join('')}
-              </select>` : '<span></span>'}
-            </div>`;
-          }).join('')}
-        </div>
+      <div class="budget-items" style="padding-left:0;">
+        <div class="budget-items-head" style="grid-template-columns:1.3fr 0.6fr 1.1fr 0.7fr 0.9fr 1.3fr 0.9fr;"><span>Guest / Family</span><span>Size</span><span>Category</span><span>Tier</span><span>Added</span><span>Notes</span><span>Actions</span></div>
+        ${info.waiting.map(h=>renderWaitlistRow(h)).join('')}
+      </div>
       ` : `<p style="font-size:13px;color:var(--charcoal-faint);">Nobody is waitlisted right now.</p>`}
+    </div>
+  `;
+}
+function renderWaitlistRow(h){
+  const above = tiersAboveCurrent(h.tier);
+  return `
+    <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:1.3fr 0.6fr 1.1fr 0.7fr 0.9fr 1.3fr 0.9fr; align-items:center;">
+      <span class="readonly-cell" style="cursor:pointer;" onclick="openHouseholdDetail('${h.id}')">${escapeHtml(h.label)}</span>
+      <span class="d-sub">${householdPartySize(h)}</span>
+      <span class="d-sub">${(h.categories||[]).slice(0,2).map(c=>`<span class="pill pill-neutral" style="margin-right:3px;">${escapeHtml(c)}</span>`).join('') || '—'}</span>
+      <span>${tierPill(h.tier)}</span>
+      <span class="d-sub">${h.dateAddedISO ? fmtDateLabel(h.dateAddedISO) : '—'}</span>
+      <input type="text" class="select-field-sm" placeholder="Add a note…" value="${escapeAttr(h.waitlistNote||'')}" onchange="updateHouseholdField('${h.id}','waitlistNote',this.value)">
+      ${above.length ? `<select class="select-field-sm" style="width:auto;" onchange="if(this.value){updateHouseholdField('${h.id}','tier',this.value); this.value='';}">
+        <option value="">Move to…</option>
+        ${above.map(t=>`<option value="${escapeAttr(t.key)}">Tier ${escapeHtml(t.key)}</option>`).join('')}
+      </select>` : '<span class="d-sub">Top tier</span>'}
     </div>
   `;
 }
@@ -10708,81 +10941,245 @@ function renderGuestsModule(){
   return `
     <div class="module-header">
       <div class="mh-copy">
-        <div class="seg-control">
-          <button class="seg-btn ${guestsModuleTab==='list'?'active':''}" onclick="switchGuestsModuleTab('list')">Guest List</button>
+        <div class="seg-control" style="flex-wrap:wrap;">
+          <button class="seg-btn ${guestsModuleTab==='overview'?'active':''}" onclick="switchGuestsModuleTab('overview')">Overview</button>
+          <button class="seg-btn ${guestsModuleTab==='list'?'active':''}" onclick="switchGuestsModuleTab('list')">All Guests</button>
+          <button class="seg-btn ${guestsModuleTab==='waitlist'?'active':''}" onclick="switchGuestsModuleTab('waitlist')">Waitlist</button>
           <button class="seg-btn ${guestsModuleTab==='seating'?'active':''}" onclick="switchGuestsModuleTab('seating')">Seating Chart</button>
           <button class="seg-btn ${guestsModuleTab==='messages'?'active':''}" onclick="switchGuestsModuleTab('messages')" title="Not the same as the Messages module in the sidebar — this is specifically your RSVP messaging to guests">Guest Messages</button>
         </div>
       </div>
     </div>
-    ${guestsModuleTab==='seating' ? renderSeatingChartSection(false) : guestsModuleTab==='messages' ? renderGuestMessagesTab() : renderGuestListTab()}
+    ${guestsModuleTab==='overview' ? renderGuestsOverviewTab()
+      : guestsModuleTab==='seating' ? renderSeatingChartSection(false)
+      : guestsModuleTab==='messages' ? renderGuestMessagesTab()
+      : guestsModuleTab==='waitlist' ? renderWaitlistTab()
+      : renderGuestListTab()}
   `;
 }
 function switchGuestsModuleTab(key){ guestsModuleTab = key; document.getElementById('content').innerHTML = renderGuestsModule(); }
+/* v1.37.0: the Guests page's new landing tab — the stat cards, the RSVPs-by-Event table (now a
+   real table with a photo thumbnail, date, invited/confirmed/pending/declined counts and a
+   response-rate bar, replacing the old compact icon card here), and a click-into-event "Pending
+   RSVPs" drawer for sending reminders — built from Natasha's own reference screenshots. */
+function renderGuestsOverviewTab(){
+  const d = dashboardData;
+  const stats = guestOverallStats();
+  const totalKnown = stats.confirmedHeadcount + stats.pendingHeadcount + stats.declinedHeadcount;
+  const pct = n => totalKnown ? Math.round(n/totalKnown*100) : 0;
+  const addedPct = d.guestCount ? Math.min(100, Math.round(stats.totalIndividuals/d.guestCount*100)) : 0;
+  const toGo = d.guestCount ? Math.max(0, d.guestCount-stats.totalIndividuals) : 0;
+  const rsvpRows = eventRsvpBreakdown();
+  return `
+    <div class="module-header">
+      <div class="mh-copy"><p style="margin-top:0;">Manage your guests and track RSVPs across all events.</p></div>
+      <button class="btn btn-solid btn-sm" onclick="quickAddHousehold()">+ Add a Family, Party, or Guest</button>
+    </div>
+    <div class="grid-3" style="margin-bottom:20px;">
+      <div class="card">
+        <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.03em; font-size:11px;">Guests Added</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:32px; line-height:1.15; margin-top:4px;">${stats.totalIndividuals}</div>
+        <div class="d-sub">${d.guestCount ? `of ~${d.guestCount} expected` : 'Set an estimated guest count in Wedding Blueprint'}</div>
+        ${d.guestCount ? `
+        <div class="pc-track" style="margin-top:12px;"><div class="pc-fill" style="width:${addedPct}%;"></div></div>
+        <div style="display:flex; justify-content:space-between; margin-top:5px;"><span class="d-sub" style="color:var(--green); font-weight:600;">${addedPct}% complete</span><span class="d-sub">${toGo} to go</span></div>` : ''}
+      </div>
+      <div class="card">
+        <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.03em; font-size:11px;">RSVP Status <span style="text-transform:none; font-weight:400;">(across all events)</span></div>
+        <div style="display:flex; gap:22px; margin-top:10px;">
+          <div><div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:25px; color:var(--ok);">${stats.confirmedHeadcount}</div><div class="d-sub">Confirmed<br>${pct(stats.confirmedHeadcount)}%</div></div>
+          <div><div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:25px; color:var(--amber);">${stats.pendingHeadcount}</div><div class="d-sub">Pending<br>${pct(stats.pendingHeadcount)}%</div></div>
+          <div><div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:25px; color:var(--terracotta);">${stats.declinedHeadcount}</div><div class="d-sub">Declined<br>${pct(stats.declinedHeadcount)}%</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.03em; font-size:11px;">Events</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:32px; line-height:1.15; margin-top:4px;">${d.events.length}</div>
+        <button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick="renderRoute('events')">Manage events →</button>
+      </div>
+    </div>
+    ${renderNeedsSeatCard()}
+    <div class="card">
+      <div class="card-head"><div><h4>RSVPs by Event</h4><span class="d-sub">Track response rates and see exactly who's attending each event — click a row to see who's still pending</span></div><span class="ch-link" style="cursor:pointer;" onclick="switchGuestsModuleTab('list')">View guest list →</span></div>
+      ${rsvpRows.length ? `
+      <div class="budget-items" style="padding-left:0;">
+        <div class="budget-items-head" style="grid-template-columns:1.9fr 0.9fr 0.7fr 0.7fr 0.7fr 1.2fr;"><span>Event</span><span>Date</span><span>Confirmed</span><span>Pending</span><span>Declined</span><span>Response Rate</span></div>
+        ${rsvpRows.map(r=>renderOverviewEventRsvpRow(r)).join('')}
+      </div>` : `<p style="font-size:13px;color:var(--charcoal-faint);">Add an event to start tracking RSVPs.</p>`}
+    </div>
+  `;
+}
+function renderOverviewEventRsvpRow(r){
+  const e = r.event;
+  const invited = r.confirmed + r.pending + r.declined;
+  const responded = r.confirmed + r.declined;
+  const rate = invited ? Math.round(responded/invited*100) : 0;
+  return `
+    <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:1.9fr 0.9fr 0.7fr 0.7fr 0.7fr 1.2fr; cursor:pointer; align-items:center;" onclick="openPendingRsvpDrawer('${e.id}')">
+      <span style="display:flex; align-items:center; gap:10px; min-width:0;">
+        <span style="width:34px; height:34px; border-radius:8px; flex-shrink:0; background-size:cover; background-position:center; ${e.coverPhoto ? `background-image:url('${escapeAttr(e.coverPhoto)}');` : eventCoverGradientStyle(e)}"></span>
+        <span style="min-width:0;"><span class="readonly-cell" style="display:block;">${escapeHtml(e.name)}</span><span class="d-sub">${escapeHtml(e.location||'Location TBD')}</span></span>
+      </span>
+      <span class="d-sub">${e.date?escapeHtml(e.date):'TBD'}</span>
+      <span style="color:var(--ok); font-weight:700;">${r.confirmed}</span>
+      <span style="color:var(--amber); font-weight:700;">${r.pending}</span>
+      <span style="color:var(--terracotta); font-weight:700;">${r.declined}</span>
+      <span style="display:flex; align-items:center; gap:8px;"><span class="d-sub" style="width:30px; flex-shrink:0;">${rate}%</span><span class="pc-track"><span class="pc-fill" style="width:${rate}%;"></span></span></span>
+    </div>
+  `;
+}
+function openPendingRsvpDrawer(eventId){
+  pendingRsvpDrawerEventId = eventId;
+  document.getElementById('pendingRsvpDrawerOverlay').innerHTML = renderPendingRsvpDrawer();
+  document.getElementById('pendingRsvpDrawerOverlay').classList.add('open');
+}
+function closePendingRsvpDrawer(){
+  pendingRsvpDrawerEventId = null;
+  document.getElementById('pendingRsvpDrawerOverlay').classList.remove('open');
+}
+function sendEventReminderSimulated(eventId){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e) return;
+  if(!Array.isArray(e.reminderSentLog)) e.reminderSentLog = [];
+  e.reminderSentLog.push({sentAt:new Date().toISOString()});
+  document.getElementById('pendingRsvpDrawerOverlay').innerHTML = renderPendingRsvpDrawer();
+}
+function renderPendingRsvpDrawer(){
+  if(!pendingRsvpDrawerEventId) return '';
+  const e = dashboardData.events.find(x=>x.id===pendingRsvpDrawerEventId);
+  if(!e) return '';
+  const pendingRows = eventGuestsByBucket(e.id, 'pending');
+  const lastReminder = (e.reminderSentLog&&e.reminderSentLog.length) ? e.reminderSentLog[e.reminderSentLog.length-1] : null;
+  return `
+    <div class="side-drawer">
+      <div class="sd-header-photo" style="${e.coverPhoto ? `background-image:url('${escapeAttr(e.coverPhoto)}');` : eventCoverGradientStyle(e)}"></div>
+      <button class="sd-close" onclick="closePendingRsvpDrawer()">✕</button>
+      <div class="sd-header">
+        <div class="sd-title-row">
+          <div>
+            <h3 style="margin:0 0 4px; font-size:19px;">Pending RSVPs</h3>
+            <div style="font-weight:600; font-size:14px;">${escapeHtml(e.name)}</div>
+            <div class="d-sub">${e.date?escapeHtml(e.date):'Date TBD'}${e.location?' · '+escapeHtml(e.location):''}</div>
+          </div>
+          <div class="sd-badge">
+            <div class="sd-badge-num">${pendingRows.length}</div>
+            <div class="sd-badge-lbl">awaiting<br>response</div>
+          </div>
+        </div>
+      </div>
+      <div class="sd-body">
+        ${pendingRows.length ? `
+        <button class="btn btn-solid btn-sm" style="width:100%; margin-bottom:4px;" onclick="sendEventReminderSimulated('${e.id}')">📨 Send Reminder to All (${pendingRows.length})</button>
+        <p class="d-sub" style="font-size:11px; margin:6px 0 4px;">${lastReminder ? `Last sent ${new Date(lastReminder.sentAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})} — simulated, no real email/text is sent yet.` : "Simulated — no real email/text is sent yet, this just logs that you meant to follow up."}</p>
+        <div style="margin-top:10px;">
+          ${pendingRows.map(r=>`
+            <div class="sd-guest-row">
+              <span class="sd-guest-avatar">${escapeHtml(nameInitials(memberDisplayName(r.m)))}</span>
+              <span style="flex:1; min-width:0; cursor:pointer;" onclick="closePendingRsvpDrawer(); openHouseholdDetail('${r.h.id}');">
+                <span style="display:block; font-weight:600; font-size:13px;">${escapeHtml(memberDisplayName(r.m))}</span>
+                <span class="d-sub">${escapeHtml(r.h.label)}</span>
+              </span>
+              <span class="pill pill-warn" style="font-size:10px;">No response</span>
+            </div>`).join('')}
+        </div>
+        ` : `<p class="d-sub" style="margin-top:10px;">Everyone invited has responded — nobody's pending for this event.</p>`}
+      </div>
+    </div>
+  `;
+}
+/* v1.37.0: the sidebar Filters panel replacing the old always-visible inline dropdown row, per
+   Natasha's reference — Category/Event/RSVP status/Tier/Party size plus a real "needs attention"
+   toggle (pending or mixed RSVP, or no email on file). Group By stays separate, just above the
+   table, since it changes how rows are arranged rather than which ones show. */
+function activeGuestsFilterCount(){
+  let n=0;
+  if(guestsFilterRsvp!=='all') n++;
+  if(guestsFilterTier!=='all') n++;
+  if(guestsFilterCategory!=='all') n++;
+  if(guestsFilterEvent!=='all') n++;
+  if(guestsFilterPartySize!=='all') n++;
+  if(guestsNeedsAttentionOnly) n++;
+  return n;
+}
+function renderGuestsFiltersPanel(){
+  const d = dashboardData;
+  const categories = d.guestCategories||[];
+  const tiers = d.guestTiers||[];
+  return `
+    <div class="card" style="width:250px; flex-shrink:0; padding:18px 20px;">
+      <div class="d-sub" style="font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:11px; margin-bottom:12px;">Filters</div>
+      <div class="field-cell" style="margin-bottom:12px;"><label>Category</label>
+        <select onchange="updateGuestsCategoryFilter(this.value)">
+          <option value="all" ${guestsFilterCategory==='all'?'selected':''}>All Categories</option>
+          ${categories.map(c=>`<option value="${escapeAttr(c)}" ${guestsFilterCategory===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-cell" style="margin-bottom:12px;"><label>Event</label>
+        <select onchange="updateGuestsEventFilter(this.value)">
+          <option value="all" ${guestsFilterEvent==='all'?'selected':''}>All Events</option>
+          ${d.events.map(e=>`<option value="${e.id}" ${guestsFilterEvent===e.id?'selected':''}>${escapeHtml(e.name)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-cell" style="margin-bottom:12px;"><label>RSVP Status</label>
+        <select onchange="switchGuestsRsvpFilter(this.value)">
+          <option value="all" ${guestsFilterRsvp==='all'?'selected':''}>All Status</option>
+          <option value="confirmed" ${guestsFilterRsvp==='confirmed'?'selected':''}>Confirmed</option>
+          <option value="pending" ${guestsFilterRsvp==='pending'?'selected':''}>Pending</option>
+          <option value="declined" ${guestsFilterRsvp==='declined'?'selected':''}>Declined</option>
+          <option value="mixed" ${guestsFilterRsvp==='mixed'?'selected':''}>Mixed</option>
+        </select>
+      </div>
+      <div class="field-cell" style="margin-bottom:12px;"><label>Tier</label>
+        <select onchange="updateGuestsTierFilter(this.value)">
+          <option value="all" ${guestsFilterTier==='all'?'selected':''}>All Tiers</option>
+          ${tiers.map(t=>`<option value="${escapeAttr(t.key)}" ${guestsFilterTier===t.key?'selected':''}>Tier ${escapeHtml(t.key)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-cell" style="margin-bottom:14px;"><label>Family / Party Size</label>
+        <select onchange="updateGuestsPartySizeFilter(this.value)">
+          <option value="all" ${guestsFilterPartySize==='all'?'selected':''}>Any Size</option>
+          <option value="1" ${guestsFilterPartySize==='1'?'selected':''}>Just 1</option>
+          <option value="2-4" ${guestsFilterPartySize==='2-4'?'selected':''}>2–4</option>
+          <option value="5+" ${guestsFilterPartySize==='5+'?'selected':''}>5+</option>
+        </select>
+      </div>
+      <label class="d-sub" style="display:flex; align-items:center; gap:7px; font-weight:600; cursor:pointer; margin-bottom:6px;">
+        <input type="checkbox" style="width:15px;height:15px;" ${guestsNeedsAttentionOnly?'checked':''} onchange="toggleGuestsNeedsAttentionOnly(this.checked)"> Needs attention only
+      </label>
+      <p class="d-sub" style="font-size:11px; margin:0 0 16px;">Pending or mixed RSVP, or no email on file.</p>
+      <button class="btn btn-outline btn-sm" style="width:100%;" onclick="clearGuestsFilters()">Clear Filters</button>
+    </div>
+  `;
+}
 function renderGuestListTab(){
   const d = dashboardData;
   const stats = guestOverallStats();
   const households = filteredHouseholds();
-  const categories = d.guestCategories||[];
-  const tiers = dashboardData.guestTiers||[];
   return `
-    <div class="party-summary-strip">
-      <div class="ps-stat"><div class="ps-num">${stats.households}</div><div class="ps-label">Families / Parties</div></div>
-      <div class="ps-stat"><div class="ps-num">${stats.totalIndividuals}</div><div class="ps-label">Individual Guests</div></div>
-      <div class="ps-stat"><div class="ps-num">${stats.confirmedHeadcount}</div><div class="ps-label">Confirmed Headcount</div></div>
-      <div class="ps-stat"><div class="ps-num">${stats.pendingHeadcount}</div><div class="ps-label">Pending</div></div>
-      <div class="ps-stat"><div class="ps-num">${stats.declinedHeadcount}</div><div class="ps-label">Declined</div></div>
-      <div class="ps-stat" style="cursor:pointer;" onclick="renderRoute('events')"><div class="ps-num">${d.events.length}</div><div class="ps-label">Events</div></div>
-    </div>
-    ${d.guestCount ? `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:-10px;">You've added ${stats.totalIndividuals} of your estimated ${d.guestCount} guests individually — add the rest as you collect names and RSVPs.</p>` : ''}
-    ${renderEventRsvpBreakdownCard()}
     ${renderNeedsSeatCard()}
     <div class="card">
       <div class="card-head">
-        <h4>Guest List</h4>
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-          <div class="seg-control seg-control-xs">
-            <button class="seg-btn ${guestsFilterRsvp==='all'?'active':''}" onclick="switchGuestsRsvpFilter('all')">All</button>
-            <button class="seg-btn ${guestsFilterRsvp==='confirmed'?'active':''}" onclick="switchGuestsRsvpFilter('confirmed')">Confirmed</button>
-            <button class="seg-btn ${guestsFilterRsvp==='pending'?'active':''}" onclick="switchGuestsRsvpFilter('pending')">Pending</button>
-            <button class="seg-btn ${guestsFilterRsvp==='declined'?'active':''}" onclick="switchGuestsRsvpFilter('declined')">Declined</button>
-            <button class="seg-btn ${guestsFilterRsvp==='mixed'?'active':''}" onclick="switchGuestsRsvpFilter('mixed')">Mixed</button>
-          </div>
+        <h4>All Guests</h4>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <select style="width:auto; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px; color:var(--charcoal);" onchange="switchGuestsGroupBy(this.value)">
+            <option value="family" ${guestsGroupBy==='family'?'selected':''}>Group: Family</option>
+            <option value="individual" ${guestsGroupBy==='individual'?'selected':''}>Group: Individual</option>
+            <option value="tier" ${guestsGroupBy==='tier'?'selected':''}>Group: Tier</option>
+            <option value="category" ${guestsGroupBy==='category'?'selected':''}>Group: Category</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="toggleGuestsFiltersPanel()">${guestsFiltersPanelOpen?'Hide Filters':'Filters'}${activeGuestsFilterCount()>0?` (${activeGuestsFilterCount()})`:''}</button>
           <button class="btn btn-outline btn-sm" onclick="exportMailingList()">⬇ Export Mailing List (CSV)</button>
           <button class="btn btn-solid btn-sm" onclick="quickAddHousehold()">+ Add a Family, Party, or Guest</button>
         </div>
       </div>
-      <div class="room-setup-row">
-        <div class="field-mini"><label>Tier</label>
-          <select onchange="updateGuestsTierFilter(this.value)">
-            <option value="all">All Tiers</option>
-            ${tiers.map(t=>`<option value="${escapeAttr(t.key)}" ${guestsFilterTier===t.key?'selected':''}>Tier ${escapeHtml(t.key)}</option>`).join('')}
-          </select>
+      <p class="d-sub" style="margin:-6px 0 14px;">${households.length} of ${(d.guestHouseholds||[]).length} families/parties shown${d.guestCount ? ` · ${stats.totalIndividuals} of ~${d.guestCount} guests added individually` : ''}</p>
+      <div style="display:flex; gap:20px; align-items:flex-start;">
+        <div style="flex:1; min-width:0;">
+          ${households.length ? renderGuestsGroupedView(households) : `<p style="font-size:13px;color:var(--charcoal-faint);">No families or guests match this filter yet.</p>`}
         </div>
-        <div class="field-mini"><label>Category</label>
-          <select style="width:150px;" onchange="updateGuestsCategoryFilter(this.value)">
-            <option value="all">All Categories</option>
-            ${categories.map(c=>`<option value="${escapeAttr(c)}" ${guestsFilterCategory===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
-          </select>
-        </div>
-        <div class="field-mini"><label>Event</label>
-          <select style="width:150px;" onchange="updateGuestsEventFilter(this.value)">
-            <option value="all">All Events</option>
-            ${d.events.map(e=>`<option value="${e.id}" ${guestsFilterEvent===e.id?'selected':''}>${escapeHtml(e.name)}</option>`).join('')}
-          </select>
-        </div>
-        <div class="field-mini"><label>Group By</label>
-          <select style="width:130px;" onchange="switchGuestsGroupBy(this.value)">
-            <option value="family" ${guestsGroupBy==='family'?'selected':''}>Family</option>
-            <option value="individual" ${guestsGroupBy==='individual'?'selected':''}>Individual</option>
-            <option value="tier" ${guestsGroupBy==='tier'?'selected':''}>Hierarchy (Tier)</option>
-            <option value="category" ${guestsGroupBy==='category'?'selected':''}>Category</option>
-          </select>
-        </div>
+        ${guestsFiltersPanelOpen ? renderGuestsFiltersPanel() : ''}
       </div>
-      ${households.length ? renderGuestsGroupedView(households) : `<p style="font-size:13px;color:var(--charcoal-faint);">No families or guests match this filter yet.</p>`}
     </div>
-    ${renderWaitlistCard()}
   `;
 }
 function quickAddHousehold(){
@@ -10793,6 +11190,7 @@ function quickAddHousehold(){
   const id = 'hh-'+Date.now().toString(36);
   const newHousehold = {
     id, label:'New Family or Guest', categories:[], tier:(dashboardData.guestTiers&&dashboardData.guestTiers[0]?dashboardData.guestTiers[0].key:'A'), rsvpStatus:'pending',
+    dateAddedISO: isoFromDate(new Date()), waitlistNote:'',
     email:'', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:[],
     eventRsvp:{}, memberEventExclusions:{}, surveyResponses:{},
     members:[{id:id+'-m1', salutation:'', firstName:'', lastName:'', attending:true, mealChoice:'', dietaryRestrictions:'', accessibilityNeeds:'', tableId:null, relationship:'', seating:{}, eventRsvp:{}}]
@@ -10938,12 +11336,7 @@ function renderHouseholdEventRsvpSection(h){
               ${events.map(e=>`
                 <th style="text-align:left; padding:6px 8px; border-bottom:1px solid var(--line-soft); min-width:130px;">
                   <div style="font-size:12.5px; font-weight:700; color:var(--charcoal);">${escapeHtml(e.name)}</div>
-                  ${multiMember ? `<select class="select-field-sm" style="margin-top:3px; font-size:11px;" onchange="if(this.value){setHouseholdEventRsvp('${h.id}','${e.id}',this.value); this.value='';}">
-                    <option value="">Set all…</option>
-                    <option value="confirmed">All Confirmed</option>
-                    <option value="declined">All Declined</option>
-                    <option value="pending">All Pending</option>
-                  </select>` : ''}
+                  ${multiMember ? `<div style="margin-top:3px;">${rsvpIconGroup('', s=>`setHouseholdEventRsvp('${h.id}','${e.id}','${s}')`)}</div><div class="d-sub" style="font-size:9.5px; margin-top:1px;">Set all</div>` : ''}
                 </th>
               `).join('')}
             </tr>
@@ -10958,13 +11351,9 @@ function renderHouseholdEventRsvpSection(h){
                     return `<td style="padding:6px 8px; border-bottom:1px solid var(--line-soft);"><a href="#" class="d-sub" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">Not invited — + Invite</a></td>`;
                   }
                   return `<td style="padding:6px 8px; border-bottom:1px solid var(--line-soft);">
-                    <div style="display:flex; align-items:center; gap:5px;">
-                      <select class="select-field-sm rsvp-event-select" onchange="setMemberEventRsvp('${h.id}','${m.id}','${e.id}',this.value)">
-                        <option value="pending" ${getMemberEventRsvp(h,m,e.id)==='pending'?'selected':''}>Pending</option>
-                        <option value="confirmed" ${getMemberEventRsvp(h,m,e.id)==='confirmed'?'selected':''}>Confirmed</option>
-                        <option value="declined" ${getMemberEventRsvp(h,m,e.id)==='declined'?'selected':''}>Declined</option>
-                      </select>
-                      ${multiMember ? `<a href="#" class="rsvp-event-exclude" title="Not invited to this event" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">✕</a>` : ''}
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      ${rsvpIconGroup(getMemberEventRsvp(h,m,e.id), s=>`setMemberEventRsvp('${h.id}','${m.id}','${e.id}','${s}')`)}
+                      ${multiMember ? `<a href="#" class="rsvp-event-exclude" title="Not invited to this event" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">⊘</a>` : ''}
                     </div>
                   </td>`;
                 }).join('')}
@@ -11380,7 +11769,7 @@ function renderSurveyEditor(s){
       <div style="display:flex; gap:16px; align-items:center; margin-top:12px; flex-wrap:wrap;">
         <label style="display:flex; align-items:center; gap:6px; font-size:12.5px;"><input type="checkbox" ${s.rsvpComponent!==false?'checked':''} onchange="toggleSurveyBoolField('${s.id}','rsvpComponent')"> Include an RSVP component</label>
         <label style="display:flex; align-items:center; gap:6px; font-size:12.5px;"><input type="checkbox" ${s.includeEventDateTime!==false?'checked':''} onchange="toggleSurveyBoolField('${s.id}','includeEventDateTime')"> Show event date &amp; time</label>
-        <label style="display:flex; align-items:center; gap:6px; font-size:12.5px;" title="${hasLogo?'':'Design a logo on My Wedding Blueprint first'}"><input type="checkbox" ${s.logoEnabled?'checked':''} ${hasLogo?'':'disabled'} onchange="toggleSurveyBoolField('${s.id}','logoEnabled')"> Embed our logo${hasLogo?'':' (no logo designed yet)'}</label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:12.5px;" title="${hasLogo?'':'Design a logo on Wedding Blueprint first'}"><input type="checkbox" ${s.logoEnabled?'checked':''} ${hasLogo?'':'disabled'} onchange="toggleSurveyBoolField('${s.id}','logoEnabled')"> Embed our logo${hasLogo?'':' (no logo designed yet)'}</label>
       </div>
       <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--line-soft);">
         <label style="font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--green-deep);">Questions</label>
@@ -11826,15 +12215,54 @@ function autoEventWeekendPhase(e, weddingDateISO){
   if(diffDays>=-1 && diffDays<=1) return 'weekend';
   return diffDays<0 ? 'pre' : 'post';
 }
-const EVENT_WEEKEND_PHASES = [
-  {key:'all', label:'All Events'},
-  {key:'weekend', label:'Wedding Weekend'},
-  {key:'pre', label:'Pre-Wedding'},
-  {key:'post', label:'Post-Wedding'},
-  {key:'custom', label:'Custom'}
-];
-function eventWeekendPhaseLabel(key){ return (EVENT_WEEKEND_PHASES.find(p=>p.key===key)||{}).label || 'Custom'; }
-function switchEventsPhaseFilter(key){ eventsPhaseFilter = key; document.getElementById('content').innerHTML = renderEventsModule(); }
+function switchEventsCategoryFilter(key){ eventsCategoryFilter = key; document.getElementById('content').innerHTML = renderEventsModule(); }
+/* Event Categories: a user-named, user-managed list (dashboardData.eventCategories), same
+   rename/remove/add pattern as Guest Categories in Settings — rather than a fixed
+   Weekend/Pre/Post/Custom enum, per Natasha's explicit ask to set the category names herself. */
+function renameEventCategory(oldLabel, newLabel){
+  newLabel = (newLabel||'').trim();
+  if(!newLabel || newLabel===oldLabel) { document.getElementById('content').innerHTML = renderSettingsModule(); return; }
+  const d = dashboardData;
+  if(!d.eventCategories.includes(newLabel)){
+    const idx = d.eventCategories.indexOf(oldLabel);
+    if(idx>-1) d.eventCategories[idx] = newLabel;
+  } else {
+    d.eventCategories = d.eventCategories.filter(c=>c!==oldLabel);
+  }
+  (d.events||[]).forEach(e=>{ if(e.category===oldLabel) e.category = newLabel; });
+  if(eventsCategoryFilter===oldLabel) eventsCategoryFilter = newLabel;
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function removeEventCategory(label){
+  const d = dashboardData;
+  d.eventCategories = d.eventCategories.filter(c=>c!==label);
+  (d.events||[]).forEach(e=>{ if(e.category===label) e.category = 'Other'; });
+  if(!d.eventCategories.includes('Other')) d.eventCategories.push('Other');
+  if(eventsCategoryFilter===label) eventsCategoryFilter = 'all';
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function addEventCategoryFromSettings(){
+  const el = document.getElementById('newSettingsEventCategoryLabel');
+  const label = (el.value||'').trim();
+  if(!label) return;
+  if(!dashboardData.eventCategories.includes(label)) dashboardData.eventCategories.push(label);
+  el.value = '';
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+/* Inline "+ New category" affordance right on an event's own Details card, mirroring the
+   household inline-add-category pattern in Guest Management — no need to leave the page. */
+function toggleNewEventCategoryPrompt(eventId){
+  newEventCategoryPromptOpenFor = newEventCategoryPromptOpenFor===eventId ? null : eventId;
+  document.getElementById('content').innerHTML = renderEventDetail(eventId);
+}
+function submitNewEventCategoryPrompt(eventId){
+  const el = document.getElementById('newEventCategoryInline');
+  const label = (el && el.value || '').trim();
+  if(!label) return;
+  if(!dashboardData.eventCategories.includes(label)) dashboardData.eventCategories.push(label);
+  newEventCategoryPromptOpenFor = null;
+  updateEventField(eventId, 'category', label);
+}
 function renderEventPhotoCard(e, compact){
   const stats = eventCompleteness(e);
   const cls = 'event-photo-card' + (compact ? ' epc-compact' : '');
@@ -11900,7 +12328,8 @@ function renderEventsList(){
   const totalGuestVisits = events.reduce((s,e)=>s+(e.guestCount||0),0);
   const onTrackCount = events.filter(e=>eventCompleteness(e).pct>=60).length;
   const totalBudgetAllocated = events.reduce((s,e)=>s+(e.budgetTarget||0),0);
-  const shown = eventsPhaseFilter==='all' ? events : events.filter(e=>(e.weekendPhase||'custom')===eventsPhaseFilter);
+  const categories = (d.eventCategories||[]).filter(c=>events.some(e=>e.category===c));
+  const shown = eventsCategoryFilter==='all' ? events : events.filter(e=>e.category===eventsCategoryFilter);
   return `
     <div class="module-header">
       <div class="mh-copy"><p style="margin-top:0;">Plan every celebration, all in one place — click into any event for its own timing, location, vendors and guest count.</p></div>
@@ -11913,8 +12342,12 @@ function renderEventsList(){
       <div class="ps-stat"><div class="ps-num">${onTrackCount} of ${events.length}</div><div class="ps-label">Events on Track</div></div>
       <div class="ps-stat"><div class="ps-num">${fmtMoney(totalBudgetAllocated)}</div><div class="ps-label">Total Budget Allocated</div></div>
     </div>
-    <div class="seg-control" style="margin-bottom:20px; flex-wrap:wrap;">
-      ${EVENT_WEEKEND_PHASES.map(p=>`<button class="seg-btn ${eventsPhaseFilter===p.key?'active':''}" onclick="switchEventsPhaseFilter('${p.key}')">${escapeHtml(p.label)}</button>`).join('')}
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
+      <div class="seg-control" style="flex-wrap:wrap;">
+        <button class="seg-btn ${eventsCategoryFilter==='all'?'active':''}" onclick="switchEventsCategoryFilter('all')">All Events</button>
+        ${categories.map(c=>`<button class="seg-btn ${eventsCategoryFilter===c?'active':''}" onclick="switchEventsCategoryFilter('${escapeAttr(c)}')">${escapeHtml(c)}</button>`).join('')}
+      </div>
+      <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Manage categories →</span>
     </div>
     ${shown.length ? `
     <div class="event-list">
@@ -12051,11 +12484,18 @@ function renderEventDetail(id){
       <div class="card-head" style="margin-bottom:14px;"><h4>Details</h4></div>
       <div class="field-grid">
         <div class="field-cell"><label>Date</label><input type="date" value="${e.dateISO||''}" onchange="updateEventField('${e.id}','dateISO',this.value)"></div>
-        <div class="field-cell"><label>Weekend</label>
-          <select onchange="updateEventField('${e.id}','weekendPhase',this.value)">
-            ${EVENT_WEEKEND_PHASES.filter(p=>p.key!=='all').map(p=>`<option value="${p.key}" ${(e.weekendPhase||'custom')===p.key?'selected':''}>${escapeHtml(p.label)}</option>`).join('')}
-          </select>
+        <div class="field-cell"><label>Category</label>
+          ${newEventCategoryPromptOpenFor===e.id ? `
+          <div style="display:flex; gap:6px;">
+            <input type="text" id="newEventCategoryInline" placeholder="New category name" autofocus style="flex:1;">
+            <button class="btn btn-outline btn-sm" onclick="submitNewEventCategoryPrompt('${e.id}')">Add</button>
+          </div>` : `
+          <select onchange="if(this.value==='__new__'){toggleNewEventCategoryPrompt('${e.id}');}else{updateEventField('${e.id}','category',this.value);}">
+            ${(dashboardData.eventCategories||[]).map(c=>`<option value="${escapeAttr(c)}" ${e.category===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
+            <option value="__new__">+ New category…</option>
+          </select>`}
         </div>
+        <div class="field-cell"><label>Subcategory <span class="d-sub" style="font-weight:400;">(optional)</span></label><input type="text" value="${escapeAttr(e.subcategory||'')}" placeholder="e.g. Golf Outing, Welcome Brunch" onchange="updateEventField('${e.id}','subcategory',this.value)"></div>
         <div class="field-cell"><label>Start Time</label><input type="text" value="${escapeAttr(e.startTime||'')}" placeholder="e.g. 4:00 PM" onchange="updateEventField('${e.id}','startTime',this.value)"></div>
         <div class="field-cell"><label>End Time</label><input type="text" value="${escapeAttr(e.endTime||'')}" placeholder="e.g. 4:30 PM" onchange="updateEventField('${e.id}','endTime',this.value)"></div>
         <div class="field-cell"><label>Venue Access Time</label><input type="text" value="${escapeAttr(e.accessTime||'')}" placeholder="e.g. 1:30 PM for setup" onchange="updateEventField('${e.id}','accessTime',this.value)"></div>
@@ -12254,11 +12694,19 @@ function pickAddressLookupResult(kind, id, idx){
 }
 /* ---- Dress code visual (stylized attire moodboard — not photographic, since no image-generation tool is available in this session) ---- */
 const DRESS_CODE_OPTIONS = [
-  {value:'Casual / Brunch', desc:'Relaxed daytime wear — sundresses, chinos, linen shirts. Comfortable shoes recommended.'},
-  {value:'Cocktail / Semi-Formal', desc:'Knee-length dresses or dressy separates; suits without a tie are fine. A step up from business casual.'},
+  {value:'White Tie', desc:'The most formal dress code — tailcoats and white bow ties for men, full-length ball gowns for women.'},
+  {value:'Black Tie', desc:'Tuxedos or dark formal suits for men, floor-length or formal cocktail dresses for women.'},
+  {value:'Black Tie Optional', desc:'A tuxedo is welcome but not required — a dark formal suit is also appropriate. Floor-length or formal cocktail dresses.'},
   {value:'Formal / Black-Tie', desc:'Floor-length gowns, tuxedos or dark formal suits. Avoid casual fabrics like denim or cotton.'},
+  {value:'Cocktail / Semi-Formal', desc:'Knee-length dresses or dressy separates; suits without a tie are fine. A step up from business casual.'},
   {value:'Festive & Colourful', desc:'Bright, festive colours are encouraged — comfortable seating attire since you may be seated on the floor or low cushions.'},
   {value:'Bright Colours Encouraged', desc:'Rich jewel tones and bright colour are welcome — please avoid all-white or all-black outfits.'},
+  {value:'Garden Party Attire', desc:'Light fabrics and sundresses, suits without a jacket — outdoor-friendly, and heels that can handle grass are worth a second thought.'},
+  {value:'Beach Formal', desc:'Dressy but breathable — linen suits, sundresses or maxi dresses. Skip the stilettos on sand.'},
+  {value:'Western', desc:'Western-formal — think pressed jeans or trousers, boots, button-downs and sundresses. Cowboy hats welcome.'},
+  {value:'Traditional / Cultural Attire', desc:'Traditional dress for your own culture or community is welcome and encouraged.'},
+  {value:'Casual / Brunch', desc:'Relaxed daytime wear — sundresses, chinos, linen shirts. Comfortable shoes recommended.'},
+  {value:'Costume / Themed', desc:'A themed dress code — describe the theme in your own words below.'},
   {value:'__custom__', desc:'Write your own dress code description.'}
 ];
 function dressCodeOptionFor(text){
@@ -12294,7 +12742,7 @@ function updateEventDressCodeChoice(id, value){
   }
 }
 const DRESS_CODE_VISUALS = [
-  {keys:['black-tie','black tie','formal'], label:'Formal / Black-Tie', palette:['#232E27','#38473B','#C7A467','#F4EFE3'], garments:['tuxedo-m','gown-f'], tip:'Floor-length gowns, tuxedos or dark formal suits. Avoid casual fabrics like denim or cotton.'},
+  {keys:['black-tie','black tie'], label:'Formal / Black-Tie', palette:['#232E27','#38473B','#C7A467','#F4EFE3'], garments:['tuxedo-m','gown-f'], tip:'Floor-length gowns, tuxedos or dark formal suits. Avoid casual fabrics like denim or cotton.'},
   {keys:['cocktail','semi-formal','semi formal'], label:'Cocktail / Semi-Formal', palette:['#4C6355','#CBB2A6','#A8834A','#FAF6EE'], garments:['suit-m','cocktail-f'], tip:'Knee-length dresses or dressy separates; suits without a tie are fine. A step up from business casual.'},
   {keys:['bright colour','bright color','colour encouraged','color encouraged','no white','no black'], label:'Bright Colours Encouraged', palette:['#C7A467','#AE5B41','#4C6355','#CBB2A6'], garments:['kurta-m','lehenga-f'], tip:'Rich jewel tones and bright colour are welcome — please avoid all-white or all-black outfits.'},
   {keys:['casual','brunch'], label:'Casual / Brunch', palette:['#E7DFCF','#CBB2A6','#8B8577','#FAF6EE'], garments:['linen-m','sundress-f'], tip:'Relaxed daytime wear — sundresses, chinos, linen shirts. Comfortable shoes recommended.'},
@@ -13827,7 +14275,7 @@ function renderSavingsPlanTab(){
           <div class="pace-stat"><div class="pace-num">${projectedAtWedding!==null ? fmtMoney(projectedAtWedding) : '—'}</div><div class="pace-label">projected savings by wedding</div></div>
         </div>
         <div class="pace-note">
-          ${weddingDate===null ? 'Set a wedding date in My Wedding Blueprint to project savings against your day.' :
+          ${weddingDate===null ? 'Set a wedding date in Wedding Blueprint to project savings against your day.' :
             `You still owe ${fmtMoney(amountStillOwed)} across your budget. At ${fmtMoney(sp.contributionAmount||0)} ${freqInfo.label.toLowerCase()}, you're projected to have ${fmtMoney(projectedAtWedding)} saved by your wedding — ${gap>0 ? `a shortfall of ${fmtMoney(gap)}.` : `${fmtMoney(Math.abs(gap))} more than you need.`}`}
         </div>
       </div>
