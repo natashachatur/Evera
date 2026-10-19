@@ -265,7 +265,7 @@
   .sb-item.active::before{content:''; position:absolute; left:-12px; top:8px; bottom:8px; width:3px; background:var(--champagne); border-radius:3px;}
   .sb-foot{padding:16px 20px 22px; border-top:1px solid rgba(239,233,218,0.1);}
   .sb-couple{display:flex; align-items:center; gap:10px; font-size:12.5px; color:#C9C3B2;}
-  .sb-avatar{width:32px; height:32px; border-radius:50%; background:linear-gradient(150deg,var(--rose),var(--champagne-light)); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; color:var(--green-deep); font-weight:700; font-size:13px; overflow:hidden;}
+  .sb-avatar{width:32px; height:32px; border-radius:50%; background:var(--champagne-light); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; color:var(--green-deep); font-weight:700; font-size:13px; overflow:hidden;}
   .sb-avatar img{width:100%; height:100%; object-fit:cover;}
   .sb-logo-chip{margin-left:auto;}
   .sb-logo-chip img{width:24px; height:24px; object-fit:contain; border-radius:5px; background:#fff; padding:2px;}
@@ -401,6 +401,8 @@
   .home-photo-hero .hph-priority b{color:var(--champagne-light);}
   .home-photo-hero .hph-photo-btn{position:relative; z-index:2; display:inline-flex; align-items:center; gap:7px; background:rgba(244,239,227,0.14); border:1px solid rgba(244,239,227,0.45); color:#fff; font-size:11.5px; font-weight:700; padding:8px 14px; border-radius:999px; white-space:nowrap; cursor:pointer;}
   .home-photo-hero .hph-photo-btn:hover{background:rgba(244,239,227,0.24);}
+  .home-photo-hero .hph-logo{position:absolute; top:18px; left:18px; z-index:2; width:48px; height:48px; border-radius:10px; background:rgba(255,255,255,0.94); padding:6px; box-shadow:0 2px 10px rgba(0,0,0,0.22); display:flex; align-items:center; justify-content:center;}
+  .home-photo-hero .hph-logo img{width:100%; height:100%; object-fit:contain; display:block;}
   .hph-actions{display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
 
   /* ---- v1.35.0: Budget Snapshot + Planning Progress two-up row ---- */
@@ -1264,6 +1266,7 @@
   .loc-suggest-row:hover{background:var(--green-tint); color:var(--green-deep);}
   .loc-suggest-status{padding:10px 14px; font-size:12px; color:var(--charcoal-faint); font-style:italic;}
   .loc-suggest-attribution{font-size:10.5px; color:var(--charcoal-faint); margin-top:6px; line-height:1.5;}
+  .field-help-icon{display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; border:1px solid var(--charcoal-faint); color:var(--charcoal-faint); font-size:9.5px; font-weight:700; margin-left:5px; cursor:help; vertical-align:middle;}
 
   /* ---- Dress code visual moodboard ---- */
   .dresscode-visual{margin-top:16px; border:1px solid var(--line); border-radius:14px; padding:16px 18px; background:linear-gradient(180deg, var(--paper) 0%, var(--ivory) 100%);}
@@ -1683,7 +1686,7 @@
         <button class="icon-btn" id="tbNotifBell" onclick="toggleNotificationsPanel()" title="Notifications" aria-label="Notifications"><svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
         <button class="icon-btn" onclick="toggleFeedbackPanel()" title="Feature requests &amp; bug reports" aria-label="Feature requests and bug reports"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/></svg></button>
         <button class="icon-btn" id="tbAssistantBtn" onclick="toggleAssistant()" title="Evera Assistant" aria-label="Evera Assistant" style="display:none;"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.2 5.6L20 10l-5.8 2.4L12 18l-2.2-5.6L4 10l5.8-2.4L12 2z"/></svg></button>
-        <div class="sb-avatar" style="background:linear-gradient(150deg,var(--champagne-light),var(--rose)); width:38px; height:38px; font-size:12px; cursor:pointer;" id="tbAvatar" onclick="renderRoute('settings')" title="Settings" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){renderRoute('settings');}">P&amp;J</div>
+        <div class="sb-avatar" style="background:var(--champagne-light); width:38px; height:38px; font-size:12px; cursor:pointer;" id="tbAvatar" onclick="renderRoute('settings')" title="Settings" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){renderRoute('settings');}">P&amp;J</div>
       </div>
     </div>
 
@@ -1699,8 +1702,10 @@
 <div class="item-overlay" id="vendorBookingOverlay" onclick="if(event.target===this) closeVendorBookingDetail();"><!-- injected --></div>
 <div class="item-overlay" id="vendorAddOverlay" onclick="if(event.target===this) closeVendorAddModal();"><!-- injected --></div>
 <div class="item-overlay" id="eventAddOverlay" onclick="if(event.target===this) closeEventAddModal();"><!-- injected --></div>
+<div class="item-overlay" id="addTaskOverlay" onclick="if(event.target===this) closeAddTaskModal();"><!-- injected --></div>
 <div class="item-overlay" id="budgetCategoryDeleteOverlay" onclick="if(event.target===this) closeBudgetCategoryDelete();"><!-- injected --></div>
 <div class="item-overlay" id="collaboratorPermissionsOverlay" onclick="if(event.target===this) closeCollaboratorPermissions();"><!-- injected --></div>
+<div class="item-overlay" id="addCollaboratorOverlay" onclick="if(event.target===this) closeAddCollaborator();"><!-- injected --></div>
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div class="item-overlay" id="calendarItemOverlay" onclick="if(event.target===this) closeCalendarItemDetail();"><!-- injected --></div>
@@ -1822,6 +1827,45 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.37.3', date:'2026-10-19',
+    title:'Seating chart RSVP-eligibility bug fixed, per-event guest invites surfaced, a Child flag, segregated meal selections, and sit-down/family-style/buffet meal collection',
+    items:[
+      'Fixed a real bug: a guest confirmed for the event their seating chart was actually for (e.g. the Reception) could still never show up as seatable, because eligibility was checked against that household\'s OVERALL RSVP status — which only reads "confirmed" once every invited event is confirmed for everyone. Now checks RSVP status for the specific event each seating chart belongs to, so a guest confirmed there appears as seatable right away, even if they\'re still pending on an unrelated event.',
+      'Guests: the RSVPs by Event breakdown now shows each event\'s own date right next to its RSVP deadline, clearly labeled ("Thu, Apr 22" / "RSVP by March 23, 2027") — the deadline is auto-suggested 30 days before the event date, which is why it reads earlier; previously only the deadline showed here, which could look like a mismatched date.',
+      'Guests: you can already invite just part of a family to a specific event (e.g. the whole family to the Church Ceremony, but only a few to the Bridal Shower) — the "⊘ Not invited — + Invite" link on each person\'s row in a family\'s RSVP by Event grid does exactly this. Centered and tightened that grid\'s headers so the event name sits directly over its "Set all" control with less padding throughout.',
+      'Guests: a family member\'s "Relation" dropdown is now a simple "Child?" checkbox instead, per request. (Relation itself still exists behind the scenes for members already tagged — the Photo Shot List\'s Generate Combinations and the Playbook\'s Grandparents contact list still use it — but it\'s no longer editable from this grid.)',
+      'Guests: kept the "Attending" checkbox as a separate manual flag from RSVP — it is a deliberate independent override (e.g. a confirmed guest who then can\'t make it) used across headcounts, budget math, and the seating/contact lists, distinct from per-event RSVP status.',
+      'Guests: when a family is invited to more than one event collecting a sit-down meal choice, those choices now live in their own "Meal Selections" grid (one row per guest, one column per event) instead of cramming extra columns into the Family Members table. Families with 0 or 1 such event still see a single Meal column right in Family Members.',
+      'Events: Meal Collection is now explicit about what each option means — "Sit-down meal — ask each guest to choose" versus "Family-style" or "Buffet," both of which just collect dietary restrictions & allergies instead of a per-guest meal pick.',
+      'Guests: Street Address already supports international address search (unrestricted since an earlier fix) — swapped its explanatory paragraph for a small "?" icon next to the field label so it no longer eats vertical space on the page.'
+    ]
+  },
+  {
+    version:'1.37.2', date:'2026-10-19',
+    title:'Multi-select Event categories, rich-text Planning Notes, a real Collaborator pop-out, and the Wedding Blueprint\'s remaining gradients flattened',
+    items:[
+      'Fixed a real bug: uploading a Wedding Logo or Couple Photo from Settings silently saved but never visibly updated the page, because the upload handlers only ever re-rendered Home — Settings is where the Wedding Logo control actually lives. Now refreshes whichever of Home or Settings is open.',
+      'Home: your Wedding Logo, once uploaded, now shows as a small badge on the photo hero at the top of the page.',
+      'Wedding Blueprint and the sidebar: flattened the remaining gradients to solid colours — the small couple-initials circle in the sidebar footer and topbar, and the Roadmap tab\'s Current Phase photo placeholder (the Blueprint hero and sidebar/topbar backgrounds themselves were already solid from an earlier pass).',
+      'Wedding Blueprint: the "Tools & Guides" subtab is gone — Budget Tracker, Vendor Directory, and Playbook & Timeline now live as quick links at the top of Guides & Tips instead.',
+      'Wedding Blueprint: removed the icon prefix from Traditions & Culture chips (Your Details tab) — just the name now.',
+      'Wedding Blueprint: Overall Aesthetic and Master Colour Palette are now one card, "Palette & Aesthetic," instead of two separate ones.',
+      'Events: Category is now multi-select — click any number of category chips on an event\'s Details card instead of picking one from a dropdown, since an event can genuinely belong to more than one group (e.g. both "Wedding Weekend" and a custom category).',
+      'Events: removed the Venue Access Time field from an event\'s Details card — track load-in/setup timing as a Wedding Plan task instead.',
+      'Events: Planning Notes is now a rich-text field (bold, italic, highlight, @mention tagging) instead of a plain text box, matching Vendor and Budget item notes.',
+      'Website: added an "Attire & Shopping" card — per visible event, a spot to upload your own real reference outfit photos (never a fabricated or scraped photo) alongside a few real, curated shopping links matched to that event\'s dress code.',
+      'Settings: "+ Add Collaborator" is now a single button that opens a pop-out collecting name, email, role, and full per-section access all at once, instead of an always-open name/email row that still needed a separate "Manage" step afterward.'
+    ]
+  },
+  {
+    version:'1.37.1', date:'2026-10-19',
+    title:'"Wedding Plan," and a tidier way to add a task',
+    items:[
+      'Checklist: the card is now called "Wedding Plan," not "Tasks & Checklists."',
+      'Checklist: "+ Add a Task" is now a simple button at the top of the card that opens a pop-out form, instead of the full add-task form always sitting open and taking up space on the page.'
+    ]
+  },
   {
     version:'1.37.0', date:'2026-09-29',
     title:'A rebuilt Guest Management space, user-set Event categories, a Checklist you can view by timeline, assignee, or category, and icon-based RSVP',
@@ -2348,6 +2392,7 @@ let planFilterEvent = 'all', planFilterRole = 'all', planFilterPriority = 'all',
 let planViewMode = 'timeline'; // 'timeline' | 'assignee' | 'category' — how the Checklist groups tasks
 let planCollapsedGroups = {}; // collapse state for the assignee/category view modes, keyed 'assignee:<id>' / 'category:<role>'
 let planExpandedTaskId = null; // which task row shows its inline Notes/Dependency editor
+let addTaskModalOpen = false; // v1.37.1: Wedding Plan's "+ Add a Task" is now a button + pop-out, not an always-visible inline form
 let planCollapsedPhases = {}; // phase key -> collapsed boolean, lazily defaulted the first time each phase is seen
 let calendarAddFormOpen = false; // toggles the "+ Add an Event" inline form on Calendar at a Glance
 let unavailAddFormOpen = false; // toggles the "+ Add Unavailability" inline form on Calendar at a Glance
@@ -3570,6 +3615,11 @@ function normalizeDashboardData(d){
       if(m.accessibilityNeeds===undefined) m.accessibilityNeeds = '';
       if(m.tableId===undefined) m.tableId = null;
       if(m.relationship===undefined) m.relationship = '';
+      // v1.37.3: Natasha's ask — the Family Members grid no longer shows "Relation to the
+      // couple" as an editable field (kept, unused, in the data model so the Photo Shot List's
+      // "Generate Combinations" button — which reads it for Mom/Dad/Siblings/Grandparents —
+      // still works for anyone already tagged). A simple "Child?" flag replaces it in the grid.
+      if(m.isChild===undefined) m.isChild = false;
       // v1.33.0: RSVP moved to the person level (source of truth) — the household's per-event
       // and overall status are now computed from each member's own status. Seed every invited
       // member from the household's existing per-event value so old/sample data displays
@@ -3832,14 +3882,28 @@ function normalizeDashboardData(d){
     // Natasha's own follow-up ask: category + subcategory she can name herself, rather than a
     // fixed Weekend/Pre/Post/Custom enum. Seeded once from the auto-computed weekendPhase above
     // so existing events land somewhere sensible, then it's a plain editable field from then on.
-    if(e.category===undefined){
-      e.category = e.weekendPhase==='weekend' ? 'Wedding Weekend' : e.weekendPhase==='pre' ? 'Pre-Wedding' : e.weekendPhase==='post' ? 'Post-Wedding' : 'Other';
+    // v1.37.2: category is now multi-select (an event can genuinely belong to more than one
+    // group, e.g. "Wedding Weekend" AND "Family Event") — e.categories is an array; the old
+    // single e.category string (if present from older saved data) is folded into it once.
+    if(e.categories===undefined){
+      if(e.category){
+        e.categories = [e.category];
+      } else {
+        e.categories = [e.weekendPhase==='weekend' ? 'Wedding Weekend' : e.weekendPhase==='pre' ? 'Pre-Wedding' : e.weekendPhase==='post' ? 'Post-Wedding' : 'Other'];
+      }
+      delete e.category;
     }
+    if(!Array.isArray(e.categories)) e.categories = e.categories ? [e.categories] : ['Other'];
+    if(!e.categories.length) e.categories = ['Other'];
     if(e.subcategory===undefined) e.subcategory = '';
+    // v1.37.2: real, couple-uploaded reference outfit photos per event for the website's Attire
+    // section — never a fabricated or scraped photo, same honest-upload convention as
+    // coverPhoto/couplePhoto/coupleLogo elsewhere in the app.
+    if(!Array.isArray(e.attirePhotos)) e.attirePhotos = [];
   });
   if(!Array.isArray(d.eventCategories)) d.eventCategories = ['Pre-Wedding','Wedding Weekend','Post-Wedding','Bachelor Party','Bachelorette Party','Other'];
   // if any event's category isn't in the list yet (e.g. seeded above, or from older data), fold it in
-  d.events.forEach(e=>{ if(e.category && !d.eventCategories.includes(e.category)) d.eventCategories.push(e.category); });
+  d.events.forEach(e=>{ (e.categories||[]).forEach(c=>{ if(c && !d.eventCategories.includes(c)) d.eventCategories.push(c); }); });
   if(!Array.isArray(d.tasks)) d.tasks = [];
   d.tasks.forEach(t=>{
     if(t.dependsOn===undefined) t.dependsOn = null;
@@ -4064,20 +4128,28 @@ function toggleSidebar(open){
 }
 
 function initials(a,b){ return (a?a[0]:'P').toUpperCase()+(b?b[0]:'J').toUpperCase(); }
+// v1.37.2: real bug fix — these upload/remove handlers only ever re-rendered the Home page,
+// but the Couple Photo and Wedding Logo controls both live on Settings too (the logo control
+// lives ONLY on Settings). Uploading from Settings silently updated the data but never refreshed
+// the page, so it looked like nothing happened. Now re-renders whichever of the two is active.
+function refreshPersonalizeHost(){
+  if(currentRouteKey==='home') document.getElementById('content').innerHTML = renderHome();
+  else if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule();
+}
 function handleCouplePhotoUpload(evt){
   const file = evt.target.files && evt.target.files[0];
   if(!file) return;
   const reader = new FileReader();
   reader.onload = function(e){
     dashboardData.couplePhoto = e.target.result;
-    if(currentRouteKey==='home') document.getElementById('content').innerHTML = renderHome();
+    refreshPersonalizeHost();
     updateChrome();
   };
   reader.readAsDataURL(file);
 }
 function removeCouplePhoto(){
   dashboardData.couplePhoto = null;
-  if(currentRouteKey==='home') document.getElementById('content').innerHTML = renderHome();
+  refreshPersonalizeHost();
   updateChrome();
 }
 function handleCoupleLogoUpload(evt){
@@ -4086,14 +4158,14 @@ function handleCoupleLogoUpload(evt){
   const reader = new FileReader();
   reader.onload = function(e){
     dashboardData.coupleLogo = e.target.result;
-    if(currentRouteKey==='home') document.getElementById('content').innerHTML = renderHome();
+    refreshPersonalizeHost();
     updateChrome();
   };
   reader.readAsDataURL(file);
 }
 function removeCoupleLogo(){
   dashboardData.coupleLogo = null;
-  if(currentRouteKey==='home') document.getElementById('content').innerHTML = renderHome();
+  refreshPersonalizeHost();
   updateChrome();
 }
 
@@ -4289,6 +4361,7 @@ function renderHome(){
     <div class="home-photo-hero ${d.couplePhoto ? 'has-photo' : ''}">
       <div class="hph-bg" style="${d.couplePhoto ? `background-image:url('${escapeAttr(d.couplePhoto)}');` : ''}"></div>
       <div class="hph-scrim"></div>
+      ${d.coupleLogo ? `<div class="hph-logo"><img src="${escapeAttr(d.coupleLogo)}" alt="Wedding logo"></div>` : ''}
       <div class="hph-content">
         <div>
           <h1>${homeGreeting()}, ${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} ♥</h1>
@@ -5200,19 +5273,13 @@ function renderBlueprintMoodboardStrip(){
   }
   return `<div class="bp-moodboard-strip">${images.map(src=>`<img src="${escapeAttr(src)}" alt="A photo from your Inspiration board">`).join('')}</div>`;
 }
-const TRADITION_ICONS = {
-  'Western':'💍', 'South Asian / Hindu':'🪔', 'Muslim':'☪️', 'Sikh':'🪯', 'Jewish':'✡️',
-  'Catholic / Christian':'✝️', 'Chinese':'🧧', 'Korean':'🎎', 'Persian':'🔥', 'Filipino':'🌺',
-  'Nigerian':'🥁', 'Jamaican':'🌴'
-};
-function traditionIcon(name){ return TRADITION_ICONS[name] || '✦'; }
 /* ---- v1.36.0: Plan folded into My Wedding Blueprint, per Natasha's direction — "the Blueprint
    tab should be where the overall project plan also lives, rather than it being in its own
    separate plan tab." The vision hero stays constant at the top; everything else now lives in
    one of six subtabs. Calendar at a Glance (renderCalendarCard(), untouched) is one of them.
    The existing 6-stage PLAN_PHASES is reused as the single phase taxonomy for both the new
    Roadmap timeline and the Checklist tab, rather than inventing a second, parallel one. ---- */
-let blueprintTab = 'roadmap'; // 'roadmap' | 'checklist' | 'milestones' | 'calendar' | 'guides' | 'details'
+let blueprintTab = 'roadmap'; // 'roadmap' | 'checklist' | 'milestones' | 'calendar' | 'details' — v1.37.2: 'guides' (Tools & Guides) moved out of Blueprint and into the Guides & Tips module instead, see renderGuidesList()
 function switchBlueprintTab(tab){ blueprintTab = tab; document.getElementById('content').innerHTML = renderMyWeddingModule(); }
 function renderMyWeddingModule(){
   return `
@@ -5222,14 +5289,12 @@ function renderMyWeddingModule(){
       <button class="seg-btn ${blueprintTab==='checklist'?'active':''}" onclick="switchBlueprintTab('checklist')">Checklist</button>
       <button class="seg-btn ${blueprintTab==='milestones'?'active':''}" onclick="switchBlueprintTab('milestones')">Milestones</button>
       <button class="seg-btn ${blueprintTab==='calendar'?'active':''}" onclick="switchBlueprintTab('calendar')">Calendar</button>
-      <button class="seg-btn ${blueprintTab==='guides'?'active':''}" onclick="switchBlueprintTab('guides')">Tools &amp; Guides</button>
       <button class="seg-btn ${blueprintTab==='details'?'active':''}" onclick="switchBlueprintTab('details')">Your Details</button>
     </div>
     ${blueprintTab==='roadmap' ? renderBlueprintRoadmapTab()
       : blueprintTab==='checklist' ? renderPlanTasksTab()
       : blueprintTab==='milestones' ? renderBlueprintMilestonesTab()
       : blueprintTab==='calendar' ? renderCalendarCard()
-      : blueprintTab==='guides' ? renderBlueprintToolsGuidesTab()
       : renderBlueprintDetailsTab()}
   `;
 }
@@ -5285,8 +5350,8 @@ function renderBlueprintDetailsTab(){
     <div class="card">
       <div class="card-head"><h4>Traditions &amp; Culture</h4><span class="d-sub">Shapes which events and vendor categories Evera suggests</span></div>
       <div class="chip-grid trad-chip-cloud">
-        ${TRADITION_PRESETS.map(t=>`<span class="chip ${wp.traditions.includes(t)?'selected':''}" onclick="toggleWeddingTradition('${t.replace(/'/g,"\\'")}')">${traditionIcon(t)} ${escapeHtml(t)}</span>`).join('')}
-        ${wp.traditions.filter(t=>!TRADITION_PRESETS.includes(t)).map(t=>`<span class="chip selected" onclick="toggleWeddingTradition('${t.replace(/'/g,"\\'")}')">${traditionIcon(t)} ${escapeHtml(t)}</span>`).join('')}
+        ${TRADITION_PRESETS.map(t=>`<span class="chip ${wp.traditions.includes(t)?'selected':''}" onclick="toggleWeddingTradition('${t.replace(/'/g,"\\'")}')">${escapeHtml(t)}</span>`).join('')}
+        ${wp.traditions.filter(t=>!TRADITION_PRESETS.includes(t)).map(t=>`<span class="chip selected" onclick="toggleWeddingTradition('${t.replace(/'/g,"\\'")}')">${escapeHtml(t)}</span>`).join('')}
       </div>
       <div class="custom-add-row" style="margin-top:12px;">
         <input type="text" id="newTraditionInput" placeholder="Add another tradition...">
@@ -5295,7 +5360,11 @@ function renderBlueprintDetailsTab(){
     </div>
 
     <div class="card">
-      <div class="card-head"><h4>Master Colour Palette</h4><span class="d-sub">Reused across your Playbook, Website and mood boards</span></div>
+      <div class="card-head"><h4>Palette &amp; Aesthetic</h4><span class="d-sub">Your colour story and overall look, reused across your Playbook, Website and mood boards</span></div>
+      <div class="field-cell" style="margin-bottom:18px;">
+        <label>Overall Aesthetic</label>
+        <textarea class="notes-field" placeholder="Describe the overall look and feel you're going for..." onchange="updateWeddingProfileField('aestheticNotes',this.value)">${escapeHtml(wp.aestheticNotes)}</textarea>
+      </div>
       <div class="palette-band">
         ${wp.colorPalette.map((c,i)=>`
           <div class="palette-swatch" style="background:${c};">
@@ -5324,11 +5393,6 @@ function renderBlueprintDetailsTab(){
         <div class="d-sub" style="margin-bottom:8px;">Inspired by your palette${wp.aestheticNotes?' & aesthetic notes':''} — some words and themes to spark ideas</div>
         <div class="chip-grid">${words.map(w=>`<span class="chip" style="cursor:default;">${escapeHtml(w)}</span>`).join('')}</div>
       </div>` : ''; })()}
-    </div>
-
-    <div class="card">
-      <div class="card-head"><h4>Overall Aesthetic</h4></div>
-      <textarea class="notes-field" placeholder="Describe the overall look and feel you're going for..." onchange="updateWeddingProfileField('aestheticNotes',this.value)">${escapeHtml(wp.aestheticNotes)}</textarea>
     </div>
 
     <div class="bp-chapter-label">Who's Involved</div>
@@ -5429,7 +5493,7 @@ function renderBlueprintRoadmapTab(){
 
     ${currentPhase ? `
     <div class="current-phase-card">
-      <div class="cpc-photo" ${photoSrc?`style="background-image:url('${escapeAttr(photoSrc)}');"`:`style="background:linear-gradient(150deg, var(--green-deep), var(--green));"`}></div>
+      <div class="cpc-photo" ${photoSrc?`style="background-image:url('${escapeAttr(photoSrc)}');"`:`style="background:var(--green-deep);"`}></div>
       <div class="cpc-body">
         <div class="cpc-eyebrow">Current Phase</div>
         <div class="cpc-title">${escapeHtml(currentPhase.label)}</div>
@@ -5486,28 +5550,6 @@ function renderBlueprintMilestonesTab(){
       <div class="card-head"><h4>Key Milestones</h4><span class="d-sub">RSVP cutoffs and planning milestones you've set — the same ones plotted on Calendar</span></div>
       ${upcoming.length ? upcoming.map(renderRow).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No upcoming milestones right now.</p>`}
       ${past.length ? `<div class="bp-chapter-label" style="margin-top:22px;">Passed</div>${past.slice().reverse().map(renderRow).join('')}` : ''}
-    </div>
-  `;
-}
-/* ---- v1.36.0: Tools & Guides tab — a launcher into real existing modules (never fabricated
-   content), matching the reference's "Key resources" idea with destinations Evera actually has. ---- */
-function renderBlueprintToolsGuidesTab(){
-  const tiles = [
-    {ico:'📖', title:'Planning Guides', desc:'Curated best practices — budgeting, etiquette, and day-of logistics.', route:'guides'},
-    {ico:'💰', title:'Budget Tracker', desc:'Your master budget, category breakdown, and per-event rollups.', route:'budget'},
-    {ico:'🤝', title:'Vendor Directory', desc:'Every vendor record — booked or not — with quotes and contracts.', route:'vendors'},
-    {ico:'🗓️', title:'Playbook & Timeline', desc:'Your living run-of-show, generated straight from your real planning data.', route:'playbook'}
-  ];
-  return `
-    <div class="card">
-      <div class="card-head"><h4>Tools &amp; Guides</h4><span class="d-sub">Quick links into everything else that supports your plan</span></div>
-      <div class="tools-guides-grid">
-        ${tiles.map(t=>`
-          <div class="tg-card" onclick="renderRoute('${t.route}')">
-            <div class="tg-ico">${t.ico}</div>
-            <div><div class="tg-title">${escapeHtml(t.title)}</div><div class="tg-desc">${escapeHtml(t.desc)}</div></div>
-          </div>`).join('')}
-      </div>
     </div>
   `;
 }
@@ -6056,7 +6098,6 @@ function renderPlanTasksTab(){
     groupsHtml = renderPlanCategoryGroups(tasks);
   }
   const stats = planStats();
-  const people = taggablePeople();
   return `
     <div class="party-summary-strip">
       <div class="ps-stat"><div class="ps-num">${stats.total}</div><div class="ps-label">Total Tasks</div></div>
@@ -6066,36 +6107,15 @@ function renderPlanTasksTab(){
     </div>
     <div class="card">
       <div class="card-head">
-        <h4>Tasks &amp; Checklists</h4>
-        <div class="seg-control seg-control-xs">
-          <button class="seg-btn ${planFilterStatus==='open'?'active':''}" onclick="switchPlanStatusFilter('open')">Open</button>
-          <button class="seg-btn ${planFilterStatus==='done'?'active':''}" onclick="switchPlanStatusFilter('done')">Done</button>
-          <button class="seg-btn ${planFilterStatus==='all'?'active':''}" onclick="switchPlanStatusFilter('all')">All</button>
+        <h4>Wedding Plan</h4>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button class="btn btn-solid btn-sm" onclick="openAddTaskModal()">+ Add a Task</button>
+          <div class="seg-control seg-control-xs">
+            <button class="seg-btn ${planFilterStatus==='open'?'active':''}" onclick="switchPlanStatusFilter('open')">Open</button>
+            <button class="seg-btn ${planFilterStatus==='done'?'active':''}" onclick="switchPlanStatusFilter('done')">Done</button>
+            <button class="seg-btn ${planFilterStatus==='all'?'active':''}" onclick="switchPlanStatusFilter('all')">All</button>
+          </div>
         </div>
-      </div>
-      <div class="detail-section" style="margin-top:0; padding-top:4px;">
-        <div class="detail-section-head"><h4 style="margin:0;">Add a Task</h4></div>
-        <div class="custom-add-row" style="flex-wrap:wrap;">
-          <input type="text" id="newTaskTitle" placeholder="Task title" style="flex:2; min-width:200px;">
-          <select id="newTaskEvent" class="select-field-sm" style="width:auto;">
-            <option value="">General</option>
-            ${d.events.map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
-          </select>
-          <select id="newTaskRole" class="select-field-sm" style="width:auto;">
-            ${['Couple','Wedding Party','Vendor','Planner'].map(r=>`<option value="${r}">${r}</option>`).join('')}
-          </select>
-          <select id="newTaskAssignee" class="select-field-sm" style="width:auto;">
-            <option value="">Unassigned</option>
-            ${people.map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
-          </select>
-          <select id="newTaskPriority" class="select-field-sm" style="width:auto;">
-            ${['Medium','High','Low'].map(p=>`<option value="${p}">${p}</option>`).join('')}
-          </select>
-          <input type="date" id="newTaskDue" class="select-field-sm" style="width:auto;">
-          <label class="d-sub" style="display:flex; align-items:center; gap:5px; white-space:nowrap; font-weight:600; cursor:pointer;"><input type="checkbox" id="newTaskMilestone" style="width:14px;height:14px;"> 🏁 Milestone</label>
-          <button class="btn btn-outline btn-sm" onclick="addTask()">+ Add Task</button>
-        </div>
-        <p class="detail-hint">New tasks are automatically sorted into the right section above based on their due date.</p>
       </div>
       <div class="room-setup-row">
         <div class="field-mini"><label>View By</label>
@@ -6260,7 +6280,64 @@ function addTask(){
   const milestone = document.getElementById('newTaskMilestone').checked;
   if(!Array.isArray(dashboardData.tasks)) dashboardData.tasks=[];
   dashboardData.tasks.push({id:'task-'+Date.now().toString(36), title, eventId, role, assignedTo, priority, done:false, dueDateISO, notes:'', dependsOn:null, milestone, phase: phaseForDueDate(dueDateISO)});
+  closeAddTaskModal();
   document.getElementById('content').innerHTML = renderPlanModule();
+}
+function openAddTaskModal(){
+  addTaskModalOpen = true;
+  document.getElementById('addTaskOverlay').innerHTML = renderAddTaskModal();
+  document.getElementById('addTaskOverlay').classList.add('open');
+}
+function closeAddTaskModal(){
+  addTaskModalOpen = false;
+  document.getElementById('addTaskOverlay').classList.remove('open');
+}
+function renderAddTaskModal(){
+  if(!addTaskModalOpen) return '';
+  const d = dashboardData;
+  const people = taggablePeople();
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="closeAddTaskModal()">✕</button>
+      <div class="eyebrow">New Task</div>
+      <h3 style="margin-top:4px;">Add a Task</h3>
+      <div class="field-grid" style="margin-top:14px;">
+        <div class="field-cell" style="grid-column:1/-1;"><label>Task title</label>
+          <input type="text" id="newTaskTitle" placeholder="e.g. Confirm shuttle schedule">
+        </div>
+        <div class="field-cell"><label>Event</label>
+          <select id="newTaskEvent">
+            <option value="">General</option>
+            ${d.events.map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>Category</label>
+          <select id="newTaskRole">
+            ${['Couple','Wedding Party','Vendor','Planner'].map(r=>`<option value="${r}">${r}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>Assigned To</label>
+          <select id="newTaskAssignee">
+            <option value="">Unassigned</option>
+            ${people.map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>Priority</label>
+          <select id="newTaskPriority">
+            ${['Medium','High','Low'].map(p=>`<option value="${p}">${p}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>Due Date</label>
+          <input type="date" id="newTaskDue">
+        </div>
+      </div>
+      <label class="d-sub" style="display:flex; align-items:center; gap:6px; font-weight:600; cursor:pointer; margin-top:12px;"><input type="checkbox" id="newTaskMilestone" style="width:14px;height:14px;"> 🏁 Tag as milestone</label>
+      <p class="detail-hint">New tasks are automatically sorted into the right section based on their due date.</p>
+      <div style="display:flex; justify-content:flex-end; margin-top:14px;">
+        <button class="btn btn-solid" onclick="addTask()">+ Add Task</button>
+      </div>
+    </div>
+  `;
 }
 
 /* ==================================================================
@@ -6968,6 +7045,12 @@ function renderWebsiteModule(){
     </div>
 
     <div class="card">
+      <div class="card-head"><h4>Attire &amp; Shopping</h4><span class="d-sub">What guests see on each event's dress-code section</span></div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:0;">Add real reference photos per event (ones you have the rights to use), and guests get a few real retailer links matched to that dress code.</p>
+      ${d.events.filter(e=>e.publicVisibility!==false).map(e=>renderEventAttireCard(e)).join('') || '<p class="d-sub">No events are visible to guests yet — toggle one on in Event Visibility above.</p>'}
+    </div>
+
+    <div class="card">
       <div class="card-head"><h4>Album</h4><span class="d-sub">Photos from your events, shared with guests</span></div>
       <div class="photo-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px;">
         ${(w.albumPhotos||[]).map(p=>`
@@ -7280,12 +7363,8 @@ function renderSettingsModule(){
             <a href="#" class="danger-link" onclick="removeCollaborator('${c.id}'); return false;">✕</a>
           </div>`).join('')}
       </div>
-      <div class="custom-add-row" style="margin-top:12px;">
-        <input type="text" id="newCollabName" placeholder="Name">
-        <input type="text" id="newCollabEmail" placeholder="Email">
-        <button class="btn btn-outline btn-sm" onclick="addCollaborator()">+ Invite Collaborator</button>
-      </div>
-      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Set exactly what each person can see and do, per section — click "Manage" on a row above. Evera doesn't send real email invitations in this prototype — adding someone here just adds their record to your workspace.</p>
+      <button class="btn btn-solid btn-sm" style="margin-top:12px;" onclick="openAddCollaborator()">+ Add Collaborator</button>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Set exactly what each person can see and do, per section — click "Manage" on a row above, or set it right away when you add them. Evera doesn't send real email invitations in this prototype — adding someone here just adds their record to your workspace.</p>
     </div>
   `;
 }
@@ -7342,13 +7421,84 @@ function removeCollaborator(id){
   dashboardData.collaborators = dashboardData.collaborators.filter(c=>c.id!==id);
   document.getElementById('content').innerHTML = renderSettingsModule();
 }
-function addCollaborator(){
-  const nEl = document.getElementById('newCollabName'), eEl = document.getElementById('newCollabEmail');
-  const name = (nEl.value||'').trim();
+/* ---- v1.37.2: "+ Add Collaborator" is now a single button that opens a pop-out collecting
+   name, role, access, and email in one place — Natasha's explicit ask, instead of an
+   always-visible name/email row that still required a separate "Manage" click afterward to
+   set role and access. Reuses the same PERMISSION_MODULES/PERMISSION_LEVELS grid as Manage
+   Access, against a draft object until it's actually submitted. */
+let newCollaboratorDraft = null; // {name, email, role, permissions} while the Add Collaborator modal is open
+function openAddCollaborator(){
+  newCollaboratorDraft = {name:'', email:'', role:'Family', permissions: defaultPermissionsForRole('Family')};
+  document.getElementById('addCollaboratorOverlay').innerHTML = renderAddCollaboratorModal();
+  document.getElementById('addCollaboratorOverlay').classList.add('open');
+}
+function closeAddCollaborator(){
+  newCollaboratorDraft = null;
+  document.getElementById('addCollaboratorOverlay').classList.remove('open');
+}
+function updateNewCollaboratorField(field, val){
+  if(!newCollaboratorDraft) return;
+  newCollaboratorDraft[field] = val;
+  if(field==='role') newCollaboratorDraft.permissions = defaultPermissionsForRole(val);
+  document.getElementById('addCollaboratorOverlay').innerHTML = renderAddCollaboratorModal();
+}
+function updateNewCollaboratorPermission(moduleKey, val){
+  if(!newCollaboratorDraft) return;
+  if(!newCollaboratorDraft.permissions || typeof newCollaboratorDraft.permissions!=='object') newCollaboratorDraft.permissions = {};
+  newCollaboratorDraft.permissions[moduleKey] = val;
+  document.getElementById('addCollaboratorOverlay').innerHTML = renderAddCollaboratorModal();
+}
+function submitAddCollaborator(){
+  if(!newCollaboratorDraft) return;
+  const nEl = document.getElementById('newCollabModalName'), eEl = document.getElementById('newCollabModalEmail');
+  const name = (nEl && nEl.value || '').trim();
   if(!name) return;
   if(!Array.isArray(dashboardData.collaborators)) dashboardData.collaborators=[];
-  dashboardData.collaborators.push({id:'collab-'+Date.now().toString(36), name, email:(eEl.value||'').trim(), role:'Family', permissions: defaultPermissionsForRole('Family')});
+  dashboardData.collaborators.push({
+    id:'collab-'+Date.now().toString(36),
+    name,
+    email:(eEl && eEl.value || '').trim(),
+    role:newCollaboratorDraft.role||'Family',
+    permissions: newCollaboratorDraft.permissions || defaultPermissionsForRole(newCollaboratorDraft.role||'Family')
+  });
+  closeAddCollaborator();
   document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function renderAddCollaboratorModal(){
+  if(!newCollaboratorDraft) return '';
+  const perms = newCollaboratorDraft.permissions || {};
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="closeAddCollaborator()">✕</button>
+      <div class="eyebrow">New Collaborator</div>
+      <h3 style="margin-top:4px;">Add Someone to Evera</h3>
+      <p class="detail-hint" style="margin-top:-4px;">Evera doesn't send a real email invitation in this prototype — this adds their record to your workspace with the access you set below.</p>
+      <div class="field-grid" style="margin-top:12px;">
+        <div class="field-cell"><label>Name</label><input type="text" id="newCollabModalName" value="${escapeAttr(newCollaboratorDraft.name)}" placeholder="e.g. Priya Shah" autofocus onchange="updateNewCollaboratorField('name',this.value)"></div>
+        <div class="field-cell"><label>Email</label><input type="text" id="newCollabModalEmail" value="${escapeAttr(newCollaboratorDraft.email)}" placeholder="e.g. priya@email.com" onchange="updateNewCollaboratorField('email',this.value)"></div>
+        <div class="field-cell"><label>Role</label>
+          <select onchange="updateNewCollaboratorField('role',this.value)">
+            ${['Couple','Wedding Planner','Parent','Family','Wedding Party','Vendor'].map(r=>`<option value="${r}" ${newCollaboratorDraft.role===r?'selected':''}>${r}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <p class="detail-hint" style="margin-top:16px;">Access — defaulted for ${escapeHtml(newCollaboratorDraft.role)}, editable per section below. Budget defaults to No Access for anyone who isn't Couple or Wedding Planner.</p>
+      <div class="budget-items" style="padding-left:0; margin-top:8px;">
+        <div class="budget-items-head" style="grid-template-columns:1.4fr 1fr;"><span>Section</span><span>Access</span></div>
+        ${PERMISSION_MODULES.map(m=>`
+          <div class="budget-item-row" style="grid-template-columns:1.4fr 1fr; align-items:center;">
+            <span class="readonly-cell">${escapeHtml(m.label)}</span>
+            <select class="select-field-sm" onchange="updateNewCollaboratorPermission('${m.key}',this.value)">
+              ${PERMISSION_LEVELS.map(l=>`<option value="${l.key}" ${(perms[m.key]||'view')===l.key?'selected':''}>${l.label}</option>`).join('')}
+            </select>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+        <button class="btn btn-outline btn-sm" onclick="closeAddCollaborator()">Cancel</button>
+        <button class="btn btn-solid btn-sm" onclick="submitAddCollaborator()">+ Add Collaborator</button>
+      </div>
+    </div>
+  `;
 }
 
 /* ==================================================================
@@ -7562,6 +7712,9 @@ function saveRteField(field, html){
   } else if(kind==='surveyMessage'){
     const s = (dashboardData.rsvpSurveys||[]).find(x=>x.id===rest.join(':'));
     if(s) s.messageHtml = html;
+  } else if(kind==='eventNotes'){
+    const e = dashboardData.events.find(x=>x.id===rest.join(':'));
+    if(e) e.notes = html;
   }
 }
 let mentionSavedRange = null;
@@ -9581,7 +9734,7 @@ function openCeremonySeatingChart(){
 function renderCeremonyGuestSeatingPreview(){
   const chart = (dashboardData.seatingCharts||[]).find(c=>c.id==='sc-ceremony') || (dashboardData.seatingCharts||[]).find(c=>!c.isPrimary);
   if(!chart) return '';
-  const seatable = allSeatableMembers();
+  const seatable = allSeatableMembers(chart.eventId);
   const frontRows = chart.tables.slice().sort((a,b)=>a.number-b.number).slice(0,2);
   return `
     <div class="card">
@@ -9748,12 +9901,24 @@ function tableSizeStyle(t){
 }
 /* Only guests whose household RSVP'd yes (and who are themselves attending) are ever
    seatable — declined and pending guests never appear as assignable anywhere below. */
-function allSeatableMembers(){
+// v1.37.3: real bug fix — this used to require a household's OVERALL rsvpStatus to be
+// "confirmed", which only happens when EVERY invited event is confirmed for EVERYONE in the
+// house. A guest fully confirmed for the Reception (the event this very seating chart is for)
+// but still pending on an unrelated event — say a Mehndi they're not even invited to things
+// changing for — would never show up as seatable. Now checks RSVP status for the SPECIFIC
+// event this seating chart belongs to (chart.eventId), which is what actually matters here.
+// Falls back to the old household-wide rollup only if the chart has no event tied to it.
+function allSeatableMembers(eventId){
   const rows = [];
   (dashboardData.guestHouseholds||[]).forEach(h=>{
-    if(h.rsvpStatus!=='confirmed') return;
     (h.members||[]).forEach(m=>{
       if(m.attending===false) return;
+      if(eventId){
+        if(!memberIsInvitedToEvent(h, m, eventId)) return;
+        if(getMemberEventRsvp(h, m, eventId)!=='confirmed') return;
+      } else {
+        if(h.rsvpStatus!=='confirmed') return;
+      }
       rows.push({h, m, displayName:memberDisplayName(m)});
     });
   });
@@ -10025,7 +10190,8 @@ function assignSeat(chartId, tableId, seatIndex, householdId, memberId){
   if(!m) return;
   if(!m.seating) m.seating = {};
   // if another guest already occupies this exact seat, bump them back to unassigned
-  const seatable = allSeatableMembers();
+  const assignChart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
+  const seatable = allSeatableMembers(assignChart && assignChart.eventId);
   const occupant = seatable.find(r=> r.m.id!==memberId && (()=>{ const si = memberSeatInfo(r.m, chartId); return si && si.tableId===tableId && si.seatIndex===seatIndex; })());
   if(occupant && occupant.m.seating) delete occupant.m.seating[chartId];
   m.seating[chartId] = {tableId, seatIndex};
@@ -10096,7 +10262,7 @@ function renderSeatPickerPanel(chart){
   const table = chart.tables.find(t=>t.id===seatPickerState.tableId);
   if(!table) return '';
   const q = seatPickerSearch.trim().toLowerCase();
-  const unassigned = allSeatableMembers().filter(r=>!memberSeatInfo(r.m, chart.id) && (!q || r.displayName.toLowerCase().includes(q)));
+  const unassigned = allSeatableMembers(chart.eventId).filter(r=>!memberSeatInfo(r.m, chart.id) && (!q || r.displayName.toLowerCase().includes(q)));
   return `
     <div class="seat-picker-panel">
       <div class="seat-picker-head">
@@ -10262,13 +10428,13 @@ function renderSeatingGuestPane(chart, seatable, readOnly){
 function assignToPrimaryTable(householdId, memberId, tableId){
   const chart = primarySeatingChart();
   if(!chart) return;
-  const seatIndex = nextOpenSeatIndex(chart, tableId, allSeatableMembers());
+  const seatIndex = nextOpenSeatIndex(chart, tableId, allSeatableMembers(chart.eventId));
   assignSeat(chart.id, tableId, seatIndex, householdId, memberId);
 }
 function assignToChartTable(chartId, householdId, memberId, tableId){
   const chart = (dashboardData.seatingCharts||[]).find(c=>c.id===chartId);
   if(!chart) return;
-  const seatIndex = nextOpenSeatIndex(chart, tableId, allSeatableMembers());
+  const seatIndex = nextOpenSeatIndex(chart, tableId, allSeatableMembers(chart.eventId));
   assignSeat(chartId, tableId, seatIndex, householdId, memberId);
 }
 function renderFloorPlan(readOnly){
@@ -10276,7 +10442,7 @@ function renderFloorPlan(readOnly){
   const chart = currentSeatingChart();
   if(!chart) return `<div class="card"><p style="font-size:13px;color:var(--charcoal-faint);">Add a seating chart to get started.</p></div>`;
   const rs = chart.roomSetup;
-  const seatable = allSeatableMembers();
+  const seatable = allSeatableMembers(chart.eventId);
   return `
     <div class="seating-layout">
     <div class="card">
@@ -10362,7 +10528,7 @@ function renderPrintFloorPlan(){
   const chart = currentSeatingChart();
   if(!chart) return '';
   const rs = chart.roomSetup;
-  const seatable = allSeatableMembers();
+  const seatable = allSeatableMembers(chart.eventId);
   const tables = (chart.tables||[]).slice().sort((a,b)=>a.number-b.number);
   const unassigned = seatable.filter(r=>!memberSeatInfo(r.m, chart.id));
   return `
@@ -10419,7 +10585,7 @@ function renderSeatingChartSection(readOnly){
   const d = dashboardData;
   const chart = currentSeatingChart();
   if(!chart) return renderFloorPlan(readOnly);
-  const seatable = allSeatableMembers();
+  const seatable = allSeatableMembers(chart.eventId);
   return `
     ${renderFloorPlan(readOnly)}
     ${renderChairOrderSummary(chart)}
@@ -10626,8 +10792,14 @@ function membersNeedingSeats(){
   const chart = primarySeatingChart();
   if(!chart) return rows;
   (dashboardData.guestHouseholds||[]).forEach(h=>{
-    if(h.rsvpStatus!=='confirmed') return;
-    (h.members||[]).forEach(m=>{ if(m.attending!==false && !memberSeatInfo(m, chart.id)) rows.push({h,m}); });
+    (h.members||[]).forEach(m=>{
+      if(m.attending===false) return;
+      if(chart.eventId){
+        if(!memberIsInvitedToEvent(h, m, chart.eventId)) return;
+        if(getMemberEventRsvp(h, m, chart.eventId)!=='confirmed') return;
+      } else if(h.rsvpStatus!=='confirmed') return;
+      if(!memberSeatInfo(m, chart.id)) rows.push({h,m});
+    });
   });
   return rows;
 }
@@ -10756,6 +10928,68 @@ function toggleMemberEventExclusion(householdId, memberId, eventId){
   refreshGuestsBackground();
   refreshHouseholdDetail();
 }
+/* ---- v1.37.3: per-event meal choice, segregated out of the Family Members grid once there's
+   more than one event actually asking guests to choose. An event only needs a meal choice
+   collected when its own mealCollectionMode is 'ask' (set on the event's own Details page) —
+   family-style/buffet events never prompt for one, just dietary restrictions/allergies, which
+   stay on the member's profile regardless since they don't vary by event. */
+function eventsNeedingMealChoice(h){
+  const d = dashboardData;
+  const invitedIds = householdInvitedEventIds(h);
+  return (d.events||[]).filter(e => e.mealCollectionMode==='ask' && invitedIds.includes(e.id));
+}
+function getMemberMealChoice(m, eventId){
+  if(m.mealChoiceByEvent && m.mealChoiceByEvent[eventId]!==undefined) return m.mealChoiceByEvent[eventId];
+  return eventId ? '' : (m.mealChoice||'');
+}
+function updateMemberMealChoice(householdId, memberId, eventId, val){
+  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+  const m = h && h.members.find(x=>x.id===memberId);
+  if(!m) return;
+  if(eventId){
+    if(!m.mealChoiceByEvent) m.mealChoiceByEvent = {};
+    m.mealChoiceByEvent[eventId] = val;
+  } else {
+    m.mealChoice = val; // single-event fallback, same field as before
+  }
+  refreshHouseholdDetail();
+}
+function renderHouseholdMealSelections(h){
+  const mealEvents = eventsNeedingMealChoice(h);
+  if(mealEvents.length < 2) return ''; // 0 or 1 event: the Meal column in Family Members already covers it
+  const members = h.members||[];
+  return `
+    <div class="detail-section" style="margin-top:14px; padding-top:14px;">
+      <div class="detail-section-head"><h4 style="margin:0;">Meal Selections</h4><span class="d-sub">This family's invited to ${mealEvents.length} events collecting a meal choice — set each one separately</span></div>
+      <div style="overflow-x:auto; margin-top:6px;">
+        <table style="border-collapse:collapse; width:100%; min-width:${330+mealEvents.length*140}px;">
+          <thead>
+            <tr>
+              <th style="text-align:left; padding:4px 6px; font-size:11px; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); border-bottom:1px solid var(--line-soft);">Guest</th>
+              ${mealEvents.map(e=>`<th style="text-align:center; padding:4px 6px; border-bottom:1px solid var(--line-soft); min-width:140px; font-size:12.5px; font-weight:700; color:var(--charcoal);">${escapeHtml(e.name)}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${members.map(m=>`
+              <tr>
+                <td style="padding:4px 6px; border-bottom:1px solid var(--line-soft); font-size:13px; font-weight:600; white-space:nowrap;">${escapeHtml(memberDisplayName(m))}</td>
+                ${mealEvents.map(e=>{
+                  if(isMemberExcludedFromEvent(h, m.id, e.id)) return `<td style="padding:4px 6px; border-bottom:1px solid var(--line-soft); text-align:center;"><span class="d-sub">Not invited</span></td>`;
+                  return `<td style="padding:4px 6px; border-bottom:1px solid var(--line-soft); text-align:center;">
+                    <select class="select-field-sm" onchange="updateMemberMealChoice('${h.id}','${m.id}','${e.id}',this.value)">
+                      <option value="" ${!getMemberMealChoice(m,e.id)?'selected':''}>—</option>
+                      ${MEAL_OPTIONS.map(mo=>`<option value="${mo}" ${getMemberMealChoice(m,e.id)===mo?'selected':''}>${mo}</option>`).join('')}
+                    </select>
+                  </td>`;
+                }).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
 function isRsvpDeadlinePassed(e){
   if(!e.rsvpDeadlineISO) return false;
   const today0 = new Date(); today0.setHours(0,0,0,0);
@@ -10789,8 +11023,8 @@ function renderEventRsvpBreakdownCard(){
         ${rows.map(r=>`
           <div class="rsvp-event-row">
             <div class="rsvp-event-name">
-              <span>${escapeHtml(r.event.name)}</span>
-              ${r.event.rsvpDeadlineISO ? `<span class="rsvp-event-deadline ${isRsvpDeadlinePassed(r.event)?'passed':''}">RSVP ${isRsvpDeadlinePassed(r.event) ? 'closed' : 'by'} ${fmtDateLabel(r.event.rsvpDeadlineISO)}</span>` : ''}
+              <span>${escapeHtml(r.event.name)} <span class="d-sub" style="font-weight:400;">· ${escapeHtml(r.event.date||'')}</span></span>
+              ${r.event.rsvpDeadlineISO ? `<span class="rsvp-event-deadline ${isRsvpDeadlinePassed(r.event)?'passed':''}">RSVP ${isRsvpDeadlinePassed(r.event) ? 'closed' : 'deadline'}: ${fmtDateLabel(r.event.rsvpDeadlineISO)}</span>` : ''}
             </div>
             <div class="rsvp-event-counts">
               <a href="#" class="rsvp-count rsvp-count-ok" title="${r.confirmed} confirmed" onclick="openEventRsvpDrilldown('${r.event.id}','confirmed'); return false;">✓ ${r.confirmed}</a>
@@ -11020,7 +11254,7 @@ function renderOverviewEventRsvpRow(r){
         <span style="width:34px; height:34px; border-radius:8px; flex-shrink:0; background-size:cover; background-position:center; ${e.coverPhoto ? `background-image:url('${escapeAttr(e.coverPhoto)}');` : eventCoverGradientStyle(e)}"></span>
         <span style="min-width:0;"><span class="readonly-cell" style="display:block;">${escapeHtml(e.name)}</span><span class="d-sub">${escapeHtml(e.location||'Location TBD')}</span></span>
       </span>
-      <span class="d-sub">${e.date?escapeHtml(e.date):'TBD'}</span>
+      <span class="d-sub">${e.date?escapeHtml(e.date):'TBD'}${e.rsvpDeadlineISO ? `<br><span style="font-size:10.5px; ${isRsvpDeadlinePassed(e)?'color:var(--terracotta);':''}">RSVP ${isRsvpDeadlinePassed(e)?'closed':'by'} ${fmtDateLabel(e.rsvpDeadlineISO).replace(/^\w+, /,'')}</span>` : ''}</span>
       <span style="color:var(--ok); font-weight:700;">${r.confirmed}</span>
       <span style="color:var(--amber); font-weight:700;">${r.pending}</span>
       <span style="color:var(--terracotta); font-weight:700;">${r.declined}</span>
@@ -11328,15 +11562,15 @@ function renderHouseholdEventRsvpSection(h){
   return `
     <div class="detail-section" style="margin-top:14px; padding-top:14px;">
       <div class="detail-section-head"><h4 style="margin:0;">RSVP by Event</h4><span class="d-sub">Each person's own status per event — the Overall pill above is computed from these</span></div>
-      <div style="overflow-x:auto; margin-top:8px;">
-        <table style="border-collapse:collapse; width:100%; min-width:${360+events.length*130}px;">
+      <div style="overflow-x:auto; margin-top:6px;">
+        <table style="border-collapse:collapse; width:100%; min-width:${330+events.length*112}px;">
           <thead>
             <tr>
-              <th style="text-align:left; padding:6px 8px; font-size:11px; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); border-bottom:1px solid var(--line-soft);">Guest</th>
+              <th style="text-align:left; padding:4px 6px; font-size:11px; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); border-bottom:1px solid var(--line-soft);">Guest</th>
               ${events.map(e=>`
-                <th style="text-align:left; padding:6px 8px; border-bottom:1px solid var(--line-soft); min-width:130px;">
+                <th style="text-align:center; padding:4px 6px; border-bottom:1px solid var(--line-soft); min-width:112px;">
                   <div style="font-size:12.5px; font-weight:700; color:var(--charcoal);">${escapeHtml(e.name)}</div>
-                  ${multiMember ? `<div style="margin-top:3px;">${rsvpIconGroup('', s=>`setHouseholdEventRsvp('${h.id}','${e.id}','${s}')`)}</div><div class="d-sub" style="font-size:9.5px; margin-top:1px;">Set all</div>` : ''}
+                  ${multiMember ? `<div style="margin-top:2px; display:flex; justify-content:center;">${rsvpIconGroup('', s=>`setHouseholdEventRsvp('${h.id}','${e.id}','${s}')`)}</div><div class="d-sub" style="font-size:9.5px;">Set all</div>` : ''}
                 </th>
               `).join('')}
             </tr>
@@ -11344,14 +11578,14 @@ function renderHouseholdEventRsvpSection(h){
           <tbody>
             ${members.map(m=>`
               <tr>
-                <td style="padding:6px 8px; border-bottom:1px solid var(--line-soft); font-size:13px; font-weight:600; white-space:nowrap;">${escapeHtml(memberDisplayName(m))}</td>
+                <td style="padding:4px 6px; border-bottom:1px solid var(--line-soft); font-size:13px; font-weight:600; white-space:nowrap;">${escapeHtml(memberDisplayName(m))}</td>
                 ${events.map(e=>{
                   const excluded = isMemberExcludedFromEvent(h, m.id, e.id);
                   if(excluded){
-                    return `<td style="padding:6px 8px; border-bottom:1px solid var(--line-soft);"><a href="#" class="d-sub" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">Not invited — + Invite</a></td>`;
+                    return `<td style="padding:4px 6px; border-bottom:1px solid var(--line-soft); text-align:center;"><a href="#" class="d-sub" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">Not invited — + Invite</a></td>`;
                   }
-                  return `<td style="padding:6px 8px; border-bottom:1px solid var(--line-soft);">
-                    <div style="display:flex; align-items:center; gap:6px;">
+                  return `<td style="padding:4px 6px; border-bottom:1px solid var(--line-soft);">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
                       ${rsvpIconGroup(getMemberEventRsvp(h,m,e.id), s=>`setMemberEventRsvp('${h.id}','${m.id}','${e.id}','${s}')`)}
                       ${multiMember ? `<a href="#" class="rsvp-event-exclude" title="Not invited to this event" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">⊘</a>` : ''}
                     </div>
@@ -11405,35 +11639,44 @@ function renderHouseholdDetailModal(householdId){
       </div>
       ` : ''}
       <div class="detail-section-head" style="margin-top:4px;"><h4 style="margin:0;">Family Members</h4></div>
+      ${(() => {
+        // v1.37.3: Relation replaced with a simple Child? flag per Natasha's ask. Meal choice
+        // only shows here when there's at most one event actually collecting it (mealCollectionMode
+        // 'ask') — once a family's invited to more than one, it moves to its own Meal Selections
+        // section below so it's not crammed into this already-dense grid as extra columns.
+        const mealEvents = eventsNeedingMealChoice(h);
+        const singleMealEventId = mealEvents.length===1 ? mealEvents[0].id : null;
+        const showMealCol = mealEvents.length<=1;
+        const cols = showMealCol ? '0.7fr 1fr 1fr 0.55fr 0.6fr 0.9fr 1.1fr 1.1fr 0.5fr' : '0.7fr 1fr 1fr 0.55fr 0.6fr 1.3fr 1.3fr 0.5fr';
+        return `
       <div class="budget-items" style="padding-left:0; margin-top:6px;">
-        <div class="budget-items-head" style="grid-template-columns:0.7fr 1fr 1fr 0.9fr 0.6fr 0.9fr 1.1fr 1.1fr 0.5fr;"><span>Salutation</span><span>First</span><span>Last</span><span>Relation</span><span>Attending</span><span>Meal</span><span>Dietary</span><span>Accessibility</span><span></span></div>
+        <div class="budget-items-head" style="grid-template-columns:${cols};"><span>Salutation</span><span>First</span><span>Last</span><span>Child?</span><span>Attending</span>${showMealCol?'<span>Meal</span>':''}<span>Dietary</span><span>Accessibility</span><span></span></div>
         ${(h.members||[]).map(m=>`
-          <div class="budget-item-row" style="grid-template-columns:0.7fr 1fr 1fr 0.9fr 0.6fr 0.9fr 1.1fr 1.1fr 0.5fr; align-items:center;">
+          <div class="budget-item-row" style="grid-template-columns:${cols}; align-items:center;">
             <select class="select-field-sm" onchange="updateMemberField('${h.id}','${m.id}','salutation',this.value)">
               ${SALUTATIONS.map(s=>`<option value="${s}" ${m.salutation===s?'selected':''}>${s||'—'}</option>`).join('')}
             </select>
             <input type="text" class="select-field-sm" value="${escapeAttr(m.firstName)}" onchange="updateMemberField('${h.id}','${m.id}','firstName',this.value)">
             <input type="text" class="select-field-sm" value="${escapeAttr(m.lastName)}" onchange="updateMemberField('${h.id}','${m.id}','lastName',this.value)">
-            <select class="select-field-sm" title="Relation to the couple — used to auto-fill Photo Shot List combos" onchange="updateMemberField('${h.id}','${m.id}','relationship',this.value)">
-              ${RELATIONSHIP_OPTIONS.map(r=>`<option value="${r.v}" ${(m.relationship||'')===r.v?'selected':''}>${r.l}</option>`).join('')}
-            </select>
+            <input type="checkbox" title="Child" ${m.isChild?'checked':''} onchange="updateMemberField('${h.id}','${m.id}','isChild',this.checked)">
             <input type="checkbox" ${m.attending!==false?'checked':''} onchange="updateMemberField('${h.id}','${m.id}','attending',this.checked)">
-            <select class="select-field-sm" onchange="updateMemberField('${h.id}','${m.id}','mealChoice',this.value)">
-              <option value="" ${!m.mealChoice?'selected':''}>—</option>
-              ${MEAL_OPTIONS.map(mo=>`<option value="${mo}" ${m.mealChoice===mo?'selected':''}>${mo}</option>`).join('')}
-            </select>
+            ${showMealCol ? `
+            <select class="select-field-sm" onchange="updateMemberMealChoice('${h.id}','${m.id}','${singleMealEventId||''}',this.value)">
+              <option value="" ${!getMemberMealChoice(m,singleMealEventId)?'selected':''}>—</option>
+              ${MEAL_OPTIONS.map(mo=>`<option value="${mo}" ${getMemberMealChoice(m,singleMealEventId)===mo?'selected':''}>${mo}</option>`).join('')}
+            </select>` : ''}
             <input type="text" class="select-field-sm" placeholder="e.g. Peanut allergy" value="${escapeAttr(m.dietaryRestrictions)}" onchange="updateMemberField('${h.id}','${m.id}','dietaryRestrictions',this.value)">
             <input type="text" class="select-field-sm" placeholder="e.g. Wheelchair access" value="${escapeAttr(m.accessibilityNeeds)}" onchange="updateMemberField('${h.id}','${m.id}','accessibilityNeeds',this.value)">
             <a href="#" class="danger-link" onclick="removeFamilyMember('${h.id}','${m.id}'); return false;">Remove</a>
           </div>
           ${memberNeedsSeatHint(h,m) ? `<div class="detail-hint detail-hint-alert" style="margin:2px 0 8px;">Confirmed and not yet seated — <a href="#" onclick="closeHouseholdDetail(); renderRoute('playbook'); switchPlaybookSection('seating'); return false;">seat ${escapeHtml(memberDisplayName(m))} on the Seating Chart</a>.</div>` : ''}
         `).join('')}
-      </div>
+      </div>`;
+      })()}
       <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="addFamilyMember('${h.id}')">+ Add Family Member</button>
       <div class="field-grid" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);">
-        <div class="field-cell" style="position:relative;"><label>Street Address</label><input type="text" id="householdAddrInput-${h.id}" placeholder="Search an address…" autocomplete="off" value="${escapeAttr(addr.street)}" oninput="onAddressLookupInput('household','${h.id}', this.value)" onchange="updateHouseholdAddressField('${h.id}','street',this.value)">
+        <div class="field-cell" style="position:relative;"><label>Street Address <span class="field-help-icon" title="Address search powered by OpenStreetMap — free, no API key needed, and not limited to the U.S. Include the city (and country, for addresses outside North America) for the best match. Picking a result fills in City/Province/Postal/Country below too.">?</span></label><input type="text" id="householdAddrInput-${h.id}" placeholder="Search an address…" autocomplete="off" value="${escapeAttr(addr.street)}" oninput="onAddressLookupInput('household','${h.id}', this.value)" onchange="updateHouseholdAddressField('${h.id}','street',this.value)">
           <div class="loc-suggest-dropdown" id="locSuggest-household-${h.id}"></div>
-          <div class="loc-suggest-attribution">Address search powered by OpenStreetMap — free, no API key needed, and not limited to the U.S. Include the city (and country, for addresses outside North America) for the best match. Picking a result fills in City/Province/Postal/Country below too.</div>
         </div>
         <div class="field-cell"><label>City</label><input type="text" placeholder="e.g. Toronto" value="${escapeAttr(addr.city)}" onchange="updateHouseholdAddressField('${h.id}','city',this.value)"></div>
         <div class="field-cell"><label>Province / State</label><input type="text" placeholder="e.g. ON" value="${escapeAttr(addr.region)}" onchange="updateHouseholdAddressField('${h.id}','region',this.value)"></div>
@@ -11452,6 +11695,7 @@ function renderHouseholdDetailModal(householdId){
         </select>
       </div>
       ${renderHouseholdEventRsvpSection(h)}
+      ${renderHouseholdMealSelections(h)}
       ${renderHouseholdSurveySection(h)}
       <a href="#" class="danger-link" style="display:inline-block;margin-top:18px;" onclick="removeHousehold('${h.id}'); return false;">Remove this family</a>
     </div>
@@ -11459,7 +11703,9 @@ function renderHouseholdDetailModal(householdId){
 }
 function memberNeedsSeatHint(h, m){
   const pc = primarySeatingChart();
-  return h.rsvpStatus==='confirmed' && m.attending!==false && !!pc && !memberSeatInfo(m, pc.id);
+  if(!pc || m.attending===false || memberSeatInfo(m, pc.id)) return false;
+  if(pc.eventId) return memberIsInvitedToEvent(h, m, pc.eventId) && getMemberEventRsvp(h, m, pc.eventId)==='confirmed';
+  return h.rsvpStatus==='confirmed';
 }
 function updateHouseholdField(householdId, field, val){
   const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
@@ -12229,14 +12475,17 @@ function renameEventCategory(oldLabel, newLabel){
   } else {
     d.eventCategories = d.eventCategories.filter(c=>c!==oldLabel);
   }
-  (d.events||[]).forEach(e=>{ if(e.category===oldLabel) e.category = newLabel; });
+  (d.events||[]).forEach(e=>{ e.categories = Array.from(new Set((e.categories||[]).map(c=>c===oldLabel?newLabel:c))); });
   if(eventsCategoryFilter===oldLabel) eventsCategoryFilter = newLabel;
   document.getElementById('content').innerHTML = renderSettingsModule();
 }
 function removeEventCategory(label){
   const d = dashboardData;
   d.eventCategories = d.eventCategories.filter(c=>c!==label);
-  (d.events||[]).forEach(e=>{ if(e.category===label) e.category = 'Other'; });
+  (d.events||[]).forEach(e=>{
+    e.categories = (e.categories||[]).filter(c=>c!==label);
+    if(!e.categories.length) e.categories = ['Other'];
+  });
   if(!d.eventCategories.includes('Other')) d.eventCategories.push('Other');
   if(eventsCategoryFilter===label) eventsCategoryFilter = 'all';
   document.getElementById('content').innerHTML = renderSettingsModule();
@@ -12255,13 +12504,32 @@ function toggleNewEventCategoryPrompt(eventId){
   newEventCategoryPromptOpenFor = newEventCategoryPromptOpenFor===eventId ? null : eventId;
   document.getElementById('content').innerHTML = renderEventDetail(eventId);
 }
+// v1.37.2: Category is multi-select — an event can genuinely belong to more than one group
+// (e.g. both "Wedding Weekend" and "Family Event"). Clicking a chip toggles it on/off; an
+// event always keeps at least one category so it never disappears from every filter tab.
+function toggleEventCategory(eventId, label){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e) return;
+  if(!Array.isArray(e.categories)) e.categories = [];
+  if(e.categories.includes(label)){
+    if(e.categories.length>1) e.categories = e.categories.filter(c=>c!==label);
+  } else {
+    e.categories.push(label);
+  }
+  document.getElementById('content').innerHTML = renderEventDetail(eventId);
+}
 function submitNewEventCategoryPrompt(eventId){
   const el = document.getElementById('newEventCategoryInline');
   const label = (el && el.value || '').trim();
   if(!label) return;
   if(!dashboardData.eventCategories.includes(label)) dashboardData.eventCategories.push(label);
   newEventCategoryPromptOpenFor = null;
-  updateEventField(eventId, 'category', label);
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(e){
+    if(!Array.isArray(e.categories)) e.categories = [];
+    if(!e.categories.includes(label)) e.categories.push(label);
+  }
+  document.getElementById('content').innerHTML = renderEventDetail(eventId);
 }
 function renderEventPhotoCard(e, compact){
   const stats = eventCompleteness(e);
@@ -12328,8 +12596,8 @@ function renderEventsList(){
   const totalGuestVisits = events.reduce((s,e)=>s+(e.guestCount||0),0);
   const onTrackCount = events.filter(e=>eventCompleteness(e).pct>=60).length;
   const totalBudgetAllocated = events.reduce((s,e)=>s+(e.budgetTarget||0),0);
-  const categories = (d.eventCategories||[]).filter(c=>events.some(e=>e.category===c));
-  const shown = eventsCategoryFilter==='all' ? events : events.filter(e=>e.category===eventsCategoryFilter);
+  const categories = (d.eventCategories||[]).filter(c=>events.some(e=>(e.categories||[]).includes(c)));
+  const shown = eventsCategoryFilter==='all' ? events : events.filter(e=>(e.categories||[]).includes(eventsCategoryFilter));
   return `
     <div class="module-header">
       <div class="mh-copy"><p style="margin-top:0;">Plan every celebration, all in one place — click into any event for its own timing, location, vendors and guest count.</p></div>
@@ -12484,21 +12752,20 @@ function renderEventDetail(id){
       <div class="card-head" style="margin-bottom:14px;"><h4>Details</h4></div>
       <div class="field-grid">
         <div class="field-cell"><label>Date</label><input type="date" value="${e.dateISO||''}" onchange="updateEventField('${e.id}','dateISO',this.value)"></div>
-        <div class="field-cell"><label>Category</label>
-          ${newEventCategoryPromptOpenFor===e.id ? `
-          <div style="display:flex; gap:6px;">
-            <input type="text" id="newEventCategoryInline" placeholder="New category name" autofocus style="flex:1;">
-            <button class="btn btn-outline btn-sm" onclick="submitNewEventCategoryPrompt('${e.id}')">Add</button>
-          </div>` : `
-          <select onchange="if(this.value==='__new__'){toggleNewEventCategoryPrompt('${e.id}');}else{updateEventField('${e.id}','category',this.value);}">
-            ${(dashboardData.eventCategories||[]).map(c=>`<option value="${escapeAttr(c)}" ${e.category===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
-            <option value="__new__">+ New category…</option>
-          </select>`}
+        <div class="field-cell" style="grid-column:1/-1;">
+          <label>Category <span class="d-sub" style="font-weight:400;">(an event can belong to more than one)</span></label>
+          <div style="display:flex; flex-wrap:wrap; gap:7px; align-items:center;">
+            ${(dashboardData.eventCategories||[]).map(c=>`<span class="chip ${(e.categories||[]).includes(c)?'selected':''}" onclick="toggleEventCategory('${e.id}','${c.replace(/'/g,"\\'")}')">${escapeHtml(c)}</span>`).join('')}
+            ${newEventCategoryPromptOpenFor===e.id ? `
+            <span style="display:inline-flex; gap:6px; align-items:center;">
+              <input type="text" id="newEventCategoryInline" placeholder="New category name" autofocus style="width:150px;">
+              <button class="btn btn-outline btn-sm" onclick="submitNewEventCategoryPrompt('${e.id}')">Add</button>
+            </span>` : `<span class="chip" style="border-style:dashed;" onclick="toggleNewEventCategoryPrompt('${e.id}')">+ New category…</span>`}
+          </div>
         </div>
         <div class="field-cell"><label>Subcategory <span class="d-sub" style="font-weight:400;">(optional)</span></label><input type="text" value="${escapeAttr(e.subcategory||'')}" placeholder="e.g. Golf Outing, Welcome Brunch" onchange="updateEventField('${e.id}','subcategory',this.value)"></div>
         <div class="field-cell"><label>Start Time</label><input type="text" value="${escapeAttr(e.startTime||'')}" placeholder="e.g. 4:00 PM" onchange="updateEventField('${e.id}','startTime',this.value)"></div>
         <div class="field-cell"><label>End Time</label><input type="text" value="${escapeAttr(e.endTime||'')}" placeholder="e.g. 4:30 PM" onchange="updateEventField('${e.id}','endTime',this.value)"></div>
-        <div class="field-cell"><label>Venue Access Time</label><input type="text" value="${escapeAttr(e.accessTime||'')}" placeholder="e.g. 1:30 PM for setup" onchange="updateEventField('${e.id}','accessTime',this.value)"></div>
         <div class="field-cell" style="position:relative;">
           <label>Location</label>
           <input type="text" id="eventLocInput-${e.id}" value="${escapeAttr(e.location||'')}" placeholder="Search an address…" autocomplete="off" oninput="onAddressLookupInput('event','${e.id}', this.value)" onchange="updateEventField('${e.id}','location',this.value)">
@@ -12532,16 +12799,16 @@ function renderEventDetail(id){
         <div class="field-cell"><label>Special Rituals</label><textarea class="notes-field notes-field-sm" onchange="updateEventField('${e.id}','specialRituals',this.value)" placeholder="Any cultural or religious rituals happening at this event…">${escapeAttr(e.specialRituals||'')}</textarea></div>
         <div class="field-cell" style="margin-top:14px;"><label>Meal Collection</label>
           <select onchange="updateEventField('${e.id}','mealCollectionMode',this.value)">
-            <option value="ask" ${!e.mealCollectionMode||e.mealCollectionMode==='ask'?'selected':''}>Ask each guest to choose</option>
-            <option value="family-style" ${e.mealCollectionMode==='family-style'?'selected':''}>Family-style — no per-guest choice needed</option>
-            <option value="buffet" ${e.mealCollectionMode==='buffet'?'selected':''}>Buffet — no per-guest choice needed</option>
+            <option value="ask" ${!e.mealCollectionMode||e.mealCollectionMode==='ask'?'selected':''}>Sit-down meal — ask each guest to choose</option>
+            <option value="family-style" ${e.mealCollectionMode==='family-style'?'selected':''}>Family-style — just dietary restrictions &amp; allergies</option>
+            <option value="buffet" ${e.mealCollectionMode==='buffet'?'selected':''}>Buffet — just dietary restrictions &amp; allergies</option>
           </select>
-          <p class="detail-hint">Dietary restrictions are collected once per guest on their profile, not repeated for every event.</p>
+          <p class="detail-hint">Sit-down meals collect each guest's choice (in Guests, under each family). Family-style and buffet skip that — dietary restrictions/allergies are still collected once per guest on their profile, not repeated per event.</p>
         </div>
       </div>
       <div class="card" style="padding:20px 22px;">
         <div class="card-head" style="margin-bottom:12px;"><h4>Planning Notes</h4></div>
-        <textarea class="notes-field notes-field-lg" onchange="updateEventField('${e.id}','notes',this.value)" placeholder="Anything worth remembering about this event…">${escapeAttr(e.notes||'')}</textarea>
+        ${renderRichNotesEditor('eventNotes:'+e.id, e.notes)}
       </div>
     </div>
 
@@ -12756,6 +13023,77 @@ function matchDressCodeVisual(text){
   const t = (text||'').toLowerCase();
   if(!t.trim()) return null;
   return DRESS_CODE_VISUALS.find(v => v.keys.some(k => t.includes(k))) || {label:'Your Dress Code', palette:['#C7A467','#4C6355','#CBB2A6','#8B8577'], garments:['suit-m','cocktail-f'], tip:'Add more detail above (e.g. "formal", "cocktail", "casual") and this moodboard will tailor itself.'};
+}
+/* ---- v1.37.2: "Shop the Look" — real, well-known retailers matched to a dress code, shown on
+   the website's Attire section so guests have somewhere to actually buy something. Links go to
+   each retailer's own homepage (never a fabricated deep link to a specific product we can't
+   verify exists), and open in a new tab. */
+const ATTIRE_SHOP_LINKS = [
+  {keys:['white tie'], links:[{name:"Men's Wearhouse",url:'https://www.menswearhouse.com'},{name:'Rent the Runway',url:'https://www.renttherunway.com'}]},
+  {keys:['black tie','black-tie','formal'], links:[{name:"Men's Wearhouse",url:'https://www.menswearhouse.com'},{name:'Nordstrom',url:'https://www.nordstrom.com'},{name:'Rent the Runway',url:'https://www.renttherunway.com'}]},
+  {keys:['cocktail','semi-formal','semi formal'], links:[{name:'Nordstrom',url:'https://www.nordstrom.com'},{name:'ASOS',url:'https://www.asos.com'},{name:'Rent the Runway',url:'https://www.renttherunway.com'}]},
+  {keys:['bright colour','bright color','festive','colourful','colorful','no white','no black'], links:[{name:'Utsav Fashion',url:'https://www.utsavfashion.com'},{name:'Aza Fashions',url:'https://www.azafashions.com'},{name:'Etsy',url:'https://www.etsy.com'}]},
+  {keys:['traditional','cultural'], links:[{name:'Utsav Fashion',url:'https://www.utsavfashion.com'},{name:'Aza Fashions',url:'https://www.azafashions.com'}]},
+  {keys:['garden','beach'], links:[{name:'ASOS',url:'https://www.asos.com'},{name:'Reformation',url:'https://www.thereformation.com'},{name:'Anthropologie',url:'https://www.anthropologie.com'}]},
+  {keys:['western'], links:[{name:'Boot Barn',url:'https://www.bootbarn.com'},{name:'Wrangler',url:'https://www.wrangler.com'}]},
+  {keys:['casual','brunch'], links:[{name:'Anthropologie',url:'https://www.anthropologie.com'},{name:'ASOS',url:'https://www.asos.com'}]},
+  {keys:['costume','themed'], links:[{name:'Etsy',url:'https://www.etsy.com'},{name:'Amazon',url:'https://www.amazon.com'}]}
+];
+function attireShopLinksFor(text){
+  const t = (text||'').toLowerCase();
+  if(!t.trim()) return [];
+  const match = ATTIRE_SHOP_LINKS.find(v=>v.keys.some(k=>t.includes(k)));
+  return match ? match.links : [{name:'Nordstrom',url:'https://www.nordstrom.com'},{name:'ASOS',url:'https://www.asos.com'},{name:'Etsy',url:'https://www.etsy.com'}];
+}
+function handleAttirePhotoUpload(eventId, evt){
+  const file = evt.target.files && evt.target.files[0];
+  if(!file) return;
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    if(!Array.isArray(e.attirePhotos)) e.attirePhotos = [];
+    e.attirePhotos.push(ev.target.result);
+    document.getElementById('content').innerHTML = renderWebsiteModule();
+  };
+  reader.readAsDataURL(file);
+}
+function removeAttirePhoto(eventId, idx){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e || !Array.isArray(e.attirePhotos)) return;
+  e.attirePhotos.splice(idx,1);
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function renderEventAttireCard(e){
+  const links = attireShopLinksFor(e.dressCode);
+  const photos = e.attirePhotos||[];
+  return `
+    <div class="website-attire-row" style="padding:14px 0; border-top:1px solid var(--line);">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <div class="em-name" style="font-weight:700;">${escapeHtml(e.name)}</div>
+        <div class="d-sub">${e.dressCode ? escapeHtml(e.dressCode) : 'Dress code not set yet — add one from Events'}</div>
+      </div>
+      ${photos.length ? `
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
+        ${photos.map((p,idx)=>`
+          <div style="position:relative; width:92px; height:92px; border-radius:var(--radius-sm); overflow:hidden; box-shadow:var(--shadow);">
+            <img src="${p}" alt="Reference outfit for ${escapeAttr(e.name)}" style="width:100%; height:100%; object-fit:cover; display:block;">
+            <a href="#" class="danger-link" style="position:absolute; top:3px; right:5px; background:rgba(255,255,255,0.88); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:11px; text-decoration:none;" onclick="removeAttirePhoto('${e.id}',${idx}); return false;" title="Remove">✕</a>
+          </div>`).join('')}
+      </div>` : `<p class="detail-hint" style="margin-top:8px;">No reference photos yet — add ones you have the rights to use (your own stock purchase, or a free-license site like Unsplash/Pexels).</p>`}
+      <label class="btn btn-outline btn-sm" style="margin-top:10px; position:relative; display:inline-block;">
+        + Add a reference photo
+        <input type="file" accept="image/*" style="position:absolute; inset:0; opacity:0; cursor:pointer;" onchange="handleAttirePhotoUpload('${e.id}', event)">
+      </label>
+      ${links.length ? `
+      <div style="margin-top:10px;">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-bottom:6px;">Shop the Look</div>
+        <div style="display:flex; flex-wrap:wrap; gap:7px;">
+          ${links.map(l=>`<a href="${escapeAttr(l.url)}" target="_blank" rel="noopener" class="chip" style="text-decoration:none;">${escapeHtml(l.name)} ↗</a>`).join('')}
+        </div>
+      </div>` : ''}
+    </div>
+  `;
 }
 /* Simple flat-color fashion-croquis illustrations per garment type — built from geometric SVG shapes
    since no image-generation tool is available in this session. Not photographic, but recognizably
@@ -14503,11 +14841,35 @@ function guidesCategories(){ return ['All', ...Array.from(new Set(KNOWLEDGE_ARTI
 function renderGuidesModule(){
   return guidesView==='detail' && selectedArticleId ? renderArticleDetail(selectedArticleId) : renderGuidesList();
 }
+/* ---- v1.37.2: the "Tools & Guides" quick-links tile row used to live as its own subtab on
+   Wedding Blueprint — moved here instead, per Natasha's request, since Guides & Tips is already
+   the home for "things that help you plan" and a tab named "Tools & Guides" living inside
+   Blueprint duplicated that purpose. Only real, existing destinations — never fabricated. ---- */
+function renderGuidesQuickLinks(){
+  const tiles = [
+    {ico:'💰', title:'Budget Tracker', desc:'Your master budget, category breakdown, and per-event rollups.', route:'budget'},
+    {ico:'🤝', title:'Vendor Directory', desc:'Every vendor record — booked or not — with quotes and contracts.', route:'vendors'},
+    {ico:'🗓️', title:'Playbook & Timeline', desc:'Your living run-of-show, generated straight from your real planning data.', route:'playbook'}
+  ];
+  return `
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-head"><h4>Quick Links</h4><span class="d-sub">Jump straight into the modules these guides reference</span></div>
+      <div class="tools-guides-grid">
+        ${tiles.map(t=>`
+          <div class="tg-card" onclick="renderRoute('${t.route}')">
+            <div class="tg-ico">${t.ico}</div>
+            <div><div class="tg-title">${escapeHtml(t.title)}</div><div class="tg-desc">${escapeHtml(t.desc)}</div></div>
+          </div>`).join('')}
+      </div>
+    </div>
+  `;
+}
 function renderGuidesList(){
   const cats = guidesCategories();
   const filtered = guidesCategory==='All' ? KNOWLEDGE_ARTICLES : KNOWLEDGE_ARTICLES.filter(a=>a.category===guidesCategory);
   return `
     <div class="module-header"><div class="mh-copy"><p style="margin-top:0;">${escapeHtml(MODULE_INFO.guides.desc)}</p></div></div>
+    ${renderGuidesQuickLinks()}
     <div class="chip-grid" style="margin-bottom:20px;">
       ${cats.map(c=>`<button type="button" class="chip ${guidesCategory===c?'selected':''}" onclick="filterGuides('${escapeAttr(c)}')">${escapeHtml(c)}</button>`).join('')}
     </div>
