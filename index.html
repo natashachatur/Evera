@@ -1828,6 +1828,18 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.37.4', date:'2026-10-19',
+    title:'Event Invitations redesigned (family shortcut + per-guest matrix), quick-invite by tag, Events sorted by date, and Immediate Family & Key People for the Photo Shot List',
+    items:[
+      'Guests: replaced the old "+ Limit to event…" dropdown with a real Event Invitations section — "Invite this family to:" gives a one-click shortcut per event (with a ◐ partial state when only some of the family is in), and a "Customize by guest" grid underneath lets you invite just one person to one event (e.g. the whole family to the Church Ceremony, but only one person to the Bridal Shower). The old dropdown had a real footgun: touching it on a household invited to "everything" by default silently narrowed them down to only the one event you picked — gone now.',
+      'Guests: reordered the family pop-out to Household Details → Family Members → Guest Classification → Event Invitations → RSVP by Event → Meal Selections → Survey Responses, so who\'s invited is decided before who\'s coming and what they\'re eating.',
+      'Guests: RSVP by Event is now strictly "of those invited, who\'s coming" — it only lists events where someone in the family is actually invited, and an excluded person reads as a plain "Not invited" instead of a half-invite link, since invitations are now managed entirely in Event Invitations above it.',
+      'Events: "Manage Guest List" for an event now has one-click "Quick-invite by Tag" chips — click "Friends" or any of your own guest tags to invite everyone with it at once (still fully editable afterward), instead of filtering then separately hitting Select All.',
+      'Events: the Events tab always lists events nearest-date-first now, regardless of the order they were added in.',
+      'Wedding Party Hub: added an "Immediate Family & Key People" card — set each side\'s Mother, Father, Siblings, and Grandparents (from your existing guest list, or add someone new on the spot) right where you\'re already thinking about who matters most. This is what feeds the Photo Shot List\'s Mom/Dad/sibling/grandparent combinations and the Playbook\'s Grandparents contact list — the only edit path for that since Relation moved out of the Guests grid in favour of the simpler Child? flag.'
+    ]
+  },
+  {
     version:'1.37.3', date:'2026-10-19',
     title:'Seating chart RSVP-eligibility bug fixed, per-event guest invites surfaced, a Child flag, segregated meal selections, and sit-down/family-style/buffet meal collection',
     items:[
@@ -2351,6 +2363,7 @@ function renderChangelogPage(){
 let dashboardData = null;
 let partyView = 'hub';       // 'hub' | 'timeline' | 'lookbook' | 'bach' | 'detail'
 let selectedMemberId = null;
+let keyPeopleAddOpen = null; // v1.37.4: 'partner1'|'partner2'|null — which side's "+ Add a new person" inline form is open in the Wedding Party Hub's Key People card
 let playbookRole = 'couple'; // 'couple' | 'coordinator' | 'vendor' | 'weddingparty'
 let playbookVendorCategory = null;
 let playbookExportRole = 'couple';
@@ -5832,6 +5845,28 @@ function deselectAllVisibleEventGuests(eventId){
   e.limitedGuestHouseholdIds = base.filter(id=>!visibleIds.has(id));
   document.getElementById('content').innerHTML = renderEventsModule();
 }
+/* ---- v1.37.4: one-click "invite everyone tagged X" — filtering by category and then hitting
+   Select All Shown already did this in two steps; this collapses it to one click on a tag
+   chip (still just writes into the normal limitedGuestHouseholdIds list, so the result is
+   immediately editable the normal way afterward — a generator, not a standing rule). ---- */
+function categoryInviteCoverage(e, category){
+  const matching = (dashboardData.guestHouseholds||[]).filter(h=>(h.categories||[]).includes(category));
+  if(!matching.length) return 'none';
+  const limited = Array.isArray(e.limitedGuestHouseholdIds);
+  const includedCount = matching.filter(h=> !limited || e.limitedGuestHouseholdIds.includes(h.id)).length;
+  if(includedCount===0) return 'none';
+  if(includedCount===matching.length) return 'all';
+  return 'partial';
+}
+function quickInviteByCategory(eventId, category){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e) return;
+  eventGuestManageFilterCategory = category; // also filter the list below to what was just applied, for visual confirmation
+  const matchingIds = (dashboardData.guestHouseholds||[]).filter(h=>(h.categories||[]).includes(category)).map(h=>h.id);
+  if(!Array.isArray(e.limitedGuestHouseholdIds)) e.limitedGuestHouseholdIds = (dashboardData.guestHouseholds||[]).map(h=>h.id);
+  matchingIds.forEach(id=>{ if(!e.limitedGuestHouseholdIds.includes(id)) e.limitedGuestHouseholdIds.push(id); });
+  document.getElementById('content').innerHTML = renderEventsModule();
+}
 function renderEventGuestManageScreen(eventId){
   const e = dashboardData.events.find(x=>x.id===eventId);
   if(!e) return renderEventsList();
@@ -5854,6 +5889,19 @@ function renderEventGuestManageScreen(eventId){
     </div>
     <div class="card">
       <div class="card-head"><h4>Choose Who's Invited</h4></div>
+      ${categories.length ? `
+      <div style="margin-bottom:6px;">
+        <label style="font-size:11px; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); font-weight:700;">Quick-invite by Tag</label>
+        <div class="d-sub" style="margin-top:2px;">Click a tag to invite everyone with it in one go — still fully editable below afterward.</div>
+        <div class="chip-grid" style="margin-top:6px;">
+          ${categories.map(c=>{
+            const cov = categoryInviteCoverage(e, c);
+            const icon = cov==='all' ? '✓ ' : cov==='partial' ? '◐ ' : '';
+            return `<span class="attach-chip" style="cursor:pointer; ${cov!=='none'?'background:var(--green-tint);border-color:var(--green-mid);':''}" title="${cov==='all'?'Everyone with this tag is already invited':cov==='partial'?'Some of this tag is invited — click to invite everyone with it':'Invite everyone with this tag'}" onclick="quickInviteByCategory('${e.id}','${escapeAttr(c)}')">${icon}${escapeHtml(c)}</span>`;
+          }).join('')}
+        </div>
+      </div>
+      ` : ''}
       <div class="field-grid" style="align-items:flex-end;">
         <div class="field-cell"><label>Search by Name</label><input type="text" placeholder="Search families…" value="${escapeAttr(eventGuestManageSearch)}" oninput="setEventGuestManageSearch(this.value)"></div>
         <div class="field-cell"><label>Filter by Tier</label>
@@ -8221,6 +8269,7 @@ function renderPartyHubTab(){
             <div class="pm-top"><div class="pm-avatar">?</div><div><div class="pm-name">Not yet invited</div><div class="pm-role">${role}</div></div></div>
           </div>`).join('')}
       </div>
+      <div style="margin-top:28px;">${renderKeyPeopleCard()}</div>
     `;
   }
   const totalTasks = members.reduce((s,m)=>s+m.tasks.length,0);
@@ -8229,6 +8278,7 @@ function renderPartyHubTab(){
   const pendingAttire = members.filter(m=>m.attireStatus==='pending').length;
   return `
     ${renderReminderStrip()}
+    ${renderKeyPeopleCard()}
     <div class="party-summary-strip">
       <div class="ps-stat"><div class="ps-num">${members.length}</div><div class="ps-label">Wedding Party Members</div></div>
       <div class="ps-stat"><div class="ps-num">${roles}</div><div class="ps-label">Roles</div></div>
@@ -9598,6 +9648,141 @@ function familyMembersByRelationship(households, relationship){
   households.forEach(h=>{ (h.members||[]).forEach(m=>{ if((m.relationship||'')===relationship) out.push(m); }); });
   return out;
 }
+/* ---- v1.37.4: Immediate Family & Key People — lets the couple tag Mom/Dad/siblings/
+   grandparents per side right from the Wedding Party Hub, since that's where they're already
+   thinking about "who matters for photos." This is the only edit surface for a guest's
+   relationship field since v1.37.3 moved Relation out of the Guests grid in favour of a plain
+   Child? flag — Generate Combinations in the Photo Shot List (and the Playbook's Grandparents
+   contact list) both read this same relationship field, so filling it in here keeps those
+   working. Writes straight to the existing guestHouseholds member record — no new/duplicate
+   data store — so anyone added or tagged here also just shows up normally in Guests. ---- */
+function setSideRelationship(partnerKey, relationshipType, memberId){
+  // single-value slot (Mother/Father) — clear whoever currently holds it on this side first,
+  // since only one person can be "the" mother/father for the combo generator to use.
+  const households = familyHouseholdsForSide(partnerKey);
+  familyMembersByRelationship(households, relationshipType).forEach(m=>{ if(m.id!==memberId) m.relationship = ''; });
+  if(memberId) households.forEach(h=>(h.members||[]).forEach(m=>{ if(m.id===memberId) m.relationship = relationshipType; }));
+  refreshGuestsBackground();
+  if(currentRouteKey==='wedding-party') document.getElementById('content').innerHTML = renderWeddingParty();
+}
+function addSideRelationshipMember(partnerKey, relationshipType, memberId){
+  if(!memberId) return;
+  const households = familyHouseholdsForSide(partnerKey);
+  households.forEach(h=>(h.members||[]).forEach(m=>{ if(m.id===memberId) m.relationship = relationshipType; }));
+  refreshGuestsBackground();
+  if(currentRouteKey==='wedding-party') document.getElementById('content').innerHTML = renderWeddingParty();
+}
+function removeSideRelationship(partnerKey, memberId){
+  const households = familyHouseholdsForSide(partnerKey);
+  households.forEach(h=>(h.members||[]).forEach(m=>{ if(m.id===memberId) m.relationship = ''; }));
+  refreshGuestsBackground();
+  if(currentRouteKey==='wedding-party') document.getElementById('content').innerHTML = renderWeddingParty();
+}
+function toggleKeyPeopleAddForm(partnerKey){
+  keyPeopleAddOpen = keyPeopleAddOpen===partnerKey ? null : partnerKey;
+  if(currentRouteKey==='wedding-party') document.getElementById('content').innerHTML = renderWeddingParty();
+}
+function submitKeyPeopleNewPerson(partnerKey){
+  const d = dashboardData;
+  const nameEl = document.getElementById('keyPeopleNewName-'+partnerKey);
+  const relEl = document.getElementById('keyPeopleNewRel-'+partnerKey);
+  const fullName = (nameEl && nameEl.value || '').trim();
+  const relationshipType = relEl ? relEl.value : '';
+  if(!fullName || !relationshipType) return;
+  const parts = fullName.split(/\s+/);
+  const firstName = parts.shift()||fullName;
+  const lastName = parts.join(' ');
+  const partnerName = partnerKey==='partner1' ? d.partner1 : d.partner2;
+  if(relationshipType==='mother' || relationshipType==='father'){
+    familyMembersByRelationship(familyHouseholdsForSide(partnerKey), relationshipType).forEach(m=>{ m.relationship = ''; });
+  }
+  const id = 'hh-'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  const newHousehold = {
+    id, label: lastName ? `${firstName} ${lastName}` : firstName, categories:[`${partnerName}'s Side`, `${partnerName}'s Family`],
+    tier:(d.guestTiers&&d.guestTiers[0]?d.guestTiers[0].key:'A'), rsvpStatus:'pending',
+    dateAddedISO: isoFromDate(new Date()), waitlistNote:'',
+    email:'', address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:[],
+    eventRsvp:{}, memberEventExclusions:{}, surveyResponses:{},
+    members:[{id:id+'-m1', salutation:'', firstName, lastName, attending:true, mealChoice:'', dietaryRestrictions:'', accessibilityNeeds:'', tableId:null, relationship:relationshipType, seating:{}, eventRsvp:{}}]
+  };
+  (d.events||[]).forEach(ev=>{ newHousehold.eventRsvp[ev.id] = 'pending'; newHousehold.members[0].eventRsvp[ev.id] = 'pending'; });
+  d.guestHouseholds.push(newHousehold);
+  keyPeopleAddOpen = null;
+  refreshGuestsBackground();
+  if(currentRouteKey==='wedding-party') document.getElementById('content').innerHTML = renderWeddingParty();
+}
+function renderKeyPeopleCard(){
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Immediate Family &amp; Key People</h4><span class="d-sub">Who's who for photos — set this once and it automatically builds the Mom/Dad/sibling/grandparent shots in your Photo Shot List</span></div>
+      <div class="room-setup-row" style="align-items:flex-start; gap:28px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:260px;">${renderKeyPeopleSide('partner1')}</div>
+        <div style="flex:1; min-width:260px;">${renderKeyPeopleSide('partner2')}</div>
+      </div>
+    </div>
+  `;
+}
+function renderKeyPeopleSide(partnerKey){
+  const d = dashboardData;
+  const partnerName = partnerKey==='partner1' ? d.partner1 : d.partner2;
+  const households = familyHouseholdsForSide(partnerKey);
+  const allMembers = [];
+  households.forEach(h=>(h.members||[]).forEach(m=>allMembers.push(m)));
+  const mother = familyMembersByRelationship(households, 'mother')[0] || null;
+  const father = familyMembersByRelationship(households, 'father')[0] || null;
+  const siblings = familyMembersByRelationship(households, 'sibling');
+  const grandparents = familyMembersByRelationship(households, 'grandparent');
+
+  const singleSlot = (label, relationshipType, current) => `
+    <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+      <span class="d-sub" style="width:68px; flex-shrink:0;">${label}</span>
+      <select class="select-field-sm" style="flex:1; min-width:0;" onchange="setSideRelationship('${partnerKey}','${relationshipType}', this.value)">
+        <option value="">— None —</option>
+        ${allMembers.map(m=>`<option value="${m.id}" ${current && current.id===m.id ? 'selected':''}>${escapeHtml(familyMemberFullName(m))}</option>`).join('')}
+      </select>
+    </div>
+  `;
+  const multiSlot = (label, relationshipType, current) => {
+    const available = allMembers.filter(m=>!current.some(c=>c.id===m.id));
+    return `
+    <div style="margin-top:10px;">
+      <span class="d-sub" style="display:block; margin-bottom:4px;">${label}</span>
+      <div class="chip-grid" style="gap:4px;">
+        ${current.map(m=>`<span class="attach-chip">${escapeHtml(familyMemberFullName(m))} <a href="#" style="margin-left:4px; color:var(--terracotta);" title="Remove" onclick="removeSideRelationship('${partnerKey}','${m.id}'); return false;">✕</a></span>`).join('')}
+        ${available.length ? `
+        <select class="select-field-sm" style="width:auto; max-width:160px;" onchange="if(this.value){addSideRelationshipMember('${partnerKey}','${relationshipType}', this.value); this.value='';}">
+          <option value="">+ Add…</option>
+          ${available.map(m=>`<option value="${m.id}">${escapeHtml(familyMemberFullName(m))}</option>`).join('')}
+        </select>` : ''}
+      </div>
+    </div>
+  `;
+  };
+
+  return `
+    <div>
+      <div style="font-weight:700; font-size:13.5px; margin-bottom:2px;">${escapeHtml(partnerName)}'s Side</div>
+      ${households.length ? '' : `<p class="d-sub">No one's tagged "${escapeHtml(partnerName)}'s Family" in Guests yet — add a person below and they'll be added to your guest list too.</p>`}
+      ${singleSlot('Mother', 'mother', mother)}
+      ${singleSlot('Father', 'father', father)}
+      ${multiSlot('Siblings', 'sibling', siblings)}
+      ${multiSlot('Grandparents', 'grandparent', grandparents)}
+      ${keyPeopleAddOpen===partnerKey ? `
+        <div class="custom-add-row" style="margin-top:10px; flex-wrap:wrap;">
+          <input type="text" id="keyPeopleNewName-${partnerKey}" placeholder="Full name">
+          <select id="keyPeopleNewRel-${partnerKey}">
+            <option value="mother">Mother</option>
+            <option value="father">Father</option>
+            <option value="sibling">Sibling</option>
+            <option value="grandparent">Grandparent</option>
+          </select>
+          <button class="btn btn-solid btn-sm" onclick="submitKeyPeopleNewPerson('${partnerKey}')">+ Add &amp; Save</button>
+          <button class="btn btn-outline btn-sm" onclick="toggleKeyPeopleAddForm('${partnerKey}')">Cancel</button>
+        </div>
+      ` : `<button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="toggleKeyPeopleAddForm('${partnerKey}')">+ Add a New Person</button>`}
+    </div>
+  `;
+}
 function generateShotCombinations(){
   const d = dashboardData;
   const ceremonyEventId = (d.events.find(e=>/ceremony/i.test(e.name))||{}).id || null;
@@ -10928,6 +11113,129 @@ function toggleMemberEventExclusion(householdId, memberId, eventId){
   refreshGuestsBackground();
   refreshHouseholdDetail();
 }
+/* ---- v1.37.4: Event Invitations — a single, explicit place to manage who in a family is
+   invited to which event, replacing the old "+ Limit to event…" dropdown (which silently
+   flipped a household from "invited to everything" to "invited to ONLY that one event" the
+   first time you touched it — a real footgun, since nothing in the UI explained what "limit"
+   meant) and the "⊘ not invited" link that used to be buried inside the RSVP grid. These
+   helpers do the underlying data bookkeeping; the storage model itself (h.invitedEvents +
+   h.memberEventExclusions + event.limitedGuestHouseholdIds) is unchanged, so
+   householdInvitedEventIds/memberIsInvitedToEvent/the seating-chart eligibility fix all keep
+   working exactly as before. */
+function ensureHouseholdInvitedToEvent(h, eventId){
+  if(!Array.isArray(h.invitedEvents)) h.invitedEvents = [];
+  // only push onto an already-explicit (non-empty) list — an empty list is the "invited to
+  // everything" default, and this event is already included in that, so touching it here
+  // would wrongly narrow the household down to just this one event.
+  if(h.invitedEvents.length && !h.invitedEvents.includes(eventId)) h.invitedEvents.push(eventId);
+  const ev = dashboardData.events.find(x=>x.id===eventId);
+  if(ev && Array.isArray(ev.limitedGuestHouseholdIds) && !ev.limitedGuestHouseholdIds.includes(h.id)){
+    ev.limitedGuestHouseholdIds.push(h.id);
+  }
+}
+function removeHouseholdFromEvent(h, eventId){
+  const allIds = (dashboardData.events||[]).map(e=>e.id);
+  if(!h.invitedEvents || !h.invitedEvents.length){
+    // currently on the "invited to everything" default — materialize an explicit list of
+    // every OTHER event so removing this one doesn't silently re-include future events too
+    h.invitedEvents = allIds.filter(id=>id!==eventId);
+  } else {
+    h.invitedEvents = h.invitedEvents.filter(id=>id!==eventId);
+  }
+}
+function householdEventInviteState(h, eventId){
+  // 'all' | 'none' | 'partial' — drives both the family-level shortcut chip and the matrix,
+  // same idea as a native checkbox's indeterminate state.
+  const members = h.members||[];
+  if(!members.length) return 'none';
+  const invitedCount = members.filter(m=>memberIsInvitedToEvent(h, m, eventId)).length;
+  if(invitedCount===0) return 'none';
+  if(invitedCount===members.length) return 'all';
+  return 'partial';
+}
+function setHouseholdEventInvited(householdId, eventId, invited){
+  // Family-level shortcut — "Invite this family to X" / "Remove this family from X".
+  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+  if(!h) return;
+  if(invited){
+    ensureHouseholdInvitedToEvent(h, eventId);
+    if(h.memberEventExclusions) delete h.memberEventExclusions[eventId]; // invite everyone in the family
+  } else {
+    removeHouseholdFromEvent(h, eventId);
+    if(h.memberEventExclusions) delete h.memberEventExclusions[eventId]; // nothing left to exclude once the whole family's out
+  }
+  recomputeHouseholdRsvpStatus(h);
+  refreshGuestsBackground();
+  refreshHouseholdDetail();
+}
+function setMemberEventInvited(householdId, memberId, eventId, invited){
+  // Row-level — customize one guest within an already (or not-yet) invited family.
+  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+  if(!h) return;
+  const wasHouseholdInvited = householdInvitedEventIds(h).includes(eventId);
+  if(invited){
+    if(!wasHouseholdInvited){
+      // bringing the family in for the first time via one guest — exclude everyone else so
+      // only this person ends up invited, matching e.g. "turn on Bridal Shower for Sally only"
+      ensureHouseholdInvitedToEvent(h, eventId);
+      if(!h.memberEventExclusions) h.memberEventExclusions = {};
+      h.memberEventExclusions[eventId] = (h.members||[]).filter(x=>x.id!==memberId).map(x=>x.id);
+    } else if(h.memberEventExclusions && h.memberEventExclusions[eventId]){
+      h.memberEventExclusions[eventId] = h.memberEventExclusions[eventId].filter(id=>id!==memberId);
+    }
+  } else {
+    if(!wasHouseholdInvited){ refreshHouseholdDetail(); return; } // already not invited, nothing to do
+    if(!h.memberEventExclusions) h.memberEventExclusions = {};
+    if(!Array.isArray(h.memberEventExclusions[eventId])) h.memberEventExclusions[eventId] = [];
+    if(!h.memberEventExclusions[eventId].includes(memberId)) h.memberEventExclusions[eventId].push(memberId);
+  }
+  recomputeHouseholdRsvpStatus(h);
+  refreshGuestsBackground();
+  refreshHouseholdDetail();
+}
+function renderEventInvitationsSection(h){
+  const d = dashboardData;
+  const events = d.events||[];
+  if(!events.length) return '';
+  const multiMember = (h.members||[]).length > 1;
+  return `
+    <div class="detail-section" style="margin-top:14px; padding-top:14px;">
+      <div class="detail-section-head"><h4 style="margin:0;">Event Invitations</h4><span class="d-sub">Who's invited to what — toggle the whole family in or out, then customize individual guests below if needed</span></div>
+      <div style="margin-top:6px;"><span class="d-sub" style="font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:10.5px;">Invite this family to:</span></div>
+      <div class="chip-grid" style="margin-top:6px; gap:6px;">
+        ${events.map(e=>{
+          const state = householdEventInviteState(h, e.id);
+          const icon = state==='all' ? '☑' : state==='partial' ? '◐' : '☐';
+          return `<span class="attach-chip" style="cursor:pointer; ${state!=='none'?'background:var(--green-tint);border-color:var(--green-mid);':''}" title="${state==='partial'?'Only part of this family is invited — click to invite everyone':'Click to toggle the whole family'}" onclick="setHouseholdEventInvited('${h.id}','${e.id}', ${state==='none' ? 'true' : 'false'})">${icon} ${escapeHtml(e.name)}</span>`;
+        }).join('')}
+      </div>
+      ${multiMember ? `
+      <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--line-soft);">
+        <div class="d-sub" style="font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:10.5px;">Customize by guest</div>
+        <div class="d-sub" style="margin-top:2px;">Everyone currently follows the family invitation above — uncheck or check a box below for just one person (e.g. only some of the family invited to the Bridal Shower).</div>
+        <div style="overflow-x:auto; margin-top:8px;">
+          <table style="border-collapse:collapse; width:100%; min-width:${150+events.length*100}px;">
+            <thead><tr>
+              <th style="text-align:left; padding:4px 6px; font-size:11px; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); border-bottom:1px solid var(--line-soft);">Guest</th>
+              ${events.map(e=>`<th style="text-align:center; padding:4px 6px; font-size:12px; font-weight:700; color:var(--charcoal); border-bottom:1px solid var(--line-soft); min-width:100px;">${escapeHtml(e.name)}</th>`).join('')}
+            </tr></thead>
+            <tbody>
+              ${(h.members||[]).map(m=>`
+                <tr>
+                  <td style="padding:4px 6px; border-bottom:1px solid var(--line-soft); font-size:13px; font-weight:600; white-space:nowrap;">${escapeHtml(memberDisplayName(m))}</td>
+                  ${events.map(e=>{
+                    const invited = memberIsInvitedToEvent(h, m, e.id);
+                    return `<td style="padding:4px 6px; border-bottom:1px solid var(--line-soft); text-align:center;"><input type="checkbox" ${invited?'checked':''} onchange="setMemberEventInvited('${h.id}','${m.id}','${e.id}',this.checked)"></td>`;
+                  }).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>` : ''}
+    </div>
+  `;
+}
 /* ---- v1.37.3: per-event meal choice, segregated out of the Family Members grid once there's
    more than one event actually asking guests to choose. An event only needs a meal choice
    collected when its own mealCollectionMode is 'ask' (set on the event's own Details page) —
@@ -11075,11 +11383,8 @@ function renderEventRsvpDrilldownModal(){
     </div>
   `;
 }
-function householdEventChips(h){
-  const d = dashboardData;
-  if(!h.invitedEvents || !h.invitedEvents.length) return '<span class="d-sub">All events</span>';
-  return h.invitedEvents.map(id=>{ const e = d.events.find(x=>x.id===id); return e ? `<span class="pill pill-neutral">${escapeHtml(e.name)}</span>` : ''; }).join(' ');
-}
+// householdEventChips removed in v1.37.4 — superseded by the Event Invitations section
+// (renderEventInvitationsSection), which shows the same info plus lets you edit it in place.
 function householdNeedsAttention(h){
   return h.rsvpStatus==='pending' || h.rsvpStatus==='mixed' || !h.email;
 }
@@ -11551,17 +11856,19 @@ function closeHouseholdDetail(){
 function renderHouseholdEventRsvpSection(h){
   if(!hasMultipleEvents()) return '';
   const d = dashboardData;
-  const invitedIds = householdInvitedEventIds(h);
-  const events = d.events.filter(e=>invitedIds.includes(e.id));
-  if(!events.length) return '';
   const members = h.members||[];
+  // v1.37.4: only list an event here if someone in this family is actually invited to it —
+  // who's invited is now managed entirely in Event Invitations above, so this section is pure
+  // "of those invited, who's coming" and never shows a person/event pairing that isn't real.
+  const events = d.events.filter(e=>members.some(m=>memberIsInvitedToEvent(h, m, e.id)));
+  if(!events.length) return '';
   const multiMember = members.length > 1;
   // v1.34.0: switched from a stacked block-per-event layout to a real grid — one row per
   // person, one column per event — so a household's whole RSVP picture reads at a glance
   // instead of scrolling through a block for each event.
   return `
     <div class="detail-section" style="margin-top:14px; padding-top:14px;">
-      <div class="detail-section-head"><h4 style="margin:0;">RSVP by Event</h4><span class="d-sub">Each person's own status per event — the Overall pill above is computed from these</span></div>
+      <div class="detail-section-head"><h4 style="margin:0;">RSVP by Event</h4><span class="d-sub">Of those invited, who's coming — the Overall pill above is computed from these</span></div>
       <div style="overflow-x:auto; margin-top:6px;">
         <table style="border-collapse:collapse; width:100%; min-width:${330+events.length*112}px;">
           <thead>
@@ -11582,12 +11889,11 @@ function renderHouseholdEventRsvpSection(h){
                 ${events.map(e=>{
                   const excluded = isMemberExcludedFromEvent(h, m.id, e.id);
                   if(excluded){
-                    return `<td style="padding:4px 6px; border-bottom:1px solid var(--line-soft); text-align:center;"><a href="#" class="d-sub" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">Not invited — + Invite</a></td>`;
+                    return `<td style="padding:4px 6px; border-bottom:1px solid var(--line-soft); text-align:center;"><span class="d-sub">Not invited</span></td>`;
                   }
                   return `<td style="padding:4px 6px; border-bottom:1px solid var(--line-soft);">
                     <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
                       ${rsvpIconGroup(getMemberEventRsvp(h,m,e.id), s=>`setMemberEventRsvp('${h.id}','${m.id}','${e.id}','${s}')`)}
-                      ${multiMember ? `<a href="#" class="rsvp-event-exclude" title="Not invited to this event" onclick="toggleMemberEventExclusion('${h.id}','${m.id}','${e.id}'); return false;">⊘</a>` : ''}
                     </div>
                   </td>`;
                 }).join('')}
@@ -11628,17 +11934,20 @@ function renderHouseholdDetailModal(householdId){
         </div>
         <p class="tier-explain">${(dashboardData.guestTiers||[]).map(t=>`<strong>Tier ${escapeHtml(t.key)}:</strong> ${escapeHtml(t.desc||t.label)}`).join('  ·  ')} — manage tiers any time in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Settings →</span></p>
       </div>
-      <div class="chip-grid" style="margin:10px 0;">
-        ${categories.map(c=>`<span class="attach-chip" style="cursor:pointer; ${(h.categories||[]).includes(c)?'background:var(--green-tint);border-color:var(--green-mid);':''}" onclick="toggleHouseholdCategory('${h.id}','${escapeAttr(c)}')">${escapeHtml(c)}${(h.categories||[]).includes(c)?' ✓':''}</span>`).join('')}
-        <span class="attach-chip" style="cursor:pointer; border-style:dashed;" onclick="toggleHouseholdCategoryPrompt('${h.id}')">+ Other…</span>
+      <div class="field-grid" style="margin-top:14px;">
+        <div class="field-cell" style="position:relative;"><label>Street Address <span class="field-help-icon" title="Address search powered by OpenStreetMap — free, no API key needed, and not limited to the U.S. Include the city (and country, for addresses outside North America) for the best match. Picking a result fills in City/Province/Postal/Country below too.">?</span></label><input type="text" id="householdAddrInput-${h.id}" placeholder="Search an address…" autocomplete="off" value="${escapeAttr(addr.street)}" oninput="onAddressLookupInput('household','${h.id}', this.value)" onchange="updateHouseholdAddressField('${h.id}','street',this.value)">
+          <div class="loc-suggest-dropdown" id="locSuggest-household-${h.id}"></div>
+        </div>
+        <div class="field-cell"><label>City</label><input type="text" placeholder="e.g. Toronto" value="${escapeAttr(addr.city)}" onchange="updateHouseholdAddressField('${h.id}','city',this.value)"></div>
+        <div class="field-cell"><label>Province / State</label><input type="text" placeholder="e.g. ON" value="${escapeAttr(addr.region)}" onchange="updateHouseholdAddressField('${h.id}','region',this.value)"></div>
+        <div class="field-cell"><label>Postal / ZIP Code</label><input type="text" placeholder="e.g. M4K 1M2" value="${escapeAttr(addr.postalCode)}" onchange="updateHouseholdAddressField('${h.id}','postalCode',this.value)"></div>
+        <div class="field-cell"><label>Country</label><input type="text" placeholder="e.g. Canada" value="${escapeAttr(addr.country)}" onchange="updateHouseholdAddressField('${h.id}','country',this.value)"></div>
+        <div class="field-cell"><label>Email</label><input type="text" placeholder="Contact email" value="${escapeAttr(h.email)}" onchange="updateHouseholdField('${h.id}','email',this.value)"></div>
       </div>
-      ${householdCategoryPromptOpen===h.id ? `
-      <div class="custom-add-row" style="margin:-4px 0 10px;">
-        <input type="text" id="newHouseholdCategoryInline" placeholder="New category name" onkeydown="if(event.key==='Enter'){submitHouseholdCategoryPrompt('${h.id}');}">
-        <button class="btn btn-outline btn-sm" onclick="submitHouseholdCategoryPrompt('${h.id}')">+ Add &amp; Apply</button>
+      <div class="room-setup-row" style="margin-top:14px;">
+        <div class="field-mini" style="flex:1; min-width:220px;"><label>Song Requests</label><input type="text" style="width:100%;" placeholder="e.g. Uptown Funk" value="${escapeAttr(h.songRequest)}" onchange="updateHouseholdField('${h.id}','songRequest',this.value)"></div>
       </div>
-      ` : ''}
-      <div class="detail-section-head" style="margin-top:4px;"><h4 style="margin:0;">Family Members</h4></div>
+      <div class="detail-section-head" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);"><h4 style="margin:0;">Family Members</h4></div>
       ${(() => {
         // v1.37.3: Relation replaced with a simple Child? flag per Natasha's ask. Meal choice
         // only shows here when there's at most one event actually collecting it (mealCollectionMode
@@ -11674,26 +11983,18 @@ function renderHouseholdDetailModal(householdId){
       </div>`;
       })()}
       <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="addFamilyMember('${h.id}')">+ Add Family Member</button>
-      <div class="field-grid" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);">
-        <div class="field-cell" style="position:relative;"><label>Street Address <span class="field-help-icon" title="Address search powered by OpenStreetMap — free, no API key needed, and not limited to the U.S. Include the city (and country, for addresses outside North America) for the best match. Picking a result fills in City/Province/Postal/Country below too.">?</span></label><input type="text" id="householdAddrInput-${h.id}" placeholder="Search an address…" autocomplete="off" value="${escapeAttr(addr.street)}" oninput="onAddressLookupInput('household','${h.id}', this.value)" onchange="updateHouseholdAddressField('${h.id}','street',this.value)">
-          <div class="loc-suggest-dropdown" id="locSuggest-household-${h.id}"></div>
-        </div>
-        <div class="field-cell"><label>City</label><input type="text" placeholder="e.g. Toronto" value="${escapeAttr(addr.city)}" onchange="updateHouseholdAddressField('${h.id}','city',this.value)"></div>
-        <div class="field-cell"><label>Province / State</label><input type="text" placeholder="e.g. ON" value="${escapeAttr(addr.region)}" onchange="updateHouseholdAddressField('${h.id}','region',this.value)"></div>
-        <div class="field-cell"><label>Postal / ZIP Code</label><input type="text" placeholder="e.g. M4K 1M2" value="${escapeAttr(addr.postalCode)}" onchange="updateHouseholdAddressField('${h.id}','postalCode',this.value)"></div>
-        <div class="field-cell"><label>Country</label><input type="text" placeholder="e.g. Canada" value="${escapeAttr(addr.country)}" onchange="updateHouseholdAddressField('${h.id}','country',this.value)"></div>
-        <div class="field-cell"><label>Email</label><input type="text" placeholder="Contact email" value="${escapeAttr(h.email)}" onchange="updateHouseholdField('${h.id}','email',this.value)"></div>
+      <div class="detail-section-head" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);"><h4 style="margin:0;">Guest Classification</h4></div>
+      <div class="chip-grid" style="margin-top:6px;">
+        ${categories.map(c=>`<span class="attach-chip" style="cursor:pointer; ${(h.categories||[]).includes(c)?'background:var(--green-tint);border-color:var(--green-mid);':''}" onclick="toggleHouseholdCategory('${h.id}','${escapeAttr(c)}')">${escapeHtml(c)}${(h.categories||[]).includes(c)?' ✓':''}</span>`).join('')}
+        <span class="attach-chip" style="cursor:pointer; border-style:dashed;" onclick="toggleHouseholdCategoryPrompt('${h.id}')">+ Other…</span>
       </div>
-      <div class="room-setup-row" style="margin-top:14px;">
-        <div class="field-mini" style="flex:1; min-width:220px;"><label>Song Requests</label><input type="text" style="width:100%;" placeholder="e.g. Uptown Funk" value="${escapeAttr(h.songRequest)}" onchange="updateHouseholdField('${h.id}','songRequest',this.value)"></div>
+      ${householdCategoryPromptOpen===h.id ? `
+      <div class="custom-add-row" style="margin-top:8px;">
+        <input type="text" id="newHouseholdCategoryInline" placeholder="New category name" onkeydown="if(event.key==='Enter'){submitHouseholdCategoryPrompt('${h.id}');}">
+        <button class="btn btn-outline btn-sm" onclick="submitHouseholdCategoryPrompt('${h.id}')">+ Add &amp; Apply</button>
       </div>
-      <div class="chip-grid" style="margin-top:8px; gap:4px;">
-        ${householdEventChips(h)}
-        <select class="select-field-sm" style="width:auto;max-width:150px;" onchange="if(this.value){addHouseholdEvent('${h.id}',this.value); this.value='';}">
-          <option value="">+ Limit to event…</option>
-          ${d.events.filter(e=>!(h.invitedEvents||[]).includes(e.id)).map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
-        </select>
-      </div>
+      ` : ''}
+      ${renderEventInvitationsSection(h)}
       ${renderHouseholdEventRsvpSection(h)}
       ${renderHouseholdMealSelections(h)}
       ${renderHouseholdSurveySection(h)}
@@ -11750,15 +12051,7 @@ function toggleHouseholdCategory(householdId, category){
   refreshGuestsBackground();
   refreshHouseholdDetail();
 }
-function addHouseholdEvent(householdId, eventId){
-  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
-  if(!h) return;
-  if(!h.invitedEvents.includes(eventId)) h.invitedEvents.push(eventId);
-  if(!h.eventRsvp) h.eventRsvp = {};
-  if(h.eventRsvp[eventId]===undefined) h.eventRsvp[eventId] = 'pending';
-  refreshGuestsBackground();
-  refreshHouseholdDetail();
-}
+// addHouseholdEvent removed in v1.37.4 — superseded by setHouseholdEventInvited/setMemberEventInvited.
 function addFamilyMember(householdId){
   const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
   if(!h) return;
@@ -12590,9 +12883,19 @@ function renderEventListCard(e){
     </div>
   `;
 }
+function eventsSortedByDate(list){
+  // v1.37.4: always show events nearest-date-first, regardless of the order they were added
+  // in — events with no date yet (dateISO unset) sort to the end rather than breaking the sort.
+  return [...list].sort((a,b)=>{
+    if(!a.dateISO && !b.dateISO) return 0;
+    if(!a.dateISO) return 1;
+    if(!b.dateISO) return -1;
+    return a.dateISO.localeCompare(b.dateISO);
+  });
+}
 function renderEventsList(){
   const d = dashboardData;
-  const events = d.events;
+  const events = eventsSortedByDate(d.events);
   const totalGuestVisits = events.reduce((s,e)=>s+(e.guestCount||0),0);
   const onTrackCount = events.filter(e=>eventCompleteness(e).pct>=60).length;
   const totalBudgetAllocated = events.reduce((s,e)=>s+(e.budgetTarget||0),0);
