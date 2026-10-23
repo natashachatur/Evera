@@ -1882,6 +1882,23 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.42.0', date:'2026-10-23',
+    title:'Vendors reframed around decisions — Booked / Decision Needed Soon / Later',
+    items:[
+      "Vendor Status (Quick View) now groups every category into Booked, Decision Needed Soon, and Later instead of one flat list by category.",
+      '"Decision Needed Soon" uses the existing status field plus the same behind-schedule lead-time check Home already uses (Venue, Catering, Photography, Videography, Officiant) — a category lands there once you\'re past its typical booking window and still haven\'t booked, or as soon as you\'ve shortlisted someone. No new data was added; this is the same status model, just grouped by urgency instead of category order.'
+    ]
+  },
+  {
+    version:'1.41.0', date:'2026-10-23',
+    title:'Budget simplified to 4 numbers + a status line, and two more things you\'ll never have to enter twice',
+    items:[
+      'Budget\'s first screen is now just Total Budget, Allocated, Committed/Paid, Unallocated, and one plain-language status line — the full donut breakdown, Spending Pace, Opportunities & Watch List, and the entire category/event list now sit behind a "View full breakdown" toggle instead of all loading at once.',
+      'An event\'s "Estimated Guests" number is a manual placeholder only until you actually invite people on its Guests tab — once you have, it automatically switches to the real, live invited count everywhere it\'s shown (the event card, Calendar, Events total), the same way a vendor\'s own cost already drives its Budget line instead of being re-entered.',
+      'Changing an event\'s date now shifts every Playbook timeline moment already added for that event to the new day — they used to keep showing the old date until you re-added them.'
+    ]
+  },
+  {
     version:'1.40.0', date:'2026-10-23',
     title:'Per-person Attributes and a reusable, tag-based Invite Rules engine',
     items:[
@@ -2482,6 +2499,7 @@ let calendarMonth = null;    // {year, month}
 let selectedCalendarDay = null; // {year, month, day}
 let budgetTab = 'overview';  // 'overview' | 'savings'
 let budgetOverviewView = 'category'; // 'category' | 'event'
+let budgetShowBreakdown = false; // v1.41.0: the first screen shows 4 numbers + a status line; everything else (donut, pace detail, watch list, the full category/event list) sits behind this
 let docsTab = 'notes';       // 'notes' | 'files'
 let editingNoteId = null;
 let guidesView = 'list';     // 'list' | 'detail'
@@ -4454,6 +4472,23 @@ function vendorsBookedCount(){
   const list = d.vendors||[];
   return {booked: list.filter(v=>v.status==='booked').length, total: list.length};
 }
+// v1.38.0: typical booking lead time, in days before the wedding, for the categories that are
+// usually locked in earliest — used to flag a category as "behind schedule" on Home. Shared with
+// Vendors' v1.42.0 decision-urgency grouping below, so both read the same signal.
+const CORE_VENDOR_LEAD_DAYS = {Venue:270, Catering:240, Photography:210, Videography:210, Officiant:180};
+/* v1.42.0: "Vendors reframed around decisions, not category" — a vendor category needs a decision
+   soon when either (a) you're already inside its typical booking window and haven't booked yet
+   (behind-schedule, same heuristic as Home's attention signal), or (b) you've shortlisted someone,
+   which means you're actively deciding regardless of how much runway is left. Everything else is
+   "Later." Uses only the existing status field + the wedding date — no new data. */
+function vendorDecisionBucket(v){
+  if(v.status==='booked') return 'booked';
+  const days = daysToWedding();
+  const leadDays = CORE_VENDOR_LEAD_DAYS[v.category];
+  const behindSchedule = leadDays!==undefined && days!==null && days<=leadDays;
+  if(behindSchedule || v.status==='shortlisted') return 'soon';
+  return 'later';
+}
 // weddingWeekendCardLabel() removed in v1.38.0 — the photo-strip card on Home now always
 // reads "Your Wedding Events" (a static label) instead of a day/weekend/week-shape-dependent
 // title, per direct request.
@@ -4466,7 +4501,6 @@ function vendorsBookedCount(){
    into tiers 1/2, and Home no longer needs to be a second copy of Budget/Vendors/Guests. ---- */
 function homeAttentionSignals(ctx){
   const {d, topAction, nextUp, overdueTasks, dueSoonTotal, isOverBudget, totalSpent, days} = ctx;
-  const CORE_VENDOR_LEAD_DAYS = {Venue:270, Catering:240, Photography:210, Videography:210, Officiant:180};
   const missingAddressCount = (d.guestHouseholds||[]).filter(h=>!(h.address && h.address.street && h.address.street.trim())).length;
   const behindScheduleVendors = (d.vendors||[]).filter(v=>CORE_VENDOR_LEAD_DAYS[v.category] && v.status!=='booked' && days!==null && days<=CORE_VENDOR_LEAD_DAYS[v.category]);
   const items = [];
@@ -8261,35 +8295,23 @@ function renderVendorsModule(){
   const recs = d.vendorRecommendations||[];
   const byCategory = {};
   recs.forEach(r=>{ (byCategory[r.category] = byCategory[r.category]||[]).push(r); });
-  const bookedCount = vendors.filter(v=>v.status==='booked').length;
-  const shortlistedCount = vendors.filter(v=>v.status==='shortlisted').length;
-  const searchingCount = vendors.filter(v=>v.status==='searching').length;
+  const booked = vendors.filter(v=>vendorDecisionBucket(v)==='booked');
+  const soon = vendors.filter(v=>vendorDecisionBucket(v)==='soon');
+  const later = vendors.filter(v=>vendorDecisionBucket(v)==='later');
   return `
     ${renderVendorAddButton()}
     ${renderVendorTeamSection()}
     <div class="party-summary-strip">
-      <div class="ps-stat"><div class="ps-num">${vendors.length}</div><div class="ps-label">Vendor Categories</div></div>
-      <div class="ps-stat"><div class="ps-num">${bookedCount}</div><div class="ps-label">Booked</div></div>
-      <div class="ps-stat"><div class="ps-num">${shortlistedCount}</div><div class="ps-label">Shortlisted</div></div>
-      <div class="ps-stat"><div class="ps-num">${searchingCount}</div><div class="ps-label">Still Searching</div></div>
+      <div class="ps-stat"><div class="ps-num">${booked.length}</div><div class="ps-label">Booked</div></div>
+      <div class="ps-stat"><div class="ps-num" style="${soon.length?'color:var(--terracotta);':''}">${soon.length}</div><div class="ps-label">Decision Needed Soon</div></div>
+      <div class="ps-stat"><div class="ps-num">${later.length}</div><div class="ps-label">Later</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h4>Vendor Status (Quick View)</h4><span class="d-sub">One line per category — powers your Home dashboard and Event pages</span></div>
+      <div class="card-head"><h4>Vendor Status (Quick View)</h4><span class="d-sub">Grouped by how soon you need to decide — powers your Home dashboard and Event pages</span></div>
       <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">For contacts, contracts, cost, and messages on a specific vendor, use My Vendor Team above.</p>
-      <div class="budget-items" style="padding-left:0;">
-        <div class="budget-items-head" style="grid-template-columns:1.2fr 1.4fr 0.9fr 0.5fr;"><span>Category</span><span>Vendor</span><span>Status</span><span></span></div>
-        ${vendors.map((v,vi)=>`
-          <div class="budget-item-row" style="grid-template-columns:1.2fr 1.4fr 0.9fr 0.5fr; align-items:center;">
-            <span class="readonly-cell">${escapeHtml(v.category)}</span>
-            <input type="text" class="select-field-sm" value="${escapeAttr(v.name)}" onchange="updateVendorField(${vi},'name',this.value)">
-            <select class="select-field-sm" onchange="updateVendorField(${vi},'status',this.value)">
-              <option value="searching" ${v.status==='searching'?'selected':''}>Searching</option>
-              <option value="shortlisted" ${v.status==='shortlisted'?'selected':''}>Shortlisted</option>
-              <option value="booked" ${v.status==='booked'?'selected':''}>Booked</option>
-            </select>
-            <a href="#" class="danger-link" onclick="removeVendorCategory(${vi}); return false;">Remove</a>
-          </div>`).join('')}
-      </div>
+      ${renderVendorBucketGroup('Decision Needed Soon', soon, "These categories are either past their typical booking window or you've already shortlisted someone — worth deciding on soon.")}
+      ${renderVendorBucketGroup('Later', later, "No rush yet — you're still within a normal planning window for these.")}
+      ${renderVendorBucketGroup('Booked', booked, "Nothing booked yet.")}
       <div class="custom-add-row" style="margin-top:14px;">
         <input type="text" id="newVendorCategory" placeholder="e.g. Transportation, Cake Baker">
         <button class="btn btn-outline btn-sm" onclick="addVendorCategory()">+ Add Category</button>
@@ -8308,6 +8330,31 @@ function renderVendorsModule(){
           </div>
         </div>`;
       }).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No recommendations yet — they'll appear here as Evera learns more about what you still need to book.</p>`}
+    </div>
+  `;
+}
+function renderVendorBucketGroup(title, list, emptyNote){
+  return `
+    <div class="detail-section" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft);">
+      <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(title)}</h4><span class="d-sub">${pluralize(list.length,'category','categories')}</span></div>
+      ${list.length ? `
+      <div class="budget-items" style="padding-left:0; margin-top:6px;">
+        <div class="budget-items-head" style="grid-template-columns:1.2fr 1.4fr 0.9fr 0.5fr;"><span>Category</span><span>Vendor</span><span>Status</span><span></span></div>
+        ${list.map(v=>{
+          const vi = dashboardData.vendors.indexOf(v);
+          return `
+          <div class="budget-item-row" style="grid-template-columns:1.2fr 1.4fr 0.9fr 0.5fr; align-items:center;">
+            <span class="readonly-cell">${escapeHtml(v.category)}</span>
+            <input type="text" class="select-field-sm" value="${escapeAttr(v.name)}" onchange="updateVendorField(${vi},'name',this.value)">
+            <select class="select-field-sm" onchange="updateVendorField(${vi},'status',this.value)">
+              <option value="searching" ${v.status==='searching'?'selected':''}>Searching</option>
+              <option value="shortlisted" ${v.status==='shortlisted'?'selected':''}>Shortlisted</option>
+              <option value="booked" ${v.status==='booked'?'selected':''}>Booked</option>
+            </select>
+            <a href="#" class="danger-link" onclick="removeVendorCategory(${vi}); return false;">Remove</a>
+          </div>`;
+        }).join('')}
+      </div>` : `<p class="d-sub" style="margin-top:6px;">${emptyNote}</p>`}
     </div>
   `;
 }
@@ -13159,7 +13206,7 @@ function renderEventListCard(e){
         <div class="elc-progress-track"><div class="elc-progress-fill" style="width:${stats.pct}%;"></div></div>
         <div class="elc-progress-label">${stats.pct}% planned${stats.remaining>0 ? ` · ${pluralize(stats.remaining,'detail','details')} left` : ' · all set'}</div>
         <div class="elc-stats-row">
-          <span>👥 ${e.guestCount||0} guests</span>
+          <span>👥 ${effectiveEventGuestCount(e)} guests</span>
           ${e.budgetTarget ? `<span>💰 ${fmtMoney(e.budgetTarget)} budget</span>` : ''}
         </div>
       </div>
@@ -13180,7 +13227,7 @@ function eventsSortedByDate(list){
 function renderEventsList(){
   const d = dashboardData;
   const events = eventsSortedByDate(d.events);
-  const totalGuestVisits = events.reduce((s,e)=>s+(e.guestCount||0),0);
+  const totalGuestVisits = events.reduce((s,e)=>s+effectiveEventGuestCount(e),0);
   const onTrackCount = events.filter(e=>eventCompleteness(e).pct>=60).length;
   const totalBudgetAllocated = events.reduce((s,e)=>s+(e.budgetTarget||0),0);
   const categories = (d.eventCategories||[]).filter(c=>events.some(e=>(e.categories||[]).includes(c)));
@@ -13431,11 +13478,15 @@ function renderEventDetailsTab(e){
       <p class="detail-hint">RSVP Deadline auto-suggests 30 days before the event's date — move it any time. It shows up as a Key Milestone on Calendar at a Glance and on the RSVP breakdown below.</p>
       <div style="display:flex; align-items:center; gap:16px; margin-top:14px; padding:14px 18px; background:var(--ivory-deep); border-radius:var(--radius-sm); flex-wrap:wrap;">
         <div>
-          <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint);">Estimated Guests</div>
-          <div style="font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:700; line-height:1.1; color:var(--green);">${e.guestCount||0}</div>
+          <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint);">${eventGuestStats(e).invited>0 ? 'Guests Invited' : 'Estimated Guests'}</div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:700; line-height:1.1; color:var(--green);">${effectiveEventGuestCount(e)}</div>
         </div>
+        ${eventGuestStats(e).invited>0 ? `
+        <p class="detail-hint" style="margin:0; flex:1; min-width:200px;">This is now live from your actual guest list — ${eventGuestStats(e).invited} invited so far on the <span class="ch-link" style="cursor:pointer;" onclick="switchEventDetailTab('guests')">Guests tab</span>. No need to keep a separate number in sync.</p>
+        ` : `
         <input type="number" min="0" style="max-width:110px;" value="${e.guestCount||0}" onchange="updateEventField('${e.id}','guestCount',Number(this.value)||0)">
-        <p class="detail-hint" style="margin:0; flex:1; min-width:200px;">Your own manual planning number from onboarding. Real Invited/Confirmed/Pending/Declined counts — computed live from your Guests household list — are on the Guests tab.</p>
+        <p class="detail-hint" style="margin:0; flex:1; min-width:200px;">A placeholder for early planning, before you've invited anyone on the Guests tab — once you do, this switches to the real, live count automatically.</p>
+        `}
       </div>
       ${renderDressCodeVisual(e.dressCode)}
     </div>
@@ -13506,8 +13557,16 @@ function updateEventField(id, field, value){
   const e = dashboardData.events.find(x=>x.id===id);
   if(!e) return;
   e[field] = value;
-  if(field==='dateISO') e.date = value ? shortDateLabel(value) : 'Date TBD';
+  if(field==='dateISO'){
+    e.date = value ? shortDateLabel(value) : 'Date TBD';
+    // v1.41.0: "never enter the same info twice" — a date change used to leave every Playbook
+    // timeline moment already added for this event still showing its old day label. Shift them
+    // all to match, the same way the event's own date label is kept in sync just above.
+    const newDayLabel = timelineDayLabelForEvent(e);
+    (dashboardData.playbookTimeline||[]).forEach(item=>{ if(item.eventId===id) item.day = newDayLabel; });
+  }
   if(currentRouteKey==='events' && selectedEventId===id) document.getElementById('content').innerHTML = renderEventDetail(id);
+  else if(currentRouteKey==='playbook') document.getElementById('content').innerHTML = renderPlaybook();
 }
 function eventGuestStats(e){
   // v1.34.0: tallies each invited person's own RSVP for this event directly, rather than
@@ -13529,6 +13588,14 @@ function eventGuestStats(e){
     });
   });
   return {invited, confirmed, pending, declined};
+}
+function effectiveEventGuestCount(e){
+  // v1.41.0: "never enter the same info twice" — once real people are actually invited to this
+  // event (via Guests), that live count is the real number everywhere it's shown. The manual
+  // guestCount field (set during onboarding/creation, before a real guest list exists) is only
+  // a fallback placeholder for early planning, same pattern as vendor cost driving Budget above.
+  const stats = eventGuestStats(e);
+  return stats.invited>0 ? stats.invited : (e.guestCount||0);
 }
 function eventGuestsByBucket(eventId, bucket){
   const d = dashboardData;
@@ -13940,27 +14007,31 @@ function renderBudgetOverviewTab(){
   const isOverallOverBudget = d.budgetTotal>0 && totalSpent > d.budgetTotal;
   const overallOverspendAmt = totalSpent - d.budgetTotal;
 
+  // v1.41.0: "the first screen shows four numbers + a status line" — everything else (the donut,
+  // pace detail, Opportunities & Watch List, and the full category/event breakdown) now sits
+  // behind one "View full breakdown" toggle, so Budget reads as simple by default and goes as
+  // deep as you want on demand, instead of all of it landing on you at once.
+  const statusLine = isOverallOverBudget
+    ? `You're over budget by ${fmtMoney(overallOverspendAmt)} — ${fmtMoney(totalSpent)} committed against a ${fmtMoney(d.budgetTotal)} total.`
+    : paceNote;
   return `
-    ${isOverallOverBudget ? `
-      <div class="budget-overspend-banner">
-        <div class="bo-icon">!</div>
-        <div>
-          <div class="bo-title">You're over budget — by ${fmtMoney(overallOverspendAmt)}</div>
-          <div class="bo-sub">You've spent/committed ${fmtMoney(totalSpent)} against a ${fmtMoney(d.budgetTotal)} total budget. Check the Opportunities &amp; Watch List and Master Budget below to see which categories are driving it.</div>
-        </div>
-      </div>
-    ` : ''}
     <div class="card budget-hero-card">
-      <div class="card-head"><h4>Budget Breakdown &amp; Pace</h4></div>
       <div class="party-summary-strip budget-stat-strip">
         <div class="ps-stat">
           <div class="ps-label" style="margin-bottom:4px;">Total Budget</div>
           <input type="number" min="0" class="budget-total-input" value="${d.budgetTotal||0}" onchange="updateBudgetTotal(this.value)">
         </div>
-        <div class="ps-stat"><div class="ps-num">${fmtMoney(totalPlanned)}</div><div class="ps-label">Planned</div></div>
+        <div class="ps-stat"><div class="ps-num">${fmtMoney(totalPlanned)}</div><div class="ps-label">Allocated</div></div>
         <div class="ps-stat"><div class="ps-num">${fmtMoney(totalSpent)}</div><div class="ps-label">Committed / Paid</div></div>
         <div class="ps-stat"><div class="ps-num" style="${(d.budgetTotal-totalPlanned)<0?'color:var(--terracotta);':''}">${fmtMoney(d.budgetTotal-totalPlanned)}</div><div class="ps-label">Unallocated</div></div>
       </div>
+      <p class="pace-note" style="margin-top:14px; ${isOverallOverBudget?'color:var(--terracotta); font-weight:600;':''}">${isOverallOverBudget?'⚠ ':''}${statusLine}</p>
+      <button class="btn btn-outline btn-sm" style="margin-top:4px;" onclick="toggleBudgetBreakdown()">${budgetShowBreakdown ? 'Hide full breakdown' : 'View full breakdown'} ${budgetShowBreakdown?'↑':'→'}</button>
+    </div>
+
+    ${budgetShowBreakdown ? `
+    <div class="card">
+      <div class="card-head"><h4>Budget Breakdown &amp; Pace</h4></div>
       <div class="bp-split">
         <div>
           <div class="bp-col-head">Allocation by Category</div>
@@ -14014,7 +14085,12 @@ function renderBudgetOverviewTab(){
       ${budgetCategoryAddOpen ? renderBudgetCategoryAddRow() : ''}
       ${budgetOverviewView==='category' ? renderBudgetCategories() : renderBudgetByEvent()}
     </div>
+    ` : ''}
   `;
+}
+function toggleBudgetBreakdown(){
+  budgetShowBreakdown = !budgetShowBreakdown;
+  document.getElementById('content').innerHTML = renderBudgetModule();
 }
 function eventBudgetSummary(){
   const d = dashboardData;
@@ -15007,7 +15083,7 @@ function renderCalendarItemDetail(type, id){
           ${calDetailRow('Location', escapeHtml(e.location||'TBD'))}
           ${calDetailRow('Guest Access / Load-In', escapeHtml(e.accessTime||'—'))}
           ${calDetailRow('Dress Code', escapeHtml(e.dressCode||'—'))}
-          ${calDetailRow('Guest Count', e.guestCount ? String(e.guestCount) : '—')}
+          ${calDetailRow('Guest Count', effectiveEventGuestCount(e) ? String(effectiveEventGuestCount(e)) : '—')}
         </div>
         ${e.description ? `<div class="detail-section" style="margin-top:18px;"><div class="detail-section-head"><h4 style="margin:0;">Description</h4></div><p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6;">${escapeHtml(e.description)}</p></div>` : ''}
         ${e.specialRituals ? `<div class="detail-section"><div class="detail-section-head"><h4 style="margin:0;">Special Rituals</h4></div><p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6;">${escapeHtml(e.specialRituals)}</p></div>` : ''}
