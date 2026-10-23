@@ -263,6 +263,13 @@
   .sb-item.active{background:rgba(199,164,103,0.16); color:#F4EFE3;}
   .sb-item.active svg{color:var(--champagne);}
   .sb-item.active::before{content:''; position:absolute; left:-12px; top:8px; bottom:8px; width:3px; background:var(--champagne); border-radius:3px;}
+  /* ---- v1.38.0: grouped sidebar — section labels for Plan/People/Create & Execute, and a
+     visually quieter, smaller utility area (Documents/Guides & Tips/Settings) at the bottom. ---- */
+  .sb-section-label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#8C8571; padding:16px 14px 6px;}
+  .sb-section-label:first-child{padding-top:8px;}
+  .sb-section-divider{height:1px; background:rgba(239,233,218,0.1); margin:12px 14px 6px;}
+  .sb-item-utility{font-size:12px; font-weight:600; padding:8px 14px;}
+  .sb-item-utility svg{width:17px; height:17px;}
   .sb-foot{padding:16px 20px 22px; border-top:1px solid rgba(239,233,218,0.1);}
   .sb-couple{display:flex; align-items:center; gap:10px; font-size:12.5px; color:#C9C3B2;}
   .sb-avatar{width:32px; height:32px; border-radius:50%; background:var(--champagne-light); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; color:var(--green-deep); font-weight:700; font-size:13px; overflow:hidden;}
@@ -354,6 +361,31 @@
   .nextup-rationale{font-size:13px; color:var(--charcoal-soft); margin-top:6px; line-height:1.5;}
   .nextup-cta{display:inline-block; font-size:12.5px; font-weight:700; color:var(--green); border-bottom:1px solid var(--champagne); margin-top:9px; cursor:pointer;}
   .nextup-viewall{text-align:center; padding-top:14px; border-top:1px solid var(--line-soft); margin-top:4px;}
+  /* ---- v1.38.0: Home redesigned into four tiers. The old numbered "Next Moves" card above
+     is superseded by home-priority-card (tier 1, one decisive recommendation) and
+     attention-card (tier 2, a short scannable list) below — kept deliberately plainer and
+     less "card-like" per-row than the old rationale-paragraph treatment, since the point of
+     this tier is a fast scan, not a read. ---- */
+  /* Deliberately a different hue from the hero above (champagne, not green) so the two dark
+     blocks read as distinct levels — "greeting" vs. "action" — rather than one long panel.
+     Deep green text on champagne clears AA contrast (~4.7:1) and echoes the brand palette. */
+  .home-priority-card{background:var(--champagne-dark); color:var(--green-deep); border-radius:var(--radius); padding:28px 30px; margin-bottom:18px; box-shadow:var(--shadow-lg); position:relative;}
+  .hpc-eyebrow{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green-deep); opacity:0.72;}
+  .hpc-title{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600; font-size:26px; margin-top:8px; text-wrap:balance; color:var(--green-deep);}
+  .hpc-detail{font-size:13.5px; margin-top:8px; max-width:560px; line-height:1.55; opacity:0.85;}
+  .hpc-due{display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; background:rgba(35,46,39,0.1); border:1px solid rgba(35,46,39,0.25); border-radius:999px; padding:4px 11px; margin-top:12px; color:var(--green-deep);}
+  .hpc-cta{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--green-deep); margin-top:14px; cursor:pointer; border-bottom:1.5px solid var(--green-deep); padding-bottom:2px; width:fit-content;}
+  .home-priority-empty{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:20px 26px; margin-bottom:18px; box-shadow:var(--shadow); font-size:14px; color:var(--charcoal-soft);}
+  .attention-card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:14px 22px 6px; margin-bottom:22px; box-shadow:var(--shadow);}
+  .attention-head{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--champagne-dark); margin-bottom:2px;}
+  .attention-row{display:flex; align-items:baseline; gap:10px; padding:10px 0; border-top:1px solid var(--line-soft);}
+  .attention-row:first-of-type{border-top:none;}
+  .attention-ico{flex-shrink:0; font-size:13px; width:16px; text-align:center;}
+  .attention-ico.warn{color:var(--terracotta);}
+  .attention-ico.neutral{color:var(--charcoal-faint);}
+  .attention-text{flex:1; font-size:13.5px; color:var(--charcoal); line-height:1.4;}
+  .attention-cta{flex-shrink:0; font-size:12px; font-weight:700; color:var(--green); cursor:pointer; white-space:nowrap;}
+  .home-section-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--charcoal-faint); margin:4px 2px 10px;}
 
   /* ---- Wedding Health strip ---- */
   .health-strip{display:grid; grid-template-columns:repeat(4,1fr); gap:0; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:22px; overflow:hidden;}
@@ -391,10 +423,15 @@
   /* ---- v1.35.0: photo-forward Home hero ---- */
   .home-photo-hero{position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:22px; box-shadow:var(--shadow-lg); min-height:270px; display:flex; align-items:flex-end;}
   .home-photo-hero .hph-bg{position:absolute; inset:0; background-size:cover; background-position:center;}
-  .home-photo-hero:not(.has-photo) .hph-bg{background:linear-gradient(135deg, var(--green-deep), var(--green) 55%, var(--champagne-dark));}
+  /* v1.38.0: flattened to a solid colour — matches the earlier pass that flattened the
+     Blueprint hero's gradient, so the app's two main hero moments are treated consistently. */
+  .home-photo-hero:not(.has-photo) .hph-bg{background:var(--green-deep);}
   .home-photo-hero .hph-scrim{position:absolute; inset:0; background:linear-gradient(0deg, rgba(20,24,18,0.80) 0%, rgba(20,24,18,0.38) 55%, rgba(20,24,18,0.06) 100%);}
   .home-photo-hero .hph-content{position:relative; z-index:1; padding:30px 32px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; width:100%;}
-  .home-photo-hero h1{font-family:'Cormorant Garamond',serif; font-weight:600; font-size:29px; color:#fff; margin-bottom:5px; text-wrap:balance;}
+  /* v1.38.0: italicized to match the app's established "big display moment" serif treatment
+     (landing tagline, auth brand headline, Blueprint hero names) — Home's greeting was the one
+     major headline left out of that convention. */
+  .home-photo-hero h1{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600; font-size:29px; color:#fff; margin-bottom:5px; text-wrap:balance;}
   .home-photo-hero .hph-days{font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--champagne-light); font-weight:600;}
   .home-photo-hero .hph-meta{font-size:12.5px; color:#EFE9DA; margin-top:6px; opacity:0.92;}
   .home-photo-hero .hph-priority{font-size:13.5px; color:#F4EFE3; margin-top:12px; max-width:460px; line-height:1.5;}
@@ -1780,20 +1817,32 @@ const ICONS = {
   check:'<path d="M20 6L9 17l-5-5"/>'
 };
 
+/* ---- v1.38.0: sidebar regrouped into PLAN / PEOPLE / CREATE & EXECUTE, with a smaller
+   utility area at the bottom — a flat 13-item list made the sidebar feel overwhelming.
+   Inspiration is removed as a top-level destination here (full migration into a per-event
+   "Design & Inspiration" section is a later phase — its module/data isn't touched yet,
+   it's just no longer in primary nav). Settings moves into the sidebar's utility area;
+   it was previously reachable only via the topbar avatar. ---- */
 const NAV_ITEMS = [
-  {key:'home', label:'Home', icon:'home'},
-  {key:'my-wedding', label:'Wedding Blueprint', icon:'wedding'},
-  {key:'events', label:'Events', icon:'events'},
-  {key:'guests', label:'Guests', icon:'guests'},
-  {key:'wedding-party', label:'Wedding Party', icon:'party'},
-  {key:'vendors', label:'Vendors', icon:'vendors'},
-  {key:'budget', label:'Budget', icon:'budget'},
-  {key:'inspiration', label:'Inspiration', icon:'inspiration'},
-  {key:'messages', label:'Messages', icon:'messages'},
-  {key:'website', label:'Website', icon:'website'},
-  {key:'playbook', label:'Playbook', icon:'playbook'},
-  {key:'documents', label:'Documents', icon:'documents'},
-  {key:'guides', label:'Guides & Tips', icon:'guides'}
+  {key:'home', label:'Home', icon:'home', section:'plan'},
+  {key:'my-wedding', label:'Wedding Blueprint', icon:'wedding', section:'plan'},
+  {key:'events', label:'Events', icon:'events', section:'plan'},
+  {key:'guests', label:'Guests', icon:'guests', section:'plan'},
+  {key:'vendors', label:'Vendors', icon:'vendors', section:'plan'},
+  {key:'budget', label:'Budget', icon:'budget', section:'plan'},
+  {key:'wedding-party', label:'Wedding Party', icon:'party', section:'people'},
+  {key:'messages', label:'Messages', icon:'messages', section:'people'},
+  {key:'website', label:'Website', icon:'website', section:'create'},
+  {key:'playbook', label:'Playbook', icon:'playbook', section:'create'},
+  {key:'documents', label:'Documents', icon:'documents', section:'utility'},
+  {key:'guides', label:'Guides & Tips', icon:'guides', section:'utility'},
+  {key:'settings', label:'Settings', icon:'settings', section:'utility'}
+];
+const NAV_SECTIONS = [
+  {key:'plan', label:'Plan'},
+  {key:'people', label:'People'},
+  {key:'create', label:'Create & Execute'},
+  {key:'utility', label:null}
 ];
 
 const MODULE_INFO = {
@@ -1827,6 +1876,17 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.38.0', date:'2026-10-23',
+    title:'Sidebar regrouped, Settings added to nav, Inspiration removed from top-level nav, and Home redesigned around "what should I do?"',
+    items:[
+      'Sidebar: regrouped into Plan (Home, Wedding Blueprint, Events, Guests, Vendors, Budget), People (Wedding Party, Messages), and Create & Execute (Website, Playbook), with a smaller utility area at the bottom for Documents, Guides & Tips, and the newly-added Settings (previously reachable only from the topbar avatar). A flat 13-item list was starting to feel overwhelming.',
+      'Sidebar: Inspiration is no longer a top-level destination. Its module and data aren\'t touched yet — this is step one of moving it into a per-event "Design & Inspiration" section, which is still to come.',
+      'Home: redesigned around a single question — "I opened Evera, what should I do?" — instead of being primarily a dashboard. It\'s now four tiers: one dominant "next best move" recommendation, a short scannable "things need your attention" list (overdue tasks, behind-schedule core vendor categories, payments due soon, over-budget, guests missing an address), compact Planning Health cards (Budget Snapshot + Planning Progress, unchanged otherwise), and the photo/event strip for atmosphere, now titled "Your Wedding Events" with a static name instead of switching between Day/Weekend/Week. The old "Upcoming" payments card, the numbered "Next Moves" card, the "Evera Says…" AI suggestions card, and the "Your Vision" card are retired — their useful signal now lives in the first two tiers instead of Home carrying a second copy of every module.',
+      'Home: fixed a font inconsistency between Home and Wedding Blueprint — Home\'s greeting headline wasn\'t italic while Blueprint\'s hero name was, even though they\'re the app\'s two biggest "display" headlines and italic Cormorant Garamond is the established treatment for that (landing tagline, sign-in headline). Home\'s headline is now italic to match.',
+      'Home: removed the gradient on the no-photo hero background — it\'s now a flat colour, matching the flattening pass already done on the Wedding Blueprint hero.'
+    ]
+  },
   {
     version:'1.37.4', date:'2026-10-19',
     title:'Event Invitations redesigned (family shortcut + per-guest matrix), quick-invite by tag, Events sorted by date, and Immediate Family & Key People for the Photo Shot List',
@@ -4127,11 +4187,20 @@ function renderResult(){
 /* ==================================================================
    APP SHELL — SIDEBAR + ROUTING
 ================================================================== */
-function renderSidebar(active){
-  document.getElementById('sbNav').innerHTML = NAV_ITEMS.map(item=>`
-    <a href="#" class="sb-item ${item.key===active?'active':''}" onclick="renderRoute('${item.key}'); toggleSidebar(false); return false;">
+function navItemHtml(item, active){
+  const utilityCls = item.section==='utility' ? ' sb-item-utility' : '';
+  return `
+    <a href="#" class="sb-item${utilityCls} ${item.key===active?'active':''}" onclick="renderRoute('${item.key}'); toggleSidebar(false); return false;">
       <svg class="icon" viewBox="0 0 24 24">${ICONS[item.icon]}</svg><span>${item.label}</span>
-    </a>`).join('');
+    </a>`;
+}
+function renderSidebar(active){
+  document.getElementById('sbNav').innerHTML = NAV_SECTIONS.map(sec=>{
+    const items = NAV_ITEMS.filter(i=>i.section===sec.key);
+    if(!items.length) return '';
+    const header = sec.key==='utility' ? `<div class="sb-section-divider"></div>` : `<div class="sb-section-label">${escapeHtml(sec.label)}</div>`;
+    return header + items.map(item=>navItemHtml(item, active)).join('');
+  }).join('');
   const vTag = document.getElementById('sbVersionTag');
   if(vTag) vTag.textContent = 'v'+CURRENT_VERSION;
 }
@@ -4336,16 +4405,30 @@ function vendorsBookedCount(){
   const list = d.vendors||[];
   return {booked: list.filter(v=>v.status==='booked').length, total: list.length};
 }
-/* ---- v1.36.0: the wedding-weekend photo strip's own card title now reflects the real shape
-   of the couple's events — a single day, a short weekend, or a longer week-of stretch — rather
-   than always saying "Weekend" regardless of how the events actually fall. ---- */
-function weddingWeekendCardLabel(){
-  const dates = (dashboardData.events||[]).map(e=>e.dateISO).filter(Boolean).sort();
-  if(dates.length<=1) return 'Your Wedding Day';
-  const span = Math.round((new Date(dates[dates.length-1]+'T00:00:00') - new Date(dates[0]+'T00:00:00'))/86400000);
-  if(span<=0) return 'Your Wedding Day';
-  if(span>=6) return 'Your Wedding Week';
-  return 'Your Wedding Weekend';
+// weddingWeekendCardLabel() removed in v1.38.0 — the photo-strip card on Home now always
+// reads "Your Wedding Events" (a static label) instead of a day/weekend/week-shape-dependent
+// title, per direct request.
+/* ---- v1.38.0: Home redesigned around "what should I do?" instead of being primarily a
+   dashboard. Four tiers: (1) one dominant recommendation, (2) a short scannable list of
+   things needing attention, (3) compact planning-health cards (unchanged content, just
+   trimmed of the alert text now covered by tier 2), (4) the photo/event strip for atmosphere.
+   The old "Upcoming" payments card, the numbered "Next Moves" card, the "Evera Says..." AI
+   suggestions card, and the "Your Vision" card are all retired — their useful signal is folded
+   into tiers 1/2, and Home no longer needs to be a second copy of Budget/Vendors/Guests. ---- */
+function homeAttentionSignals(ctx){
+  const {d, topAction, nextUp, overdueTasks, dueSoonTotal, isOverBudget, totalSpent, days} = ctx;
+  const CORE_VENDOR_LEAD_DAYS = {Venue:270, Catering:240, Photography:210, Videography:210, Officiant:180};
+  const missingAddressCount = (d.guestHouseholds||[]).filter(h=>!(h.address && h.address.street && h.address.street.trim())).length;
+  const behindScheduleVendors = (d.vendors||[]).filter(v=>CORE_VENDOR_LEAD_DAYS[v.category] && v.status!=='booked' && days!==null && days<=CORE_VENDOR_LEAD_DAYS[v.category]);
+  const items = [];
+  if(overdueTasks>0) items.push({sev:4, icon:'warn', text:`${pluralize(overdueTasks,'task','tasks')} overdue`, ctaLabel:'Review', ctaRoute:'my-wedding'});
+  behindScheduleVendors.forEach(v=>items.push({sev:3, icon:'warn', text:`${v.category} booking is behind schedule`, ctaLabel:'Review', ctaRoute:'vendors'}));
+  if(dueSoonTotal>0) items.push({sev:3, icon:'warn', text:`${fmtMoney(dueSoonTotal)} in payments due in the next 30 days`, ctaLabel:'Review', ctaRoute:'budget'});
+  if(isOverBudget) items.push({sev:3, icon:'warn', text:`You're over budget by ${fmtMoney(totalSpent-d.budgetTotal)}`, ctaLabel:'Review', ctaRoute:'budget'});
+  if(missingAddressCount>0) items.push({sev:1, icon:'neutral', text:`${pluralize(missingAddressCount,'guest household','guest households')} still need${missingAddressCount===1?'s':''} an address`, ctaLabel:'Review', ctaRoute:'guests'});
+  nextUp.filter(a=>a!==topAction).forEach(a=>items.push({sev:1, icon:'neutral', text:a.title, ctaLabel:a.ctaLabel||'View', ctaRoute:a.ctaRoute}));
+  items.sort((a,b)=>b.sev-a.sev);
+  return items.slice(0,4);
 }
 function renderHome(){
   const d = dashboardData;
@@ -4363,12 +4446,12 @@ function renderHome(){
   const now = new Date();
   const in30 = new Date(now.getTime()+30*86400000);
   const dueSoonTotal = upcomingPayments.filter(dl=>{ const t=new Date(dl.dateISO+'T00:00:00'); return t>=now && t<=in30; }).reduce((s,dl)=>s+dl._amt,0);
-  const hasInspoImages = hasInspirationImages();
   const venueEntry = (d.vendors||[]).find(v=>v.category==='Venue');
   const eventsPlanned = d.events.filter(e=>eventCompleteness(e).pct>=60).length;
   const overdueTasks = (d.tasks||[]).filter(t=>!t.done && t.dueDateISO && new Date(t.dueDateISO+'T00:00:00')<now).length;
   const unallocated = (d.budgetTotal||0) - totalPlanned;
   const isOverBudget = totalSpent > (d.budgetTotal||0) && (d.budgetTotal||0) > 0;
+  const attentionItems = homeAttentionSignals({d, topAction, nextUp, overdueTasks, dueSoonTotal, isOverBudget, totalSpent, days});
 
   return `
     <div class="home-photo-hero ${d.couplePhoto ? 'has-photo' : ''}">
@@ -4380,7 +4463,6 @@ function renderHome(){
           <h1>${homeGreeting()}, ${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} ♥</h1>
           ${days!==null ? `<div class="hph-days">${days} day${days===1?'':'s'} until your wedding</div>` : ''}
           <div class="hph-meta">${d.weddingDateLabel ? escapeHtml(d.weddingDateLabel) : 'Date to be decided'}${d.location ? ' · '+escapeHtml(d.location) : ''}</div>
-          ${topAction ? `<div class="hph-priority">Your biggest priority right now: <b>${escapeHtml(topAction.priorityPhrase || topAction.title.toLowerCase())}</b>.</div>` : ''}
         </div>
         <div class="hph-actions">
           <button class="home-ask-btn" onclick="toggleAssistant()"><svg viewBox="0 0 24 24">${ICONS.assistant}</svg> Ask Evera</button>
@@ -4392,6 +4474,28 @@ function renderHome(){
       </div>
     </div>
 
+    ${topAction ? `
+    <div class="home-priority-card">
+      <div class="hpc-eyebrow">Your next best move</div>
+      <div class="hpc-title">${escapeHtml(topAction.title)}</div>
+      ${topAction.rationale ? `<div class="hpc-detail">${escapeHtml(topAction.rationale)}</div>` : ''}
+      ${topAction.dueBy ? `<div class="hpc-due">${escapeHtml(topAction.dueBy)}</div>` : ''}
+      ${topAction.ctaRoute ? `<div class="hpc-cta" onclick="renderRoute('${topAction.ctaRoute}')">${escapeHtml(topAction.ctaLabel||'View')} →</div>` : ''}
+    </div>` : `
+    <div class="home-priority-empty">Nothing urgent right now ✦ you're ahead of schedule.</div>`}
+
+    ${attentionItems.length ? `
+    <div class="attention-card">
+      <div class="attention-head">${attentionItems.length} thing${attentionItems.length===1?'':'s'} need${attentionItems.length===1?'s':''} your attention</div>
+      ${attentionItems.map(item=>`
+        <div class="attention-row">
+          <span class="attention-ico ${item.icon}">${item.icon==='warn'?'⚠':'○'}</span>
+          <span class="attention-text">${escapeHtml(item.text)}</span>
+          ${item.ctaRoute ? `<span class="attention-cta" onclick="renderRoute('${item.ctaRoute}')">${escapeHtml(item.ctaLabel)} →</span>` : ''}
+        </div>`).join('')}
+    </div>` : ''}
+
+    <div class="home-section-label">Planning health</div>
     <div class="home-status-grid">
       <div class="card">
         <div class="card-head"><h4>Budget Snapshot</h4><span class="ch-link" onclick="renderRoute('budget')" style="cursor:pointer;">View full budget →</span></div>
@@ -4402,8 +4506,6 @@ function renderHome(){
           <div class="budget-snap-stat"><div class="num">${fmtMoney(totalSpent)}</div><div class="lbl">Committed / Paid</div></div>
           <div class="budget-snap-stat"><div class="num" style="${unallocated<0?'color:var(--terracotta);':''}">${fmtMoney(unallocated)}</div><div class="lbl">Unallocated</div></div>
         </div>
-        ${dueSoonTotal>0 ? `<div class="budget-snap-alert">${fmtMoney(dueSoonTotal)} in payments due in the next 30 days</div>` : ''}
-        ${isOverBudget ? `<div class="budget-snap-alert">You're over budget by ${fmtMoney(totalSpent-d.budgetTotal)}</div>` : ''}
       </div>
       <div class="card">
         <div class="card-head"><h4>Planning Progress</h4></div>
@@ -4443,66 +4545,10 @@ function renderHome(){
     </div>
 
     <div class="card">
-      <div class="card-head"><h4>${escapeHtml(weddingWeekendCardLabel())}</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">View all events →</span></div>
+      <div class="card-head"><h4>Your Wedding Events</h4><span class="ch-link" onclick="renderRoute('events')" style="cursor:pointer;">View all events →</span></div>
       <div class="event-photo-strip">
         ${d.events.slice(0,4).map(e=>renderEventPhotoCard(e,true)).join('')}
       </div>
-    </div>
-
-    ${upcomingPayments.length ? `
-    <div class="card">
-      <div class="card-head"><h4>Upcoming</h4><span class="d-sub" style="margin-right:auto; margin-left:10px;">Next 60 days</span><span class="ch-link" onclick="renderRoute('budget')" style="cursor:pointer;">View full budget →</span></div>
-      <div class="upcoming-timeline">
-        ${upcomingPayments.map((dl,i)=>`
-          <div class="ut-row">
-            <div class="ut-date">${escapeHtml(dl.date)}</div>
-            <div class="ut-rail"><div class="ut-dot"></div>${i<upcomingPayments.length-1?'<div class="ut-rail-line"></div>':''}</div>
-            <div class="ut-body" onclick="renderRoute('budget')">
-              <div class="ut-title">${escapeHtml(dl.title)}</div>
-              <div class="ut-sub">${escapeHtml(dl.sub)}</div>
-            </div>
-            <div class="ut-amt">${escapeHtml(dl.amount)}</div>
-          </div>
-        `).join('')}
-      </div>
-      <div class="comingup-total">${dueSoonTotal>0 ? `${fmtMoney(dueSoonTotal)} due in the next 30 days` : 'Nothing due in the next 30 days'}</div>
-    </div>` : ''}
-
-    ${nextUp.length ? `
-    <div class="nextup-card">
-      <div class="nextup-head"><span class="nextup-label">Next Moves</span></div>
-      ${nextUp.map((a,i)=>`
-        <div class="nextup-item">
-          <div class="nextup-num">${String(i+1).padStart(2,'0')}</div>
-          <div class="nextup-body">
-            <div class="nextup-title">${escapeHtml(a.title)}</div>
-            ${a.dueBy ? `<div class="nextup-due">${escapeHtml(a.dueBy)}</div>` : ''}
-            ${a.rationale ? `<div class="nextup-rationale">${escapeHtml(a.rationale)}</div>` : ''}
-            ${a.ctaRoute ? `<span class="nextup-cta" onclick="renderRoute('${a.ctaRoute}')">${escapeHtml(a.ctaLabel||'View')} →</span>` : ''}
-          </div>
-        </div>`).join('')}
-      <div class="nextup-viewall"><span class="ch-link" onclick="renderRoute('my-wedding'); switchBlueprintTab('checklist');" style="cursor:pointer;">View full plan →</span></div>
-    </div>` : ''}
-
-    ${(d.aiSuggestions||[]).length ? `
-    <div class="notice-card">
-      <div class="card-head"><h4>✦ Evera Says...</h4></div>
-      ${d.aiSuggestions.map(s=>`
-        <div class="notice-item">
-          <div class="notice-ico"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px; stroke:#fff;">${ICONS.assistant}</svg></div>
-          <div>
-            <div class="notice-headline">${escapeHtml(s.headline||s.text)}</div>
-            ${s.headline ? `<div class="notice-body">${escapeHtml(s.text)}</div>` : ''}
-            ${s.ctaRoute ? `<span class="notice-cta" onclick="renderRoute('${s.ctaRoute}')">${escapeHtml(s.ctaLabel||'View')} →</span>` : ''}
-          </div>
-        </div>`).join('')}
-    </div>` : ''}
-
-    <div class="card">
-      <div class="card-head"><h4>Your Vision</h4><span class="ch-link" onclick="renderRoute('inspiration')" style="cursor:pointer;">Continue your board →</span></div>
-      <div class="vision-swatches">${(d.weddingProfile.colorPalette||[]).map(c=>`<div class="vision-swatch" style="background:${escapeAttr(c)};"></div>`).join('')}</div>
-      ${d.weddingProfile.aestheticNotes ? `<div class="vision-note">"${escapeHtml(d.weddingProfile.aestheticNotes)}"</div>` : `<div class="vision-note">Add a few words about your look and feel to bring your palette to life here.</div>`}
-      ${!hasInspoImages ? `<p style="font-size:12px;color:var(--charcoal-faint);margin-top:12px;">No inspiration images saved yet — your board will preview here once you add some.</p>` : ''}
     </div>
   `;
 }
