@@ -613,7 +613,19 @@
   .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
   @media (max-width:1000px){ .grid-2, .grid-3{grid-template-columns:1fr;} }
 
+  /* v1.44.0: a four-level visual hierarchy, applied without touching the palette itself —
+     Level 1 (.hero-strip / .home-priority-card / the Budget hero) — one dominant, visually
+     distinct hero/action per screen, set apart in color so it never reads as just another card.
+     Level 2 (.card, unchanged) — the normal workspace cards most of the app is built from.
+     Level 3 (.detail-section, .budget-items rows) — supporting information: no card container,
+     just rows of text, used throughout Guests/Vendors/Budget detail already.
+     Level 4 (.d-sub, .pill, small labels) — metadata: small, quiet, never competing for attention.
+     This mainly formalizes a pattern Home and Budget already use, so new screens have a system to
+     follow instead of defaulting every block to the same white bordered card. */
   .card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:26px; box-shadow:var(--shadow); margin-bottom:22px;}
+  .party-summary-strip.hero-strip{background:var(--champagne-dark); border-color:var(--champagne-dark);}
+  .hero-strip .ps-stat .ps-num{color:var(--green-deep);}
+  .hero-strip .ps-stat .ps-label{color:var(--green-deep); opacity:0.75;}
   .quick-stats-bar{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
   .qs-tile{flex:1 1 150px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; display:flex; flex-direction:column; gap:3px;}
   .qs-label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint);}
@@ -1368,6 +1380,50 @@
   .mention-close-row{padding:7px 12px; border-top:1px solid var(--line-soft); text-align:right;}
   .mention-close-row a{font-size:11.5px; font-weight:700; color:var(--charcoal-faint);}
 
+  /* ---- v1.43.0: Universal Quick Add (topbar +) ---- */
+  .quickadd-btn{
+    width:38px; height:38px; border-radius:50%; border:none; background:var(--green); color:#fff;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 8px rgba(42,74,53,0.25);
+  }
+  .quickadd-btn:hover{background:var(--green-deep);}
+  .quickadd-panel{
+    position:fixed; top:74px; right:34px; z-index:250; width:300px; max-width:calc(100vw - 40px);
+    background:var(--paper); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow-lg);
+    display:none; flex-direction:column; overflow:hidden;
+  }
+  .quickadd-panel.open{display:flex;}
+  .qa-head{background:var(--green-deep); color:#F4EFE3; padding:16px 20px; display:flex; align-items:center; gap:10px;}
+  .qa-head .qa-title{font-family:'Cormorant Garamond',serif; font-size:17px;}
+  .qa-close{margin-left:auto; background:none; border:none; color:#F4EFE3; opacity:0.7; cursor:pointer; font-size:15px; line-height:1; padding:6px; flex-shrink:0;}
+  .qa-close:hover{opacity:1;}
+  .qa-body{padding:10px; max-height:min(70vh,480px); overflow-y:auto;}
+  .qa-menu-row{display:flex; align-items:center; gap:12px; width:100%; padding:11px 10px; border:none; background:none; cursor:pointer; border-radius:10px; text-align:left; font-size:13.5px; color:var(--charcoal); font-weight:600;}
+  .qa-menu-row:hover{background:var(--ivory-deep);}
+  .qa-menu-ico{width:30px; height:30px; border-radius:8px; background:var(--green-tint); color:var(--green); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:15px;}
+  .qa-form{padding:4px 10px 10px;}
+  .qa-form .field-cell{margin-bottom:10px;}
+  .qa-back{background:none; border:none; color:var(--charcoal-faint); font-size:12px; cursor:pointer; padding:0 0 10px; display:flex; align-items:center; gap:4px;}
+  .qa-back:hover{color:var(--charcoal);}
+
+  /* ---- v1.43.0: Universal Search (topbar) ---- */
+  .search-panel{
+    position:fixed; top:74px; right:34px; z-index:250; width:380px; max-width:calc(100vw - 40px);
+    background:var(--paper); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow-lg);
+    display:none; flex-direction:column; overflow:hidden;
+  }
+  .search-panel.open{display:flex;}
+  .sp-head{padding:16px 18px 10px;}
+  .sp-input{width:100%; border:1px solid var(--line); border-radius:999px; padding:10px 16px; font-size:13.5px; background:var(--ivory); font-family:inherit;}
+  .sp-input:focus{outline:none; border-color:var(--green-mid);}
+  .sp-body{padding:4px 10px 14px; max-height:min(60vh,420px); overflow-y:auto;}
+  .search-result-row{display:flex; align-items:flex-start; gap:10px; width:100%; padding:9px 8px; border:none; background:none; cursor:pointer; border-radius:10px; text-align:left;}
+  .search-result-row:hover{background:var(--ivory-deep);}
+  .sr-ico{width:28px; height:28px; border-radius:8px; background:var(--green-tint); color:var(--green); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:13px; margin-top:1px;}
+  .sr-body{display:flex; flex-direction:column; min-width:0;}
+  .sr-type{font-size:10px; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); font-weight:700;}
+  .sr-title{font-size:13.5px; font-weight:600; color:var(--charcoal); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:300px;}
+  .sr-sub{font-size:11.5px; color:var(--charcoal-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:300px;}
+
   /* ---- notifications panel (topbar bell) ---- */
   .notif-panel{
     position:fixed; top:74px; right:34px; z-index:250; width:380px; max-width:calc(100vw - 40px);
@@ -1725,6 +1781,8 @@
       </div>
       <div class="tb-right">
         <div class="countdown-chip"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><b id="tbCountdown">—</b> to go</div>
+        <button class="icon-btn" id="tbSearchBtn" onclick="toggleSearchPanel()" title="Search" aria-label="Search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+        <button class="quickadd-btn" id="tbQuickAdd" onclick="toggleQuickAddPanel()" title="Quick Add" aria-label="Quick Add"><svg class="icon" viewBox="0 0 24 24" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></button>
         <button class="icon-btn" id="tbNotifBell" onclick="toggleNotificationsPanel()" title="Notifications" aria-label="Notifications"><svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
         <button class="icon-btn" onclick="toggleFeedbackPanel()" title="Feature requests &amp; bug reports" aria-label="Feature requests and bug reports"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/></svg></button>
         <button class="icon-btn" id="tbAssistantBtn" onclick="toggleAssistant()" title="Evera Assistant" aria-label="Evera Assistant" style="display:none;"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.2 5.6L20 10l-5.8 2.4L12 18l-2.2-5.6L4 10l5.8-2.4L12 2z"/></svg></button>
@@ -1757,6 +1815,24 @@
 <div class="item-overlay" id="surveyPreviewOverlay" onclick="if(event.target===this) closeSurveyPreview();"><!-- injected --></div>
 <div class="item-overlay item-overlay-right" id="pendingRsvpDrawerOverlay" onclick="if(event.target===this) closePendingRsvpDrawer();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
+
+<!-- ============ UNIVERSAL SEARCH (topbar) ============ -->
+<div class="search-panel" id="searchPanel">
+  <div class="sp-head">
+    <input type="text" id="universalSearchInput" class="sp-input" placeholder="Search guests, vendors, events, budget, tasks…" oninput="renderSearchResults(this.value)" onkeydown="if(event.key==='Escape'){toggleSearchPanel(false);}">
+  </div>
+  <div class="sp-body" id="searchResultsBody"><!-- injected --></div>
+</div>
+
+<!-- ============ QUICK ADD (topbar +) ============ -->
+<div class="quickadd-panel" id="quickAddPanel">
+  <div class="qa-head">
+    <svg class="icon" viewBox="0 0 24 24" style="stroke:var(--champagne);"><path d="M12 5v14M5 12h14"/></svg>
+    <div class="qa-title">Quick Add</div>
+    <button type="button" class="qa-close" onclick="toggleQuickAddPanel(false)" aria-label="Close">✕</button>
+  </div>
+  <div class="qa-body" id="quickAddPanelBody"><!-- injected --></div>
+</div>
 
 <!-- ============ FEEDBACK ============ -->
 <div class="feedback-panel" id="feedbackPanel">
@@ -1881,6 +1957,15 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.44.0', date:'2026-10-23',
+    title:'Universal Quick Add, universal search, and a named visual-hierarchy system',
+    items:[
+      'A new "+" button lives permanently in the topbar, reachable from any screen — Task, Guest, Event, Vendor, Expense, Payment, Note, Document. Each one routes into that type\'s own real creation flow (the same modal or form you\'d reach by navigating there yourself), not a lighter-weight copy of it.',
+      'A new search icon in the topbar searches across guests, vendors, vendor contacts, budget line items, events, tasks, documents, notes, and wedding party in one box — each result says what kind of thing it is plus a real fact about it, and clicking it jumps straight to that record.',
+      'Formalized the 4-level visual hierarchy from the redesign brief (Level 1 hero/action, Level 2 workspace cards, Level 3 supporting rows, Level 4 metadata) as a named, documented system in the stylesheet, and applied the Level 1 treatment to Vendors\' headline numbers so they read as distinct from the cards around them instead of blending in — the same champagne-dark treatment Home\'s dominant action and Budget\'s hero already use. This mostly formalizes a pattern the app already leans on; flag any other specific screen that still feels "samey" and it\'s a quick follow-up.'
+    ]
+  },
   {
     version:'1.42.0', date:'2026-10-23',
     title:'Vendors reframed around decisions — Booked / Decision Needed Soon / Later',
@@ -2489,6 +2574,7 @@ let selectedEventId = null;
 // v1.39.0: every event's workspace is now standardized into the same seven tabs.
 let eventDetailTab = 'overview'; // 'overview' | 'guests' | 'budget' | 'vendors' | 'design' | 'timeline' | 'details'
 let eventAddFormOpen = false;
+let quickAddMode = 'menu'; // 'menu' | 'note' | 'document' — v1.43.0 Universal Quick Add (topbar +)
 let eventsCategoryFilter = 'all'; // 'all' or one of dashboardData.eventCategories
 let newEventCategoryPromptOpenFor = null; // event id currently showing the inline "+ new category" input, or null
 let budgetCollapsedMap = {};
@@ -7971,6 +8057,148 @@ function notifyMention(field, personId, personName){
   });
   renderNotificationsPanel();
 }
+/* ---- v1.43.0: Universal Quick Add — one "+" in the topbar, reachable from anywhere. Every
+   option routes straight into that entity type's own real creation flow (the same modal or
+   inline form you'd reach by navigating there yourself) rather than a parallel, lighter-weight
+   copy of it, so whatever Quick Add creates is identical to creating it the long way. Expense
+   and Payment both ultimately live on a budget line item, so those two land you on Budget with
+   the line-item add (or, for Payment, the full breakdown) already open, instead of fabricating a
+   parent-less entry. ---- */
+const QUICK_ADD_ITEMS = [
+  {key:'task', label:'Task', icon:'✓'},
+  {key:'guest', label:'Guest', icon:'👤'},
+  {key:'event', label:'Event', icon:'📅'},
+  {key:'vendor', label:'Vendor', icon:'🤝'},
+  {key:'expense', label:'Expense', icon:'💵'},
+  {key:'payment', label:'Payment', icon:'💳'},
+  {key:'note', label:'Note', icon:'📝'},
+  {key:'document', label:'Document', icon:'📄'}
+];
+function toggleQuickAddPanel(force){
+  const panel = document.getElementById('quickAddPanel');
+  if(!panel) return;
+  const willOpen = typeof force==='boolean' ? force : !panel.classList.contains('open');
+  panel.classList.toggle('open', willOpen);
+  if(willOpen) renderQuickAddPanel();
+}
+function renderQuickAddPanel(){
+  const el = document.getElementById('quickAddPanelBody');
+  if(!el) return;
+  el.innerHTML = QUICK_ADD_ITEMS.map(i=>`<button type="button" class="qa-menu-row" onclick="quickAddGo('${i.key}')"><span class="qa-menu-ico">${i.icon}</span>${i.label}</button>`).join('');
+}
+function quickAddGo(type){
+  toggleQuickAddPanel(false);
+  if(type==='task'){
+    renderRoute('my-wedding');
+    blueprintTab = 'checklist';
+    document.getElementById('content').innerHTML = renderMyWeddingModule();
+    openAddTaskModal();
+  } else if(type==='guest'){
+    renderRoute('guests');
+    quickAddHousehold();
+  } else if(type==='event'){
+    renderRoute('events');
+    openEventAddModal();
+  } else if(type==='vendor'){
+    renderRoute('vendors');
+    openVendorAddModal();
+  } else if(type==='expense'){
+    renderRoute('budget');
+    budgetShowBreakdown = true;
+    budgetItemQuickAddOpen = true;
+    document.getElementById('content').innerHTML = renderBudgetModule();
+  } else if(type==='payment'){
+    renderRoute('budget');
+    budgetShowBreakdown = true;
+    document.getElementById('content').innerHTML = renderBudgetModule();
+  } else if(type==='note'){
+    renderRoute('documents');
+    docsTab = 'notes';
+    document.getElementById('content').innerHTML = renderDocumentsModule();
+    setTimeout(()=>{ const f=document.getElementById('newNoteTitle'); if(f) f.focus(); }, 0);
+  } else if(type==='document'){
+    renderRoute('documents');
+    docsTab = 'files';
+    document.getElementById('content').innerHTML = renderDocumentsModule();
+    setTimeout(()=>{ const f=document.getElementById('newDocName'); if(f) f.focus(); }, 0);
+  }
+}
+/* ---- v1.43.0: Universal Search — one box in the topbar searching across every entity type
+   (guests, vendors, events, budget line items, tasks, documents, notes, wedding party) instead of
+   each module having its own separate search/filter. Each result says what kind of thing it is
+   plus a real fact about it (not just a name), and clicking it jumps straight to that real record
+   — same destinations Quick Add's own routing uses, nothing new to maintain in parallel. ---- */
+let lastSearchResults = [];
+function toggleSearchPanel(force){
+  const panel = document.getElementById('searchPanel');
+  if(!panel) return;
+  const willOpen = typeof force==='boolean' ? force : !panel.classList.contains('open');
+  panel.classList.toggle('open', willOpen);
+  if(willOpen){
+    const input = document.getElementById('universalSearchInput');
+    if(input){ input.value=''; setTimeout(()=>input.focus(),0); }
+    renderSearchResults('');
+  }
+}
+function universalSearchResults(query){
+  const q = (query||'').trim().toLowerCase();
+  if(q.length<2) return [];
+  const d = dashboardData;
+  const results = [];
+  (d.guestHouseholds||[]).forEach(h=>{
+    const hay = [h.label, ...(h.members||[]).map(m=>memberDisplayName(m)), ...(h.categories||[])].join(' ').toLowerCase();
+    if(hay.includes(q)) results.push({type:'Guest', icon:'👤', title:h.label, sub:`${pluralize(householdPartySize(h),'person','people')}${(h.categories||[]).length?' · '+h.categories.join(', '):''}`, action:()=>{ renderRoute('guests'); openHouseholdDetail(h.id); }});
+  });
+  (d.vendors||[]).forEach(v=>{
+    if(`${v.category} ${v.name||''}`.toLowerCase().includes(q)) results.push({type:'Vendor', icon:'🤝', title:v.category+(v.name&&v.name!=='—'?' — '+v.name:''), sub: v.status==='booked'?'Booked':v.status==='shortlisted'?'Shortlisted':'Searching', action:()=>renderRoute('vendors')});
+  });
+  (d.vendorBookings||[]).forEach(vb=>{
+    if(`${vb.category} ${vb.vendorName||''} ${vb.contactName||''}`.toLowerCase().includes(q)) results.push({type:'Vendor Contact', icon:'🤝', title: vb.vendorName||vb.category, sub:`${vb.category}${vb.cost?' · '+fmtMoney(vb.cost):''}`, action:()=>{ renderRoute('vendors'); openVendorBookingDetail(vb.id); }});
+  });
+  (d.budgetBreakdown||[]).forEach((cat,ci)=>{
+    (cat.items||[]).forEach((it,ii)=>{
+      if(`${cat.category} ${it.name} ${it.vendorName||''}`.toLowerCase().includes(q)) results.push({type:'Budget', icon:'💵', title:it.name, sub:`${cat.category} · ${fmtMoney(effectiveItemPlanned(it))}`, action:()=>{ renderRoute('budget'); budgetShowBreakdown=true; document.getElementById('content').innerHTML=renderBudgetModule(); openBudgetItemDetail(ci,ii); }});
+    });
+  });
+  (d.events||[]).forEach(e=>{
+    if(`${e.name} ${e.location||''}`.toLowerCase().includes(q)) results.push({type:'Event', icon:'📅', title:e.name, sub:`${e.date||'Date TBD'}${e.location?' · '+e.location:''}`, action:()=>{ renderRoute('events'); openEventDetail(e.id); }});
+  });
+  (d.tasks||[]).forEach(t=>{
+    if((t.title||'').toLowerCase().includes(q)) results.push({type:'Task', icon:'✓', title:t.title, sub:t.done?'Done':(t.dueDateISO?'Due '+fmtDateLabel(t.dueDateISO):'No due date'), action:()=>{ renderRoute('my-wedding'); blueprintTab='checklist'; document.getElementById('content').innerHTML=renderMyWeddingModule(); }});
+  });
+  (d.documents||[]).forEach(doc=>{
+    if((doc.name||'').toLowerCase().includes(q)) results.push({type:'Document', icon:'📄', title:doc.name, sub:(DOC_CATEGORIES.find(c=>c.key===doc.category)||{}).label||doc.category, action:()=>{ renderRoute('documents'); docsTab='files'; document.getElementById('content').innerHTML=renderDocumentsModule(); }});
+  });
+  (d.notes||[]).forEach(n=>{
+    if(`${n.title||''} ${n.body||''}`.toLowerCase().includes(q)) results.push({type:'Note', icon:'📝', title:n.title||'Untitled note', sub:(n.body||'').slice(0,60), action:()=>{ renderRoute('documents'); docsTab='notes'; document.getElementById('content').innerHTML=renderDocumentsModule(); }});
+  });
+  (d.weddingParty||[]).forEach(m=>{
+    if((m.name||'').toLowerCase().includes(q)) results.push({type:'Wedding Party', icon:'💍', title:m.name, sub:m.role||'', action:()=>{ renderRoute('wedding-party'); openMemberDetail(m.id); }});
+  });
+  return results.slice(0,30);
+}
+function renderSearchResults(query){
+  const el = document.getElementById('searchResultsBody');
+  if(!el) return;
+  lastSearchResults = universalSearchResults(query);
+  const q = (query||'').trim();
+  if(q.length<2){
+    el.innerHTML = `<p class="d-sub" style="padding:10px;">Search guests, vendors, events, budget line items, tasks, documents, notes, and wedding party — type at least 2 characters.</p>`;
+    return;
+  }
+  el.innerHTML = lastSearchResults.length ? lastSearchResults.map((r,i)=>`
+    <button type="button" class="search-result-row" onclick="goToSearchResult(${i})">
+      <span class="sr-ico">${r.icon}</span>
+      <span class="sr-body"><span class="sr-type">${escapeHtml(r.type)}</span><span class="sr-title">${escapeHtml(r.title)}</span><span class="sr-sub">${escapeHtml(r.sub||'')}</span></span>
+    </button>
+  `).join('') : `<p class="d-sub" style="padding:10px;">No matches for "${escapeHtml(q)}".</p>`;
+}
+function goToSearchResult(i){
+  const r = lastSearchResults[i];
+  if(!r) return;
+  toggleSearchPanel(false);
+  r.action();
+}
 function notificationUnreadCount(){ return (dashboardData.notifications||[]).filter(n=>!n.read).length; }
 function updateNotificationBadge(){
   const bell = document.getElementById('tbNotifBell');
@@ -8301,7 +8529,7 @@ function renderVendorsModule(){
   return `
     ${renderVendorAddButton()}
     ${renderVendorTeamSection()}
-    <div class="party-summary-strip">
+    <div class="party-summary-strip hero-strip">
       <div class="ps-stat"><div class="ps-num">${booked.length}</div><div class="ps-label">Booked</div></div>
       <div class="ps-stat"><div class="ps-num" style="${soon.length?'color:var(--terracotta);':''}">${soon.length}</div><div class="ps-label">Decision Needed Soon</div></div>
       <div class="ps-stat"><div class="ps-num">${later.length}</div><div class="ps-label">Later</div></div>
