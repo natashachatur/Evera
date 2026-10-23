@@ -1846,7 +1846,7 @@ const NAV_SECTIONS = [
 ];
 
 const MODULE_INFO = {
-  'my-wedding':{title:'Wedding Blueprint', desc:"Your whole plan in one place — vision, roadmap, checklist, key milestones, and calendar, alongside your couple profile, dates, traditions, and overall aesthetic.", bullets:['Roadmap, checklist, milestones & calendar','Couple profile & wedding settings','Master color palette & aesthetic']},
+  'my-wedding':{title:'Wedding Blueprint', desc:"Your whole plan in one place — vision, roadmap, wedding plan, key milestones, and calendar, alongside your wedding profile, dates, traditions, and master aesthetic.", bullets:['Roadmap, wedding plan, milestones & calendar','Wedding profile & settings','Master aesthetic & colour palette']},
   'events':{title:'Events', desc:"Every event in your wedding is its own workspace — with its own guests, vendors, budget, timeline, and look & feel.", bullets:['Unlimited custom events','Per-event guest eligibility & RSVP','Per-event budget, vendors & timeline']},
   'guests':{title:'Guests', desc:"Granular guest and household management connected to every event, RSVP, and seating chart.", bullets:['Households & individual guests','Per-event invitation & RSVP status','Dietary, accessibility & travel needs']},
   'wedding-party':{title:'Wedding Party Hub', desc:"A dedicated, reduced-access portal for your wedding party — their events, tasks, attire, and itinerary.", bullets:['Custom roles, not just bridesmaids/groomsmen','Personal itinerary & task list per member','Lookbook, attire & order status']},
@@ -1876,6 +1876,14 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.38.1', date:'2026-10-23',
+    title:'Wedding Blueprint tabs renamed (Wedding Plan, Wedding Profile) and a Master Aesthetic section',
+    items:[
+      'Wedding Blueprint: the "Checklist" tab is now "Wedding Plan" and the "Your Details" tab is now "Wedding Profile" — tab order is unchanged (Roadmap | Wedding Plan | Milestones | Calendar | Wedding Profile).',
+      'Wedding Blueprint: the Palette & Aesthetic card inside Wedding Profile is now "Master Aesthetic" — it\'s the colour story and look every event starts from by default. Per-event overrides ("Event-Specific Aesthetic") are a later phase, alongside moving Inspiration into each event.'
+    ]
+  },
   {
     version:'1.38.0', date:'2026-10-23',
     title:'Sidebar regrouped, Settings added to nav, Inspiration removed from top-level nav, and Home redesigned around "what should I do?"',
@@ -5345,10 +5353,10 @@ function renderMyWeddingModule(){
     ${renderBlueprintVisionHero()}
     <div class="seg-control" style="margin:4px 0 22px; flex-wrap:wrap;">
       <button class="seg-btn ${blueprintTab==='roadmap'?'active':''}" onclick="switchBlueprintTab('roadmap')">Roadmap</button>
-      <button class="seg-btn ${blueprintTab==='checklist'?'active':''}" onclick="switchBlueprintTab('checklist')">Checklist</button>
+      <button class="seg-btn ${blueprintTab==='checklist'?'active':''}" onclick="switchBlueprintTab('checklist')">Wedding Plan</button>
       <button class="seg-btn ${blueprintTab==='milestones'?'active':''}" onclick="switchBlueprintTab('milestones')">Milestones</button>
       <button class="seg-btn ${blueprintTab==='calendar'?'active':''}" onclick="switchBlueprintTab('calendar')">Calendar</button>
-      <button class="seg-btn ${blueprintTab==='details'?'active':''}" onclick="switchBlueprintTab('details')">Your Details</button>
+      <button class="seg-btn ${blueprintTab==='details'?'active':''}" onclick="switchBlueprintTab('details')">Wedding Profile</button>
     </div>
     ${blueprintTab==='roadmap' ? renderBlueprintRoadmapTab()
       : blueprintTab==='checklist' ? renderPlanTasksTab()
@@ -5368,7 +5376,7 @@ function renderBlueprintDetailsTab(){
   return `
     ${renderBlueprintMoodboardStrip()}
     ${renderBlueprintProgressStrip()}
-    <div class="bp-section-label">The Details</div>
+    <div class="bp-section-label">Wedding Profile</div>
     <div class="bp-chapter-label">The Basics</div>
     <div class="card">
       <div class="card-head"><div><h4>Your Wedding Details</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${currentUser?'<span id="weddingSaveStatus" class="save-status"></span>':'<span class="save-status save-status-demo">Sample mode — not saved</span>'}</div>
@@ -5419,7 +5427,7 @@ function renderBlueprintDetailsTab(){
     </div>
 
     <div class="card">
-      <div class="card-head"><h4>Palette &amp; Aesthetic</h4><span class="d-sub">Your colour story and overall look, reused across your Playbook, Website and mood boards</span></div>
+      <div class="card-head"><h4>Master Aesthetic</h4><span class="d-sub">Your colour story and overall look — the default every event starts from, reused across your Playbook, Website and mood boards</span></div>
       <div class="field-cell" style="margin-bottom:18px;">
         <label>Overall Aesthetic</label>
         <textarea class="notes-field" placeholder="Describe the overall look and feel you're going for..." onchange="updateWeddingProfileField('aestheticNotes',this.value)">${escapeHtml(wp.aestheticNotes)}</textarea>
@@ -5568,13 +5576,13 @@ function renderBlueprintRoadmapTab(){
           <div class="cpc-outcome-row ${t.done?'done':''}" onclick="toggleTaskDone('${t.id}')">
             <input type="checkbox" style="width:14px;height:14px;" ${t.done?'checked':''} onclick="event.stopPropagation(); toggleTaskDone('${t.id}');">
             <span>${escapeHtml(t.title)}</span>
-          </div>`).join('') : `<p class="detail-hint" style="margin:0;">No tasks in this phase yet — add one from the Checklist tab.</p>`}
+          </div>`).join('') : `<p class="detail-hint" style="margin:0;">No tasks in this phase yet — add one from the Wedding Plan tab.</p>`}
       </div>
     </div>` : ''}
 
     ${upcoming.length ? `
     <div class="card">
-      <div class="card-head"><h4>Upcoming Tasks</h4><span class="ch-link" style="cursor:pointer;" onclick="switchBlueprintTab('checklist')">View full checklist →</span></div>
+      <div class="card-head"><h4>Upcoming Tasks</h4><span class="ch-link" style="cursor:pointer;" onclick="switchBlueprintTab('checklist')">View full plan →</span></div>
       <div class="budget-items" style="padding-left:0;">
         <div class="budget-items-head" style="grid-template-columns:0.9fr 2fr 1fr;"><span>Due</span><span>Task</span><span>Event</span></div>
         ${upcoming.map(t=>`<div class="budget-item-row budget-item-row-clean" style="grid-template-columns:0.9fr 2fr 1fr; cursor:pointer;" onclick="blueprintTab='checklist'; expandPlanTaskFromCalendar('${t.id}');">
