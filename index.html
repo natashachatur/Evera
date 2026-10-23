@@ -450,6 +450,12 @@
   .budget-snap-row{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft);}
   .budget-snap-stat .num{font-size:15px; font-weight:700; color:var(--charcoal);}
   .budget-snap-stat .lbl{font-size:10px; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); margin-top:2px;}
+  /* ---- v1.39.0: Event Overview at-a-glance stat row — standardized across every event's
+     workspace so you can scan an event's status without hunting through tabs. ---- */
+  .event-overview-stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:16px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:20px 24px; box-shadow:var(--shadow);}
+  .eos-stat{text-align:left;}
+  .eos-num{font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:700; color:var(--green-deep); line-height:1.1;}
+  .eos-label{font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-top:4px;}
   .budget-snap-alert{margin-top:14px; padding:10px 14px; background:var(--terracotta-tint); color:var(--terracotta); border-radius:var(--radius-sm); font-size:12.5px; font-weight:600;}
   .progress-checklist{display:flex; flex-direction:column; gap:0; margin-top:2px;}
   .pc-row{display:flex; align-items:center; gap:12px; padding:9px 0; border-top:1px solid var(--line-soft); cursor:pointer;}
@@ -1877,6 +1883,15 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.39.0', date:'2026-10-23',
+    title:'Every event standardized into seven tabs (Overview, Guests, Budget, Vendors, Design, Timeline, Details), and Inspiration fully moved into each event\'s own Design tab',
+    items:[
+      'Events: every event\'s workspace is now the same seven tabs — Overview, Guests, Budget, Vendors, Design, Timeline, Details — instead of one long scroll in a different order for every event. Overview is new: an at-a-glance stat row (Invited, Budget, Vendors Booked, Ready %) plus a real "Next Steps" list built from the same gaps the Ready % is computed from (no date set, no location, no budget target, no vendor booked, invites not sent) — nothing fabricated, just the existing completeness checks surfaced as something to act on.',
+      'Events: Inspiration is now fully part of each event — its Design tab holds the Event Colour Palette (still defaults to your Blueprint Master Aesthetic until you override it for just this event, unchanged logic, just relocated) and that event\'s own Design & Inspiration board (florals, stationery, photography, attire, decor, guest gifts, tablescapes, hair & makeup), including Generate Mood Board. The standalone Inspiration page is retired — nothing in it was deleted, it\'s just no longer a separate destination; every "Add Inspiration Photos" link across the app now takes you to Events instead.',
+      'Guests, Budget, and Vendors content on an event\'s page is unchanged — it just lives on its own tab now instead of being stacked with everything else.'
+    ]
+  },
+  {
     version:'1.38.1', date:'2026-10-23',
     title:'Wedding Blueprint tabs renamed (Wedding Plan, Wedding Profile) and a Master Aesthetic section',
     items:[
@@ -2438,6 +2453,8 @@ let playbookExportRole = 'couple';
 let runbookCollapsedEvents = {}; // eventId -> collapsed boolean, defaults to collapsed the first time each event is seen (Run Book Phase 2, v1.25.0)
 let eventsView = 'list';     // 'list' | 'detail'
 let selectedEventId = null;
+// v1.39.0: every event's workspace is now standardized into the same seven tabs.
+let eventDetailTab = 'overview'; // 'overview' | 'guests' | 'budget' | 'vendors' | 'design' | 'timeline' | 'details'
 let eventAddFormOpen = false;
 let eventsCategoryFilter = 'all'; // 'all' or one of dashboardData.eventCategories
 let newEventCategoryPromptOpenFor = null; // event id currently showing the inline "+ new category" input, or null
@@ -3269,7 +3286,7 @@ function buildFromOnboarding(a){
     planningProgress:8,
     nextActions:[
       {title:`Review your ${vendorCats.length} suggested vendor categories`, meta:'Curated to your budget & style', tag:'Vendors', done:false, dueBy:'Whenever ready', rationale:'These are matched to your budget and style so you\'re not starting from a blank search.', ctaLabel:'Review vendors', ctaRoute:'vendors', priorityPhrase:'reviewing your suggested vendor categories'},
-      {title:`Explore your ${a.style||'wedding'} inspiration board`, meta:'AI-curated starting point', tag:'Inspiration', done:false, dueBy:'Whenever ready', rationale:'A starting point makes it easier to react and refine than to start from nothing.', ctaLabel:'Open Inspiration', ctaRoute:'inspiration', priorityPhrase:'exploring your inspiration board'},
+      {title:`Explore your ${a.style||'wedding'} inspiration board`, meta:'AI-curated starting point', tag:'Inspiration', done:false, dueBy:'Whenever ready', rationale:'A starting point makes it easier to react and refine than to start from nothing.', ctaLabel:'Open Events', ctaRoute:'events', priorityPhrase:'exploring your inspiration board'},
       {title:'Invite your wedding party to Evera', meta:'Give them their own hub', tag:'Wedding Party', done:false, dueBy:'Whenever ready', rationale:'The earlier they\'re in, the more they can help with attire, RSVPs and the little day-of jobs.', ctaLabel:'Open Wedding Party', ctaRoute:'wedding-party', priorityPhrase:'inviting your wedding party'}
     ],
     events, budgetBreakdown,
@@ -4019,7 +4036,7 @@ function startInspirationFromIntro(){
   dashboardData.inspirationIntroSeen = true;
   if(currentUser) persistWeddingRecord();
   goTo('app');
-  renderRoute('inspiration');
+  renderRoute('events');
   applyAssistantVisibility();
 }
 function skipInspirationIntro(){
@@ -5289,7 +5306,7 @@ function renderBlueprintVisionHero(){
     collageHtml = `
       <div class="bp-hero-empty">
         <p>Your vision board starts with photos. Add a few to Inspiration and they'll show right here.</p>
-        <button class="btn btn-outline btn-sm" onclick="renderRoute('inspiration')">+ Add Inspiration Photos</button>
+        <button class="btn btn-outline btn-sm" onclick="renderRoute('events')">+ Add Inspiration Photos</button>
       </div>`;
   } else if(images.length===1){
     collageHtml = `<div class="bp-hero-collage bp-hero-collage-1"><img src="${escapeAttr(images[0])}" alt="A photo from your Inspiration board"></div>`;
@@ -5336,7 +5353,7 @@ function renderBlueprintProgressStrip(){
 function renderBlueprintMoodboardStrip(){
   const images = blueprintCollageImages(10);
   if(!images.length){
-    return `<div class="bp-moodboard-empty">Your moodboard starts with photos — add a few to Inspiration and they'll show here as a real strip across your Blueprint. <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('inspiration')">+ Add Inspiration Photos →</span></div>`;
+    return `<div class="bp-moodboard-empty">Your moodboard starts with photos — add a few from an event's Design tab and they'll show here as a real strip across your Blueprint. <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('events')">+ Add Inspiration Photos →</span></div>`;
   }
   return `<div class="bp-moodboard-strip">${images.map(src=>`<img src="${escapeAttr(src)}" alt="A photo from your Inspiration board">`).join('')}</div>`;
 }
@@ -12401,7 +12418,7 @@ function renderInviteSendingSummaryCard(){
           const stats = eventGuestStats(e);
           const lastSent = (e.inviteSentLog&&e.inviteSentLog.length) ? e.inviteSentLog[e.inviteSentLog.length-1] : null;
           return `
-          <div class="budget-item-row" style="grid-template-columns:1.2fr 1fr 1fr 0.7fr; align-items:center; cursor:pointer;" onclick="renderRoute('events'); selectedEventId='${e.id}'; eventsView='detail'; document.getElementById('content').innerHTML=renderEventsModule();">
+          <div class="budget-item-row" style="grid-template-columns:1.2fr 1fr 1fr 0.7fr; align-items:center; cursor:pointer;" onclick="renderRoute('events'); openEventDetail('${e.id}');">
             <span class="readonly-cell">${escapeHtml(e.name)}</span>
             <span class="d-sub">${e.inviteSendDateISO ? fmtDateLabel(e.inviteSendDateISO) : 'No date set'}</span>
             <span>${lastSent ? `<span class="pill pill-ok">Sent ${new Date(lastSent.sentAt).toLocaleDateString()}</span>` : `<span class="pill pill-warn">Not sent yet</span>`}</span>
@@ -13078,7 +13095,7 @@ function submitEventAddModal(){
   document.getElementById('content').innerHTML = renderEventsModule();
 }
 function openEventDetail(id){
-  selectedEventId = id; eventsView = 'detail';
+  selectedEventId = id; eventsView = 'detail'; eventDetailTab = 'overview';
   document.getElementById('content').innerHTML = renderEventsModule();
   window.scrollTo(0,0);
 }
@@ -13086,25 +13103,91 @@ function backToEventsList(){
   eventsView = 'list'; selectedEventId = null;
   document.getElementById('content').innerHTML = renderEventsModule();
 }
-function renderEventDetail(id){
+function switchEventDetailTab(tab){
+  eventDetailTab = tab;
+  document.getElementById('content').innerHTML = renderEventsModule();
+}
+/* ---- v1.39.0: every event's workspace standardized into the same seven tabs — Overview,
+   Guests, Budget, Vendors, Design, Timeline, Details — instead of one long scroll of cards
+   in a different order for every event. Each tab function below mostly just relocates
+   content that already existed; the content itself is unchanged except where noted. ---- */
+function renderEventOverviewTab(e){
   const d = dashboardData;
-  const e = d.events.find(x=>x.id===id);
-  if(!e) return renderEventsList();
+  const stats = eventGuestStats(e);
+  const budgetActuals = eventBudgetActuals(e.id);
+  const linkedVendorBookings = vendorBookingsForEvent(e);
+  const vendorsBooked = linkedVendorBookings.filter(vb=>vb.status==='booked').length;
+  const vendorsTotal = (e.vendorCategories||[]).length || linkedVendorBookings.length;
+  const completeness = eventCompleteness(e);
+  const vendorBookedAny = (d.vendorBookings||[]).some(v => (v.eventIds||[]).includes(e.id) && v.status==='booked');
+  const nextSteps = [];
+  if(!e.dateISO) nextSteps.push({text:'Set a date', tab:'details'});
+  if(!(e.location && e.location.trim())) nextSteps.push({text:'Add a location', tab:'details'});
+  if(!(e.budgetTarget && e.budgetTarget>0)) nextSteps.push({text:'Set a budget target', tab:'budget'});
+  if(!vendorBookedAny) nextSteps.push({text:'Book a vendor', tab:'vendors'});
+  if(!(e.inviteSentLog||[]).length) nextSteps.push({text:'Send invites', tab:'guests'});
+  return `
+    <div class="event-overview-stats">
+      <div class="eos-stat"><div class="eos-num">${stats.invited}</div><div class="eos-label">Invited</div></div>
+      <div class="eos-stat"><div class="eos-num">${fmtMoney(budgetActuals.spent)}</div><div class="eos-label">of ${fmtMoney(e.budgetTarget||budgetActuals.planned)} Budget</div></div>
+      <div class="eos-stat"><div class="eos-num">${vendorsBooked}${vendorsTotal?` / ${vendorsTotal}`:''}</div><div class="eos-label">Vendors Booked</div></div>
+      <div class="eos-stat"><div class="eos-num">${completeness.pct}%</div><div class="eos-label">Ready</div></div>
+    </div>
+    <div class="card" style="margin-top:18px;">
+      <div class="card-head"><h4>Next Steps</h4></div>
+      ${nextSteps.length ? nextSteps.map(s=>`
+        <div class="attention-row">
+          <span class="attention-ico neutral">○</span>
+          <span class="attention-text">${escapeHtml(s.text)}</span>
+          <span class="attention-cta" onclick="switchEventDetailTab('${s.tab}')">Open →</span>
+        </div>`).join('') : `<p class="d-sub" style="margin:0;">Nothing outstanding — this event is fully set up.</p>`}
+    </div>
+  `;
+}
+function renderEventVendorsTab(e){
+  const d = dashboardData;
   const linkedVendors = d.vendors.filter(v=>(e.vendorCategories||[]).includes(v.category));
   const linkedVendorBookings = vendorBookingsForEvent(e);
-  const linkedParty = d.weddingParty.filter(m=>m.events.includes(e.name));
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Vendors for this Event</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('vendors')">All vendors</span></div>
+      ${linkedVendorBookings.length ? linkedVendorBookings.map(vb=>`<div class="event-mini-row" style="cursor:pointer;" onclick="renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${vb.id}'),0);"><div><div class="em-name">${escapeHtml(vb.category)}${vb.role?` — ${escapeHtml(vb.role)}`:''}</div><div class="em-date">${escapeHtml(vb.vendorName||'—')}</div></div>${statusPill(vb.status)}</div>`).join('') : (linkedVendors.length ? linkedVendors.map(v=>`<div class="event-mini-row"><div><div class="em-name">${escapeHtml(v.category)}</div><div class="em-date">${escapeHtml(v.name)}</div></div>${statusPill(v.status)}</div>`).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">No vendors linked to this event yet.</p>')}
+      ${linkedVendorBookings.length && (e.vendorCategories||[]).length>1 ? `<p class="detail-hint">Some categories can have a different vendor for a different day — set that per booking's "Which events does this vendor cover?" field in My Vendor Team.</p>` : ''}
+    </div>
+  `;
+}
+function renderEventTimelineTab(e){
+  const d = dashboardData;
   const linkedPlaybook = (d.playbookTimeline||[]).filter(i=>i.eventId===e.id);
   return `
-    <button class="back-link" onclick="backToEventsList()" style="background:none;border:none;cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>Back to Events</button>
-    <div class="member-detail-head" style="margin-bottom:18px;">
-      <div class="pm-avatar" style="background:var(--green-tint);"><svg class="icon" viewBox="0 0 24 24" style="width:22px;height:22px; color:var(--green-deep);">${ICONS.events}</svg></div>
-      <div><h2>${e.name}</h2><div class="mdh-role">${e.date}${eventTimeRangeLabel(e) ? ' · '+eventTimeRangeLabel(e) : ''}</div><div class="mdh-side">${e.location||'No location set yet'}</div></div>
-      <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
-        ${statusPill(e.status)}
-        <button class="btn btn-outline btn-sm" onclick="toggleEventStatus('${e.id}')">${e.status==='booked' ? 'Mark as Planning' : 'Mark as Booked'}</button>
-      </div>
+    <div class="card">
+      <div class="card-head"><h4>Linked Playbook Moments</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('playbook')">Open Playbook</span></div>
+      ${linkedPlaybook.length ? sortByTime(linkedPlaybook).map(i=>renderTimelineItemRow(i)).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No run-of-show moments for this event yet — add one below.</p>`}
+      ${renderAddTimelineItemRow(e.id)}
     </div>
-
+  `;
+}
+function ensureInspirationBoardForEvent(eventId){
+  const d = dashboardData;
+  if(!Array.isArray(d.inspirationBoards)) d.inspirationBoards = [];
+  let board = d.inspirationBoards.find(b=>b.eventId===eventId);
+  if(!board){ board = {id:'insp-'+eventId, eventId, categories: emptyInspirationCategories()}; d.inspirationBoards.push(board); }
+  return board;
+}
+function renderEventDesignTab(e){
+  const board = ensureInspirationBoardForEvent(e.id);
+  const imgCount = inspirationBoardImageCount(board);
+  return `
+    ${renderEventPaletteCard(e)}
+    <div class="card" style="margin-top:18px;">
+      <div class="card-head"><h4>Design &amp; Inspiration</h4><span class="d-sub">${imgCount} photo${imgCount===1?'':'s'}</span><button class="btn btn-outline btn-sm" style="margin-left:auto;" onclick="openGeneratedMoodBoard('${e.id}')">🖼 Generate Mood Board</button></div>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Upload your own reference images for this event — Evera doesn't fabricate inspiration photos for you.</p>
+      ${INSPIRATION_CATEGORIES.map(c=>renderInspirationCategory(board, c)).join('')}
+    </div>
+  `;
+}
+function renderEventDetailsTab(e){
+  return `
     <div class="card" style="padding:20px 22px;">
       <div class="card-head" style="margin-bottom:14px;"><h4>Details</h4></div>
       <div class="field-grid">
@@ -13139,14 +13222,9 @@ function renderEventDetail(id){
           <div style="font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:700; line-height:1.1; color:var(--green);">${e.guestCount||0}</div>
         </div>
         <input type="number" min="0" style="max-width:110px;" value="${e.guestCount||0}" onchange="updateEventField('${e.id}','guestCount',Number(this.value)||0)">
-        <p class="detail-hint" style="margin:0; flex:1; min-width:200px;">Your own manual planning number from onboarding. Real Invited/Confirmed/Pending/Declined counts — computed live from your Guests household list — are on the Guest List &amp; Invites card below.</p>
+        <p class="detail-hint" style="margin:0; flex:1; min-width:200px;">Your own manual planning number from onboarding. Real Invited/Confirmed/Pending/Declined counts — computed live from your Guests household list — are on the Guests tab.</p>
       </div>
       ${renderDressCodeVisual(e.dressCode)}
-    </div>
-
-    <div class="grid-2">
-      ${renderEventPaletteCard(e)}
-      ${renderEventBudgetCard(e)}
     </div>
 
     <div class="grid-2">
@@ -13169,22 +13247,36 @@ function renderEventDetail(id){
       </div>
     </div>
 
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-head"><h4>Vendors for this Event</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('vendors')">All vendors</span></div>
-        ${linkedVendorBookings.length ? linkedVendorBookings.map(vb=>`<div class="event-mini-row" style="cursor:pointer;" onclick="renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${vb.id}'),0);"><div><div class="em-name">${escapeHtml(vb.category)}${vb.role?` — ${escapeHtml(vb.role)}`:''}</div><div class="em-date">${escapeHtml(vb.vendorName||'—')}</div></div>${statusPill(vb.status)}</div>`).join('') : (linkedVendors.length ? linkedVendors.map(v=>`<div class="event-mini-row"><div><div class="em-name">${escapeHtml(v.category)}</div><div class="em-date">${escapeHtml(v.name)}</div></div>${statusPill(v.status)}</div>`).join('') : '<p style="font-size:13px;color:var(--charcoal-faint);">No vendors linked to this event yet.</p>')}
-        ${linkedVendorBookings.length && (e.vendorCategories||[]).length>1 ? `<p class="detail-hint">Some categories can have a different vendor for a different day — set that per booking's "Which events does this vendor cover?" field in My Vendor Team.</p>` : ''}
-      </div>
-      ${renderEventGuestsCard(e)}
-    </div>
-
-    <div class="card">
-      <div class="card-head"><h4>Linked Playbook Moments</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('playbook')">Open Playbook</span></div>
-      ${linkedPlaybook.length ? sortByTime(linkedPlaybook).map(i=>renderTimelineItemRow(i)).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No run-of-show moments for this event yet — add one below.</p>`}
-      ${renderAddTimelineItemRow(e.id)}
-    </div>
-
     <div style="margin-top:8px;"><a href="#" class="danger-link" onclick="removeEvent('${e.id}'); return false;">Remove this event</a></div>
+  `;
+}
+function renderEventDetail(id){
+  const d = dashboardData;
+  const e = d.events.find(x=>x.id===id);
+  if(!e) return renderEventsList();
+  const TABS = [['overview','Overview'],['guests','Guests'],['budget','Budget'],['vendors','Vendors'],['design','Design'],['timeline','Timeline'],['details','Details']];
+  return `
+    <button class="back-link" onclick="backToEventsList()" style="background:none;border:none;cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>Back to Events</button>
+    <div class="member-detail-head" style="margin-bottom:18px;">
+      <div class="pm-avatar" style="background:var(--green-tint);"><svg class="icon" viewBox="0 0 24 24" style="width:22px;height:22px; color:var(--green-deep);">${ICONS.events}</svg></div>
+      <div><h2>${e.name}</h2><div class="mdh-role">${e.date}${eventTimeRangeLabel(e) ? ' · '+eventTimeRangeLabel(e) : ''}</div><div class="mdh-side">${e.location||'No location set yet'}</div></div>
+      <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
+        ${statusPill(e.status)}
+        <button class="btn btn-outline btn-sm" onclick="toggleEventStatus('${e.id}')">${e.status==='booked' ? 'Mark as Planning' : 'Mark as Booked'}</button>
+      </div>
+    </div>
+
+    <div class="seg-control" style="margin:4px 0 22px; flex-wrap:wrap;">
+      ${TABS.map(([key,label])=>`<button class="seg-btn ${eventDetailTab===key?'active':''}" onclick="switchEventDetailTab('${key}')">${label}</button>`).join('')}
+    </div>
+
+    ${eventDetailTab==='overview' ? renderEventOverviewTab(e)
+      : eventDetailTab==='guests' ? renderEventGuestsCard(e)
+      : eventDetailTab==='budget' ? renderEventBudgetCard(e)
+      : eventDetailTab==='vendors' ? renderEventVendorsTab(e)
+      : eventDetailTab==='design' ? renderEventDesignTab(e)
+      : eventDetailTab==='timeline' ? renderEventTimelineTab(e)
+      : renderEventDetailsTab(e)}
   `;
 }
 function toggleEventStatus(id){
