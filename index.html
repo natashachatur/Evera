@@ -1882,6 +1882,16 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.40.0', date:'2026-10-23',
+    title:'Per-person Attributes and a reusable, tag-based Invite Rules engine',
+    items:[
+      'Guests: each household\'s detail view now has an "Attributes" section — tag an individual person (e.g. VIP) separately from the whole family\'s Guest Classification, which still applies to everyone in the household.',
+      'Guests → new "Invite Rules" tab: build a named, persistent rule ("Women or VIPs → Bridal Shower") from any combination of tags — including an automatic Adult/Child tag that needs no manual tagging — with ANY/ALL matching.',
+      'Every rule shows a live match count and, before anything happens, a full "Review Matches" list of exactly who would be invited and who already is — then "Invite N New People" applies it. Rules are saved, so re-running one later picks up every newly tagged or added guest since the last time it ran.',
+      'This is a step beyond the one-click "quick-invite by tag" already on each event\'s guest-list screen (still there, unchanged) — that\'s a one-time generator, while an Invite Rule is saved and reusable. Built on the existing per-person invite model (Household → People → Event eligibility), so a rule just automates the same toggles you could already set by hand.'
+    ]
+  },
+  {
     version:'1.39.1', date:'2026-10-23',
     title:'Home hero headline reverted to a clean, upright serif',
     items:[
@@ -3680,6 +3690,10 @@ function normalizeDashboardData(d){
   if(!d.ceremonyOrder) d.ceremonyOrder = {processional:[], recessional:[], altarLineup:{groomSide:[], brideSide:[]}};
   if(!Array.isArray(d.guestCategories)) d.guestCategories = [`${d.partner1}'s Side`, `${d.partner2}'s Side`, `${d.partner1}'s Family`, `${d.partner2}'s Family`, 'Friends'];
   if(!Array.isArray(d.guestHouseholds)) d.guestHouseholds = [];
+  // v1.40.0: persistent, reusable tag-based invite rules (Guests → Invite Rules) — distinct from
+  // the one-click quickInviteByCategory generator above, a rule is saved, can be re-run as the
+  // guest list grows, and previews exactly who matches before anything is applied.
+  if(!Array.isArray(d.guestInviteRules)) d.guestInviteRules = [];
   if(!Array.isArray(d.guestTiers) || !d.guestTiers.length) d.guestTiers = DEFAULT_GUEST_TIERS.map(t=>Object.assign({},t));
   d.guestHouseholds.forEach(h=>{
     if(!Array.isArray(h.categories)) h.categories = [];
@@ -3724,6 +3738,10 @@ function normalizeDashboardData(d){
       // "Generate Combinations" button — which reads it for Mom/Dad/Siblings/Grandparents —
       // still works for anyone already tagged). A simple "Child?" flag replaces it in the grid.
       if(m.isChild===undefined) m.isChild = false;
+      // v1.40.0: per-person tags (Attributes) — the same tag vocabulary as household Guest
+      // Classification (d.guestCategories), but attachable to one individual (e.g. "VIP" on
+      // just one member of a family) rather than the whole household.
+      if(!Array.isArray(m.tags)) m.tags = [];
       // v1.33.0: RSVP moved to the person level (source of truth) — the household's per-event
       // and overall status are now computed from each member's own status. Seed every invited
       // member from the household's existing per-event value so old/sample data displays
@@ -11008,7 +11026,10 @@ const DEFAULT_GUEST_TIERS = [
   {key:'B', label:'Tier B — Waitlist', desc:"Invited if space opens up from Tier A declines."},
   {key:'C', label:'Tier C — Backup List', desc:"A backup list you may not get to — move people up as seats free up."}
 ];
-let guestsModuleTab = 'overview'; // 'overview' | 'list' | 'waitlist' | 'seating' | 'messages'
+let guestsModuleTab = 'overview'; // 'overview' | 'list' | 'waitlist' | 'seating' | 'messages' | 'rules'
+let ruleBuilderDraft = null; // {id|null, name, eventId, tags:[], matchMode:'any'|'all'} while a rule is being created/edited
+let ruleBuilderOpen = false;
+let rulePreviewId = null; // id of the Invite Rule currently showing its "who matches" review list
 let guestsGroupBy = 'family';
 let guestsSortBy = null; // null | 'family' | 'first' | 'last'
 let guestsSortDir = 'asc';
@@ -11563,6 +11584,7 @@ function renderGuestsModule(){
           <button class="seg-btn ${guestsModuleTab==='waitlist'?'active':''}" onclick="switchGuestsModuleTab('waitlist')">Waitlist</button>
           <button class="seg-btn ${guestsModuleTab==='seating'?'active':''}" onclick="switchGuestsModuleTab('seating')">Seating Chart</button>
           <button class="seg-btn ${guestsModuleTab==='messages'?'active':''}" onclick="switchGuestsModuleTab('messages')" title="Not the same as the Messages module in the sidebar — this is specifically your RSVP messaging to guests">Guest Messages</button>
+          <button class="seg-btn ${guestsModuleTab==='rules'?'active':''}" onclick="switchGuestsModuleTab('rules')" title="Save a reusable, tag-based bulk-invite rule — preview exactly who matches, then apply">Invite Rules</button>
         </div>
       </div>
     </div>
@@ -11570,10 +11592,176 @@ function renderGuestsModule(){
       : guestsModuleTab==='seating' ? renderSeatingChartSection(false)
       : guestsModuleTab==='messages' ? renderGuestMessagesTab()
       : guestsModuleTab==='waitlist' ? renderWaitlistTab()
+      : guestsModuleTab==='rules' ? renderGuestRulesTab()
       : renderGuestListTab()}
   `;
 }
 function switchGuestsModuleTab(key){ guestsModuleTab = key; document.getElementById('content').innerHTML = renderGuestsModule(); }
+/* ---- v1.40.0: Invite Rules — a persistent, named, tag-based bulk-invite rule, distinct from the
+   one-click quickInviteByCategory generator above. A rule is saved, shows a live "N people match"
+   count (and how many are NOT yet invited), and can be re-run any time as the guest list grows —
+   "Tags define people. Rules determine invitations. Humans handle exceptions." ---- */
+function memberEffectiveTags(h, m){
+  // Adult/Child is computed, not stored, so rules can match it with zero manual tagging effort.
+  const synthetic = [m.isChild ? 'Child' : 'Adult'];
+  return Array.from(new Set([...(h.categories||[]), ...(m.tags||[]), ...synthetic]));
+}
+function memberMatchesRuleTags(h, m, tags, matchMode){
+  if(!tags || !tags.length) return false;
+  const effective = memberEffectiveTags(h, m);
+  return matchMode==='all' ? tags.every(t=>effective.includes(t)) : tags.some(t=>effective.includes(t));
+}
+function ruleMatchingMembers(rule){
+  const out = [];
+  (dashboardData.guestHouseholds||[]).forEach(h=>{
+    (h.members||[]).forEach(m=>{
+      if(memberMatchesRuleTags(h, m, rule.tags, rule.matchMode||'any')) out.push({h, m});
+    });
+  });
+  return out;
+}
+function ruleMatchSummary(rule){
+  const matches = ruleMatchingMembers(rule);
+  const alreadyInvited = matches.filter(({h,m})=>memberIsInvitedToEvent(h, m, rule.eventId)).length;
+  return { matches, total: matches.length, alreadyInvited, newCount: matches.length - alreadyInvited };
+}
+function openNewGuestRuleBuilder(){
+  ruleBuilderDraft = { id: null, name:'', eventId: (dashboardData.events[0]||{}).id || '', tags: [], matchMode: 'any' };
+  ruleBuilderOpen = true;
+  refreshGuestsBackground();
+}
+function editGuestRule(ruleId){
+  const r = (dashboardData.guestInviteRules||[]).find(x=>x.id===ruleId);
+  if(!r) return;
+  ruleBuilderDraft = { id:r.id, name:r.name, eventId:r.eventId, tags:[...r.tags], matchMode:r.matchMode||'any' };
+  ruleBuilderOpen = true;
+  refreshGuestsBackground();
+}
+function cancelGuestRuleBuilder(){ ruleBuilderDraft = null; ruleBuilderOpen = false; refreshGuestsBackground(); }
+function updateRuleDraftField(field, val){ if(!ruleBuilderDraft) return; ruleBuilderDraft[field] = val; refreshGuestsBackground(); }
+function toggleRuleDraftTag(tag){
+  if(!ruleBuilderDraft) return;
+  if(ruleBuilderDraft.tags.includes(tag)) ruleBuilderDraft.tags = ruleBuilderDraft.tags.filter(t=>t!==tag);
+  else ruleBuilderDraft.tags.push(tag);
+  refreshGuestsBackground();
+}
+function saveGuestRule(){
+  if(!ruleBuilderDraft) return;
+  const name = (ruleBuilderDraft.name||'').trim();
+  if(!name || !ruleBuilderDraft.eventId || !ruleBuilderDraft.tags.length) return;
+  if(!Array.isArray(dashboardData.guestInviteRules)) dashboardData.guestInviteRules = [];
+  if(ruleBuilderDraft.id){
+    const r = dashboardData.guestInviteRules.find(x=>x.id===ruleBuilderDraft.id);
+    if(r){ r.name = name; r.eventId = ruleBuilderDraft.eventId; r.tags = [...ruleBuilderDraft.tags]; r.matchMode = ruleBuilderDraft.matchMode||'any'; }
+  } else {
+    dashboardData.guestInviteRules.push({
+      id: 'rule-'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+      name, eventId: ruleBuilderDraft.eventId, tags: [...ruleBuilderDraft.tags], matchMode: ruleBuilderDraft.matchMode||'any',
+      createdISO: isoFromDate(new Date()), lastAppliedISO: null
+    });
+  }
+  ruleBuilderDraft = null; ruleBuilderOpen = false;
+  refreshGuestsBackground();
+}
+function deleteGuestRule(ruleId){
+  dashboardData.guestInviteRules = (dashboardData.guestInviteRules||[]).filter(r=>r.id!==ruleId);
+  if(rulePreviewId===ruleId) rulePreviewId = null;
+  refreshGuestsBackground();
+}
+function toggleRulePreview(ruleId){
+  rulePreviewId = rulePreviewId===ruleId ? null : ruleId;
+  refreshGuestsBackground();
+}
+function applyGuestRule(ruleId){
+  const r = (dashboardData.guestInviteRules||[]).find(x=>x.id===ruleId);
+  if(!r) return;
+  const { matches } = ruleMatchSummary(r);
+  matches.forEach(({h,m})=>{
+    if(!memberIsInvitedToEvent(h, m, r.eventId)) setMemberEventInvited(h.id, m.id, r.eventId, true);
+  });
+  r.lastAppliedISO = isoFromDate(new Date());
+  refreshGuestsBackground();
+}
+function renderGuestRulesTab(){
+  const d = dashboardData;
+  const rules = d.guestInviteRules||[];
+  return `
+    <div class="module-header">
+      <div class="mh-copy"><h2 style="margin:0;">Invite Rules</h2><p style="margin-top:4px;">Tag people under a household's Guest Classification or an individual's Attributes, then build a reusable rule that invites everyone matching those tags to an event. Preview exactly who matches before anything is applied — and re-run the same rule later as your list grows.</p></div>
+      ${!ruleBuilderOpen ? `<button class="btn btn-solid btn-sm" onclick="openNewGuestRuleBuilder()">+ New Rule</button>` : ''}
+    </div>
+    ${ruleBuilderOpen ? renderGuestRuleBuilder() : ''}
+    ${rules.length ? rules.map(r=>renderGuestRuleCard(r)).join('') : (!ruleBuilderOpen ? `<div class="card"><p style="font-size:13px;color:var(--charcoal-faint);margin:0;">No rules yet. A rule might be "everyone tagged VIP or Bride's Side → invite to the Sangeet." Tag your guests first — under a household's Guest Classification, or a specific person's Attributes — then create your first rule.</p></div>` : '')}
+  `;
+}
+function renderGuestRuleBuilder(){
+  const d = dashboardData;
+  const draft = ruleBuilderDraft;
+  const categories = d.guestCategories||[];
+  const isEdit = !!draft.id;
+  const previewable = draft.tags.length && draft.eventId;
+  const preview = previewable ? ruleMatchSummary({tags:draft.tags, matchMode:draft.matchMode, eventId:draft.eventId}) : null;
+  return `
+    <div class="card" style="border-color:var(--green-mid);">
+      <div class="card-head"><h4>${isEdit?'Edit Rule':'New Rule'}</h4></div>
+      <div class="field-grid">
+        <div class="field-cell"><label>Rule Name</label><input type="text" placeholder="e.g. Women &amp; VIPs → Bridal Shower" value="${escapeAttr(draft.name)}" onchange="updateRuleDraftField('name', this.value)"></div>
+        <div class="field-cell"><label>Invite To Event</label>
+          <select onchange="updateRuleDraftField('eventId', this.value)">
+            ${(d.events||[]).map(e=>`<option value="${e.id}" ${draft.eventId===e.id?'selected':''}>${escapeHtml(e.name)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:12px;">
+        <label style="font-size:11px; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); font-weight:700;">Match Guests Tagged</label>
+        <div class="chip-grid" style="margin-top:6px;">
+          ${['Adult','Child'].concat(categories).map(c=>`<span class="attach-chip" style="cursor:pointer; ${draft.tags.includes(c)?'background:var(--green-tint);border-color:var(--green-mid);':''}" onclick="toggleRuleDraftTag('${escapeAttr(c)}')">${draft.tags.includes(c)?'✓ ':''}${escapeHtml(c)}</span>`).join('')}
+        </div>
+        ${draft.tags.length>1 ? `
+        <div style="margin-top:10px; display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+          <label style="display:flex; gap:5px; align-items:center; font-size:13px; cursor:pointer;"><input type="radio" name="ruleMatchMode" ${draft.matchMode==='any'?'checked':''} onchange="updateRuleDraftField('matchMode','any')"> Match ANY of these tags</label>
+          <label style="display:flex; gap:5px; align-items:center; font-size:13px; cursor:pointer;"><input type="radio" name="ruleMatchMode" ${draft.matchMode==='all'?'checked':''} onchange="updateRuleDraftField('matchMode','all')"> Match ALL of these tags</label>
+        </div>` : ''}
+      </div>
+      ${preview ? `<p class="d-sub" style="margin-top:12px;">${pluralize(preview.total,'person','people')} currently match${preview.total===1?'es':''} these tags — ${preview.newCount} not yet invited to this event.</p>` : ''}
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button class="btn btn-solid btn-sm" onclick="saveGuestRule()" ${!draft.name.trim()||!draft.tags.length||!draft.eventId?'disabled':''}>${isEdit?'Save Rule':'Create Rule'}</button>
+        <button class="btn btn-outline btn-sm" onclick="cancelGuestRuleBuilder()">Cancel</button>
+      </div>
+    </div>
+  `;
+}
+function renderGuestRuleCard(rule){
+  const d = dashboardData;
+  const e = (d.events||[]).find(x=>x.id===rule.eventId);
+  const summary = ruleMatchSummary(rule);
+  const showPreview = rulePreviewId===rule.id;
+  return `
+    <div class="card" style="margin-top:14px;">
+      <div class="card-head">
+        <div><h4 style="margin:0;">${escapeHtml(rule.name)}</h4><span class="d-sub">${rule.tags.map(t=>escapeHtml(t)).join(rule.matchMode==='all'?' + ':' or ')} → ${e?escapeHtml(e.name):'Unknown event'}</span></div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="editGuestRule('${rule.id}')">Edit</button>
+          <a href="#" class="danger-link" style="font-size:12.5px; align-self:center;" onclick="deleteGuestRule('${rule.id}'); return false;">Delete</a>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; margin-top:8px; flex-wrap:wrap;">
+        <span class="d-sub">${pluralize(summary.total,'person','people')} currently match${summary.total===1?'es':''}${rule.lastAppliedISO ? ` · last applied ${fmtDateLabel(rule.lastAppliedISO).replace(/^\w+, /,'')}` : ' · never applied'}</span>
+        <button class="btn btn-outline btn-sm" onclick="toggleRulePreview('${rule.id}')">${showPreview?'Hide':'Review'} Matches</button>
+        ${summary.newCount>0 ? `<button class="btn btn-solid btn-sm" onclick="applyGuestRule('${rule.id}')">Invite ${summary.newCount} ${summary.newCount===1?'Person':'New People'}</button>` : `<span class="d-sub" style="color:var(--green);">✓ Everyone who matches is invited</span>`}
+      </div>
+      ${showPreview ? `
+      <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--line-soft); max-height:260px; overflow-y:auto;">
+        ${summary.matches.length ? summary.matches.map(({h,m})=>`
+          <div style="display:flex; justify-content:space-between; padding:5px 0; font-size:13px;">
+            <span>${escapeHtml(memberDisplayName(m))} <span class="d-sub">(${escapeHtml(h.label)})</span></span>
+            <span class="d-sub">${memberIsInvitedToEvent(h,m,rule.eventId) ? '✓ Already invited' : 'Will be invited'}</span>
+          </div>
+        `).join('') : `<p class="d-sub" style="margin:0;">No one matches these tags yet.</p>`}
+      </div>` : ''}
+    </div>
+  `;
+}
 /* v1.37.0: the Guests page's new landing tab — the stat cards, the RSVPs-by-Event table (now a
    real table with a photo thumbnail, date, invited/confirmed/pending/declined counts and a
    response-rate bar, replacing the old compact icon card here), and a click-into-event "Pending
@@ -12071,6 +12259,15 @@ function renderHouseholdDetailModal(householdId){
         <button class="btn btn-outline btn-sm" onclick="submitHouseholdCategoryPrompt('${h.id}')">+ Add &amp; Apply</button>
       </div>
       ` : ''}
+      <div class="detail-section-head" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);"><h4 style="margin:0;">Attributes</h4><span class="d-sub">Tag an individual person — useful for things that don't apply to the whole family, like VIP. Feeds Guests → Invite Rules.</span></div>
+      ${(h.members||[]).map(m=>`
+        <div style="margin-top:10px;">
+          <div style="font-size:12.5px; font-weight:700;">${escapeHtml(memberDisplayName(m))} <span class="d-sub" style="font-weight:400;">· ${m.isChild?'Child':'Adult'}</span></div>
+          <div class="chip-grid" style="margin-top:4px;">
+            ${categories.map(c=>`<span class="attach-chip" style="cursor:pointer; font-size:12px; padding:3px 9px; ${(m.tags||[]).includes(c)?'background:var(--green-tint);border-color:var(--green-mid);':''}" onclick="toggleMemberTag('${h.id}','${m.id}','${escapeAttr(c)}')">${(m.tags||[]).includes(c)?'✓ ':''}${escapeHtml(c)}</span>`).join('')}
+          </div>
+        </div>
+      `).join('')}
       ${renderEventInvitationsSection(h)}
       ${renderHouseholdEventRsvpSection(h)}
       ${renderHouseholdMealSelections(h)}
@@ -12125,6 +12322,16 @@ function toggleHouseholdCategory(householdId, category){
   if(!Array.isArray(h.categories)) h.categories = [];
   if(h.categories.includes(category)) h.categories = h.categories.filter(c=>c!==category);
   else h.categories.push(category);
+  refreshGuestsBackground();
+  refreshHouseholdDetail();
+}
+function toggleMemberTag(householdId, memberId, tag){
+  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+  const m = h && (h.members||[]).find(x=>x.id===memberId);
+  if(!m) return;
+  if(!Array.isArray(m.tags)) m.tags = [];
+  if(m.tags.includes(tag)) m.tags = m.tags.filter(t=>t!==tag);
+  else m.tags.push(tag);
   refreshGuestsBackground();
   refreshHouseholdDetail();
 }
