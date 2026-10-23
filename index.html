@@ -428,10 +428,9 @@
   .home-photo-hero:not(.has-photo) .hph-bg{background:var(--green-deep);}
   .home-photo-hero .hph-scrim{position:absolute; inset:0; background:linear-gradient(0deg, rgba(20,24,18,0.80) 0%, rgba(20,24,18,0.38) 55%, rgba(20,24,18,0.06) 100%);}
   .home-photo-hero .hph-content{position:relative; z-index:1; padding:30px 32px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; width:100%;}
-  /* v1.38.0: italicized to match the app's established "big display moment" serif treatment
-     (landing tagline, auth brand headline, Blueprint hero names) — Home's greeting was the one
-     major headline left out of that convention. */
-  .home-photo-hero h1{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600; font-size:29px; color:#fff; margin-bottom:5px; text-wrap:balance;}
+  /* v1.39.1: reverted the v1.38.0 italic treatment here per direct feedback — it read as
+     "weird" on the greeting specifically, so this stays a clean upright serif. */
+  .home-photo-hero h1{font-family:'Cormorant Garamond',serif; font-weight:600; font-size:29px; color:#fff; margin-bottom:5px; text-wrap:balance;}
   .home-photo-hero .hph-days{font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--champagne-light); font-weight:600;}
   .home-photo-hero .hph-meta{font-size:12.5px; color:#EFE9DA; margin-top:6px; opacity:0.92;}
   .home-photo-hero .hph-priority{font-size:13.5px; color:#F4EFE3; margin-top:12px; max-width:460px; line-height:1.5;}
@@ -1882,6 +1881,13 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.39.1', date:'2026-10-23',
+    title:'Home hero headline reverted to a clean, upright serif',
+    items:[
+      'Home: reverted the italic treatment on the "Good morning, [names]" hero headline (added in v1.38.0 to match Wedding Blueprint) — it read as "weird" there specifically, so it\'s back to a clean upright Cormorant Garamond.'
+    ]
+  },
   {
     version:'1.39.0', date:'2026-10-23',
     title:'Every event standardized into seven tabs (Overview, Guests, Budget, Vendors, Design, Timeline, Details), and Inspiration fully moved into each event\'s own Design tab',
