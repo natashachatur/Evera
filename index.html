@@ -49,10 +49,10 @@
   #view-landing.active{display:flex;}
   .landing-motif{position:absolute; inset:0; z-index:0; pointer-events:none;}
   .landing-inner{position:relative; z-index:1; max-width:640px;}
-  .landing-brand{font-family:'Cormorant Garamond',serif; font-size:26px; letter-spacing:0.08em; font-weight:600; margin-bottom:56px;}
+  .landing-brand{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:26px; letter-spacing:0.08em; font-weight:600; margin-bottom:56px;}
   .landing-brand .amp{color:var(--champagne); font-style:italic;}
   .landing-inner h1{font-size:clamp(38px,6vw,64px); line-height:1.08;}
-  .landing-tagline{margin-top:16px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(17px,2.4vw,21px); color:var(--champagne-dark); letter-spacing:0.01em;}
+  .landing-tagline{margin-top:16px; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-style:italic; font-size:clamp(17px,2.4vw,21px); color:var(--champagne-dark); letter-spacing:0.01em;}
   .landing-inner .sub{margin-top:22px; font-size:17px; color:var(--charcoal-soft); line-height:1.7; max-width:520px; margin-left:auto; margin-right:auto;}
   .landing-feature-pills{margin-top:18px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--green);}
   .landing-feature-pills span:nth-child(even){color:var(--champagne-dark); font-weight:400;}
@@ -86,7 +86,7 @@
   .field-row label{display:block; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; font-weight:700; color:var(--charcoal-soft); margin-bottom:9px;}
   .field-row input[type=text], .field-row input[type=date], .field-row input[type=email], .field-row input[type=password], .field-row select{
     width:100%; padding:14px 16px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--paper);
-    font-family:'Inter'; font-size:15px; color:var(--charcoal);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:15px; color:var(--charcoal);
   }
   .auth-tabs{display:flex; gap:6px; background:var(--ivory-deep); border-radius:999px; padding:4px; margin-bottom:28px;}
   .auth-tab{flex:1; text-align:center; padding:10px; border-radius:999px; font-size:12.5px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--charcoal-soft); cursor:pointer; transition:all .15s ease;}
@@ -107,7 +107,7 @@
   .auth-brand-panel-motif{position:absolute; inset:0; z-index:0; pointer-events:none;}
   .auth-brand-panel-inner{position:relative; z-index:1; max-width:420px;}
   .auth-brand-panel .landing-brand{color:var(--paper); margin-bottom:0; letter-spacing:0.1em;}
-  .auth-brand-headline{font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-weight:500; color:var(--paper); font-size:clamp(34px,3.6vw,48px); line-height:1.16; margin-top:22px;}
+  .auth-brand-headline{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-style:italic; font-weight:500; color:var(--paper); font-size:clamp(34px,3.6vw,48px); line-height:1.16; margin-top:22px;}
   .auth-brand-tagline{margin-top:20px; font-size:15px; line-height:1.7; color:var(--champagne-light);}
   .auth-brand-pills{margin-top:30px; display:flex; gap:8px; flex-wrap:wrap; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--champagne-light);}
   .auth-brand-pills span:nth-child(even){color:rgba(250,246,238,0.45); font-weight:400; text-transform:none; letter-spacing:0;}
@@ -149,8 +149,8 @@
   .chip.selected{background:var(--green); border-color:var(--green); color:#fff;}
 
   .slider-wrap{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:28px 24px;}
-  .slider-readout{font-family:'Cormorant Garamond',serif; font-size:38px; color:var(--green); margin-bottom:6px;}
-  .slider-readout .unit{font-size:16px; font-family:'Inter'; color:var(--charcoal-faint); font-weight:600;}
+  .slider-readout{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:38px; color:var(--green); margin-bottom:6px;}
+  .slider-readout .unit{font-size:16px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:var(--charcoal-faint); font-weight:600;}
   input[type=range]{width:100%; accent-color:var(--green); height:4px;}
   .slider-minmax{display:flex; justify-content:space-between; font-size:11.5px; color:var(--charcoal-faint); margin-top:6px;}
 
@@ -173,7 +173,7 @@
   .event-group:last-child{margin-bottom:0;}
   .event-group-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--charcoal-faint); margin-bottom:10px;}
   .custom-add-row{display:flex; gap:10px;}
-  .custom-add-row input{flex:1; padding:12px 16px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--paper); font-family:'Inter'; font-size:14px; color:var(--charcoal);}
+  .custom-add-row input{flex:1; padding:12px 16px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--paper); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:14px; color:var(--charcoal);}
   .custom-chip{display:inline-flex; align-items:center; gap:6px; background:var(--green-tint); border:1px solid var(--green); color:var(--green); border-radius:999px; padding:9px 8px 9px 16px; font-size:13px; font-weight:600;}
   .custom-chip button{background:none; border:none; color:var(--green); font-size:17px; line-height:1; cursor:pointer; padding:0 2px;}
 
@@ -229,8 +229,8 @@
   @media (max-width:560px){ .result-grid{grid-template-columns:1fr;} }
   .rcard{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:26px; box-shadow:var(--shadow);}
   .rcard .rc-icon{width:34px; height:34px; color:var(--champagne-dark); margin-bottom:14px;}
-  .rcard h4{font-size:19px; font-family:'Inter'; font-weight:700;}
-  .rcard .rc-big{font-family:'Cormorant Garamond',serif; font-size:30px; color:var(--green); margin-top:6px;}
+  .rcard h4{font-size:19px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-weight:700;}
+  .rcard .rc-big{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:30px; color:var(--green); margin-top:6px;}
   .rcard .rc-detail{font-size:12.5px; color:var(--charcoal-faint); margin-top:8px; line-height:1.6;}
   .rcard .chip-mini{display:inline-block; font-size:11px; font-weight:700; background:var(--green-tint); color:var(--green); padding:5px 10px; border-radius:999px; margin:3px 4px 0 0;}
   .rcard.span2{grid-column:span 2;}
@@ -251,7 +251,7 @@
     width:252px; flex-shrink:0; background:var(--green-deep); color:#EFE9DA; min-height:100vh;
     display:flex; flex-direction:column; position:sticky; top:0; align-self:flex-start; height:100vh;
   }
-  .sb-brand{padding:26px 24px 20px; font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; letter-spacing:0.04em; display:flex; align-items:center; gap:8px;}
+  .sb-brand{padding:26px 24px 20px; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:22px; font-weight:600; letter-spacing:0.04em; display:flex; align-items:center; gap:8px;}
   .sb-brand .amp{color:var(--champagne); font-style:italic;}
   .sb-nav{flex:1; overflow-y:auto; padding:6px 12px;}
   .sb-item{
@@ -272,7 +272,7 @@
   .sb-item-utility svg{width:17px; height:17px;}
   .sb-foot{padding:16px 20px 22px; border-top:1px solid rgba(239,233,218,0.1);}
   .sb-couple{display:flex; align-items:center; gap:10px; font-size:12.5px; color:#C9C3B2;}
-  .sb-avatar{width:32px; height:32px; border-radius:50%; background:var(--champagne-light); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; color:var(--green-deep); font-weight:700; font-size:13px; overflow:hidden;}
+  .sb-avatar{width:32px; height:32px; border-radius:50%; background:var(--champagne-light); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; color:var(--green-deep); font-weight:700; font-size:13px; overflow:hidden;}
   .sb-avatar img{width:100%; height:100%; object-fit:cover;}
   .sb-logo-chip{margin-left:auto;}
   .sb-logo-chip img{width:24px; height:24px; object-fit:contain; border-radius:5px; background:#fff; padding:2px;}
@@ -289,7 +289,7 @@
     display:flex; align-items:center; gap:8px; background:var(--paper); border:1px solid var(--line); border-radius:999px;
     padding:8px 16px; font-size:12.5px; font-weight:700; color:var(--green);
   }
-  .countdown-chip b{font-family:'Cormorant Garamond',serif; font-size:16px; margin-right:2px;}
+  .countdown-chip b{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:16px; margin-right:2px;}
   .icon-btn{
     width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--paper);
     display:flex; align-items:center; justify-content:center; color:var(--charcoal-soft); position:relative;
@@ -335,7 +335,7 @@
     background:linear-gradient(120deg, var(--green-deep), var(--green)); color:#F4EFE3; border-radius:var(--radius);
     padding:28px 32px; margin-bottom:22px; box-shadow:var(--shadow-lg); display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap;
   }
-  .home-hero h1{font-family:'Cormorant Garamond',serif; font-weight:600; font-size:26px; color:#fff; margin-bottom:6px;}
+  .home-hero h1{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:600; font-size:26px; color:#fff; margin-bottom:6px;}
   .home-hero .hh-status{font-size:13.5px; color:var(--champagne-light); font-weight:600;}
   .home-hero .hh-days{font-size:13.5px; color:#D8D2C0;}
   .home-hero .hh-priority{font-size:14.5px; color:#F4EFE3; margin-top:12px; max-width:520px; line-height:1.5;}
@@ -354,7 +354,7 @@
   .nextup-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--champagne-dark);}
   .nextup-item{display:flex; gap:16px; padding:18px 0; border-top:1px solid var(--line-soft);}
   .nextup-item:first-child{border-top:none;}
-  .nextup-num{font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; color:var(--champagne); flex-shrink:0; width:34px; line-height:1;}
+  .nextup-num{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:26px; font-weight:600; color:var(--champagne); flex-shrink:0; width:34px; line-height:1;}
   .nextup-body{flex:1; min-width:0;}
   .nextup-title{font-size:15.5px; font-weight:700; color:var(--charcoal);}
   .nextup-due{font-size:11.5px; font-weight:700; color:var(--champagne-dark); text-transform:uppercase; letter-spacing:0.03em; margin-top:4px;}
@@ -371,7 +371,7 @@
      Deep green text on champagne clears AA contrast (~4.7:1) and echoes the brand palette. */
   .home-priority-card{background:var(--champagne-dark); color:var(--green-deep); border-radius:var(--radius); padding:28px 30px; margin-bottom:18px; box-shadow:var(--shadow-lg); position:relative;}
   .hpc-eyebrow{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green-deep); opacity:0.72;}
-  .hpc-title{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600; font-size:26px; margin-top:8px; text-wrap:balance; color:var(--green-deep);}
+  .hpc-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-style:italic; font-weight:600; font-size:26px; margin-top:8px; text-wrap:balance; color:var(--green-deep);}
   .hpc-detail{font-size:13.5px; margin-top:8px; max-width:560px; line-height:1.55; opacity:0.85;}
   .hpc-due{display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; background:rgba(35,46,39,0.1); border:1px solid rgba(35,46,39,0.25); border-radius:999px; padding:4px 11px; margin-top:12px; color:var(--green-deep);}
   .hpc-cta{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--green-deep); margin-top:14px; cursor:pointer; border-bottom:1.5px solid var(--green-deep); padding-bottom:2px; width:fit-content;}
@@ -408,7 +408,7 @@
   /* ---- Your Celebrations (horizontal) ---- */
   .celeb-scroll{display:flex; gap:14px; overflow-x:auto; padding-bottom:6px; margin-top:2px;}
   .celeb-card{flex:0 0 168px; background:var(--ivory-deep); border-radius:var(--radius-sm); padding:16px; scroll-snap-align:start;}
-  .celeb-name{font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:600; color:var(--charcoal);}
+  .celeb-name{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:17px; font-weight:600; color:var(--charcoal);}
   .celeb-date{font-size:11.5px; color:var(--charcoal-faint); margin-top:5px;}
   .celeb-guests{font-size:11.5px; color:var(--charcoal-faint); margin-top:2px;}
 
@@ -430,8 +430,8 @@
   .home-photo-hero .hph-content{position:relative; z-index:1; padding:30px 32px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; width:100%;}
   /* v1.39.1: reverted the v1.38.0 italic treatment here per direct feedback — it read as
      "weird" on the greeting specifically, so this stays a clean upright serif. */
-  .home-photo-hero h1{font-family:'Cormorant Garamond',serif; font-weight:600; font-size:29px; color:#fff; margin-bottom:5px; text-wrap:balance;}
-  .home-photo-hero .hph-days{font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--champagne-light); font-weight:600;}
+  .home-photo-hero h1{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:600; font-size:29px; color:#fff; margin-bottom:5px; text-wrap:balance;}
+  .home-photo-hero .hph-days{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:18px; color:var(--champagne-light); font-weight:600;}
   .home-photo-hero .hph-meta{font-size:12.5px; color:#EFE9DA; margin-top:6px; opacity:0.92;}
   .home-photo-hero .hph-priority{font-size:13.5px; color:#F4EFE3; margin-top:12px; max-width:460px; line-height:1.5;}
   .home-photo-hero .hph-priority b{color:var(--champagne-light);}
@@ -445,7 +445,7 @@
   .home-status-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:22px; align-items:stretch;}
   @media (max-width:860px){ .home-status-grid{grid-template-columns:1fr;} }
   .budget-snap-sub{font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-bottom:3px;}
-  .budget-snap-hero{font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:700; color:var(--green-deep); line-height:1.1;}
+  .budget-snap-hero{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:34px; font-weight:700; color:var(--green-deep); line-height:1.1;}
   .budget-snap-row{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft);}
   .budget-snap-stat .num{font-size:15px; font-weight:700; color:var(--charcoal);}
   .budget-snap-stat .lbl{font-size:10px; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); margin-top:2px;}
@@ -453,7 +453,7 @@
      workspace so you can scan an event's status without hunting through tabs. ---- */
   .event-overview-stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:16px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:20px 24px; box-shadow:var(--shadow);}
   .eos-stat{text-align:left;}
-  .eos-num{font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:700; color:var(--green-deep); line-height:1.1;}
+  .eos-num{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:30px; font-weight:700; color:var(--green-deep); line-height:1.1;}
   .eos-label{font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-top:4px;}
   .budget-snap-alert{margin-top:14px; padding:10px 14px; background:var(--terracotta-tint); color:var(--terracotta); border-radius:var(--radius-sm); font-size:12.5px; font-weight:600;}
   .progress-checklist{display:flex; flex-direction:column; gap:0; margin-top:2px;}
@@ -489,7 +489,7 @@
   .epc-noPhoto{background:linear-gradient(150deg, var(--epc-c1, var(--green-deep)), var(--epc-c2, var(--green)));}
   .epc-scrim{position:absolute; inset:0; background:linear-gradient(0deg, rgba(20,24,18,0.82) 0%, rgba(20,24,18,0.18) 62%, rgba(20,24,18,0) 100%);}
   .epc-content{position:absolute; left:0; right:0; bottom:0; padding:13px 15px; color:#fff;}
-  .epc-name{font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:700; line-height:1.15;}
+  .epc-name{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:18px; font-weight:700; line-height:1.15;}
   .event-photo-card.epc-compact .epc-name{font-size:15.5px;}
   .epc-meta{font-size:10.5px; color:#EFE9DA; opacity:0.92; margin-top:3px;}
   .epc-progress-track{height:3px; border-radius:2px; background:rgba(255,255,255,0.3); margin-top:9px; overflow:hidden;}
@@ -505,6 +505,23 @@
   .bp-moodboard-empty{border:1.5px dashed var(--line); border-radius:var(--radius-sm); padding:22px; text-align:center; color:var(--charcoal-faint); font-size:13px; margin-bottom:22px;}
   .bp-chapter-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--green-deep); margin:28px 0 10px; display:flex; align-items:center; gap:10px;}
   .bp-section-label + .bp-chapter-label{margin-top:0;}
+  /* v1.45.0: Milestones — a real vertical path, not a plain list. One continuous line behind
+     every dot; passed milestones check off and mute, the next one up gets called out. */
+  .ms-timeline{position:relative; padding-left:2px;}
+  .ms-timeline::before{content:''; position:absolute; left:17px; top:6px; bottom:6px; width:2px; background:var(--line);}
+  .ms-row{position:relative; display:flex; gap:16px; padding:12px 4px; cursor:pointer; border-radius:var(--radius-sm); transition:background 0.15s;}
+  .ms-row:hover{background:var(--ivory-deep);}
+  .ms-row:hover .ms-title{color:var(--green);}
+  .ms-dot{position:relative; z-index:1; flex-shrink:0; width:34px; height:34px; border-radius:50%; background:var(--paper); border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--charcoal-faint); margin-top:2px;}
+  .ms-row.ms-past .ms-dot{background:var(--green-tint); border-color:var(--green-mid); color:var(--green-deep);}
+  .ms-row.ms-next .ms-dot{background:var(--champagne-dark); border-color:var(--champagne-dark); color:#fff; width:38px; height:38px; margin-top:0; box-shadow:0 0 0 5px var(--champagne-light); font-size:15px;}
+  .ms-content{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; padding-top:4px;}
+  .ms-top-row{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .ms-title{font-weight:700; font-size:14.5px; color:var(--charcoal);}
+  .ms-row.ms-past .ms-title{color:var(--charcoal-faint); text-decoration:line-through; text-decoration-color:var(--line);}
+  .ms-when{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); white-space:nowrap;}
+  .ms-row.ms-next .ms-when{color:var(--champagne-dark);}
+  .ms-date{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:16px; color:var(--charcoal-soft);}
   .bp-chapter-label::after{content:''; flex:1; height:1px; background:var(--line-soft);}
   .trad-chip-cloud .chip{display:inline-flex; align-items:center; gap:6px;}
 
@@ -523,7 +540,7 @@
   .cpc-photo{flex:0 0 200px; height:180px; border-radius:var(--radius-sm); background-size:cover; background-position:center; box-shadow:var(--shadow);}
   .cpc-body{flex:1 1 260px; min-width:220px;}
   .cpc-eyebrow{font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; color:var(--terracotta);}
-  .cpc-title{font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:var(--green-deep); margin-top:4px;}
+  .cpc-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:26px; font-weight:700; color:var(--green-deep); margin-top:4px;}
   .cpc-range{font-size:12.5px; color:var(--charcoal-faint); margin-top:2px;}
   .cpc-blurb{font-size:13px; color:var(--charcoal-soft); margin-top:10px; line-height:1.5;}
   .cpc-outcomes{flex:1 1 240px; min-width:220px; border-left:1px solid var(--line-soft); padding-left:22px;}
@@ -568,7 +585,7 @@
   .elc-photo-btn:hover{background:rgba(20,24,18,0.75);}
   .elc-photo-input{position:absolute; inset:0; opacity:0; cursor:pointer; z-index:3;}
   .elc-body{flex:1; min-width:0; padding:18px 22px; display:flex; flex-direction:column; justify-content:center; gap:7px;}
-  .elc-name{font-family:'Cormorant Garamond',serif; font-size:21px; font-weight:700; color:var(--charcoal);}
+  .elc-name{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:21px; font-weight:700; color:var(--charcoal);}
   .elc-meta{font-size:12px; color:var(--charcoal-faint);}
   .elc-progress-track{height:5px; border-radius:4px; background:var(--line-soft); overflow:hidden; margin-top:2px; max-width:320px;}
   .elc-progress-fill{height:100%; background:var(--green); border-radius:4px;}
@@ -579,29 +596,28 @@
   @media (max-width:640px){ .event-list-card{flex-direction:column;} .elc-photo{flex-basis:160px; width:100%;} .elc-arrow-wrap{display:none;} }
 
   /* ---- My Wedding Blueprint redesign (Sep 25 2026): a visual vision hero + guided details ---- */
-  .bp-hero{border-radius:var(--radius); box-shadow:var(--shadow-lg); margin-bottom:18px; padding:36px 38px; display:flex; gap:32px; align-items:center; justify-content:space-between; flex-wrap:wrap; position:relative;}
+  /* v1.45.0: trimmed down across the board — this hero was carrying a lot of vertical weight for
+     a page people open constantly; the "+ Add Inspiration Photos" box is gone too (that lives on
+     each event's Design tab now), so the empty state is just the copy, not a dashed placeholder. */
+  .bp-hero{border-radius:var(--radius); box-shadow:var(--shadow-lg); margin-bottom:16px; padding:24px 28px; display:flex; gap:24px; align-items:center; justify-content:space-between; flex-wrap:wrap; position:relative;}
   .bp-hero-copy{flex:1 1 320px; min-width:260px;}
-  .bp-hero-eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:0.22em; font-weight:700; opacity:0.75;}
-  .bp-hero-names{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600; font-size:clamp(28px,3.4vw,42px); line-height:1.12; margin-top:8px;}
-  .bp-hero-meta{font-size:13.5px; margin-top:10px; opacity:0.92; display:flex; flex-wrap:wrap;}
+  .bp-hero-eyebrow{font-size:10.5px; text-transform:uppercase; letter-spacing:0.2em; font-weight:700; opacity:0.75;}
+  .bp-hero-names{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-style:italic; font-weight:600; font-size:clamp(22px,2.4vw,30px); line-height:1.12; margin-top:6px;}
+  .bp-hero-meta{font-size:12.5px; margin-top:8px; opacity:0.92; display:flex; flex-wrap:wrap;}
   .bp-hero-meta span{white-space:nowrap;}
   .bp-hero-meta span:not(:last-child)::after{content:'·'; margin:0 10px; opacity:0.6;}
-  .bp-hero-quote{font-size:14.5px; font-style:italic; line-height:1.6; margin-top:18px; max-width:440px;}
-  .bp-hero-tags{display:flex; gap:6px; flex-wrap:wrap; margin-top:16px;}
-  .bp-hero-tag{font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700; padding:5px 11px; border-radius:999px; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.32);}
-  .bp-hero-palette{display:flex; gap:7px; margin-top:18px;}
-  .bp-hero-swatch{width:24px; height:24px; border-radius:50%; box-shadow:0 0 0 2px rgba(255,255,255,0.55);}
-  .bp-hero-collage{flex-shrink:0; display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:98px; gap:10px; width:280px;}
-  .bp-hero-collage img{width:100%; height:100%; object-fit:cover; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.28); display:block;}
+  .bp-hero-quote{font-size:13px; font-style:italic; line-height:1.5; margin-top:12px; max-width:440px;}
+  .bp-hero-tags{display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;}
+  .bp-hero-tag{font-size:10px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.32);}
+  .bp-hero-palette{display:flex; gap:7px; margin-top:12px;}
+  .bp-hero-swatch{width:20px; height:20px; border-radius:50%; box-shadow:0 0 0 2px rgba(255,255,255,0.55);}
+  .bp-hero-collage{flex-shrink:0; display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:78px; gap:8px; width:230px;}
+  .bp-hero-collage img{width:100%; height:100%; object-fit:cover; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,0.28); display:block;}
   .bp-hero-collage .bph-img-1{grid-row:span 2;}
-  .bp-hero-collage-1{grid-template-columns:1fr; width:200px;}
-  .bp-hero-collage-1 img{height:236px;}
-  .bp-hero-collage-2{grid-template-columns:1fr; width:200px;}
-  .bp-hero-empty{flex:0 0 260px; border:1.5px dashed rgba(255,255,255,0.4); border-radius:14px; padding:22px; text-align:center;}
-  .bp-hero-empty p{font-size:12.5px; line-height:1.6; opacity:0.92; margin:0 0 14px;}
-  .bp-hero-empty .btn{background:rgba(255,255,255,0.16); border-color:rgba(255,255,255,0.45); color:inherit;}
-  .bp-hero-empty .btn:hover{background:rgba(255,255,255,0.26);}
-  @media (max-width:760px){ .bp-hero{padding:26px 22px;} .bp-hero-collage, .bp-hero-collage-1, .bp-hero-collage-2, .bp-hero-empty{width:100%; flex-basis:100%;} }
+  .bp-hero-collage-1{grid-template-columns:1fr; width:170px;}
+  .bp-hero-collage-1 img{height:190px;}
+  .bp-hero-collage-2{grid-template-columns:1fr; width:170px;}
+  @media (max-width:760px){ .bp-hero{padding:20px 20px;} .bp-hero-collage, .bp-hero-collage-1, .bp-hero-collage-2{width:100%; flex-basis:100%;} }
   .bp-progress-card{background:var(--ivory-deep); border-radius:var(--radius-sm); padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
   .bp-progress-track{flex:1; min-width:140px; height:6px; border-radius:99px; background:var(--line-soft); overflow:hidden;}
   .bp-progress-fill{height:100%; border-radius:99px; background:var(--green); transition:width .3s ease;}
@@ -629,11 +645,11 @@
   .quick-stats-bar{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
   .qs-tile{flex:1 1 150px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; display:flex; flex-direction:column; gap:3px;}
   .qs-label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint);}
-  .qs-value{font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:600; color:var(--charcoal); line-height:1.1;}
+  .qs-value{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:24px; font-weight:600; color:var(--charcoal); line-height:1.1;}
   .qs-sub{font-size:11px; color:var(--charcoal-faint);}
   @media (max-width:640px){ .qs-tile{flex:1 1 42%;} }
   .card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px;}
-  .card-head h4{font-size:17px; font-family:'Inter'; font-weight:700;}
+  .card-head h4{font-size:17px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-weight:700;}
   .card-head .ch-link{font-size:12px; font-weight:700; color:var(--green); border-bottom:1px solid var(--champagne);}
 
   .action-item{display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-top:1px solid var(--line-soft);}
@@ -686,7 +702,7 @@
   .progress-card{display:flex; align-items:center; gap:24px;}
   .progress-ring{position:relative; width:88px; height:88px; flex-shrink:0;}
   .progress-ring svg{transform:rotate(-90deg);}
-  .progress-ring .pr-label{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--green); font-weight:700;}
+  .progress-ring .pr-label{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:22px; color:var(--green); font-weight:700;}
 
   /* module placeholder */
   .module-placeholder{max-width:640px; margin:60px auto; text-align:center;}
@@ -713,7 +729,7 @@
   .party-summary-strip{display:flex; gap:28px; flex-wrap:wrap; margin-bottom:24px; padding:18px 24px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);}
   .budget-hero-card .budget-stat-strip{margin:0 0 20px; padding:0 0 20px; background:transparent; border:none; border-radius:0; border-bottom:1px solid var(--line-soft);}
   .ps-stat{}
-  .ps-stat .ps-num{font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--green);}
+  .ps-stat .ps-num{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:26px; color:var(--green);}
   .ps-stat .ps-label{font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-top:2px;}
   .party-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
   @media (max-width:1000px){ .party-grid{grid-template-columns:1fr 1fr;} }
@@ -721,7 +737,7 @@
   .pm-card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:22px; cursor:pointer; transition:box-shadow .15s ease, transform .15s ease;}
   .pm-card:hover{box-shadow:var(--shadow-lg); transform:translateY(-2px);}
   .pm-top{display:flex; align-items:center; gap:12px;}
-  .pm-avatar{width:46px; height:46px; border-radius:50%; background:linear-gradient(150deg,var(--champagne-light),var(--rose)); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--green-deep); font-size:15px; flex-shrink:0;}
+  .pm-avatar{width:46px; height:46px; border-radius:50%; background:linear-gradient(150deg,var(--champagne-light),var(--rose)); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:700; color:var(--green-deep); font-size:15px; flex-shrink:0;}
   .pm-name{font-weight:700; font-size:15px;}
   .pm-role{font-size:12px; color:var(--champagne-dark); font-weight:700;}
   .pm-events{display:flex; flex-wrap:wrap; gap:5px; margin-top:14px;}
@@ -755,24 +771,24 @@
   .name-pair{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
   .name-pair input{min-width:0;}
   .field-cell label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint);}
-  .field-cell input, .field-cell select{padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px; color:var(--charcoal);}
-  .notes-field{width:100%; min-height:120px; resize:vertical; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-family:'Inter'; font-size:13px; background:var(--ivory); color:var(--charcoal);}
+  .field-cell input, .field-cell select{padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:var(--charcoal);}
+  .notes-field{width:100%; min-height:120px; resize:vertical; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; background:var(--ivory); color:var(--charcoal);}
   .notes-field-sm{min-height:64px;}
   .notes-field-lg{min-height:210px;}
-  .select-field{width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px; color:var(--charcoal);}
-  .select-field-sm{width:100%; padding:6px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12px; color:var(--charcoal);}
+  .select-field{width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:var(--charcoal);}
+  .select-field-sm{width:100%; padding:6px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12px; color:var(--charcoal);}
   .danger-link{font-size:12.5px; font-weight:700; color:var(--terracotta);}
 
   /* ---- budget: totals, pace, itemized categories ---- */
-  .budget-total-input{width:140px; padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--paper); font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--green); text-align:left;}
-  .budget-input{width:100%; padding:7px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px; color:var(--charcoal);}
+  .budget-total-input{width:140px; padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--paper); font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:22px; color:var(--green); text-align:left;}
+  .budget-input{width:100%; padding:7px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; color:var(--charcoal);}
   .bp-split{display:grid; grid-template-columns:1fr 1fr; gap:30px;}
   @media (max-width:900px){ .bp-split{grid-template-columns:1fr;} }
   .bp-col-head{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-bottom:12px;}
   .bp-divider{border-left:1px solid var(--line-soft); padding-left:30px;}
   @media (max-width:900px){ .bp-divider{border-left:none; border-top:1px solid var(--line-soft); padding-left:0; padding-top:20px;} }
   .pace-row{display:flex; gap:36px; margin-bottom:14px;}
-  .pace-stat .pace-num{font-family:'Cormorant Garamond',serif; font-size:34px; color:var(--green);}
+  .pace-stat .pace-num{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:34px; color:var(--green);}
   .pace-stat .pace-label{font-size:11.5px; color:var(--charcoal-faint); margin-top:2px;}
   .pace-note{font-size:13px; color:var(--charcoal-soft); line-height:1.6; padding-top:14px; border-top:1px solid var(--line-soft);}
   .opp-row{display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--line-soft); font-size:13px; line-height:1.5; color:var(--charcoal-soft);}
@@ -810,8 +826,8 @@
   .budget-items{margin-top:12px; padding-left:20px;}
   .budget-items-head{display:grid; grid-template-columns:1.6fr 0.8fr 0.8fr 1.2fr 0.6fr; gap:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--charcoal-faint); padding-bottom:6px;}
   .budget-item-row{display:grid; grid-template-columns:1.6fr 0.8fr 0.8fr 1.2fr 0.6fr; gap:10px; align-items:center; padding:5px 0;}
-  .budget-item-name{padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--paper); font-family:'Inter'; font-size:12.5px; color:var(--charcoal);}
-  .readonly-cell{padding:5px 10px; font-family:'Inter'; font-size:12.5px; font-weight:600; color:var(--charcoal); display:flex; align-items:center;}
+  .budget-item-name{padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--paper); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; color:var(--charcoal);}
+  .readonly-cell{padding:5px 10px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; font-weight:600; color:var(--charcoal); display:flex; align-items:center;}
   .bi-meta{display:flex; flex-direction:column; gap:1px; line-height:1.4;}
   .bi-due{font-size:10.5px; font-weight:700; color:var(--amber);}
   @media (max-width:900px){ .budget-items-head{display:none;} .budget-item-row{grid-template-columns:1fr 1fr; row-gap:6px; padding:11px 0; border-top:1px dashed var(--line-soft);} }
@@ -837,7 +853,7 @@
   .gl-sortable:hover{color:var(--green-deep);}
   .tier-explain{font-size:11.5px; color:var(--charcoal-faint); margin-top:6px; line-height:1.5;}
   .tier-explain strong{color:var(--charcoal-soft);}
-  .attach-input{flex:0 0 190px; padding:6px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12px; color:var(--charcoal);}
+  .attach-input{flex:0 0 190px; padding:6px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12px; color:var(--charcoal);}
   @media (max-width:900px){ .budget-item-row2 > input.select-field-sm, .budget-item-row2 > select.select-field-sm, .attach-select, .attach-input{flex:1 1 100%;} }
 
   /* ---- calendar at a glance ---- */
@@ -848,7 +864,10 @@
   .cal-legend span{display:inline-flex; align-items:center; gap:5px; white-space:nowrap;}
   @media (max-width:640px){ .cal-legend{justify-content:flex-start; max-width:none;} }
   .cal-dot{width:7px; height:7px; border-radius:50%; display:inline-block; flex-shrink:0;}
-  .cal-dot-event{background:var(--green);}
+  /* Wedding events get a diamond, not a circle, and sit a touch larger — the calendar's "it's the
+     wedding itself" marker should read as different in silhouette, not just a different color,
+     so it still stands out for anyone who can't distinguish the hues. */
+  .cal-dot-event{width:8px; height:8px; border-radius:2px; background:var(--green); transform:rotate(45deg); box-shadow:0 0 0 1.5px var(--green-tint);}
   .cal-dot-deadline{background:var(--amber);}
   .cal-dot-payment{background:var(--terracotta);}
   .cal-dot-unavailable{background:var(--charcoal-faint);}
@@ -927,18 +946,18 @@
   /* ---- wedding party survey ---- */
   .survey-section{margin-top:22px; padding-top:18px; border-top:1px solid var(--line);}
   .survey-section:first-child{margin-top:0; padding-top:0; border-top:none;}
-  .survey-section-title{font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:700; color:var(--charcoal); margin-bottom:3px;}
+  .survey-section-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:17px; font-weight:700; color:var(--charcoal); margin-bottom:3px;}
   .survey-section-sub{font-size:12px; color:var(--charcoal-faint); margin-bottom:14px; line-height:1.5;}
   .survey-field{margin-bottom:14px;}
   .survey-field label{display:block; font-size:12px; font-weight:700; color:var(--charcoal-soft); margin-bottom:6px;}
-  .survey-field input[type=text], .survey-field select, .survey-field textarea{width:100%; padding:9px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px; color:var(--charcoal);}
+  .survey-field input[type=text], .survey-field select, .survey-field textarea{width:100%; padding:9px 12px; border-radius:10px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:var(--charcoal);}
   .survey-field textarea{min-height:60px; resize:vertical;}
   .survey-radio-row{display:flex; gap:8px; flex-wrap:wrap;}
   .survey-radio-row label{display:inline-flex; align-items:center; gap:6px; padding:7px 13px; border-radius:999px; border:1px solid var(--line); background:var(--paper); font-size:12.5px; font-weight:600; cursor:pointer; margin:0;}
   .survey-radio-row input{width:14px; height:14px; margin:0;}
   .survey-numbered-list{display:flex; flex-direction:column; gap:8px;}
   .survey-numbered-list .snl-row{display:flex; align-items:center; gap:8px;}
-  .survey-numbered-list .snl-num{font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--charcoal-faint); width:16px; flex-shrink:0;}
+  .survey-numbered-list .snl-num{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:700; color:var(--charcoal-faint); width:16px; flex-shrink:0;}
   .survey-response-line{display:grid; grid-template-columns:180px 1fr; gap:10px; padding:8px 0; border-top:1px dashed var(--line); font-size:12.5px;}
   .survey-response-line:first-child{border-top:none;}
   .survey-response-label{font-weight:700; color:var(--charcoal-faint);}
@@ -950,12 +969,12 @@
   .portal-frame{width:400px; max-width:100%; background:var(--ivory); border-radius:26px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.35); margin-top:20px;}
   .portal-banner{background:var(--green-deep); color:#F4EFE3; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:10px;}
   .portal-banner .pb-label{font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:var(--champagne-light); font-weight:700;}
-  .portal-banner .pb-name{font-family:'Cormorant Garamond',serif; font-size:18px; margin-top:2px;}
+  .portal-banner .pb-name{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:18px; margin-top:2px;}
   .portal-banner button{background:rgba(244,239,227,0.14); border:1px solid rgba(244,239,227,0.3); color:#F4EFE3; font-size:11px; font-weight:700; padding:8px 13px; border-radius:999px;}
   .portal-body{padding:22px 20px 30px;}
   .portal-body h4{font-size:15px; margin-top:22px; margin-bottom:10px;}
   .portal-body h4:first-child{margin-top:0;}
-  .portal-greeting{font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--charcoal);}
+  .portal-greeting{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:22px; color:var(--charcoal);}
   .portal-sub{font-size:12.5px; color:var(--charcoal-faint); margin-top:4px;}
   .portal-card{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:10px;}
   .portal-card .pc-title{font-size:13px; font-weight:700;}
@@ -995,7 +1014,7 @@
   .wp-reminder .wpr-sub{font-size:12px; color:var(--champagne-light); margin-top:2px;}
 
   /* ---- wedding party: broadcast messaging ---- */
-  .broadcast-compose textarea{width:100%; min-height:76px; resize:vertical; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-family:'Inter'; font-size:13px; background:var(--ivory); color:var(--charcoal);}
+  .broadcast-compose textarea{width:100%; min-height:76px; resize:vertical; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; background:var(--ivory); color:var(--charcoal);}
   .broadcast-controls{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px;}
   .broadcast-controls select{padding:9px 12px; border-radius:999px; border:1px solid var(--line); background:var(--paper); font-size:12px; font-weight:700; color:var(--charcoal);}
   .broadcast-history{margin-top:18px;}
@@ -1026,7 +1045,10 @@
   .bach-itinerary{margin-top:16px; border-top:1px solid var(--line); padding-top:6px;}
 
   /* ---- timeline item drill-down ---- */
-  .item-overlay{position:fixed; inset:0; background:rgba(35,46,39,0.55); z-index:410; display:none; align-items:center; justify-content:center; padding:20px;}
+  /* v1.45.0: blurred + darkened so background text reads as a clean dim wash instead of
+     legible-but-cut-off word fragments peeking out around every modal (Add Task, Add Vendor,
+     Add Event, Add Wedding Party Member, etc. all share this one overlay). */
+  .item-overlay{position:fixed; inset:0; background:rgba(20,24,18,0.72); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); z-index:410; display:none; align-items:center; justify-content:center; padding:20px;}
   .item-overlay.open{display:flex;}
   /* ---- v1.37.0: a right-edge slide-out drawer variant, for panels that feel like a companion
      to the page behind them (e.g. Pending RSVPs) rather than a centered interruption. ---- */
@@ -1039,7 +1061,7 @@
   .sd-close{position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.85); border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; color:var(--charcoal); font-size:14px; z-index:2;}
   .sd-title-row{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
   .sd-badge{flex-shrink:0; text-align:center; background:var(--champagne-tint,var(--amber-tint)); border-radius:50%; width:56px; height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center;}
-  .sd-badge-num{font-family:'Cormorant Garamond',serif; font-weight:700; font-size:19px; line-height:1;}
+  .sd-badge-num{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:700; font-size:19px; line-height:1;}
   .sd-badge-lbl{font-size:8px; text-transform:uppercase; letter-spacing:0.02em; color:var(--charcoal-faint); line-height:1.2;}
   .sd-body{padding:4px 22px 24px;}
   .sd-guest-row{display:flex; align-items:center; gap:10px; padding:9px 0; border-top:1px solid var(--line-soft);}
@@ -1073,11 +1095,11 @@
   .logo-version-bar{margin-top:20px; padding-top:16px; border-top:1px solid var(--line-soft); display:flex; flex-direction:column; gap:10px;}
   .logo-version-list{display:flex; gap:8px; flex-wrap:wrap;}
   .logo-version-actions{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
-  .logo-version-actions input[type=text]{padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px;}
-  .budget-detail-title{width:100%; border:none; border-bottom:2px solid var(--line); background:none; font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--charcoal); padding:4px 0 8px; margin-top:6px;}
+  .logo-version-actions input[type=text]{padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px;}
+  .budget-detail-title{width:100%; border:none; border-bottom:2px solid var(--line); background:none; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:26px; color:var(--charcoal); padding:4px 0 8px; margin-top:6px;}
   .budget-detail-title:focus{outline:none; border-bottom-color:var(--green);}
   .item-modal-lg .field-cell label{white-space:nowrap;}
-  .item-modal-lg .field-cell input, .item-modal-lg .field-cell select{width:100%; padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px; color:var(--charcoal);}
+  .item-modal-lg .field-cell input, .item-modal-lg .field-cell select{width:100%; padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:var(--charcoal);}
   .detail-section{margin-top:24px; padding-top:20px; border-top:1px solid var(--line);}
   .detail-section-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap;}
   .detail-section-head h4{margin:0;}
@@ -1096,13 +1118,13 @@
   .order-row:first-child{border-top:none;}
   .order-num{width:22px; height:22px; border-radius:50%; background:var(--ivory-deep); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--charcoal-soft); flex-shrink:0; margin-top:5px;}
   .order-body{flex:1; display:flex; flex-direction:column; gap:6px; min-width:0;}
-  .order-body input{padding:7px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px; color:var(--charcoal);}
-  .order-people-select{padding:6px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12px; color:var(--charcoal);}
+  .order-body input{padding:7px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:var(--charcoal);}
+  .order-people-select{padding:6px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12px; color:var(--charcoal);}
   .order-controls{display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex-shrink:0;}
   .ord-btn{width:24px; height:24px; border-radius:6px; border:1px solid var(--line); background:var(--paper); cursor:pointer; font-size:12px; color:var(--charcoal-soft);}
   .ord-btn:disabled{opacity:0.35; cursor:default;}
   .altar-visual{background:var(--green-tint); border:1px solid var(--line); border-radius:var(--radius); padding:22px 16px 14px;}
-  .altar-stage{text-align:center; font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:700; color:var(--green-deep); padding-bottom:16px; margin-bottom:16px; background-image:repeating-linear-gradient(90deg, var(--champagne-dark) 0 8px, transparent 8px 16px); background-position:bottom; background-repeat:repeat-x; background-size:100% 2px;}
+  .altar-stage{text-align:center; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:17px; font-weight:700; color:var(--green-deep); padding-bottom:16px; margin-bottom:16px; background-image:repeating-linear-gradient(90deg, var(--champagne-dark) 0 8px, transparent 8px 16px); background-position:bottom; background-repeat:repeat-x; background-size:100% 2px;}
   .altar-row{display:flex; align-items:flex-start; justify-content:center; gap:22px; flex-wrap:wrap; min-height:90px;}
   .altar-side{display:flex; align-items:flex-start; gap:14px; flex:1; flex-wrap:wrap;}
   .altar-side-groom{justify-content:flex-end; flex-direction:row-reverse;}
@@ -1123,7 +1145,7 @@
   .floor-table-rectangle{border-radius:8px;}
   .floor-table-row{border-radius:6px;}
   .floor-table-label{text-align:center; font-size:10.5px; font-weight:700; color:var(--green-deep); line-height:1.3; pointer-events:none; display:flex; flex-direction:column; align-items:center; justify-content:center; max-width:92%; max-height:88%;}
-  .floor-table-label .ftl-num{font-family:'Cormorant Garamond',serif; font-size:16px; display:block;}
+  .floor-table-label .ftl-num{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:16px; display:block;}
   .floor-table-label .ftl-name{max-width:100%; overflow:hidden; white-space:normal; word-break:break-word; padding:0 2px; font-size:12px; line-height:1.15; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;}
   .floor-table-label .ftl-name:hover{text-decoration:underline; text-decoration-style:dotted;}
   .floor-table-label .ftl-sub{font-size:9px; font-weight:600; color:var(--charcoal-soft); flex-shrink:0;}
@@ -1132,18 +1154,18 @@
   .seat-marker-empty{background:var(--paper); border:1.3px dashed var(--charcoal-faint); color:var(--charcoal-faint);}
   .seat-marker-filled{background:var(--ok); border:1.3px solid var(--ok); color:#fff; cursor:grab;}
   .seat-marker-vendor{background:var(--terracotta); border:1.3px solid var(--terracotta); cursor:default;}
-  .seat-marker .seat-num{font-family:'Cormorant Garamond',serif; font-size:9px; opacity:0.85; flex-shrink:0;}
+  .seat-marker .seat-num{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:9px; opacity:0.85; flex-shrink:0;}
   .seat-marker .seat-name{overflow:hidden; text-overflow:ellipsis;}
   .decor-item{position:absolute; transform:translate(-50%,-50%); background:repeating-linear-gradient(135deg, var(--green-tint), var(--green-tint) 6px, var(--ivory-deep) 6px, var(--ivory-deep) 12px); border:1.5px dashed var(--green-mid); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:grab; min-width:44px; min-height:26px;}
   .decor-item:active{cursor:grabbing;}
   .decor-label{font-size:9.5px; font-weight:700; color:var(--green-deep); text-align:center; padding:2px 4px; pointer-events:none;}
   .decor-remove{position:absolute; top:-8px; right:-8px; width:16px; height:16px; border-radius:50%; background:var(--terracotta); color:#fff; font-size:11px; line-height:16px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.2);}
   .decor-palette{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);}
-  .decor-palette input{padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px;}
+  .decor-palette input{padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px;}
   .room-setup-row{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:6px;}
   .room-setup-row .field-mini{display:flex; flex-direction:column; gap:4px;}
   .room-setup-row .field-mini label{font-size:10px; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); font-weight:700;}
-  .room-setup-row input, .room-setup-row select{padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px; color:var(--charcoal); width:90px;}
+  .room-setup-row input, .room-setup-row select{padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; color:var(--charcoal); width:90px;}
   .room-setup-row select{width:auto; min-width:128px;}
   /* Seating chart overhaul (chunk 5): floor-plan backdrop image, resize handles for décor
      and notes, and freeform sticky notes on the canvas. */
@@ -1154,14 +1176,14 @@
   .note-drag-handle{font-size:9px; font-weight:700; color:var(--charcoal-soft); cursor:grab; padding:1px 3px 0; user-select:none; letter-spacing:0.02em;}
   .note-drag-handle:active{cursor:grabbing;}
   .note-drag-handle-locked{cursor:default;}
-  .note-text-field{flex:1; resize:none; border:none; background:transparent; font-family:'Inter',sans-serif; font-size:10.5px; color:var(--charcoal); padding:2px 3px; outline:none; line-height:1.35;}
+  .note-text-field{flex:1; resize:none; border:none; background:transparent; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:10.5px; color:var(--charcoal); padding:2px 3px; outline:none; line-height:1.35;}
   .note-text-readonly{flex:1; font-size:10.5px; color:var(--charcoal); padding:2px 3px; overflow:auto; white-space:pre-wrap; line-height:1.35;}
   .note-remove{position:absolute; top:-8px; right:-8px; width:16px; height:16px; border-radius:50%; background:var(--terracotta); color:#fff; font-size:11px; line-height:16px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.2); z-index:2;}
   .seating-lock-banner p{margin-top:0;}
   /* Seating chart: drag-or-click guest pane beside the floor plan (new request, Sep 25 2026) */
   .seating-layout{display:grid; grid-template-columns:1fr 300px; gap:16px; align-items:start;}
   .seating-guest-pane{position:sticky; top:86px; max-height:calc(100vh - 110px); overflow-y:auto;}
-  .sgp-search{width:100%; box-sizing:border-box; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px; margin-bottom:10px;}
+  .sgp-search{width:100%; box-sizing:border-box; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; margin-bottom:10px;}
   .sgp-section-label{font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); font-weight:700; margin:0;}
   .sgp-section-head{display:flex; align-items:center; gap:5px; cursor:pointer; margin:12px 0 6px; user-select:none;}
   .sgp-section-head .bc-chevron{width:12px; height:12px;}
@@ -1178,7 +1200,7 @@
   .sgp-meta{font-size:10.5px; color:var(--charcoal-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .sgp-unseat{flex-shrink:0; color:var(--charcoal-faint); font-size:14px; padding:0 2px;}
   .sgp-add-row{display:flex; flex-direction:column; gap:6px; margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);}
-  .sgp-add-row input, .sgp-add-row select{padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px;}
+  .sgp-add-row input, .sgp-add-row select{padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px;}
   .seat-picker-panel{background:var(--paper); border:1.5px solid var(--champagne-dark); border-radius:14px; padding:12px 14px; margin-bottom:12px; box-shadow:0 2px 8px rgba(43,42,38,0.1);}
   .seat-picker-head{display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12.5px; font-weight:700; color:var(--green-deep); margin-bottom:8px;}
   .seat-picker-close{color:var(--charcoal-faint); font-size:16px; line-height:1;}
@@ -1203,7 +1225,7 @@
   }
   .assistant-panel.open{display:flex;}
   .ap-head{background:var(--green-deep); color:#F4EFE3; padding:18px 20px; display:flex; align-items:center; gap:10px;}
-  .ap-head .ap-title{font-family:'Cormorant Garamond',serif; font-size:18px;}
+  .ap-head .ap-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:18px;}
   .ap-head .ap-sub{font-size:11px; color:#B9B2A0;}
   .ap-body{padding:18px 20px; max-height:360px; overflow-y:auto;}
   .ap-msg{background:var(--ivory-deep); border-radius:14px; padding:13px 15px; font-size:13px; line-height:1.55; margin-bottom:12px;}
@@ -1220,7 +1242,7 @@
   }
   .feedback-panel.open{display:flex;}
   .fp-head{background:var(--green-deep); color:#F4EFE3; padding:18px 20px; display:flex; align-items:center; gap:10px;}
-  .fp-head .fp-title{font-family:'Cormorant Garamond',serif; font-size:18px;}
+  .fp-head .fp-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:18px;}
   .fp-head .fp-sub{font-size:11px; color:#B9B2A0;}
   .fp-close{margin-left:auto; background:none; border:none; color:#F4EFE3; opacity:0.7; cursor:pointer; font-size:15px; line-height:1; padding:6px; flex-shrink:0;}
   .fp-close:hover{opacity:1;}
@@ -1290,11 +1312,11 @@
   .pb-export-doc{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); padding:26px 30px; margin-top:6px;}
   .pb-export-print.pb-export-doc{border:none; border-radius:0; padding:0;}
   .pb-export-header{text-align:center; padding-bottom:16px; border-bottom:2px solid var(--champagne);}
-  .pb-export-brand{font-family:'Cormorant Garamond',serif; font-size:14px; letter-spacing:0.22em; text-transform:uppercase; color:var(--green);}
-  .pb-export-title{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600; font-size:30px; margin-top:6px; color:var(--charcoal);}
+  .pb-export-brand{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:14px; letter-spacing:0.22em; text-transform:uppercase; color:var(--green);}
+  .pb-export-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-style:italic; font-weight:600; font-size:30px; margin-top:6px; color:var(--charcoal);}
   .pb-export-sub{font-size:12.5px; letter-spacing:0.03em; color:var(--charcoal-soft); margin-top:6px;}
   .pb-export-role-chip{display:inline-block; margin-top:12px; padding:5px 16px; border-radius:999px; background:var(--green); color:#fff; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;}
-  .pb-export-section-title{font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:600; color:var(--green-deep); margin:26px 0 12px; padding-bottom:6px; border-bottom:1px solid var(--line);}
+  .pb-export-section-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:19px; font-weight:600; color:var(--green-deep); margin:26px 0 12px; padding-bottom:6px; border-bottom:1px solid var(--line);}
   .pb-export-day{margin-top:16px; break-inside:avoid; page-break-inside:avoid;}
   .pb-export-day-head{background:var(--green-tint); border-left:3px solid var(--green); padding:6px 12px; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--green-deep); margin-bottom:6px; border-radius:0 4px 4px 0;}
   .pb-export-item{display:flex; gap:14px; padding:6px 4px; border-bottom:1px solid var(--line-soft); font-size:12.5px;}
@@ -1343,7 +1365,7 @@
   .palette-swatch-picker{position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; border:none; padding:0;}
   .palette-remove{position:absolute; top:8px; right:8px; width:20px; height:20px; border-radius:50%; border:none; background:rgba(0,0,0,0.28); color:#fff; font-size:11px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .12s ease;}
   .palette-swatch:hover .palette-remove{opacity:1;}
-  .palette-hex{font-family:'Inter'; font-size:12px; font-weight:600; letter-spacing:0.02em; pointer-events:none;}
+  .palette-hex{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.02em; pointer-events:none;}
 
   /* ---- mood board: selectable palette + juxtaposed image collage ---- */
   .mb-palette-swatch{position:relative; flex:1 1 90px; min-width:90px; height:92px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:10px; cursor:pointer; transition:box-shadow .12s ease;}
@@ -1362,15 +1384,15 @@
   /* ---- rich text notes: bold/italic/highlight + @mention tagging ---- */
   .rte-wrap{border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--ivory);}
   .rte-toolbar{display:flex; align-items:center; gap:4px; padding:6px 8px; background:var(--ivory-deep); border-bottom:1px solid var(--line);}
-  .rte-btn{width:26px; height:26px; border-radius:6px; border:1px solid transparent; background:none; color:var(--charcoal-soft); font-family:'Inter'; font-size:12.5px; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .rte-btn{width:26px; height:26px; border-radius:6px; border:1px solid transparent; background:none; color:var(--charcoal-soft); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; cursor:pointer; display:flex; align-items:center; justify-content:center;}
   .rte-btn:hover{background:var(--paper); border-color:var(--line);}
   .rte-hint{font-size:11px; color:var(--charcoal-faint); margin-left:6px;}
-  .rte-editor{min-height:70px; padding:9px 11px; font-family:'Inter'; font-size:13px; color:var(--charcoal); line-height:1.55; outline:none;}
+  .rte-editor{min-height:70px; padding:9px 11px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:var(--charcoal); line-height:1.55; outline:none;}
   .rte-editor:empty::before{content:attr(data-placeholder); color:var(--charcoal-faint);}
   .note-mention{background:var(--champagne-tint); color:var(--champagne-dark); font-weight:700; padding:1px 5px; border-radius:5px; white-space:nowrap;}
   .mention-panel{position:fixed; z-index:400; display:none; flex-direction:column; background:var(--paper); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow-lg); overflow:hidden;}
   .mention-panel.open{display:flex;}
-  .mention-filter{border:none; border-bottom:1px solid var(--line-soft); padding:9px 12px; font-family:'Inter'; font-size:12.5px; background:var(--paper); color:var(--charcoal); outline:none;}
+  .mention-filter{border:none; border-bottom:1px solid var(--line-soft); padding:9px 12px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; background:var(--paper); color:var(--charcoal); outline:none;}
   .mention-list{max-height:200px; overflow-y:auto;}
   .mention-option{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; cursor:pointer; font-size:12.5px;}
   .mention-option:hover{background:var(--ivory-deep);}
@@ -1393,7 +1415,7 @@
   }
   .quickadd-panel.open{display:flex;}
   .qa-head{background:var(--green-deep); color:#F4EFE3; padding:16px 20px; display:flex; align-items:center; gap:10px;}
-  .qa-head .qa-title{font-family:'Cormorant Garamond',serif; font-size:17px;}
+  .qa-head .qa-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:17px;}
   .qa-close{margin-left:auto; background:none; border:none; color:#F4EFE3; opacity:0.7; cursor:pointer; font-size:15px; line-height:1; padding:6px; flex-shrink:0;}
   .qa-close:hover{opacity:1;}
   .qa-body{padding:10px; max-height:min(70vh,480px); overflow-y:auto;}
@@ -1432,7 +1454,7 @@
   }
   .notif-panel.open{display:flex;}
   .notif-head{background:var(--green-deep); color:#F4EFE3; padding:18px 20px; display:flex; align-items:center; gap:10px;}
-  .notif-head .notif-title{font-family:'Cormorant Garamond',serif; font-size:18px;}
+  .notif-head .notif-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:18px;}
   .notif-head .notif-sub{font-size:11px; color:#B9B2A0;}
   .notif-close{margin-left:auto; background:none; border:none; color:#F4EFE3; opacity:0.7; cursor:pointer; font-size:15px; line-height:1; padding:6px; flex-shrink:0;}
   .notif-close:hover{opacity:1;}
@@ -1803,6 +1825,7 @@
 <div class="item-overlay" id="vendorAddOverlay" onclick="if(event.target===this) closeVendorAddModal();"><!-- injected --></div>
 <div class="item-overlay" id="eventAddOverlay" onclick="if(event.target===this) closeEventAddModal();"><!-- injected --></div>
 <div class="item-overlay" id="addTaskOverlay" onclick="if(event.target===this) closeAddTaskModal();"><!-- injected --></div>
+<div class="item-overlay" id="partyMemberAddOverlay" onclick="if(event.target===this) closePartyMemberAddModal();"><!-- injected --></div>
 <div class="item-overlay" id="budgetCategoryDeleteOverlay" onclick="if(event.target===this) closeBudgetCategoryDelete();"><!-- injected --></div>
 <div class="item-overlay" id="collaboratorPermissionsOverlay" onclick="if(event.target===this) closeCollaboratorPermissions();"><!-- injected --></div>
 <div class="item-overlay" id="addCollaboratorOverlay" onclick="if(event.target===this) closeAddCollaborator();"><!-- injected --></div>
@@ -1957,6 +1980,25 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.45.0', date:'2026-10-24',
+    title:'Wedding Party is now linked to your Guest List, plus a big polish pass on Plan, Blueprint, and Calendar',
+    items:[
+      'Wedding Party and Guest List were two completely separate lists — add someone to your bridal party now and you pick an existing guest to link to (their name stays in sync automatically) or create a brand-new person, which adds them to both places at once. The four parents who were previously duplicated across both lists have been merged into single linked records.',
+      'The Guest List side shows the connection too — a linked guest gets a 💍 badge with their wedding-party role, and an unlinked one gets a quick "+ Add to Wedding Party" action right from their household card.',
+      'Fixed a real discrepancy between the Budget tab and the Events tab: Events was summing a separate, manually-typed budget number per event instead of the real linked budget items, so the two tabs could show different totals for the same event. Both now read from the same live numbers.',
+      'When Unallocated goes negative, it now reads "Over Allocated" (shown as a positive amount) instead of a confusing negative "Unallocated" — on the Budget tab, the Home snapshot, and the budget PDF export.',
+      'A cover photo on an Events-tab event is now fully optional and much quieter — no more empty upload prompt cluttering the card. You can still add one from the event\'s Details tab if you want.',
+      'The My Wedding Blueprint hero is noticeably smaller and no longer invites you to add inspiration photos there — that now lives on each event\'s own tab, where your inspiration boards already are.',
+      'Unified four slightly different font-family declarations scattered across the app (a couple of inconsistent Inter and Cormorant Garamond fallback stacks) down to two canonical ones, so type renders identically everywhere instead of subtly drifting between screens.',
+      'Fixed a visual bug where modal popups (Add Task, Add Wedding Party Member, and about 20 others sharing the same overlay style) showed legible, run-off background text bleeding through the backdrop — the scrim is now darker with a blur, so the page behind a modal reads as dimmed, not broken.',
+      'The Wedding Plan tab now surfaces a few commonly-missed tasks (writing vows, wedding-party thank-you gifts, a day-of emergency kit, and others) with a one-click "+" to add any of them — it only suggests ones you don\'t already have.',
+      'Adding a task now lets you set its dependency right away, instead of having to add the task first and set the dependency in a second step.',
+      'The Plan stats bar now shows your % of tasks complete alongside the existing Total/Open/Completed/Overdue counts.',
+      'The Milestones tab is now a single chronological timeline instead of separate Upcoming/Passed lists — passed milestones show checked off and struck through, and your next one is called out with a highlighted marker and a "days away" countdown.',
+      'On Calendar at a Glance, wedding events now get a diamond marker instead of a plain dot (and the legend now says "Wedding Events") so they stand out from tasks, milestones, and payments at a glance, not just by color.'
+    ]
+  },
   {
     version:'1.44.0', date:'2026-10-23',
     title:'Universal Quick Add, universal search, and a named visual-hierarchy system',
@@ -2615,6 +2657,7 @@ let planCollapsedPhases = {}; // phase key -> collapsed boolean, lazily defaulte
 let calendarAddFormOpen = false; // toggles the "+ Add an Event" inline form on Calendar at a Glance
 let unavailAddFormOpen = false; // toggles the "+ Add Unavailability" inline form on Calendar at a Glance
 let messagesFilter = 'all'; // 'all' | 'threads' | 'vendor' — Messages module view
+let partyAddDraft = null; // v1.45.0: "+ Add Wedding Party Member" modal draft — null when closed. {mode:'existing'|'new', lockGuest:bool, householdId, memberId, firstName, lastName, email}
 
 /* Blank "get to know you" survey every wedding-party member (except Parents) gets when added —
    Section 1 (general) applies to everyone; Section 2 (Bridesmaids) / Section 3 (Groomsmen) show
@@ -2627,6 +2670,81 @@ function defaultSurveyResponses(){
     professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
     suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''
   };
+}
+
+/* ==================================================================
+   WEDDING PARTY <-> GUEST LIST LINKING (v1.45.0)
+   A wedding party member is also a guest — they need an RSVP, a seat, a meal choice, same as
+   anyone else invited. Rather than keep two separate, hand-typed identities for the same person,
+   each Wedding Party record can link to its real household/member entry in Guest List, so the
+   name shown everywhere comes from one place. Guest List doesn't track phone/email per person
+   (only one shared email per household), so those stay honest manual fields on the Wedding Party
+   record itself — nothing pretends to sync a field that doesn't actually exist upstream.
+================================================================== */
+function linkedGuestForPartyMember(m){
+  if(!m || !m.householdId || !m.memberId) return null;
+  const h = (dashboardData.guestHouseholds||[]).find(x=>x.id===m.householdId);
+  if(!h) return null;
+  const mem = (h.members||[]).find(x=>x.id===m.memberId);
+  if(!mem) return null;
+  return {household:h, member:mem};
+}
+function effectivePartyName(m){
+  const linked = linkedGuestForPartyMember(m);
+  if(linked){
+    const full = `${linked.member.firstName||''} ${linked.member.lastName||''}`.trim();
+    if(full) return full;
+  }
+  return m.name;
+}
+// Which Wedding Party member (if any) a given guest is already linked to — used so the Guest
+// List side can show "already in your Wedding Party" instead of letting the same guest be added twice.
+function partyMemberForGuest(householdId, memberId){
+  return (dashboardData.weddingParty||[]).find(m=>m.householdId===householdId && m.memberId===memberId) || null;
+}
+function slugifyPartyMemberId(name){
+  const base = (name||'member').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-+|-+$)/g,'') || 'member';
+  let id = base, n = 2;
+  while((dashboardData.weddingParty||[]).some(m=>m.id===id)){ id = `${base}-${n}`; n++; }
+  return id;
+}
+// Central creation point for a new Wedding Party record — always sets the same full default
+// shape (tasks, attire, hair/makeup, survey) regardless of whether this is called from the
+// Wedding Party hub's own "+ Add Member" flow or from a "+ Add to Wedding Party" shortcut on a
+// guest in Guest List, so neither entry point produces a half-filled-in record.
+function createWeddingPartyMember({householdId, memberId, name, email, phone, role, side, partyGroup, events}){
+  const id = slugifyPartyMemberId(name);
+  const m = {
+    id, name:(name||'').trim(), role:(role||'').trim(), side:side||'', partyGroup:partyGroup||'Other', photo:null, bio:'',
+    events:Array.isArray(events)?events.slice():[],
+    phone:(phone||'').trim(), email:(email||'').trim(),
+    tasks:[], attireStatus:'pending', outfit:'', designer:'', swatch:'#C7A467',
+    hair:'', hairStatus:'pending', makeup:'', makeupStatus:'pending', shoes:'', shoesStatus:'pending',
+    travel:'', hotel:'', notes:'',
+    survey: partyGroup==='Parents' ? null : defaultSurveyResponses(),
+    householdId: householdId||null, memberId: memberId||null
+  };
+  dashboardData.weddingParty.push(m);
+  return m;
+}
+// Creates a brand-new, single-member guest household for someone who isn't in Guest List yet —
+// same shape quickAddHousehold() uses, so they show up fully functional there (RSVP, seating,
+// meal choice all work immediately), just pre-filled instead of blank.
+function createSoloGuestHousehold({firstName, lastName, email, side}){
+  const d = dashboardData;
+  const id = 'hh-'+Date.now().toString(36)+Math.floor(Math.random()*1000).toString(36);
+  const label = `${firstName||''} ${lastName||''}`.trim() || 'New Guest';
+  const matchedCategory = (d.guestCategories||[]).find(c=>c.toLowerCase()===((side||'').trim().toLowerCase()));
+  const household = {
+    id, label, categories: matchedCategory ? [matchedCategory] : [], tier:(d.guestTiers&&d.guestTiers[0]?d.guestTiers[0].key:'A'), rsvpStatus:'pending',
+    dateAddedISO: isoFromDate(new Date()), waitlistNote:'',
+    email:(email||'').trim(), address:{street:'',city:'',region:'',postalCode:'',country:''}, songRequest:'', invitedEvents:[],
+    eventRsvp:{}, memberEventExclusions:{}, surveyResponses:{},
+    members:[{id:id+'-m1', salutation:'', firstName:(firstName||'').trim(), lastName:(lastName||'').trim(), attending:true, mealChoice:'', dietaryRestrictions:'', accessibilityNeeds:'', tableId:null, relationship:'', seating:{}, eventRsvp:{}, isChild:false, tags:[]}]
+  };
+  (d.events||[]).forEach(ev=>{ household.eventRsvp[ev.id] = 'pending'; household.members[0].eventRsvp[ev.id] = 'pending'; });
+  d.guestHouseholds.push(household);
+  return {household, member: household.members[0]};
 }
 
 function defaultDashboardData(){
@@ -2870,25 +2988,25 @@ function defaultDashboardData(){
           sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
           professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
           suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''}},
-      {id:'parent-raj', name:'Asif Chatur', role:'Father of the Bride', side:"Natasha's side", partyGroup:'Parents', photo:null, events:['Rehearsal Dinner','Mehndi','Sangeet','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
+      {id:'parent-raj', name:'Asif Chatur', role:'Father of the Bride', side:"Natasha's side", partyGroup:'Parents', photo:null, householdId:'hh-1', memberId:'hh-1-m1', events:['Rehearsal Dinner','Mehndi','Sangeet','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0102', email:'asif.chatur@gmail.com',
         tasks:[{title:'Confirm father-daughter dance song', due:'Completed', done:true},{title:'Finalize Rehearsal Dinner toast', due:'2 weeks before', done:false}],
         attireStatus:'pending', outfit:'Charcoal Bandhgala Suit', designer:'Modern Groom Toronto', swatch:'#3C3A35',
         hair:'Not applicable', hairStatus:'not-needed', makeup:'Not applicable', makeupStatus:'not-needed', shoes:'Black Leather Oxfords', shoesStatus:'confirmed',
         travel:'Local — no travel needed', hotel:'—', notes:'Walking Natasha down the aisle. Speaking at the Rehearsal Dinner.', survey:null},
-      {id:'parent-meenal', name:'Amina Shroff', role:'Mother of the Bride', side:"Natasha's side", partyGroup:'Parents', photo:null, events:['Rehearsal Dinner','Mehndi','Sangeet','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
+      {id:'parent-meenal', name:'Amina Shroff', role:'Mother of the Bride', side:"Natasha's side", partyGroup:'Parents', photo:null, householdId:'hh-1', memberId:'hh-1-m2', events:['Rehearsal Dinner','Mehndi','Sangeet','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0103', email:'amina.shroff@example.com',
         tasks:[{title:'Coordinate with catering on traditional dishes', due:'Completed', done:true},{title:'Confirm Rehearsal Dinner toast order with the Romanos', due:'1 week before', done:false}],
         attireStatus:'pending', outfit:'Emerald Silk Saree', designer:'Devi Boutique', swatch:'#38473B',
         hair:'Updo with fresh florals', hairStatus:'confirmed', makeup:'Soft glam, matching Mehndi look', makeupStatus:'pending', shoes:'Gold Kolhapuri Sandals', shoesStatus:'confirmed',
         travel:'Local — no travel needed', hotel:'—', notes:'Speaking at the Rehearsal Dinner alongside Tony & Lisa.', survey:null},
-      {id:'parent-tom', name:'Tony Cesario', role:'Father of the Groom', side:"Matteo's side", partyGroup:'Parents', photo:null, events:['Rehearsal Dinner','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
+      {id:'parent-tom', name:'Tony Cesario', role:'Father of the Groom', side:"Matteo's side", partyGroup:'Parents', photo:null, householdId:'hh-2', memberId:'hh-2-m2', events:['Rehearsal Dinner','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0177', email:'tony.cesario@example.com',
         tasks:[{title:'Confirm Rehearsal Dinner toast order with the Maliks', due:'1 week before', done:false}],
         attireStatus:'pending', outfit:'Navy Three-Piece Suit', designer:'Indochino', swatch:'#2C3E50',
         hair:'Not applicable', hairStatus:'not-needed', makeup:'Not applicable', makeupStatus:'not-needed', shoes:'Black Oxford Brogues', shoesStatus:'pending',
         travel:'Flying in Apr 22', hotel:'The Camden Toronto', notes:'Speaking at the Rehearsal Dinner.', survey:null},
-      {id:'parent-karen', name:'Lisa Cesario', role:'Mother of the Groom', side:"Matteo's side", partyGroup:'Parents', photo:null, events:['Rehearsal Dinner','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
+      {id:'parent-karen', name:'Lisa Cesario', role:'Mother of the Groom', side:"Matteo's side", partyGroup:'Parents', photo:null, householdId:'hh-2', memberId:'hh-2-m1', events:['Rehearsal Dinner','Nikkah Ceremony','Church Ceremony','Civil & Reception'],
         phone:'(416) 555-0178', email:'lisa.cesario@example.com',
         tasks:[{title:'Coordinate mother-son dance song', due:'Completed', done:true}],
         attireStatus:'pending', outfit:'Champagne Chiffon Gown', designer:'Nordstrom Special Occasion', swatch:'#C7A467',
@@ -3316,6 +3434,15 @@ function monthsBetween(a,b){
   return Math.max(0, Math.round((b-a)/(1000*60*60*24*30.44)));
 }
 function fmtMoney(n){ return '$'+Math.round(n).toLocaleString(); }
+// v1.45.0: a negative "Unallocated" figure means you've allocated MORE than your Total Budget —
+// that's "Over Allocated," not a negative amount of unallocated money. Used anywhere Budget shows
+// Total Budget minus Allocated (Home snapshot, Budget hero, Budget PDF export), so the label always
+// matches what the number means instead of just turning the digits red.
+function unallocatedStat(amount){
+  return amount<0
+    ? {label:'Over Allocated', display:fmtMoney(Math.abs(amount)), warn:true}
+    : {label:'Unallocated', display:fmtMoney(amount), warn:false};
+}
 function fmtDateLabel(iso){
   if(!iso) return 'Date TBD';
   const d = new Date(iso+'T12:00:00');
@@ -3737,6 +3864,12 @@ function normalizeDashboardData(d){
   if(d.coupleLogo===undefined) d.coupleLogo = null;
   if(!Array.isArray(d.weddingParty)) d.weddingParty = [];
   d.weddingParty.forEach(m=>{
+    // v1.45.0: a wedding party member is also a guest — householdId/memberId link this record
+    // to their real entry in Guest List, so name/phone/email have one source of truth instead
+    // of being typed twice. null on both means this member isn't linked to a guest yet (legacy
+    // data, or someone added before a matching guest existed).
+    if(m.householdId===undefined) m.householdId = null;
+    if(m.memberId===undefined) m.memberId = null;
     if(m.photo===undefined) m.photo = null;
     if(m.bio===undefined) m.bio = '';
     if(m.partyGroup===undefined) m.partyGroup = /groomsman|best man/i.test(m.role||'') ? 'Groomsmen' : /bridesmaid|maid of honou?r/i.test(m.role||'') ? 'Bridesmaids' : /parent|mother|father/i.test(m.role||'') ? 'Parents' : 'Other';
@@ -4528,7 +4661,8 @@ function nameInitials(fullName){
   return ((parts[0]?.[0]||'') + (parts[1]?.[0]||'')).toUpperCase();
 }
 function avatarInner(m){
-  return m.photo ? `<img src="${m.photo}" alt="${escapeAttr(m.name)}">` : escapeHtml(nameInitials(m.name));
+  const name = effectivePartyName(m);
+  return m.photo ? `<img src="${m.photo}" alt="${escapeAttr(name)}">` : escapeHtml(nameInitials(name));
 }
 function eventTimeRangeLabel(e){
   if(e.startTime && e.endTime) return `${e.startTime} – ${e.endTime}`;
@@ -4673,7 +4807,7 @@ function renderHome(){
         <div class="budget-snap-row">
           <div class="budget-snap-stat"><div class="num">${fmtMoney(totalPlanned)}</div><div class="lbl">Planned</div></div>
           <div class="budget-snap-stat"><div class="num">${fmtMoney(totalSpent)}</div><div class="lbl">Committed / Paid</div></div>
-          <div class="budget-snap-stat"><div class="num" style="${unallocated<0?'color:var(--terracotta);':''}">${fmtMoney(unallocated)}</div><div class="lbl">Unallocated</div></div>
+          <div class="budget-snap-stat"><div class="num" style="${unallocated<0?'color:var(--terracotta);':''}">${unallocatedStat(unallocated).display}</div><div class="lbl">${unallocatedStat(unallocated).label}</div></div>
         </div>
       </div>
       <div class="card">
@@ -5445,13 +5579,12 @@ function renderBlueprintVisionHero(){
   const textColor = contrastTextColor(c1)==='#FFFFFF' ? '#FBF8F1' : '#241F16';
   const days = daysToWedding();
   const images = blueprintCollageImages(3);
+  // v1.45.0: no more "+ Add Inspiration Photos" prompt here — that happens from each event's own
+  // Design tab now, so an empty vision board just quietly shows nothing instead of a CTA duplicating
+  // a different page's job. The hero collapses to its copy alone, which is also what makes it shorter.
   let collageHtml;
   if(!images.length){
-    collageHtml = `
-      <div class="bp-hero-empty">
-        <p>Your vision board starts with photos. Add a few to Inspiration and they'll show right here.</p>
-        <button class="btn btn-outline btn-sm" onclick="renderRoute('events')">+ Add Inspiration Photos</button>
-      </div>`;
+    collageHtml = '';
   } else if(images.length===1){
     collageHtml = `<div class="bp-hero-collage bp-hero-collage-1"><img src="${escapeAttr(images[0])}" alt="A photo from your Inspiration board"></div>`;
   } else if(images.length===2){
@@ -5497,7 +5630,7 @@ function renderBlueprintProgressStrip(){
 function renderBlueprintMoodboardStrip(){
   const images = blueprintCollageImages(10);
   if(!images.length){
-    return `<div class="bp-moodboard-empty">Your moodboard starts with photos — add a few from an event's Design tab and they'll show here as a real strip across your Blueprint. <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('events')">+ Add Inspiration Photos →</span></div>`;
+    return `<div class="bp-moodboard-empty">Your moodboard starts with photos — add a few from any event's own Design tab and they'll show here as a real strip across your Blueprint.</div>`;
   }
   return `<div class="bp-moodboard-strip">${images.map(src=>`<img src="${escapeAttr(src)}" alt="A photo from your Inspiration board">`).join('')}</div>`;
 }
@@ -5602,7 +5735,7 @@ function renderBlueprintDetailsTab(){
           </div>`).join('')}
       </div>
       <div class="custom-add-row" style="margin-top:14px; flex-wrap:wrap; align-items:center;">
-        <input type="text" id="newHexColor" placeholder="#RRGGBB" maxlength="7" style="max-width:130px; font-family:'Inter'; text-transform:uppercase;" onkeydown="if(event.key==='Enter'){addPaletteColorFromHex();}">
+        <input type="text" id="newHexColor" placeholder="#RRGGBB" maxlength="7" style="max-width:130px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; text-transform:uppercase;" onkeydown="if(event.key==='Enter'){addPaletteColorFromHex();}">
         <button class="btn btn-outline btn-sm" onclick="addPaletteColorFromHex()">+ Add by Hex Code</button>
         <span style="font-size:12px;color:var(--charcoal-faint);">or</span>
         <label class="btn btn-outline btn-sm" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:6px;">
@@ -5688,12 +5821,12 @@ function renderBlueprintRoadmapTab(){
     <div class="grid-3">
       <div class="card" style="margin-bottom:0;">
         <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.05em; font-size:11px;">Days to go</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:700; color:var(--green-deep); margin-top:4px;">${days!==null?days:'—'}</div>
+        <div style="font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:32px; font-weight:700; color:var(--green-deep); margin-top:4px;">${days!==null?days:'—'}</div>
         <div class="d-sub" style="margin-top:2px;">${d.weddingDateLabel?escapeHtml(d.weddingDateLabel):'Date to be decided'}</div>
       </div>
       <div class="card" style="margin-bottom:0;">
         <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.05em; font-size:11px;">Overall progress</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:700; color:var(--green-deep); margin-top:4px;">${overallPct}%</div>
+        <div style="font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:32px; font-weight:700; color:var(--green-deep); margin-top:4px;">${overallPct}%</div>
         <div class="d-sub" style="margin-top:2px;">${stats.done} of ${stats.total} tasks complete</div>
       </div>
       <div class="card" style="margin-bottom:0;">
@@ -5763,21 +5896,40 @@ function renderBlueprintRoadmapTab(){
 /* ---- v1.36.0: Milestones tab — reuses the exact same "deadline" items already plotted on
    Calendar at a Glance (RSVP cutoffs + planning milestones), just as a clean upcoming/passed
    list rather than a calendar grid — no separate data source, so it can never drift from Calendar. ---- */
+// v1.45.0: a real vertical timeline/path instead of a plain list — passed milestones check off
+// and mute, the next one up is visually called out, and the whole thing reads as a path through
+// the planning, not just a table of dates.
 function renderBlueprintMilestonesTab(){
   const items = getCalendarItems().filter(it=>it.type==='deadline').sort((a,b)=>a.dateISO<b.dateISO?-1:1);
   const today = isoFromDate(new Date());
-  const upcoming = items.filter(it=>it.dateISO>=today);
-  const past = items.filter(it=>it.dateISO<today);
-  const renderRow = it => `
-    <div class="event-mini-row" style="cursor:pointer;" onclick="openCalendarItemDetail('deadline','${escapeAttr(it.id)}');">
-      <div><div class="em-name">${escapeHtml(it.title)}</div><div class="em-date">${new Date(it.dateISO+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div></div>
-      ${it.dateISO<today ? '<span class="pill pill-neutral">Passed</span>' : ''}
-    </div>`;
+  const now = new Date(); const today0 = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const firstUpcomingIdx = items.findIndex(it=>it.dateISO>=today);
+  if(!items.length){
+    return `
+      <div class="card">
+        <div class="card-head"><h4>Key Milestones</h4><span class="d-sub">RSVP cutoffs and planning milestones you've set — the same ones plotted on Calendar</span></div>
+        <p style="font-size:13px;color:var(--charcoal-faint);">No milestones set yet — tag a deadline on Calendar at a Glance and it'll show up here as a timeline.</p>
+      </div>`;
+  }
   return `
     <div class="card">
       <div class="card-head"><h4>Key Milestones</h4><span class="d-sub">RSVP cutoffs and planning milestones you've set — the same ones plotted on Calendar</span></div>
-      ${upcoming.length ? upcoming.map(renderRow).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">No upcoming milestones right now.</p>`}
-      ${past.length ? `<div class="bp-chapter-label" style="margin-top:22px;">Passed</div>${past.slice().reverse().map(renderRow).join('')}` : ''}
+      <div class="ms-timeline">
+        ${items.map((it,i)=>{
+          const isPast = it.dateISO<today;
+          const isNext = i===firstUpcomingIdx;
+          const days = Math.round((new Date(it.dateISO+'T00:00:00') - today0)/86400000);
+          const whenLabel = isPast ? 'Passed' : days===0 ? 'Today' : days===1 ? 'Tomorrow' : `${days} days away`;
+          return `
+          <div class="ms-row ${isPast?'ms-past':''} ${isNext?'ms-next':''}" onclick="openCalendarItemDetail('deadline','${escapeAttr(it.id)}');">
+            <div class="ms-dot">${isPast?'✓':isNext?'★':''}</div>
+            <div class="ms-content">
+              <div class="ms-top-row"><span class="ms-title">${escapeHtml(it.title)}</span><span class="ms-when">${isNext?'Next up · ':''}${whenLabel}</span></div>
+              <div class="ms-date">${new Date(it.dateISO+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
     </div>
   `;
 }
@@ -5944,7 +6096,7 @@ function renderEventPaletteCard(e){
         <p class="detail-hint">This event will use the Master Colour Palette until you give it its own below.</p>
       `}
       <div class="custom-add-row" style="margin-top:14px; flex-wrap:wrap; align-items:center;">
-        <input type="text" id="newEventHexColor-${e.id}" placeholder="#RRGGBB" maxlength="7" style="max-width:130px; font-family:'Inter'; text-transform:uppercase;" onkeydown="if(event.key==='Enter'){addEventPaletteColorFromHex('${e.id}');}">
+        <input type="text" id="newEventHexColor-${e.id}" placeholder="#RRGGBB" maxlength="7" style="max-width:130px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; text-transform:uppercase;" onkeydown="if(event.key==='Enter'){addEventPaletteColorFromHex('${e.id}');}">
         <button class="btn btn-outline btn-sm" onclick="addEventPaletteColorFromHex('${e.id}')">+ Add by Hex Code</button>
         <label class="btn btn-outline btn-sm" style="position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:6px;">
           🎨 Pick a Colour
@@ -5960,6 +6112,15 @@ function renderEventPaletteCard(e){
 function eventBudgetActuals(eventId){
   const summary = eventBudgetSummary().find(g=>g.id===eventId);
   return summary ? {planned:summary.planned, spent:summary.spent} : {planned:0, spent:0};
+}
+// v1.45.0: "effective" budget allocated for an event — same effective-value pattern as
+// effectiveEventGuestCount (vendor cost driving Budget, invited count driving Events). The REAL
+// rollup from Budget line items actually tagged to this event wins once any exist, so every
+// number the Events tab shows always matches the Budget tab's own numbers; the manual Sub-Budget
+// Target is only a placeholder planning ceiling before any real line items are linked yet.
+function effectiveEventBudgetAllocated(e){
+  const real = eventBudgetActuals(e.id).planned;
+  return real>0 ? real : (e.budgetTarget||0);
 }
 function updateEventBudgetTarget(eventId, val){
   const e = dashboardData.events.find(x=>x.id===eventId);
@@ -6150,11 +6311,11 @@ function renderEventGuestsCard(e){
     <div class="card">
       <div class="card-head"><h4>Guest List &amp; Invites</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('guests')">Guests →</span></div>
       <div class="room-setup-row">
-        <div class="field-mini"><label>Invited</label><span style="font-size:20px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',serif;">${stats.invited}</span></div>
-        <div class="field-mini"><label>Confirmed</label><span style="font-size:20px;font-weight:700;color:var(--ok); font-family:'Cormorant Garamond',serif;">${stats.confirmed}</span></div>
+        <div class="field-mini"><label>Invited</label><span style="font-size:20px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;">${stats.invited}</span></div>
+        <div class="field-mini"><label>Confirmed</label><span style="font-size:20px;font-weight:700;color:var(--ok); font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;">${stats.confirmed}</span></div>
         ${hasMultipleEvents() ? `
-        <div class="field-mini"><label>Pending</label><span style="font-size:20px;font-weight:700;color:var(--amber); font-family:'Cormorant Garamond',serif;">${stats.pending}</span></div>
-        <div class="field-mini"><label>Declined</label><span style="font-size:20px;font-weight:700;color:var(--terracotta); font-family:'Cormorant Garamond',serif;">${stats.declined}</span></div>
+        <div class="field-mini"><label>Pending</label><span style="font-size:20px;font-weight:700;color:var(--amber); font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;">${stats.pending}</span></div>
+        <div class="field-mini"><label>Declined</label><span style="font-size:20px;font-weight:700;color:var(--terracotta); font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;">${stats.declined}</span></div>
         ` : ''}
       </div>
       <p style="font-size:13px;color:var(--charcoal-faint);margin-top:10px;">${limited ? `Invited: <strong>${(e.limitedGuestHouseholdIds||[]).length} of ${totalHouseholds}</strong> families/parties — a specific guest list for this event.` : `Invited: <strong>Everyone</strong> on your guest list, unless a family is individually excluded.`}</p>
@@ -6182,9 +6343,9 @@ function renderEventBudgetCard(e){
         <div class="field-mini"><label>Sub-Budget Target (optional)</label>
           <input type="number" min="0" style="max-width:140px;" placeholder="e.g. 20000" value="${target!==null && target!==undefined ? target : ''}" onchange="updateEventBudgetTarget('${e.id}',this.value)">
         </div>
-        <div class="field-mini"><label>Planned (from linked line items)</label><span style="font-size:17px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',serif;">${fmtMoney(actuals.planned)}</span></div>
-        <div class="field-mini"><label>Spent So Far</label><span style="font-size:17px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',serif;">${fmtMoney(actuals.spent)}</span></div>
-        ${pctOfTarget!==null ? `<div class="field-mini"><label>Of Target</label><span style="font-size:17px;font-weight:700; font-family:'Cormorant Garamond',serif; color:${pctOfTarget>100?'var(--terracotta)':'var(--green)'};">${pctOfTarget}%</span></div>` : ''}
+        <div class="field-mini"><label>Planned (from linked line items)</label><span style="font-size:17px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;">${fmtMoney(actuals.planned)}</span></div>
+        <div class="field-mini"><label>Spent So Far</label><span style="font-size:17px;font-weight:700;color:var(--charcoal); font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;">${fmtMoney(actuals.spent)}</span></div>
+        ${pctOfTarget!==null ? `<div class="field-mini"><label>Of Target</label><span style="font-size:17px;font-weight:700; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; color:${pctOfTarget>100?'var(--terracotta)':'var(--green)'};">${pctOfTarget}%</span></div>` : ''}
       </div>
       <p class="detail-hint">Planned and Spent roll up automatically from every Budget line item tagged to this event — the Master Budget total (and every vendor booking linked to a line item) stays the one source of truth. The Sub-Budget Target above is just your own planning ceiling for this event, so you can see if it's tracking over or under.</p>
     </div>
@@ -6205,6 +6366,41 @@ const PLAN_PHASES = [
   {key:'finalmonth', label:'Final Month', hint:'Final walkthroughs & payments'},
   {key:'weekof', label:'Week Of & Day-Of', hint:'The home stretch'}
 ];
+// v1.45.0: a short list of commonly-forgotten tasks, each with a simple title-keyword match so
+// it stops suggesting one the couple already has on their list (under any reasonable wording) —
+// not a hard-coded "you're missing X," just a quiet nudge toward real gaps.
+const SUGGESTED_TASK_IDEAS = [
+  {key:'vows', title:'Write & exchange your vows', role:'Couple', priority:'Medium', match:/\bvows?\b/i},
+  {key:'party-gifts', title:'Buy wedding party thank-you gifts', role:'Couple', priority:'Medium', match:/party.*gift|gift.*party/i},
+  {key:'thankyou-cards', title:'Order thank-you cards for after the wedding', role:'Couple', priority:'Low', match:/thank.?you card/i},
+  {key:'emergency-kit', title:'Put together a wedding-day emergency kit', role:'Wedding Party', priority:'Low', match:/emergency kit/i},
+  {key:'welcome-bags', title:'Prepare welcome bags for out-of-town guests', role:'Couple', priority:'Medium', match:/welcome bag/i},
+  {key:'vendor-tips', title:'Set aside vendor tips & final payments in envelopes', role:'Couple', priority:'Medium', match:/vendor tip|tip envelope/i},
+  {key:'bar-service', title:'Confirm bar service & alcohol permit details', role:'Couple', priority:'Medium', match:/bar service|alcohol permit|\bliquor\b/i}
+];
+function suggestedMissingTasks(){
+  const existingTitles = (dashboardData.tasks||[]).map(t=>t.title);
+  return SUGGESTED_TASK_IDEAS.filter(idea => !existingTitles.some(title => idea.match.test(title)));
+}
+function addSuggestedTask(key){
+  const idea = SUGGESTED_TASK_IDEAS.find(i=>i.key===key);
+  if(!idea) return;
+  if(!Array.isArray(dashboardData.tasks)) dashboardData.tasks=[];
+  dashboardData.tasks.push({id:'task-'+Date.now().toString(36), title:idea.title, eventId:null, role:idea.role, assignedTo:null, priority:idea.priority, done:false, dueDateISO:null, notes:'', dependsOn:null, milestone:false, phase:phaseForDueDate(null)});
+  document.getElementById('content').innerHTML = renderPlanModule();
+}
+function renderSuggestedTasksCard(){
+  const ideas = suggestedMissingTasks().slice(0,3);
+  if(!ideas.length) return '';
+  return `
+    <div class="detail-hint" style="background:var(--ivory-deep); border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+      <span style="font-weight:700; color:var(--charcoal); flex-shrink:0;">✦ Often missed:</span>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; flex:1;">
+        ${ideas.map(idea=>`<span class="attach-chip" style="cursor:pointer;" onclick="addSuggestedTask('${idea.key}')" title="Add this task">+ ${escapeHtml(idea.title)}</span>`).join('')}
+      </div>
+    </div>
+  `;
+}
 function phaseForDueDate(dueISO){
   const wed = dashboardData.weddingDateISO;
   if(!dueISO || !wed) return 'unphased';
@@ -6245,11 +6441,13 @@ function priorityPill(p){
 function planStats(){
   const tasks = dashboardData.tasks||[];
   const today = isoFromDate(new Date());
+  const done = tasks.filter(t=>t.done).length;
   return {
     total: tasks.length,
-    done: tasks.filter(t=>t.done).length,
+    done,
     open: tasks.filter(t=>!t.done).length,
-    overdue: tasks.filter(t=>!t.done && t.dueDateISO && t.dueDateISO<today).length
+    overdue: tasks.filter(t=>!t.done && t.dueDateISO && t.dueDateISO<today).length,
+    pctDone: tasks.length ? Math.round(done/tasks.length*100) : 0
   };
 }
 /* Groups the filtered task list into digestible, collapsible sections by how far out they
@@ -6366,8 +6564,10 @@ function renderPlanTasksTab(){
       <div class="ps-stat"><div class="ps-num">${stats.total}</div><div class="ps-label">Total Tasks</div></div>
       <div class="ps-stat"><div class="ps-num">${stats.open}</div><div class="ps-label">Open</div></div>
       <div class="ps-stat"><div class="ps-num">${stats.done}</div><div class="ps-label">Completed</div></div>
-      <div class="ps-stat"><div class="ps-num">${stats.overdue}</div><div class="ps-label">Overdue</div></div>
+      <div class="ps-stat"><div class="ps-num" style="${stats.overdue>0?'color:var(--terracotta);':''}">${stats.overdue}</div><div class="ps-label">Overdue</div></div>
+      <div class="ps-stat"><div class="ps-num">${stats.pctDone}%</div><div class="ps-label">Complete</div></div>
     </div>
+    ${renderSuggestedTasksCard()}
     <div class="card">
       <div class="card-head">
         <h4>Wedding Plan</h4>
@@ -6540,9 +6740,10 @@ function addTask(){
   const assignedTo = document.getElementById('newTaskAssignee').value || null;
   const priority = document.getElementById('newTaskPriority').value;
   const dueDateISO = document.getElementById('newTaskDue').value || null;
+  const dependsOn = document.getElementById('newTaskDependsOn').value || null;
   const milestone = document.getElementById('newTaskMilestone').checked;
   if(!Array.isArray(dashboardData.tasks)) dashboardData.tasks=[];
-  dashboardData.tasks.push({id:'task-'+Date.now().toString(36), title, eventId, role, assignedTo, priority, done:false, dueDateISO, notes:'', dependsOn:null, milestone, phase: phaseForDueDate(dueDateISO)});
+  dashboardData.tasks.push({id:'task-'+Date.now().toString(36), title, eventId, role, assignedTo, priority, done:false, dueDateISO, notes:'', dependsOn, milestone, phase: phaseForDueDate(dueDateISO)});
   closeAddTaskModal();
   document.getElementById('content').innerHTML = renderPlanModule();
 }
@@ -6592,6 +6793,12 @@ function renderAddTaskModal(){
         </div>
         <div class="field-cell"><label>Due Date</label>
           <input type="date" id="newTaskDue">
+        </div>
+        <div class="field-cell" style="grid-column:1/-1;"><label>Depends On <span class="d-sub" style="font-weight:400;">(optional)</span></label>
+          <select id="newTaskDependsOn">
+            <option value="">No dependency</option>
+            ${tasksThatCanDependOn({id:'__new_task__'}).map(o=>`<option value="${o.id}">${escapeHtml(o.title)}${o.done?' (done)':''}</option>`).join('')}
+          </select>
         </div>
       </div>
       <label class="d-sub" style="display:flex; align-items:center; gap:6px; font-weight:600; cursor:pointer; margin-top:12px;"><input type="checkbox" id="newTaskMilestone" style="width:14px;height:14px;"> 🏁 Tag as milestone</label>
@@ -8173,7 +8380,7 @@ function universalSearchResults(query){
     if(`${n.title||''} ${n.body||''}`.toLowerCase().includes(q)) results.push({type:'Note', icon:'📝', title:n.title||'Untitled note', sub:(n.body||'').slice(0,60), action:()=>{ renderRoute('documents'); docsTab='notes'; document.getElementById('content').innerHTML=renderDocumentsModule(); }});
   });
   (d.weddingParty||[]).forEach(m=>{
-    if((m.name||'').toLowerCase().includes(q)) results.push({type:'Wedding Party', icon:'💍', title:m.name, sub:m.role||'', action:()=>{ renderRoute('wedding-party'); openMemberDetail(m.id); }});
+    if((effectivePartyName(m)||'').toLowerCase().includes(q)) results.push({type:'Wedding Party', icon:'💍', title:effectivePartyName(m), sub:m.role||'', action:()=>{ renderRoute('wedding-party'); openMemberDetail(m.id); }});
   });
   return results.slice(0,30);
 }
@@ -8306,7 +8513,7 @@ function renderVendorAddModal(){
         ${d.events.map(e=>`<label style="display:inline-flex; align-items:center; gap:5px; font-size:12.5px; background:var(--ivory-deep); padding:5px 10px; border-radius:999px;"><input type="checkbox" class="newVBEvent" value="${e.id}"> ${escapeHtml(e.name)}</label>`).join('')}
         <span class="d-sub" style="width:100%; margin-top:2px;">Leave all unchecked for "all events."</span>
       </div>
-      <div class="field-cell" style="margin-top:14px;"><label>Notes</label><textarea id="newVBNotes" rows="3" style="width:100%; box-sizing:border-box; padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:13px; resize:vertical;" placeholder="Anything else worth remembering"></textarea></div>
+      <div class="field-cell" style="margin-top:14px;"><label>Notes</label><textarea id="newVBNotes" rows="3" style="width:100%; box-sizing:border-box; padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; resize:vertical;" placeholder="Anything else worth remembering"></textarea></div>
       ${ctx.autoAssignTableId ? `<p class="detail-hint">Saving will also seat this vendor at the table you were assigning from.</p>` : ''}
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
         <button class="btn btn-outline btn-sm" onclick="closeVendorAddModal()">Cancel</button>
@@ -8602,6 +8809,7 @@ function renderWeddingParty(){
           <button class="seg-btn ${partyView==='bach'?'active':''}" onclick="switchPartyTab('bach')">Bach &amp; Bachelorette</button>
         </div>
       </div>
+      <button class="btn btn-solid btn-sm" onclick="openPartyMemberAddModal()">+ Add Member</button>
     </div>
     ${partyView==='lookbook' ? renderLookbookTab() : partyView==='timeline' ? renderPartyTimelineTab() : partyView==='bach' ? renderBachTab() : renderPartyHubTab()}
   `;
@@ -8610,6 +8818,163 @@ function renderWeddingParty(){
 function switchPartyTab(tab){
   partyView = tab;
   document.getElementById('content').innerHTML = renderWeddingParty();
+}
+/* ---- v1.45.0: "+ Add Wedding Party Member" — always links to a real Guest List entry, either
+   an existing guest or a brand-new one created right here, so nobody's contact identity is typed
+   twice and they immediately work for RSVP/seating/meal choice too, not just the Wedding Party hub. ---- */
+function unlinkedGuestMembersList(){
+  const out = [];
+  (dashboardData.guestHouseholds||[]).forEach(h=>{
+    (h.members||[]).forEach(m=>{
+      if(!partyMemberForGuest(h.id, m.id)){
+        out.push({householdId:h.id, memberId:m.id, name:`${m.firstName||''} ${m.lastName||''}`.trim()||'(unnamed)', householdLabel:h.label});
+      }
+    });
+  });
+  out.sort((a,b)=>a.name.localeCompare(b.name));
+  return out;
+}
+function openPartyMemberAddModal(opts){
+  opts = opts || {};
+  partyAddDraft = {
+    mode: 'existing',
+    lockGuest: !!(opts.householdId && opts.memberId),
+    householdId: opts.householdId || '',
+    memberId: opts.memberId || '',
+    firstName:'', lastName:'', email:'',
+    role:'', side:'', partyGroup:'', phone:'',
+    events: []
+  };
+  document.getElementById('partyMemberAddOverlay').innerHTML = renderPartyMemberAddModal();
+  document.getElementById('partyMemberAddOverlay').classList.add('open');
+}
+function closePartyMemberAddModal(){
+  partyAddDraft = null;
+  document.getElementById('partyMemberAddOverlay').classList.remove('open');
+}
+function setPartyAddMode(mode){
+  if(!partyAddDraft || partyAddDraft.lockGuest) return;
+  partyAddDraft.mode = mode;
+  document.getElementById('partyMemberAddOverlay').innerHTML = renderPartyMemberAddModal();
+}
+function renderPartyMemberAddModal(){
+  if(!partyAddDraft) return '';
+  const d = dashboardData;
+  const draft = partyAddDraft;
+  const unlinked = unlinkedGuestMembersList();
+  const knownGroups = Array.from(new Set((d.weddingParty||[]).map(m=>m.partyGroup).filter(Boolean).concat(['Bridesmaids','Groomsmen','Parents','Other'])));
+  let lockedGuestName = '';
+  if(draft.lockGuest){
+    const h = d.guestHouseholds.find(x=>x.id===draft.householdId);
+    const mem = h && h.members.find(x=>x.id===draft.memberId);
+    lockedGuestName = mem ? `${mem.firstName||''} ${mem.lastName||''}`.trim() : '';
+  }
+  return `
+    <div class="item-modal item-modal-lg">
+      <button class="im-close" onclick="closePartyMemberAddModal()">✕</button>
+      <div class="eyebrow">New Wedding Party Member</div>
+      <h3 style="margin-top:4px;">Add a Wedding Party Member</h3>
+      <p class="detail-hint" style="margin-top:-4px;">Every member here is also a guest — pick someone already on your Guest List, or add someone new and we'll add them there too, so RSVP, seating and meal choice all work right away.</p>
+
+      ${draft.lockGuest ? `
+      <div class="field-cell" style="margin-top:14px;"><label>Guest</label><div style="font-weight:700; font-size:15px;">${escapeHtml(lockedGuestName)}</div></div>
+      ` : `
+      <div class="seg-control" style="margin-top:12px; max-width:360px;">
+        <button class="seg-btn ${draft.mode==='existing'?'active':''}" onclick="setPartyAddMode('existing')">Already in Guest List</button>
+        <button class="seg-btn ${draft.mode==='new'?'active':''}" onclick="setPartyAddMode('new')">New Person</button>
+      </div>
+      ${draft.mode==='existing' ? `
+      <div class="field-cell" style="margin-top:14px;">
+        <label>Guest</label>
+        <select id="partyAddExistingSelect">
+          <option value="">— Select a guest —</option>
+          ${unlinked.map(g=>`<option value="${g.householdId}::${g.memberId}">${escapeHtml(g.name)} — ${escapeHtml(g.householdLabel)}</option>`).join('')}
+        </select>
+        ${!unlinked.length ? `<p class="detail-hint">Everyone in your Guest List is already in your Wedding Party, or your Guest List is empty — add a "New Person" instead.</p>` : ''}
+      </div>
+      ` : `
+      <div class="field-grid" style="margin-top:14px;">
+        <div class="field-cell"><label>First Name</label><input type="text" id="partyAddFirstName" value="${escapeAttr(draft.firstName)}"></div>
+        <div class="field-cell"><label>Last Name</label><input type="text" id="partyAddLastName" value="${escapeAttr(draft.lastName)}"></div>
+        <div class="field-cell"><label>Email <span class="d-sub" style="font-weight:400;">(optional)</span></label><input type="text" id="partyAddNewEmail" value="${escapeAttr(draft.email)}" placeholder="name@example.com"></div>
+      </div>
+      <p class="detail-hint" style="margin-top:0;">This adds them to your Guest List too, as a new one-person household — you can merge them into a family there later if you'd rather.</p>
+      `}`}
+
+      <div class="field-grid" style="margin-top:10px;">
+        <div class="field-cell"><label>Role</label><input type="text" id="partyAddRole" value="${escapeAttr(draft.role)}" placeholder="e.g. Maid of Honour, Best Man, Usher"></div>
+        <div class="field-cell"><label>Party Group</label>
+          <input type="text" id="partyAddGroup" list="partyGroupOptions" value="${escapeAttr(draft.partyGroup)}" placeholder="e.g. Bridesmaids">
+          <datalist id="partyGroupOptions">${knownGroups.map(g=>`<option value="${escapeAttr(g)}">`).join('')}</datalist>
+        </div>
+        <div class="field-cell"><label>Side</label>
+          <select id="partyAddSide">
+            <option value="">— Select —</option>
+            <option value="${escapeAttr(d.partner1+"'s side")}">${escapeHtml(d.partner1)}'s side</option>
+            <option value="${escapeAttr(d.partner2+"'s side")}">${escapeHtml(d.partner2)}'s side</option>
+            <option value="Both">Both</option>
+          </select>
+        </div>
+        <div class="field-cell"><label>Phone <span class="d-sub" style="font-weight:400;">(optional)</span></label><input type="text" id="partyAddPhone" value="${escapeAttr(draft.phone)}" placeholder="(555) 555-5555"></div>
+      </div>
+
+      <div class="chip-grid" style="margin-top:10px; gap:4px;">
+        <span class="pp-label" style="width:100%;">Which events are they part of?</span>
+        ${d.events.map(e=>`<label style="display:inline-flex; align-items:center; gap:5px; font-size:12.5px; background:var(--ivory-deep); padding:5px 10px; border-radius:999px;"><input type="checkbox" class="partyAddEvent" value="${escapeAttr(e.name)}"> ${escapeHtml(e.name)}</label>`).join('')}
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+        <button class="btn btn-outline btn-sm" onclick="closePartyMemberAddModal()">Cancel</button>
+        <button class="btn btn-solid btn-sm" onclick="submitPartyMemberAddModal()">+ Add Member</button>
+      </div>
+    </div>
+  `;
+}
+function submitPartyMemberAddModal(){
+  const draft = partyAddDraft;
+  if(!draft) return;
+  const roleEl = document.getElementById('partyAddRole');
+  const role = (roleEl.value||'').trim();
+  if(!role){ roleEl.focus(); return; }
+  const groupEl = document.getElementById('partyAddGroup');
+  const partyGroup = (groupEl.value||'').trim() || 'Other';
+  const sideEl = document.getElementById('partyAddSide');
+  const side = sideEl.value||'';
+  const phoneEl = document.getElementById('partyAddPhone');
+  const phone = (phoneEl.value||'').trim();
+  const events = Array.from(document.querySelectorAll('.partyAddEvent:checked')).map(el=>el.value);
+
+  let householdId, memberId, name, email;
+  if(draft.mode==='existing'){
+    if(draft.lockGuest){
+      householdId = draft.householdId; memberId = draft.memberId;
+    } else {
+      const sel = document.getElementById('partyAddExistingSelect');
+      if(!sel || !sel.value){ if(sel) sel.focus(); return; }
+      [householdId, memberId] = sel.value.split('::');
+    }
+    const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+    const mem = h && h.members.find(x=>x.id===memberId);
+    if(!h || !mem) return;
+    name = `${mem.firstName||''} ${mem.lastName||''}`.trim();
+    email = h.email||'';
+  } else {
+    const firstEl = document.getElementById('partyAddFirstName');
+    const lastEl = document.getElementById('partyAddLastName');
+    const emailEl = document.getElementById('partyAddNewEmail');
+    const firstName = (firstEl.value||'').trim();
+    if(!firstName){ firstEl.focus(); return; }
+    const lastName = (lastEl.value||'').trim();
+    email = (emailEl.value||'').trim();
+    const created = createSoloGuestHousehold({firstName, lastName, email, side});
+    householdId = created.household.id; memberId = created.member.id;
+    name = `${firstName} ${lastName}`.trim();
+    refreshGuestsBackground();
+  }
+
+  const m = createWeddingPartyMember({householdId, memberId, name, email, phone, role, side, partyGroup, events});
+  closePartyMemberAddModal();
+  openMemberDetail(m.id);
 }
 function openMemberDetail(id){
   selectedMemberId = id; partyView = 'detail';
@@ -8630,7 +8995,7 @@ function renderPartyHubTab(){
         <svg class="icon" viewBox="0 0 24 24">${ICONS.party}</svg>
         <h4>No wedding party members yet</h4>
         <p>Invite your wedding party to give each person their own hub — events, tasks, itinerary, attire and more, tailored to their role. Custom roles are supported, not just bridesmaids and groomsmen.</p>
-        <button class="btn btn-solid btn-sm" style="margin-top:20px;" onclick="alert('Inviting wedding party members is coming soon in this prototype.')">+ Invite Wedding Party Member</button>
+        <button class="btn btn-solid btn-sm" style="margin-top:20px;" onclick="openPartyMemberAddModal()">+ Add Wedding Party Member</button>
       </div>
       <div class="party-grid" style="margin-top:28px;">
         ${['Maid of Honour','Best Man','Bridesmaid'].map(role=>`
@@ -8662,7 +9027,7 @@ function renderPartyHubTab(){
         const pct = total ? Math.round(done/total*100) : 0;
         return `
         <div class="pm-card" onclick="openMemberDetail('${m.id}')">
-          <div class="pm-top"><div class="pm-avatar">${avatarInner(m)}</div><div><div class="pm-name">${escapeHtml(m.name)}</div><div class="pm-role">${escapeHtml(m.role)}</div></div></div>
+          <div class="pm-top"><div class="pm-avatar">${avatarInner(m)}</div><div><div class="pm-name">${escapeHtml(effectivePartyName(m))}</div><div class="pm-role">${escapeHtml(m.role)}</div></div></div>
           <div class="pm-events">${m.events.map(e=>`<span>${escapeHtml(e)}</span>`).join('')}</div>
           <div class="pm-progress-row"><span>Tasks</span><span>${done}/${total}</span></div>
           <div class="pm-progress-track"><div class="pm-progress-fill" style="width:${pct}%;"></div></div>
@@ -8746,6 +9111,7 @@ function renderPartyMemberDetail(id){
   const m = d.weddingParty.find(x=>x.id===id);
   if(!m) return renderPartyHubTab();
   const done = m.tasks.filter(t=>t.done).length;
+  const linked = linkedGuestForPartyMember(m);
   return `
     <button class="back-link" onclick="backToPartyHub()" style="background:none;border:none;cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>Back to Wedding Party</button>
     <div class="member-detail-head">
@@ -8754,10 +9120,18 @@ function renderPartyMemberDetail(id){
         <input type="file" accept="image/*" onchange="handleMemberPhotoUpload('${m.id}',event)" title="Upload a headshot">
         <span class="avatar-upload-badge">📷</span>
       </div>
-      <div><h2>${escapeHtml(m.name)}</h2><div class="mdh-role">${escapeHtml(m.role)}</div><div class="mdh-side">${escapeHtml(m.side)}</div></div>
+      <div><h2>${escapeHtml(effectivePartyName(m))}</h2><div class="mdh-role">${escapeHtml(m.role)}</div><div class="mdh-side">${escapeHtml(m.side)}</div></div>
       <div style="margin-left:auto; display:flex; gap:8px;">${m.photo ? `<a href="#" class="danger-link" style="align-self:center;" onclick="removeMemberPhoto('${m.id}'); return false;">Remove photo</a>` : ''}<button class="btn btn-outline btn-sm" onclick="openPortalPreview('${m.id}')">Preview Their Portal →</button></div>
     </div>
-    <p style="font-size:12px;color:var(--charcoal-faint);margin-top:-14px;">Headshots upload here or from the member's own survey, and carry through to Contacts, the Lookbook, and the Wedding Party section of your Website.</p>
+    <p style="font-size:12px;color:var(--charcoal-faint);margin-top:-14px;">
+      ${linked
+        ? `💍 Name is synced from <span class="ch-link" style="cursor:pointer;" onclick="backToPartyHub(); openHouseholdDetail('${linked.household.id}');">${escapeHtml(linked.household.label)} in Guest List →</span> — update it there and it updates here too.`
+        : `⚠ Not linked to Guest List yet, so they won't show up for RSVP or seating. ${unlinkedGuestMembersList().length ? `<select class="select-field-sm" style="width:auto; display:inline-block;" onchange="if(this.value) linkPartyMemberToGuest('${m.id}', this.value);">
+            <option value="">Link to a guest…</option>
+            ${unlinkedGuestMembersList().map(g=>`<option value="${g.householdId}::${g.memberId}">${escapeHtml(g.name)} — ${escapeHtml(g.householdLabel)}</option>`).join('')}
+          </select>` : `Add them in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('guests');">Guest List →</span> first, then come back to link them.`}`}
+    </p>
+    <p style="font-size:12px;color:var(--charcoal-faint);margin-top:4px;">Headshots upload here or from the member's own survey, and carry through to Contacts, the Lookbook, and the Wedding Party section of your Website.</p>
 
     <div class="grid-2">
       <div class="card">
@@ -8812,11 +9186,26 @@ function renderPartyMemberDetail(id){
     </div>
     ${renderSurveyResponsesCard(m)}
     ${renderMemberBachNote(m)}
+    <div style="margin-top:8px;"><a href="#" class="danger-link" onclick="removeWeddingPartyMember('${m.id}'); return false;">Remove from Wedding Party</a>${linked ? ` <span class="d-sub">— their Guest List entry stays, so RSVP/seating aren't affected.</span>` : ''}</div>
   `;
 }
 function updateMemberBio(id, val){
   const m = dashboardData.weddingParty.find(x=>x.id===id);
   if(m) m.bio = val;
+}
+function linkPartyMemberToGuest(partyId, key){
+  const m = dashboardData.weddingParty.find(x=>x.id===partyId);
+  if(!m || !key) return;
+  const [householdId, memberId] = key.split('::');
+  const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+  const mem = h && h.members.find(x=>x.id===memberId);
+  if(!h || !mem) return;
+  m.householdId = h.id; m.memberId = mem.id;
+  document.getElementById('content').innerHTML = renderWeddingParty();
+}
+function removeWeddingPartyMember(id){
+  dashboardData.weddingParty = dashboardData.weddingParty.filter(x=>x.id!==id);
+  backToPartyHub();
 }
 function attireMiniPill(status){
   const map = {confirmed:['pill-ok','Confirmed'], pending:['pill-warn','Pending'], ordered:['pill-neutral','Ordered'], 'not-needed':['pill-neutral','N/A']};
@@ -8917,9 +9306,9 @@ function renderLookbookTab(){
 function renderLookbookCard(m){
   return `
     <div class="lb-card">
-      <div class="lb-swatch" style="background:${m.swatch};">${m.photo?`<img src="${m.photo}" alt="${escapeAttr(m.name)}">`:`<span class="lb-req">Required</span>`}</div>
+      <div class="lb-swatch" style="background:${m.swatch};">${m.photo?`<img src="${m.photo}" alt="${escapeAttr(effectivePartyName(m))}">`:`<span class="lb-req">Required</span>`}</div>
       <div class="lb-body">
-        <div class="lb-person">${escapeHtml(m.name)} · ${escapeHtml(m.role)}</div>
+        <div class="lb-person">${escapeHtml(effectivePartyName(m))} · ${escapeHtml(m.role)}</div>
         <div class="lb-attire-lines">
           <div class="lb-attire-line"><span class="lb-attire-label">Clothing</span><span class="lb-attire-text">${escapeHtml(m.outfit)}<br><span class="d-sub">${escapeHtml(m.designer)}</span></span>${attirePill(m.attireStatus)}</div>
           <div class="lb-attire-line"><span class="lb-attire-label">Hair</span><span class="lb-attire-text">${escapeHtml(m.hair||'—')}</span>${attireMiniPill(m.hairStatus)}</div>
@@ -10236,7 +10625,7 @@ function resolvePersonName(id){
   if(id==='partner1') return d.partner1;
   if(id==='partner2') return d.partner2;
   const m = d.weddingParty.find(x=>x.id===id);
-  return m ? m.name : id;
+  return m ? effectivePartyName(m) : id;
 }
 function renderCeremonyOrderSection(){
   const d = dashboardData;
@@ -12057,7 +12446,7 @@ function renderGuestsOverviewTab(){
     <div class="grid-3" style="margin-bottom:20px;">
       <div class="card">
         <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.03em; font-size:11px;">Guests Added</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:32px; line-height:1.15; margin-top:4px;">${stats.totalIndividuals}</div>
+        <div style="font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:700; font-size:32px; line-height:1.15; margin-top:4px;">${stats.totalIndividuals}</div>
         <div class="d-sub">${d.guestCount ? `of ~${d.guestCount} expected` : 'Set an estimated guest count in Wedding Blueprint'}</div>
         ${d.guestCount ? `
         <div class="pc-track" style="margin-top:12px;"><div class="pc-fill" style="width:${addedPct}%;"></div></div>
@@ -12066,14 +12455,14 @@ function renderGuestsOverviewTab(){
       <div class="card">
         <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.03em; font-size:11px;">RSVP Status <span style="text-transform:none; font-weight:400;">(across all events)</span></div>
         <div style="display:flex; gap:22px; margin-top:10px;">
-          <div><div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:25px; color:var(--ok);">${stats.confirmedHeadcount}</div><div class="d-sub">Confirmed<br>${pct(stats.confirmedHeadcount)}%</div></div>
-          <div><div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:25px; color:var(--amber);">${stats.pendingHeadcount}</div><div class="d-sub">Pending<br>${pct(stats.pendingHeadcount)}%</div></div>
-          <div><div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:25px; color:var(--terracotta);">${stats.declinedHeadcount}</div><div class="d-sub">Declined<br>${pct(stats.declinedHeadcount)}%</div></div>
+          <div><div style="font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:700; font-size:25px; color:var(--ok);">${stats.confirmedHeadcount}</div><div class="d-sub">Confirmed<br>${pct(stats.confirmedHeadcount)}%</div></div>
+          <div><div style="font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:700; font-size:25px; color:var(--amber);">${stats.pendingHeadcount}</div><div class="d-sub">Pending<br>${pct(stats.pendingHeadcount)}%</div></div>
+          <div><div style="font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:700; font-size:25px; color:var(--terracotta);">${stats.declinedHeadcount}</div><div class="d-sub">Declined<br>${pct(stats.declinedHeadcount)}%</div></div>
         </div>
       </div>
       <div class="card">
         <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.03em; font-size:11px;">Events</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:32px; line-height:1.15; margin-top:4px;">${d.events.length}</div>
+        <div style="font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:700; font-size:32px; line-height:1.15; margin-top:4px;">${d.events.length}</div>
         <button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick="renderRoute('events')">Manage events →</button>
       </div>
     </div>
@@ -12240,7 +12629,7 @@ function renderGuestListTab(){
       <div class="card-head">
         <h4>All Guests</h4>
         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-          <select style="width:auto; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter'; font-size:12.5px; color:var(--charcoal);" onchange="switchGuestsGroupBy(this.value)">
+          <select style="width:auto; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; color:var(--charcoal);" onchange="switchGuestsGroupBy(this.value)">
             <option value="family" ${guestsGroupBy==='family'?'selected':''}>Group: Family</option>
             <option value="individual" ${guestsGroupBy==='individual'?'selected':''}>Group: Individual</option>
             <option value="tier" ${guestsGroupBy==='tier'?'selected':''}>Group: Tier</option>
@@ -12535,14 +12924,21 @@ function renderHouseholdDetailModal(householdId){
       </div>
       ` : ''}
       <div class="detail-section-head" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);"><h4 style="margin:0;">Attributes</h4><span class="d-sub">Tag an individual person — useful for things that don't apply to the whole family, like VIP. Feeds Guests → Invite Rules.</span></div>
-      ${(h.members||[]).map(m=>`
+      ${(h.members||[]).map(m=>{
+        const linkedParty = partyMemberForGuest(h.id, m.id);
+        return `
         <div style="margin-top:10px;">
-          <div style="font-size:12.5px; font-weight:700;">${escapeHtml(memberDisplayName(m))} <span class="d-sub" style="font-weight:400;">· ${m.isChild?'Child':'Adult'}</span></div>
+          <div style="font-size:12.5px; font-weight:700; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span>${escapeHtml(memberDisplayName(m))} <span class="d-sub" style="font-weight:400;">· ${m.isChild?'Child':'Adult'}</span></span>
+            ${linkedParty
+              ? `<span class="pill pill-ok" style="cursor:pointer;" onclick="closeHouseholdDetail(); renderRoute('wedding-party'); openMemberDetail('${linkedParty.id}');" title="View in Wedding Party">💍 ${escapeHtml(linkedParty.role||'Wedding Party')} →</span>`
+              : `<span class="ch-link" style="cursor:pointer; font-size:11.5px; font-weight:700;" onclick="closeHouseholdDetail(); renderRoute('wedding-party'); openPartyMemberAddModal({householdId:'${h.id}', memberId:'${m.id}'});">+ Add to Wedding Party</span>`}
+          </div>
           <div class="chip-grid" style="margin-top:4px;">
             ${categories.map(c=>`<span class="attach-chip" style="cursor:pointer; font-size:12px; padding:3px 9px; ${(m.tags||[]).includes(c)?'background:var(--green-tint);border-color:var(--green-mid);':''}" onclick="toggleMemberTag('${h.id}','${m.id}','${escapeAttr(c)}')">${(m.tags||[]).includes(c)?'✓ ':''}${escapeHtml(c)}</span>`).join('')}
           </div>
         </div>
-      `).join('')}
+      `;}).join('')}
       ${renderEventInvitationsSection(h)}
       ${renderHouseholdEventRsvpSection(h)}
       ${renderHouseholdMealSelections(h)}
@@ -12732,7 +13128,7 @@ function renderSurveyPreviewModal(){
       <div style="margin-top:16px; padding:24px; background:var(--ivory-deep); border-radius:var(--radius); border:1px solid var(--line-soft);">
         <div style="max-width:480px; margin:0 auto; background:var(--paper); border-radius:12px; padding:28px 24px; box-shadow:var(--shadow-lg);">
           ${s.logoEnabled && d.coupleLogo ? `<div style="text-align:center; margin-bottom:16px;"><img src="${d.coupleLogo}" alt="Wedding logo" style="max-height:60px; max-width:180px;"></div>` : ''}
-          <div style="font-family:'Cormorant Garamond',serif; font-size:22px; text-align:center; color:var(--green-deep); margin-bottom:14px;">${escapeHtml(d.partner1||'')} &amp; ${escapeHtml(d.partner2||'')}</div>
+          <div style="font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:22px; text-align:center; color:var(--green-deep); margin-bottom:14px;">${escapeHtml(d.partner1||'')} &amp; ${escapeHtml(d.partner2||'')}</div>
           ${s.includeEventDateTime!==false && ev ? `<div style="text-align:center; font-size:13px; color:var(--charcoal-soft); margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--line-soft);">${escapeHtml(ev.name)}${ev.dateISO?' · '+fmtDateLabel(ev.dateISO):''}${eventTimeRangeLabel(ev)?' · '+escapeHtml(eventTimeRangeLabel(ev)):''}${ev.location?'<br>'+escapeHtml(ev.location):''}</div>` : ''}
           <div style="font-size:14px; line-height:1.7; color:var(--charcoal);">${s.messageHtml!==undefined ? s.messageHtml : DEFAULT_SURVEY_MESSAGE}</div>
           ${s.rsvpComponent!==false ? `
@@ -13290,7 +13686,7 @@ function eventCompleteness(e){
   const checks = [
     !!e.dateISO,
     !!(e.location && e.location.trim()),
-    !!(e.budgetTarget && e.budgetTarget>0),
+    effectiveEventBudgetAllocated(e)>0,
     vendorBooked,
     (e.inviteSentLog||[]).length>0
   ];
@@ -13386,14 +13782,13 @@ function submitNewEventCategoryPrompt(eventId){
 function renderEventPhotoCard(e, compact){
   const stats = eventCompleteness(e);
   const cls = 'event-photo-card' + (compact ? ' epc-compact' : '');
+  // v1.45.0: a photo is a nice-to-have, not something every event is nudged to go add — the
+  // upload control now lives quietly in the event's own Details tab instead of as a button
+  // stamped on every card here. A photo you've already added still shows; nothing is asked for.
   return `
     <div class="${cls}" onclick="openEventDetail('${e.id}')" ${e.coverPhoto ? '' : `style="${eventCoverGradientStyle(e)}"`}>
       ${e.coverPhoto ? `<div class="epc-bg" style="background-image:url('${escapeAttr(e.coverPhoto)}');"></div>` : `<div class="epc-bg epc-noPhoto"></div>`}
       <div class="epc-scrim"></div>
-      <label class="epc-photo-btn" onclick="event.stopPropagation();" title="${e.coverPhoto?'Change this event\'s photo':'Add a photo for this event'}">
-        ${e.coverPhoto?'Change':'+ Photo'}
-        <input type="file" accept="image/*" class="epc-photo-input" onchange="handleEventCoverPhotoUpload('${e.id}', event)">
-      </label>
       <div class="epc-content">
         <div class="epc-name">${escapeHtml(e.name)}</div>
         <div class="epc-meta">${escapeHtml(e.date||'Date TBD')}${eventTimeRangeLabel(e) ? ' · '+escapeHtml(eventTimeRangeLabel(e)) : ''}</div>
@@ -13416,18 +13811,19 @@ function handleEventCoverPhotoUpload(eventId, evt){
   };
   reader.readAsDataURL(file);
 }
+function removeEventCoverPhoto(eventId){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(e) e.coverPhoto = null;
+  if(currentRouteKey==='events') document.getElementById('content').innerHTML = renderEventsModule();
+  updateChrome();
+}
 /* ---- v1.36.0: the vertical, photo-left list card used on the Events page itself — a different
    layout from the horizontal renderEventPhotoCard() strip (kept as-is, still used on Home). ---- */
 function renderEventListCard(e){
   const stats = eventCompleteness(e);
   return `
     <div class="event-list-card" onclick="openEventDetail('${e.id}')">
-      <div class="elc-photo ${e.coverPhoto?'':'elc-noPhoto'}" ${e.coverPhoto ? `style="background-image:url('${escapeAttr(e.coverPhoto)}');"` : `style="${eventCoverGradientStyle(e)}"`}>
-        <label class="elc-photo-btn" onclick="event.stopPropagation();" title="${e.coverPhoto?'Change this event\'s photo':'Add a photo for this event'}">
-          ${e.coverPhoto?'Change':'+ Photo'}
-          <input type="file" accept="image/*" class="elc-photo-input" onchange="handleEventCoverPhotoUpload('${e.id}', event)">
-        </label>
-      </div>
+      <div class="elc-photo ${e.coverPhoto?'':'elc-noPhoto'}" ${e.coverPhoto ? `style="background-image:url('${escapeAttr(e.coverPhoto)}');"` : `style="${eventCoverGradientStyle(e)}"`}></div>
       <div class="elc-body">
         <div class="elc-name">${escapeHtml(e.name)}</div>
         <div class="elc-meta">${escapeHtml(e.date||'Date TBD')}${eventTimeRangeLabel(e) ? ' · '+escapeHtml(eventTimeRangeLabel(e)) : ''}${e.location ? ' · '+escapeHtml(e.location) : ''}</div>
@@ -13435,7 +13831,7 @@ function renderEventListCard(e){
         <div class="elc-progress-label">${stats.pct}% planned${stats.remaining>0 ? ` · ${pluralize(stats.remaining,'detail','details')} left` : ' · all set'}</div>
         <div class="elc-stats-row">
           <span>👥 ${effectiveEventGuestCount(e)} guests</span>
-          ${e.budgetTarget ? `<span>💰 ${fmtMoney(e.budgetTarget)} budget</span>` : ''}
+          ${effectiveEventBudgetAllocated(e)>0 ? `<span>💰 ${fmtMoney(effectiveEventBudgetAllocated(e))} allocated</span>` : ''}
         </div>
       </div>
       <div class="elc-arrow-wrap"><button class="elc-arrow" onclick="event.stopPropagation(); openEventDetail('${e.id}');">→</button></div>
@@ -13457,7 +13853,7 @@ function renderEventsList(){
   const events = eventsSortedByDate(d.events);
   const totalGuestVisits = events.reduce((s,e)=>s+effectiveEventGuestCount(e),0);
   const onTrackCount = events.filter(e=>eventCompleteness(e).pct>=60).length;
-  const totalBudgetAllocated = events.reduce((s,e)=>s+(e.budgetTarget||0),0);
+  const totalBudgetAllocated = events.reduce((s,e)=>s+effectiveEventBudgetAllocated(e),0);
   const categories = (d.eventCategories||[]).filter(c=>events.some(e=>(e.categories||[]).includes(c)));
   const shown = eventsCategoryFilter==='all' ? events : events.filter(e=>(e.categories||[]).includes(eventsCategoryFilter));
   return `
@@ -13611,13 +14007,13 @@ function renderEventOverviewTab(e){
   const nextSteps = [];
   if(!e.dateISO) nextSteps.push({text:'Set a date', tab:'details'});
   if(!(e.location && e.location.trim())) nextSteps.push({text:'Add a location', tab:'details'});
-  if(!(e.budgetTarget && e.budgetTarget>0)) nextSteps.push({text:'Set a budget target', tab:'budget'});
+  if(!(effectiveEventBudgetAllocated(e)>0)) nextSteps.push({text:'Set a budget target', tab:'budget'});
   if(!vendorBookedAny) nextSteps.push({text:'Book a vendor', tab:'vendors'});
   if(!(e.inviteSentLog||[]).length) nextSteps.push({text:'Send invites', tab:'guests'});
   return `
     <div class="event-overview-stats">
       <div class="eos-stat"><div class="eos-num">${stats.invited}</div><div class="eos-label">Invited</div></div>
-      <div class="eos-stat"><div class="eos-num">${fmtMoney(budgetActuals.spent)}</div><div class="eos-label">of ${fmtMoney(e.budgetTarget||budgetActuals.planned)} Budget</div></div>
+      <div class="eos-stat"><div class="eos-num">${fmtMoney(budgetActuals.spent)}</div><div class="eos-label">of ${fmtMoney(effectiveEventBudgetAllocated(e))} Budget</div></div>
       <div class="eos-stat"><div class="eos-num">${vendorsBooked}${vendorsTotal?` / ${vendorsTotal}`:''}</div><div class="eos-label">Vendors Booked</div></div>
       <div class="eos-stat"><div class="eos-num">${completeness.pct}%</div><div class="eos-label">Ready</div></div>
     </div>
@@ -13707,7 +14103,7 @@ function renderEventDetailsTab(e){
       <div style="display:flex; align-items:center; gap:16px; margin-top:14px; padding:14px 18px; background:var(--ivory-deep); border-radius:var(--radius-sm); flex-wrap:wrap;">
         <div>
           <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint);">${eventGuestStats(e).invited>0 ? 'Guests Invited' : 'Estimated Guests'}</div>
-          <div style="font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:700; line-height:1.1; color:var(--green);">${effectiveEventGuestCount(e)}</div>
+          <div style="font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:36px; font-weight:700; line-height:1.1; color:var(--green);">${effectiveEventGuestCount(e)}</div>
         </div>
         ${eventGuestStats(e).invited>0 ? `
         <p class="detail-hint" style="margin:0; flex:1; min-width:200px;">This is now live from your actual guest list — ${eventGuestStats(e).invited} invited so far on the <span class="ch-link" style="cursor:pointer;" onclick="switchEventDetailTab('guests')">Guests tab</span>. No need to keep a separate number in sync.</p>
@@ -13723,6 +14119,18 @@ function renderEventDetailsTab(e){
       <div class="card" style="padding:20px 22px;">
         <div class="card-head" style="margin-bottom:12px;"><h4>About This Event</h4></div>
         <div class="field-cell" style="margin-bottom:14px;"><label>Description</label><textarea class="notes-field notes-field-sm" onchange="updateEventField('${e.id}','description',this.value)" placeholder="What is this event, for guests or vendors reading about it…">${escapeAttr(e.description||'')}</textarea></div>
+        <div class="field-cell" style="margin-bottom:14px;">
+          <label>Cover Photo <span class="d-sub" style="font-weight:400;">(optional)</span></label>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:56px; height:56px; border-radius:8px; flex-shrink:0; background-size:cover; background-position:center; ${e.coverPhoto ? `background-image:url('${escapeAttr(e.coverPhoto)}');` : eventCoverGradientStyle(e)}"></div>
+            <label class="btn btn-outline btn-sm" style="cursor:pointer; margin:0;">
+              ${e.coverPhoto ? 'Change photo' : 'Add a photo'}
+              <input type="file" accept="image/*" style="position:absolute; width:1px; height:1px; opacity:0;" onchange="handleEventCoverPhotoUpload('${e.id}', event)">
+            </label>
+            ${e.coverPhoto ? `<a href="#" class="danger-link" style="font-size:12px;" onclick="removeEventCoverPhoto('${e.id}'); return false;">Remove</a>` : ''}
+          </div>
+          <p class="detail-hint" style="margin-top:6px;">Totally optional — events look fine without one, and most couples never bother.</p>
+        </div>
         <div class="field-cell"><label>Special Rituals</label><textarea class="notes-field notes-field-sm" onchange="updateEventField('${e.id}','specialRituals',this.value)" placeholder="Any cultural or religious rituals happening at this event…">${escapeAttr(e.specialRituals||'')}</textarea></div>
         <div class="field-cell" style="margin-top:14px;"><label>Meal Collection</label>
           <select onchange="updateEventField('${e.id}','mealCollectionMode',this.value)">
@@ -14251,7 +14659,7 @@ function renderBudgetOverviewTab(){
         </div>
         <div class="ps-stat"><div class="ps-num">${fmtMoney(totalPlanned)}</div><div class="ps-label">Allocated</div></div>
         <div class="ps-stat"><div class="ps-num">${fmtMoney(totalSpent)}</div><div class="ps-label">Committed / Paid</div></div>
-        <div class="ps-stat"><div class="ps-num" style="${(d.budgetTotal-totalPlanned)<0?'color:var(--terracotta);':''}">${fmtMoney(d.budgetTotal-totalPlanned)}</div><div class="ps-label">Unallocated</div></div>
+        <div class="ps-stat"><div class="ps-num" style="${(d.budgetTotal-totalPlanned)<0?'color:var(--terracotta);':''}">${unallocatedStat(d.budgetTotal-totalPlanned).display}</div><div class="ps-label">${unallocatedStat(d.budgetTotal-totalPlanned).label}</div></div>
       </div>
       <p class="pace-note" style="margin-top:14px; ${isOverallOverBudget?'color:var(--terracotta); font-weight:600;':''}">${isOverallOverBudget?'⚠ ':''}${statusLine}</p>
       <button class="btn btn-outline btn-sm" style="margin-top:4px;" onclick="toggleBudgetBreakdown()">${budgetShowBreakdown ? 'Hide full breakdown' : 'View full breakdown'} ${budgetShowBreakdown?'↑':'→'}</button>
@@ -14406,7 +14814,7 @@ function renderBudgetExportDocument(){
       <div class="pb-export-contact-row"><span>Total Budget</span><span>${fmtMoney(d.budgetTotal||0)}</span></div>
       <div class="pb-export-contact-row"><span>Planned</span><span>${fmtMoney(totalPlanned)}</span></div>
       <div class="pb-export-contact-row"><span>Committed / Paid</span><span>${fmtMoney(totalSpent)}</span></div>
-      <div class="pb-export-contact-row"><span>Unallocated</span><span>${fmtMoney((d.budgetTotal||0)-totalPlanned)}</span></div>
+      <div class="pb-export-contact-row"><span>${unallocatedStat((d.budgetTotal||0)-totalPlanned).label}</span><span>${unallocatedStat((d.budgetTotal||0)-totalPlanned).display}</span></div>
     </div>
     ${cats.map(c=>{
       const planned = categoryPlanned(c), spent = categorySpent(c);
@@ -15071,7 +15479,7 @@ function renderCalendarCard(){
       <div class="card-head">
         <h4>Calendar at a Glance</h4>
         <div class="cal-legend">
-          <span><span class="cal-dot cal-dot-event"></span>Events</span>
+          <span><span class="cal-dot cal-dot-event"></span>Wedding Events</span>
           <span><span class="cal-dot cal-dot-task"></span>Tasks</span>
           <span><span class="cal-dot cal-dot-deadline"></span>Key Milestones</span>
           <span><span class="cal-dot cal-dot-payment"></span>Payments</span>
@@ -15635,7 +16043,7 @@ function renderNotesTab(){
     <div class="card">
       <div class="card-head"><h4>Add a Note</h4></div>
       <div class="broadcast-compose">
-        <input type="text" id="newNoteTitle" placeholder="Note title" style="width:100%; padding:12px 16px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--paper); font-family:'Inter'; font-size:14px; color:var(--charcoal); margin-bottom:10px;">
+        <input type="text" id="newNoteTitle" placeholder="Note title" style="width:100%; padding:12px 16px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--paper); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:14px; color:var(--charcoal); margin-bottom:10px;">
         <textarea id="newNoteBody" placeholder="Jot down anything worth remembering — a question for a vendor, an idea, a follow-up…"></textarea>
         <div class="broadcast-controls">
           <select id="newNoteEvent">
