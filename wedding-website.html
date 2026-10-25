@@ -225,7 +225,7 @@
     <div class="navlinks" id="navlinks"></div>
   </div>
 </div>
-<div class="guest-bar">
+<div class="guest-bar" id="guestBar">
   <span>Viewing as:</span>
   <select id="guestSelect" onchange="onGuestChange(this.value)"></select>
   <span id="guestEventNote"></span>
@@ -237,10 +237,10 @@
   <div class="view active" id="view-home">
     <div class="hero" id="heroSection">
       <div class="eyebrow">We're getting married</div>
-      <h1>Natasha <span class="amp">&amp;</span> Matteo</h1>
-      <div class="datestr">Sunday, April 25, 2027</div>
-      <div class="place">King City &amp; Toronto, Ontario</div>
-      <div class="hashtag">#NatashaAndMatteo2027</div>
+      <h1 id="heroH1">Natasha <span class="amp">&amp;</span> Matteo</h1>
+      <div class="datestr" id="heroDatestr">Sunday, April 25, 2027</div>
+      <div class="place" id="heroPlace">King City &amp; Toronto, Ontario</div>
+      <div class="hashtag" id="heroHashtag">#NatashaAndMatteo2027</div>
       <div class="countdown" id="countdown"></div>
     </div>
     <div class="home-grid" id="homeGrid"></div>
@@ -316,18 +316,18 @@
    content). In a full build this page would read live from the
    couple's Evera account instead of these hardcoded objects.
 ================================================================== */
-const COUPLE = { partner1:'Natasha', partner2:'Matteo', weddingDateISO:'2027-04-25', location:'King City & Toronto, ON', hashtag:'#NatashaAndMatteo2027' };
+let COUPLE = { partner1:'Natasha', partner2:'Matteo', weddingDateISO:'2027-04-25', location:'King City & Toronto, ON', hashtag:'#NatashaAndMatteo2027' };
 
 /* Set by the couple in Evera's Website module — mirrors dashboardData.coupleLogo.
    Leave null to fall back to the script wordmark, same as when no logo is designed yet. */
-const COUPLE_LOGO = null;
+let COUPLE_LOGO = null;
 
 /* Mirrors dashboardData.weddingProfile.colorPalette (the Master Colour Palette) —
    drives the whole site's colour theme unless the couple sets a website-only palette below. */
-const MASTER_PALETTE = ['#38473B','#CBB2A6','#C7A467','#FAF6EE'];
+let MASTER_PALETTE = ['#38473B','#CBB2A6','#C7A467','#FAF6EE'];
 
 /* Mirrors dashboardData.website.design in the main app. */
-const WEBSITE_DESIGN = {
+let WEBSITE_DESIGN = {
   fontPairing:'classic', // 'classic' | 'romantic' | 'modern' | 'editorial'
   useCustomPalette:false,
   customPalette:[],
@@ -343,18 +343,18 @@ const SPACING_SCALE = {cozy:0.72, comfortable:1, airy:1.4};
 
 /* Mirrors dashboardData.website.sections — anything false here is fully hidden from
    the nav and the home page, not just locked. Home and RSVP are always shown. */
-const WEBSITE_SECTIONS = {ourStory:true, weddingParty:true, schedule:true, album:true, registry:true, travel:true, faq:true};
+let WEBSITE_SECTIONS = {ourStory:true, weddingParty:true, schedule:true, album:true, registry:true, travel:true, faq:true};
 
 /* Mirrors dashboardData.website.customDomain / passwordProtected / sitePassword. */
-const WEBSITE_ACCESS = {customDomain:'', passwordProtected:false, sitePassword:''};
+let WEBSITE_ACCESS = {customDomain:'', passwordProtected:false, sitePassword:''};
 
 /* Mirrors dashboardData.website.registryLinks. */
-const REGISTRY_LINKS = [
+let REGISTRY_LINKS = [
   {id:'reg-1', label:'Crate & Barrel', url:'https://www.crateandbarrel.com/'},
   {id:'reg-2', label:'Honeymoon Fund', url:'https://www.honeyfund.com/'}
 ];
 
-const EVENTS = [
+let EVENTS = [
   {id:'ev-welcome', name:'Welcome Dinner', dateISO:'2027-04-23', dateLabel:'Friday, April 23, 2027', startTime:'6:00 PM', endTime:'10:00 PM', location:'The Ivy Room, Toronto', address:'The Ivy Room, 118 King St W, Toronto, ON', description:"A relaxed welcome dinner the night before the Mehndi festivities begin — toasts, good food, and time for both families to connect before the big weekend.", dressCodeKey:'cocktail'},
   {id:'ev-mehndi', name:'Mehndi', dateISO:'2027-04-24', dateLabel:'Saturday, April 24, 2027', startTime:'2:00 PM', endTime:'6:00 PM', location:'Hendrick Hall', address:'Hendrick Hall, 40 Bloor St E, Toronto, ON', description:'A traditional henna celebration with a live dhol performance, food stations, and henna artists for the wedding party and guests.', dressCodeKey:'festive'},
   {id:'ev-ceremony', name:'Ceremony', dateISO:'2027-04-25', dateLabel:'Sunday, April 25, 2027', startTime:'4:00 PM', endTime:'4:30 PM', location:'Elmsley Estate — Ceremony Lawn', address:'Elmsley Estate, 1 Estate Rd, King City, ON', description:'Our ceremony — a short outdoor service on the Elmsley Estate lawn, followed by Cocktail Hour and Reception at the same venue.', dressCodeKey:'formal'},
@@ -401,7 +401,7 @@ function garmentFigureSVG(type, palette){
   return `<svg viewBox="0 0 56 126" style="width:64px;height:auto;">${head}${bodies[type]||''}</svg>`;
 }
 
-const WEDDING_PARTY = [
+let WEDDING_PARTY = [
   {id:'amber', name:'Amber Chatur', role:'Maid of Honour', side:"Natasha's side", bio:"Natasha's younger sister and partner-in-crime since forever. If there's a dance floor, she'll be the first one on it.", events:['ev-mehndi','ev-ceremony','ev-cocktail','ev-reception']},
   {id:'michael', name:'Michael Mannarino', role:'Best Man', side:"Matteo's side", bio:"Matteo's older brother and roommate through university. Ask him about the time they tried to build a boat.", events:['ev-welcome','ev-ceremony','ev-cocktail','ev-reception']},
   {id:'safa', name:'Safa El Rayyes', role:'Bridesmaid', side:"Natasha's side", bio:"Natasha's college roommate turned lifelong friend. Loves a good spreadsheet almost as much as she loves karaoke.", events:['ev-mehndi','ev-ceremony','ev-reception']},
@@ -412,37 +412,37 @@ const WEDDING_PARTY = [
   {id:'dina', name:'Dina Naji', role:'Bridesmaid', side:"Natasha's side", bio:'', events:['ev-mehndi','ev-ceremony','ev-reception']}
 ];
 
-const OUR_STORY = {
+let OUR_STORY = {
   howMet:{q:'How did you two meet?', a:"We met through mutual friends at a rooftop birthday party in the summer of 2021. Natasha spent the whole night convinced Matteo was too quiet to be any fun — she was very wrong, and found that out over three hours of terrible karaoke."},
   proposal:{q:'How did the proposal happen?', a:"Matteo proposed on a hike overlooking the Toronto skyline at sunset, the same trail they'd walked on their first real date. He'd asked her parents for their blessing the week before, and roped in her sister to make sure her camera roll would be full."},
   lookingForward:{q:'What are you most looking forward to?', a:"Having everyone we love in one room at the same time — our families have never all been together before, and we can't wait to watch that happen."},
   funFact:{q:'A fun fact for our guests', a:"Natasha still has the ticket stub from that rooftop party. Matteo has never once been able to beat her at Scrabble."}
 };
-const MILESTONES = [
+let MILESTONES = [
   {caption:'Our first date', dateLabel:'June 2021'},
   {caption:'Moving in together', dateLabel:'March 2023'},
   {caption:'The proposal', dateLabel:'August 2025'},
   {caption:'Meeting the families', dateLabel:'December 2025'}
 ];
 
-const TRAVEL = {
+let TRAVEL = {
   shuttle:'A shuttle will run between The Camden Toronto and Elmsley Estate on Ceremony day, departing the hotel every 30 minutes starting at 2:00 PM. Look for the Evera sign in the lobby.',
   flying:'The nearest airport is Toronto Pearson International (YYZ), about 45 minutes from King City by car. Billy Bishop City Airport (YTZ) is a downtown option if you’re staying near the Welcome Dinner and Farewell Brunch venues.',
   rideshare:'Uber and Lyft are both reliable throughout Toronto and into King City, though rides to the estate can take 15–20 minutes to arrive during peak times — plan a little buffer.',
   transit:'GO Transit runs from Union Station toward King City on weekdays; on the wedding weekend we’d recommend the shuttle or rideshare instead, since regional transit service is limited on Sundays.'
 };
-const THINGS_TO_DO = [
+let THINGS_TO_DO = [
   {title:'Old Town Toronto Walking Tour', description:'A guided stroll through the historic core, with stops at the St. Lawrence Market.', url:'https://www.toronto.ca/'},
   {title:'Toronto Islands', description:'A quick ferry ride from downtown with skyline views and beaches — a nice half-day if you’re in town early.', url:'https://www.toronto.ca/'},
   {title:'King City Conservation Trails', description:'Easy walking trails a short drive from Elmsley Estate, great for a morning-of stroll.', url:'https://www.trca.ca/'}
 ];
-const EAT_DRINK = [
+let EAT_DRINK = [
   {title:'The Copper Fork', description:'A cozy bistro near the hotel — reservations recommended on weekends.', url:'https://www.opentable.com/'},
   {title:'Northfield Coffee Roasters', description:'Great coffee and breakfast if you’re up early before the Farewell Brunch.', url:'https://www.opentable.com/'},
   {title:'Vine & Barrel Wine Bar', description:'A relaxed spot for a nightcap after the Welcome Dinner.', url:'https://www.opentable.com/'}
 ];
 
-const FAQ_ITEMS = [
+let FAQ_ITEMS = [
   {id:'rsvpDeadline', q:'When is the RSVP deadline?', a:'Please RSVP by March 1, 2027 so we can finalize numbers with our vendors. We’re sorry that we won’t be able to make exceptions after that date.'},
   {id:'plusOne', q:'Can I bring a guest?', a:'We’re only able to accommodate the guests named on your invitation. If you were given a plus-one, they’ll appear when you fill out your RSVP.'},
   {id:'kids', q:'Are kids invited?', a:'We love your little ones, but this will be an adults-only celebration except for children specifically named on your invitation.'},
@@ -455,24 +455,24 @@ const FAQ_ITEMS = [
   {id:'contact', q:'Who should I contact with questions?', a:'Reach out to a member of our wedding party — you can find them listed on the Wedding Party page.'}
 ];
 
-const RSVP_DEADLINE_ISO = '2027-03-01';
+let RSVP_DEADLINE_ISO = '2027-03-01';
 
 /* RSVP survey questions — mirrors the couple's RSVP Surveys built in Guest Management.
    A survey with eventId:null applies to everyone; otherwise only guests invited to
    that event see it. In a full build this would read live from the couple's account. */
-const SURVEYS = [
+let SURVEYS = [
   {id:'survey-mehndi-playlist', name:'Mehndi Playlist Requests', eventId:'ev-mehndi', questions:[
     {id:'q1', label:"Any songs you'd love to hear on the Mehndi dance floor?"}
   ]}
 ];
 
-const ALBUM_PHOTOS = []; // no photos uploaded yet in this demo — shows the empty state
-const ALBUM_NOTIFICATIONS = []; // e.g. [{sentAt: Date.now(), photoCount: 12}]
+let ALBUM_PHOTOS = []; // no photos uploaded yet in this demo — shows the empty state
+let ALBUM_NOTIFICATIONS = []; // e.g. [{sentAt: Date.now(), photoCount: 12}]
 
 /* Simulated guest directory — stands in for real guest authentication, which this
    prototype doesn't implement. Picking a name below shows only the events (and event
    pages) that guest is actually invited to. */
-const GUESTS = [
+let GUESTS = [
   {id:'g-everyone', name:'Preview — everyone (all events)', invitedEventIds:EVENTS.map(e=>e.id)},
   {id:'g-close', name:'Priya Anand (Welcome Dinner + Mehndi + Ceremony + Reception)', invitedEventIds:['ev-welcome','ev-mehndi','ev-ceremony','ev-cocktail','ev-reception']},
   {id:'g-ceremonyonly', name:'David Kim (Ceremony + Reception only)', invitedEventIds:['ev-ceremony','ev-cocktail','ev-reception']},
@@ -483,12 +483,76 @@ const GUESTS = [
 /* Real RSVP flow uses this household directory (first/last name search), independent
    of the "Preview as" picker above (which is just a demo tool for the couple to check
    per-event gating — real guests never see it). Mirrors dashboardData.guestHouseholds. */
-const HOUSEHOLDS = [
+let HOUSEHOLDS = [
   {id:'h-anand', invitedEventIds:['ev-welcome','ev-mehndi','ev-ceremony','ev-cocktail','ev-reception'], members:[{id:'m-priya',firstName:'Priya',lastName:'Anand'},{id:'m-raj',firstName:'Raj',lastName:'Anand'}]},
   {id:'h-kim', invitedEventIds:['ev-ceremony','ev-cocktail','ev-reception'], members:[{id:'m-david',firstName:'David',lastName:'Kim'}]},
   {id:'h-iqbal', invitedEventIds:['ev-mehndi'], members:[{id:'m-sana',firstName:'Sana',lastName:'Iqbal'}]},
   {id:'h-whitfield', invitedEventIds:EVENTS.map(e=>e.id), members:[{id:'m-grace',firstName:'Grace',lastName:'Whitfield'},{id:'m-tom',firstName:'Tom',lastName:'Whitfield'},{id:'m-lily',firstName:'Lily',lastName:'Whitfield'}]}
 ];
+
+/* ==================================================================
+   LIVE DATA — wires this page to the couple's real Evera account.
+   This file ships with the sample data above so it still works as a
+   standalone demo/template. When "wedding-data.json" (exported from the
+   Website module in the main Evera app) sits next to this file, it's
+   fetched here and overrides every sample const above with the couple's
+   real content. If the fetch fails for any reason (file missing, opened
+   straight from disk, offline), everything above is left exactly as-is —
+   this page always renders something, never a blank/broken page.
+================================================================== */
+let LIVE_MODE = false;
+async function loadLiveWeddingData(){
+  try{
+    const res = await fetch('wedding-data.json', {cache:'no-store'});
+    if(!res.ok) return false;
+    const data = await res.json();
+    applyLiveWeddingData(data);
+    LIVE_MODE = true;
+    return true;
+  } catch(err){
+    return false; // no data file present — this is the standalone sample/demo, not an error
+  }
+}
+/* Keyword match from the couple's own free-text dress code description to one of the four
+   illustrated categories below — the live app doesn't force the couple into a fixed set of
+   dress-code keys, so this infers the closest visual match from whatever they actually wrote. */
+function guessDressCodeKey(text){
+  const t = (text||'').toLowerCase();
+  if(!t) return null;
+  if(/black.?tie|formal|gown|tuxedo/.test(t)) return 'formal';
+  if(/bright|festive|colour|color|traditional|cultural/.test(t)) return 'festive';
+  if(/casual|brunch|linen|relaxed/.test(t)) return 'casual';
+  if(/cocktail|semi.?formal|dressy/.test(t)) return 'cocktail';
+  return 'formal';
+}
+function applyLiveWeddingData(data){
+  COUPLE = Object.assign({}, COUPLE, data.couple||{});
+  COUPLE_LOGO = data.coupleLogo || null;
+  if(data.masterPalette && data.masterPalette.length) MASTER_PALETTE = data.masterPalette;
+  WEBSITE_DESIGN = Object.assign({}, WEBSITE_DESIGN, data.websiteDesign||{});
+  WEBSITE_SECTIONS = Object.assign({}, WEBSITE_SECTIONS, data.websiteSections||{});
+  WEBSITE_ACCESS = Object.assign({}, WEBSITE_ACCESS, data.websiteAccess||{});
+  REGISTRY_LINKS = data.registryLinks || [];
+  EVENTS = data.events || [];
+  WEDDING_PARTY = data.weddingParty || [];
+  OUR_STORY = data.ourStory || {};
+  MILESTONES = data.milestones || [];
+  TRAVEL = Object.assign({}, TRAVEL, data.travel||{});
+  THINGS_TO_DO = data.thingsToDo || [];
+  EAT_DRINK = data.eatDrink || [];
+  FAQ_ITEMS = data.faqItems || [];
+  RSVP_DEADLINE_ISO = data.rsvpDeadlineISO || '';
+  SURVEYS = data.surveys || [];
+  ALBUM_PHOTOS = data.albumPhotos || [];
+  ALBUM_NOTIFICATIONS = data.albumNotifications || [];
+  HOUSEHOLDS = data.households || [];
+  // Real guests aren't authenticated in this prototype, so there's no way to know which
+  // individual is looking at the site — every visible event shows to every visitor, and the
+  // couple-only "Viewing as" debug picker (meant for checking per-event gating while building
+  // the site) is hidden rather than shown to real guests.
+  GUESTS = [{id:'g-all', name:'All Guests', invitedEventIds:EVENTS.map(e=>e.id)}];
+  currentGuestId = 'g-all';
+}
 
 /* ==================================================================
    STATE + NAV
@@ -629,26 +693,35 @@ function renderCountdown(){
 
 /* ---------- our story ---------- */
 function renderStory(){
-  document.getElementById('storyContent').innerHTML = Object.values(OUR_STORY).map(p=>`
+  const answered = Object.values(OUR_STORY).filter(p=>p && (p.a||'').trim());
+  document.getElementById('storyContent').innerHTML = answered.length ? answered.map(p=>`
     <div class="story-block"><div class="story-q">${escapeHtml(p.q)}</div><div class="story-a">${escapeHtml(p.a)}</div></div>
-  `).join('');
+  `).join('') : `<div class="empty-note">The couple hasn't written their story yet — check back soon!</div>`;
   document.getElementById('milestoneGrid').innerHTML = MILESTONES.map(m=>`
-    <div class="ms-photo"><div class="ms-caption">${escapeHtml(m.caption)}<br><span style="opacity:0.85;">${escapeHtml(m.dateLabel)}</span></div></div>
+    <div class="ms-photo">${m.photo ? `<img src="${m.photo}">` : ''}<div class="ms-caption">${escapeHtml(m.caption)}<br><span style="opacity:0.85;">${escapeHtml(m.dateLabel)}</span></div></div>
   `).join('');
 }
 
 /* ---------- wedding party ---------- */
 function renderParty(){
-  const sides = ["Natasha's side", "Matteo's side"];
+  if(!WEDDING_PARTY.length){
+    document.getElementById('partyContent').innerHTML = `<div class="empty-note">The couple hasn't added their wedding party yet — check back soon!</div>`;
+    return;
+  }
+  // Group by whatever "side" values the couple actually used (e.g. "Natasha's side"), in the
+  // order each side first appears, plus an "Also Celebrating With Us" bucket for anyone without
+  // a side set — rather than a hardcoded two-side list that only worked for the sample couple.
+  const sides = [...new Set(WEDDING_PARTY.map(m=>m.side).filter(Boolean))];
+  if(WEDDING_PARTY.some(m=>!m.side)) sides.push('');
   document.getElementById('partyContent').innerHTML = sides.map(side=>{
-    const members = WEDDING_PARTY.filter(m=>m.side===side);
+    const members = WEDDING_PARTY.filter(m=>(m.side||'')===side);
     if(!members.length) return '';
     return `
-      <div class="side-heading">${escapeHtml(side)}</div>
+      <div class="side-heading">${side ? escapeHtml(side) : 'Also Celebrating With Us'}</div>
       <div class="party-grid">
         ${members.map(m=>`
           <div class="party-card">
-            <div class="party-avatar">${initials(m.name)}</div>
+            <div class="party-avatar">${m.photo ? `<img src="${m.photo}">` : initials(m.name)}</div>
             <div class="party-name">${escapeHtml(m.name)}</div>
             <div class="party-role">${escapeHtml(m.role)}</div>
             ${m.bio ? `<div class="party-bio">${escapeHtml(m.bio)}</div>` : ''}
@@ -677,7 +750,8 @@ function renderEventDetail(){
     return;
   }
   const e = EVENTS.find(x=>x.id===currentEventTab);
-  const dc = DRESS_CODES[e.dressCodeKey];
+  const dcKey = e.dressCodeKey || guessDressCodeKey(e.dressCodeText);
+  const dc = dcKey ? DRESS_CODES[dcKey] : null;
   const gcalUrl = buildGoogleCalendarUrl(e);
   box.innerHTML = `
     <div class="card">
@@ -692,18 +766,19 @@ function renderEventDetail(){
         <a class="btn btn-solid" href="${gcalUrl}" target="_blank" rel="noopener">+ Add to Google Calendar</a>
         <a class="btn btn-outline" href="#" onclick="downloadIcs('${e.id}'); return false;">⤓ Download .ics</a>
       </div>
+      ${dc ? `
       <div class="dresscode-box">
-        <div class="dc-title">${escapeHtml(dc.label)}</div>
-        <div class="dc-desc">${escapeHtml(dc.desc)}</div>
+        <div class="dc-title">${e.dressCodeText ? escapeHtml(e.dressCodeText.split(/[.,—–-]/)[0].trim() || dc.label) : escapeHtml(dc.label)}</div>
+        <div class="dc-desc">${escapeHtml(e.dressCodeText || dc.desc)}</div>
         <div class="dc-swatches">${dc.palette.map(c=>`<span class="dc-swatch" style="background:${c};"></span>`).join('')}</div>
         <div class="dc-figures">
           ${dc.garments.map(g=>`<div class="dc-figure-wrap">${garmentFigureSVG(g, dc.palette)}<div class="dc-figure-cap">${escapeHtml(GARMENT_LABELS[g]||'')}</div></div>`).join('')}
         </div>
         <div class="retailer-row">
-          ${(RETAILERS[e.dressCodeKey]||[]).map(r=>`<a class="retailer-chip" href="${r.url}" target="_blank" rel="noopener">🛍 ${escapeHtml(r.name)}</a>`).join('')}
+          ${(RETAILERS[dcKey]||[]).map(r=>`<a class="retailer-chip" href="${r.url}" target="_blank" rel="noopener">🛍 ${escapeHtml(r.name)}</a>`).join('')}
         </div>
         <div class="dc-note">Stylized illustrations to set the tone, drawn to this event's colour palette — not real photos.</div>
-      </div>
+      </div>` : `<div class="empty-note" style="margin-top:20px;">Dress code not set yet — check back closer to the date.</div>`}
     </div>
   `;
 }
@@ -771,12 +846,15 @@ function setAlbumFilter(f){ albumFilter = f; renderAlbum(); }
 
 /* ---------- travel ---------- */
 function renderTravel(){
-  document.getElementById('travelGrid').innerHTML = `
-    <div class="travel-card card"><h4>🚐 Shuttle Service</h4><p>${escapeHtml(TRAVEL.shuttle)}</p></div>
-    <div class="travel-card card"><h4>✈️ Flying In</h4><p>${escapeHtml(TRAVEL.flying)}</p></div>
-    <div class="travel-card card"><h4>🚕 Uber / Taxi</h4><p>${escapeHtml(TRAVEL.rideshare)}</p></div>
-    <div class="travel-card card"><h4>🚆 Public Transportation</h4><p>${escapeHtml(TRAVEL.transit)}</p></div>
-  `;
+  const cards = [
+    ['🚐 Shuttle Service', TRAVEL.shuttle],
+    ['✈️ Flying In', TRAVEL.flying],
+    ['🚕 Uber / Taxi', TRAVEL.rideshare],
+    ['🚆 Public Transportation', TRAVEL.transit]
+  ].filter(([,text])=>(text||'').trim());
+  document.getElementById('travelGrid').innerHTML = cards.length
+    ? cards.map(([label,text])=>`<div class="travel-card card"><h4>${label}</h4><p>${escapeHtml(text)}</p></div>`).join('')
+    : `<div class="empty-note" style="grid-column:1/-1;">The couple hasn't added travel details yet — check back soon!</div>`;
   document.getElementById('thingsToDoGrid').innerHTML = THINGS_TO_DO.map(t=>`
     <div class="rec-card"><h5>${escapeHtml(t.title)}</h5><p>${escapeHtml(t.description)}</p>${t.url?`<a href="${t.url}" target="_blank" rel="noopener">Learn more →</a>`:''}</div>
   `).join('');
@@ -787,12 +865,12 @@ function renderTravel(){
 
 /* ---------- FAQ ---------- */
 function renderFaq(){
-  document.getElementById('faqList').innerHTML = FAQ_ITEMS.map((f,i)=>`
+  document.getElementById('faqList').innerHTML = FAQ_ITEMS.length ? FAQ_ITEMS.map((f,i)=>`
     <div class="faq-item" id="faq-${i}">
       <div class="faq-q" onclick="toggleFaq(${i})"><span>${escapeHtml(f.q)}</span><span class="faq-chevron">▾</span></div>
       <div class="faq-a">${escapeHtml(f.a)}</div>
     </div>
-  `).join('');
+  `).join('') : `<div class="empty-note">The couple hasn't added any FAQs yet.</div>`;
 }
 function toggleFaq(i){ document.getElementById('faq-'+i).classList.toggle('open'); }
 
@@ -807,7 +885,7 @@ let rsvpEventHeadcounts = {}; // {eventId: number}
 const RSVP_CONFIRMATION_LOG = []; // simulated confirmation "emails" — {householdId, sentAt}
 
 function renderRsvp(){
-  document.getElementById('rsvpDeadlineBanner').innerHTML = `Please RSVP by <b>${fmtDeadline(RSVP_DEADLINE_ISO)}</b>`;
+  document.getElementById('rsvpDeadlineBanner').innerHTML = RSVP_DEADLINE_ISO ? `Please RSVP by <b>${fmtDeadline(RSVP_DEADLINE_ISO)}</b>` : '';
   renderRsvpSearch();
   document.getElementById('rsvpFormWrap').innerHTML = '';
 }
@@ -939,9 +1017,29 @@ function downloadCombinedIcs(eventIds){
 /* ==================================================================
    INIT
 ================================================================== */
-function init(){
+function applyHeroAndChrome(){
+  document.title = `${COUPLE.partner1} & ${COUPLE.partner2}`;
+  document.getElementById('heroH1').innerHTML = `${escapeHtml(COUPLE.partner1)} <span class="amp">&amp;</span> ${escapeHtml(COUPLE.partner2)}`;
+  const dateLabel = COUPLE.weddingDateISO ? new Date(COUPLE.weddingDateISO+'T00:00:00').toLocaleDateString('en-US',{weekday:'long', year:'numeric', month:'long', day:'numeric'}) : '';
+  document.getElementById('heroDatestr').textContent = dateLabel;
+  document.getElementById('heroDatestr').style.display = dateLabel ? '' : 'none';
+  document.getElementById('heroPlace').textContent = COUPLE.location || '';
+  document.getElementById('heroPlace').style.display = COUPLE.location ? '' : 'none';
+  document.getElementById('heroHashtag').textContent = COUPLE.hashtag || '';
+  document.getElementById('heroHashtag').style.display = COUPLE.hashtag ? '' : 'none';
+  if(!COUPLE_LOGO){
+    document.getElementById('brandLink').textContent = `${COUPLE.partner1} & ${COUPLE.partner2}`;
+  }
+  // The "Viewing as" bar is a couple-only tool for previewing per-event gating while building
+  // the site — real guests (LIVE_MODE) never see it, since there's no real guest login here.
+  document.getElementById('guestBar').style.display = LIVE_MODE ? 'none' : '';
+  document.getElementById('guestEventNote').textContent = '';
+}
+async function init(){
+  await loadLiveWeddingData();
   initGate();
   applyWebsiteTheme();
+  applyHeroAndChrome();
   initNav();
   onGuestChange(currentGuestId);
   renderCountdown();

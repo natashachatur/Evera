@@ -875,6 +875,13 @@
   .readonly-cell{padding:5px 10px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; font-weight:600; color:var(--charcoal); display:flex; align-items:center;}
   .bi-meta{display:flex; flex-direction:column; gap:1px; line-height:1.4;}
   .bi-due{font-size:10.5px; font-weight:700; color:var(--amber);}
+  /* Wedding Plan task rows: title stacked above its metadata, with the metadata laid out as
+     wrapping chips (gap, not <br>+inline-text) so a long assignee name or "Originally due: …"
+     note wraps as a whole phrase instead of breaking mid-word and crowding the Event/Role columns. */
+  .plan-task-title{font-weight:600; line-height:1.35;}
+  .plan-task-meta{display:flex; flex-wrap:wrap; align-items:center; gap:3px 10px; margin-top:4px; font-size:12px; font-weight:400; color:var(--charcoal-faint); line-height:1.4;}
+  .plan-task-meta-item{white-space:nowrap;}
+  .plan-task-edit{text-decoration:underline; text-decoration-style:dotted; text-underline-offset:2px;}
   @media (max-width:900px){ .budget-items-head{display:none;} .budget-item-row{grid-template-columns:1fr 1fr; row-gap:6px; padding:11px 0; border-top:1px dashed var(--line-soft);} }
   .budget-item-row2{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:0 0 12px 0; margin-bottom:2px; border-bottom:1px dashed var(--line-soft);}
   .budget-item-row2 > input.select-field-sm{width:auto; flex:0 0 200px;}
@@ -2042,6 +2049,19 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.51.0', date:'2026-10-25',
+    title:'Your real wedding, on your real website — Website Part A/B wiring',
+    items:[
+      'The Website module now has an "⬇ Export Website Data (JSON)" button. It pulls together everything you\'ve entered — Our Story, Wedding Party bios, visible Events with their real dress codes, Travel, FAQ, Registry links, your design/colour choices, and your real guest list for RSVP search — into one file.',
+      'wedding-website.html (the guest-facing site) now reads that file automatically when it sits next to it as wedding-data.json, and shows your real wedding instead of the Natasha & Matteo sample content — no other changes needed to that file. If the data file isn\'t there, it still works exactly as before, as a standalone sample/template.',
+      'Free-text dress codes (whatever you actually typed for an event, like "Bright colours encouraged — no white or black") are automatically matched to the closest illustrated attire category, so the real garment visuals and retailer links still show up without you having to pick from a fixed list.',
+      'The couple-only "Viewing as" guest switcher (meant for you to preview per-event gating while building the site) is automatically hidden from real guests once your data is wired in — it was never meant for them to see.',
+      'Every section degrades gracefully when something hasn\'t been filled in yet — an unanswered Our Story prompt, an empty Travel section, no FAQs picked — instead of showing blank space or breaking.',
+      'What this doesn\'t do yet: guest RSVP submissions on the website still aren\'t written back into Evera (that form stays exactly as honest as it already was about being unsaved for now) — real delivery needs the same kind of backend work as guest/vendor Communications, and is tracked as a separate follow-up rather than rushed in here.',
+      'Two small polish fixes flagged along the way: the Overall Aesthetic box in Wedding Blueprint was taller than the one or two sentences people actually put in it — shrunk it down. And task rows in the Wedding Plan (title, assignee, due-note, Edit details all crammed onto one wrapping line) could crowd into the Event/Role columns next to them — the title and its metadata now stack cleanly, and metadata wraps as whole phrases instead of breaking mid-word.'
+    ]
+  },
   {
     version:'1.50.0', date:'2026-10-25',
     title:'Empty states that teach, instead of saying "nothing here"',
@@ -6035,7 +6055,7 @@ function renderBlueprintDetailsTab(){
       <div class="card-head"><h4>Master Aesthetic</h4><span class="d-sub">Your colour story and overall look — the default every event starts from, reused across your Playbook, Website and mood boards</span></div>
       <div class="field-cell" style="margin-bottom:18px;">
         <label>Overall Aesthetic</label>
-        <textarea class="notes-field" placeholder="Describe the overall look and feel you're going for..." onchange="updateWeddingProfileField('aestheticNotes',this.value)">${escapeHtml(wp.aestheticNotes)}</textarea>
+        <textarea class="notes-field" style="min-height:64px;" placeholder="Describe the overall look and feel you're going for..." onchange="updateWeddingProfileField('aestheticNotes',this.value)">${escapeHtml(wp.aestheticNotes)}</textarea>
       </div>
       <div class="palette-band">
         ${wp.colorPalette.map((c,i)=>`
@@ -6800,7 +6820,7 @@ function renderTaskGroupBlock(label, hint, tasksInGroup, collapsed, toggleOnclic
       </div>
       ${collapsed ? '' : `
       <div class="budget-items" style="padding-left:0;">
-        <div class="budget-items-head" style="grid-template-columns:0.4fr 2fr 1fr 0.9fr 0.8fr 0.8fr 0.4fr;"><span></span><span>Task</span><span>Event</span><span>Role</span><span>Priority</span><span>Due</span><span></span></div>
+        <div class="budget-items-head" style="grid-template-columns:0.4fr 2.6fr 0.9fr 0.8fr 0.8fr 0.7fr 0.4fr;"><span></span><span>Task</span><span>Event</span><span>Role</span><span>Priority</span><span>Due</span><span></span></div>
         ${tasksInGroup.map(t=>renderPlanTaskRow(t)).join('')}
       </div>`}
     </div>
@@ -6950,14 +6970,16 @@ function renderPlanTaskRow(t){
   const blockedBy = taskBlockedBy(t);
   const assigneeName = taskAssigneeLabel(t);
   return `
-    <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:0.4fr 2fr 1fr 0.9fr 0.8fr 0.8fr 0.4fr; ${t.done?'opacity:0.55;':''}">
+    <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:0.4fr 2.6fr 0.9fr 0.8fr 0.8fr 0.7fr 0.4fr; ${t.done?'opacity:0.55;':''}">
       <span><input type="checkbox" style="width:16px;height:16px;" ${t.done?'checked':''} ${blockedBy&&!t.done?'disabled title="Blocked until its dependency is done"':''} onchange="toggleTaskDone('${t.id}')"></span>
-      <span class="readonly-cell" style="cursor:pointer; ${t.done?'text-decoration:line-through;':''}" onclick="toggleTaskExpanded('${t.id}')">
-        ${t.milestone?'<span class="pill pill-neutral" style="font-size:9px; padding:2px 6px; margin-right:5px; vertical-align:1px;">🏁 Milestone</span>':''}${escapeHtml(t.title)}
-        ${blockedBy ? `<br><span class="d-sub" style="font-weight:600; color:var(--terracotta);">🔒 Blocked by: ${escapeHtml(blockedBy.title)}</span>` : ''}
-        ${assigneeName ? `<br><span class="d-sub" style="font-weight:400;">👤 ${escapeHtml(assigneeName)}</span>` : ''}
-        ${t.notes?`<br><span class="d-sub" style="font-weight:400;">${escapeHtml(t.notes)}</span>`:''}
-        <span class="d-sub" style="font-weight:400;"> · ${planExpandedTaskId===t.id?'Hide':'Edit'} details</span>
+      <span class="readonly-cell plan-task-cell" style="display:block; cursor:pointer; ${t.done?'text-decoration:line-through;':''}" onclick="toggleTaskExpanded('${t.id}')">
+        <div class="plan-task-title">${t.milestone?'<span class="pill pill-neutral" style="font-size:9px; padding:2px 6px; margin-right:5px; vertical-align:1px;">🏁 Milestone</span>':''}${escapeHtml(t.title)}</div>
+        <div class="plan-task-meta">
+          ${blockedBy ? `<span class="plan-task-meta-item" style="font-weight:600; color:var(--terracotta);">🔒 Blocked by: ${escapeHtml(blockedBy.title)}</span>` : ''}
+          ${assigneeName ? `<span class="plan-task-meta-item">👤 ${escapeHtml(assigneeName)}</span>` : ''}
+          ${t.notes?`<span class="plan-task-meta-item">${escapeHtml(t.notes)}</span>`:''}
+          <span class="plan-task-meta-item plan-task-edit">${planExpandedTaskId===t.id?'Hide':'Edit'} details</span>
+        </div>
       </span>
       <span class="d-sub">${escapeHtml(taskEventLabel(t))}</span>
       <span class="d-sub">${escapeHtml(t.role)}</span>
@@ -7747,7 +7769,11 @@ function renderWebsiteModule(){
           </select>
         </div>
       </div>
-      <button class="btn ${w.published?'btn-outline':'btn-solid'} btn-sm" style="margin-top:10px;" onclick="toggleWebsitePublished()">${w.published?'Unpublish':'Publish Website'}</button>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+        <button class="btn ${w.published?'btn-outline':'btn-solid'} btn-sm" onclick="toggleWebsitePublished()">${w.published?'Unpublish':'Publish Website'}</button>
+        <button class="btn btn-outline btn-sm" onclick="downloadWeddingWebsiteExport()">⬇ Export Website Data (JSON)</button>
+      </div>
+      <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:10px;">Everything below — Our Story, Wedding Party, Events, Travel, FAQ, Registry, and your real guest list for RSVP search — is pulled live into this export. Save the downloaded file as <code>wedding-data.json</code> next to your <code>wedding-website.html</code> file and the guest site shows your real wedding instead of the sample one, automatically. RSVPs submitted on that page still aren't wired back into Evera yet — that's tracked separately in the backlog alongside real guest communications.</p>
     </div>
 
     <div class="grid-2">
@@ -8068,6 +8094,84 @@ function everaSubdomainPreview(){
 function togglePasswordProtected(){
   dashboardData.website.passwordProtected = !dashboardData.website.passwordProtected;
   document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+
+/* ==================================================================
+   Website export — wires this module (Part A, the couple's real data)
+   to wedding-website.html (Part B, the guest-facing site). Builds a
+   wedding-data.json snapshot of everything below that file knows how to
+   read; save it next to wedding-website.html and the sample Natasha &
+   Matteo content is replaced with the couple's real content automatically
+   — no other change to wedding-website.html is needed. RSVP submissions
+   on that page still aren't wired back into Evera (that needs the same
+   real-backend work as guest communications — see the backlog), so this
+   export is read-only content, not a two-way sync.
+================================================================== */
+function buildWeddingWebsiteExport(){
+  const d = dashboardData;
+  const w = d.website;
+  const visibleEvents = d.events.filter(e=>e.publicVisibility!==false);
+  const ourStory = {};
+  OUR_STORY_PROMPTS.forEach(p=>{
+    const answer = (w.ourStoryPrompts||{})[p.id] || '';
+    if(answer.trim()) ourStory[p.id] = {q:p.q, a:answer};
+  });
+  if(!Object.keys(ourStory).length && (w.ourStoryText||'').trim()){
+    ourStory.freeform = {q:'Our Story', a:w.ourStoryText};
+  }
+  return {
+    exportedAt: Date.now(),
+    couple: {
+      partner1: d.partner1First || d.partner1 || '',
+      partner2: d.partner2First || d.partner2 || '',
+      weddingDateISO: d.weddingDateISO || '',
+      location: d.location || '',
+      hashtag: d.weddingProfile.hashtag || ''
+    },
+    coupleLogo: d.coupleLogo || null,
+    masterPalette: d.weddingProfile.colorPalette || [],
+    websiteDesign: w.design,
+    websiteSections: w.sections,
+    websiteAccess: {customDomain: w.customDomain||'', passwordProtected: !!w.passwordProtected, sitePassword: w.sitePassword||''},
+    registryLinks: w.registryLinks||[],
+    events: visibleEvents.map(e=>({
+      id:e.id, name:e.name, dateISO:e.dateISO||'', dateLabel: fmtDateLabel(e.dateISO),
+      startTime:e.startTime||'', endTime:e.endTime||'', location:e.location||'', address:e.location||'',
+      description:e.description||'', dressCodeText:e.dressCode||''
+    })),
+    weddingParty: (d.weddingParty||[]).map(m=>({
+      id:m.id, name:m.name, role:m.role||'', side:m.side||'', bio:m.bio||'', photo:m.photo||null,
+      events: visibleEvents.filter(e=>(m.events||[]).includes(e.name)).map(e=>e.id)
+    })),
+    ourStory,
+    milestones: (w.milestonePhotos||[]).map(m=>({photo:m.photo, caption:m.caption||'', dateLabel:m.dateLabel||''})),
+    travel: {shuttle:w.travel.shuttle||'', flying:w.travel.flying||'', rideshare:w.travel.rideshare||'', transit:w.travel.transit||''},
+    thingsToDo: (w.travel.thingsToDo||[]).map(t=>({title:t.title, description:t.description||'', url:t.url||''})),
+    eatDrink: (w.travel.eatDrink||[]).map(t=>({title:t.title, description:t.description||'', url:t.url||''})),
+    faqItems: FAQ_TEMPLATES.filter(t=>(w.faqSelections||[]).includes(t.id)).map(t=>({
+      id:t.id, q:t.q, a: (w.faqAnswers && w.faqAnswers[t.id]!==undefined) ? w.faqAnswers[t.id] : t.a(d)
+    })),
+    rsvpDeadlineISO: w.rsvpDeadlineISO || '',
+    surveys: (d.rsvpSurveys||[]).filter(s=>s.active!==false && visibleEvents.some(e=>e.id===s.eventId || !s.eventId)).map(s=>({
+      id:s.id, name:s.name, eventId:s.eventId||null, questions:(s.questions||[]).map(q=>({id:q.id, label:q.label}))
+    })),
+    albumPhotos: (w.albumPhotos||[]).map(p=>({photo:p.photo, eventId:p.eventId||null})),
+    albumNotifications: w.albumNotifications||[],
+    households: (d.guestHouseholds||[]).map(h=>({
+      id:h.id,
+      invitedEventIds: (h.invitedEvents||[]).filter(id=>visibleEvents.some(e=>e.id===id)),
+      members: (h.members||[]).filter(m=>m.firstName||m.lastName).map(m=>({id:m.id, firstName:m.firstName||'', lastName:m.lastName||''}))
+    }))
+  };
+}
+function downloadWeddingWebsiteExport(){
+  const data = buildWeddingWebsiteExport();
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'wedding-data.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 /* ==================================================================
