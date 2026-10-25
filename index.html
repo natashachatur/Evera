@@ -2050,6 +2050,16 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.52.0', date:'2026-10-25',
+    title:'Time ranges for Playbook moments, smart Location/Time suggestions, and a tidier Waitlist and Seating Chart',
+    items:[
+      'Playbook: every moment (what the Website wiring release called "Linked Playbook Moments" — the per-event run-of-show items editable from either Playbook or an Event\'s own Timeline tab) now has a Start Time and an End Time, not just one time field. End Time is optional, and anywhere a moment is shown read-only it displays as a range (e.g. "4:00 PM – 4:30 PM") when an end time is set, or just the start time when it isn\'t.',
+      'Playbook: the Location and Time fields now suggest as you type — pulling from the linked event\'s own Location/Start Time/End Time plus whatever\'s already been used for other moments on that same event — but they\'re still plain text fields underneath, so typing something that isn\'t in the list works exactly the same as before. Nothing is forced into a fixed picklist.',
+      'Guests: removed the "Added" column from the Waitlist tab. It showed the date a household was put on the waitlist, but was "—" for every household added before this feature existed and wasn\'t used anywhere else (no sort-by-wait-time, no reporting) — more confusing than useful, so it\'s gone rather than kept half-working.',
+      'Guests: the Seating Chart tab\'s "+ Add chart for event…" dropdown and separate "+ Add Seating Chart" button are now one control — pick an event from the dropdown and its chart is created immediately, no second click needed. When every event already has a chart, the dropdown is replaced with a plain note saying so instead of showing an empty, useless control.'
+    ]
+  },
+  {
     version:'1.51.0', date:'2026-10-25',
     title:'Your real wedding, on your real website — Website Part A/B wiring',
     items:[
@@ -4191,7 +4201,7 @@ function normalizeDashboardData(d){
   if(!d.hairMakeupSchedules || typeof d.hairMakeupSchedules!=='object') d.hairMakeupSchedules = {};
   if(d.ceremonyOrder && d.ceremonyOrder.eventId===undefined) d.ceremonyOrder.eventId = null;
   // Ad-hoc timeline items + vendor linking (v1.26.0)
-  (d.playbookTimeline||[]).forEach(item=>{ if(item.eventId===undefined) item.eventId = null; if(item.vendorId===undefined) item.vendorId = null; });
+  (d.playbookTimeline||[]).forEach(item=>{ if(item.eventId===undefined) item.eventId = null; if(item.vendorId===undefined) item.vendorId = null; if(item.endTime===undefined) item.endTime = ''; });
   if(!Array.isArray(d.feedbackSubmissions)) d.feedbackSubmissions = [];
   if(!Array.isArray(d.vendors)) d.vendors = [];
   if(!Array.isArray(d.vendorRecommendations)) d.vendorRecommendations = [];
@@ -10026,7 +10036,7 @@ function renderTimelineList(items, opts){
       <div class="${opts.numbered?'pb-numbered':''}">
         ${sortByTime(items.filter(i=>i.day===day)).map(i=>`
           <div class="pb-item" onclick="openItemDetail('${i.id}')">
-            <div class="pb-time">${i.time}</div>
+            <div class="pb-time">${timeRangeLabel(i)}</div>
             <div><div class="pb-title">${i.title}</div>${opts.showTags?`<div class="pb-tags">${i.tags.map(t=>`<span>${t.replace('vendor:','')}</span>`).join('')}</div>`:''}</div>
             <svg class="pb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
           </div>`).join('')}
@@ -10044,26 +10054,52 @@ function timelineDayLabelForEvent(e){
 // item detail let you fix a typo'd time or re-link a vendor after the fact. Both now write straight
 // to the same dashboardData.playbookTimeline record via updateTimelineItemField, so an edit made
 // here shows up in Playbook immediately and vice versa — there's only ever been one record either way.
+// v1.52.0: Time is a start/end range, not a single moment — matches the Start Time/End Time
+// fields an Event already has. Location and Time inputs are "smart": a <datalist> suggests the
+// linked event's own location/start/end plus whatever's already been typed for other moments on
+// that same event, but the field stays a plain text input, so free-form entry always still works.
+function timelineFieldSuggestions(eventId){
+  const d = dashboardData;
+  const ev = (d.events||[]).find(e=>e.id===eventId);
+  const locations = [];
+  const times = [];
+  const addLoc = v => { if(v && !locations.includes(v)) locations.push(v); };
+  const addTime = v => { if(v && !times.includes(v)) times.push(v); };
+  if(ev){ addLoc(ev.location); addTime(ev.startTime); addTime(ev.endTime); }
+  (d.playbookTimeline||[]).filter(i=>i.eventId===eventId).forEach(i=>{ addLoc(i.location); addTime(i.time); addTime(i.endTime); });
+  return {locations, times};
+}
+function renderTimelineSuggestLists(eventId, uid){
+  const s = timelineFieldSuggestions(eventId);
+  return `<datalist id="dl-time-${uid}">${s.times.map(t=>`<option value="${escapeAttr(t)}">`).join('')}</datalist><datalist id="dl-loc-${uid}">${s.locations.map(l=>`<option value="${escapeAttr(l)}">`).join('')}</datalist>`;
+}
+function timeRangeLabel(item){
+  if(item.time && item.endTime) return `${item.time} – ${item.endTime}`;
+  return item.time || '';
+}
 function renderTimelineItemRow(item){
   const vbOptions = (dashboardData.vendorBookings||[]).map(vb=>`<option value="${vb.id}" ${item.vendorId===vb.id?'selected':''}>${escapeHtml(vb.vendorName||vb.category)} — ${escapeHtml(vb.category)}</option>`).join('');
-  return `<div class="budget-item-row" style="grid-template-columns:0.7fr 1.5fr 1.1fr 1.3fr 0.4fr; align-items:center;">
-    <input type="text" class="select-field-sm" value="${escapeAttr(item.time)}" placeholder="Time" onchange="updateTimelineItemField('${item.id}','time',this.value)">
+  return `<div class="budget-item-row" style="grid-template-columns:0.5fr 0.5fr 1.3fr 1.0fr 1.0fr 0.35fr; align-items:center;">
+    <input type="text" class="select-field-sm" list="dl-time-${item.id}" value="${escapeAttr(item.time)}" placeholder="Start" onchange="updateTimelineItemField('${item.id}','time',this.value)">
+    <input type="text" class="select-field-sm" list="dl-time-${item.id}" value="${escapeAttr(item.endTime||'')}" placeholder="End" onchange="updateTimelineItemField('${item.id}','endTime',this.value)">
     <input type="text" class="select-field-sm" value="${escapeAttr(item.title)}" placeholder="What's happening" onchange="updateTimelineItemField('${item.id}','title',this.value)">
-    <input type="text" class="select-field-sm" value="${escapeAttr(item.location||'')}" placeholder="Location" onchange="updateTimelineItemField('${item.id}','location',this.value)">
+    <input type="text" class="select-field-sm" list="dl-loc-${item.id}" value="${escapeAttr(item.location||'')}" placeholder="Location" onchange="updateTimelineItemField('${item.id}','location',this.value)">
     <select class="select-field-sm" onchange="updateTimelineItemVendor('${item.id}',this.value)">
       <option value="">No vendor linked</option>
       ${vbOptions}
     </select>
     <a href="#" class="danger-link" onclick="removeTimelineItem('${item.id}'); return false;">Remove</a>
+    ${renderTimelineSuggestLists(item.eventId, item.id)}
   </div>`;
 }
 function renderAddTimelineItemRow(eventId){
   const vbOptions = (dashboardData.vendorBookings||[]).map(vb=>`<option value="${vb.id}">${escapeHtml(vb.vendorName||vb.category)} — ${escapeHtml(vb.category)}</option>`).join('');
   return `
     <div class="custom-add-row" style="margin-top:8px; flex-wrap:wrap;">
-      <input type="text" id="newTL-${eventId}-time" placeholder="Time (e.g. 3:15 PM)" style="max-width:130px;">
+      <input type="text" id="newTL-${eventId}-time" list="dl-time-new-${eventId}" placeholder="Start (e.g. 3:15 PM)" style="max-width:120px;">
+      <input type="text" id="newTL-${eventId}-endtime" list="dl-time-new-${eventId}" placeholder="End (optional)" style="max-width:120px;">
       <input type="text" id="newTL-${eventId}-title" placeholder="What's happening" style="flex:2; min-width:180px;">
-      <input type="text" id="newTL-${eventId}-location" placeholder="Location (optional)" style="flex:1; min-width:140px;">
+      <input type="text" id="newTL-${eventId}-location" list="dl-loc-new-${eventId}" placeholder="Location (optional)" style="flex:1; min-width:140px;">
       <select id="newTL-${eventId}-vendor" class="select-field-sm" style="width:auto;">
         <option value="">Link a vendor (optional)</option>
         ${vbOptions}
@@ -10072,6 +10108,7 @@ function renderAddTimelineItemRow(eventId){
         <input type="checkbox" id="newTL-${eventId}-wp" style="width:auto;"> Wedding party too
       </label>
       <button class="btn btn-outline btn-sm" onclick="addTimelineItem('${eventId}')">+ Add</button>
+      ${renderTimelineSuggestLists(eventId, 'new-'+eventId)}
     </div>
   `;
 }
@@ -10079,6 +10116,7 @@ function addTimelineItem(eventId){
   const time = (document.getElementById(`newTL-${eventId}-time`).value||'').trim();
   const title = (document.getElementById(`newTL-${eventId}-title`).value||'').trim();
   if(!time || !title) return;
+  const endTime = (document.getElementById(`newTL-${eventId}-endtime`).value||'').trim();
   const location = (document.getElementById(`newTL-${eventId}-location`).value||'').trim();
   const vendorId = document.getElementById(`newTL-${eventId}-vendor`).value || null;
   const wpChecked = document.getElementById(`newTL-${eventId}-wp`).checked;
@@ -10092,7 +10130,7 @@ function addTimelineItem(eventId){
   dashboardData.playbookTimeline.push({
     id:'tl-'+Date.now().toString(36),
     eventId, vendorId: vendorId||null,
-    day: timelineDayLabelForEvent(e), time, title,
+    day: timelineDayLabelForEvent(e), time, endTime, title,
     location: location || (e ? (e.location||'') : ''),
     notes:'', tags
   });
@@ -10161,8 +10199,9 @@ function renderItemDetail(id){
       <!-- v1.46.0: editable here, same record an Event's Timeline tab edits (dashboardData.playbookTimeline) — an edit in either place shows up in the other immediately. -->
       <div class="field-grid" style="margin-top:8px;">
         <div class="field-cell" style="grid-column:1/-1;"><label>What's happening</label><input type="text" value="${escapeAttr(item.title)}" onchange="updateTimelineItemField('${item.id}','title',this.value)"></div>
-        <div class="field-cell"><label>Time</label><input type="text" value="${escapeAttr(item.time)}" onchange="updateTimelineItemField('${item.id}','time',this.value)"></div>
-        <div class="field-cell"><label>Location</label><input type="text" value="${escapeAttr(item.location||'')}" onchange="updateTimelineItemField('${item.id}','location',this.value)"></div>
+        <div class="field-cell"><label>Start Time</label><input type="text" list="dl-time-detail-${item.id}" value="${escapeAttr(item.time)}" onchange="updateTimelineItemField('${item.id}','time',this.value)"></div>
+        <div class="field-cell"><label>End Time</label><input type="text" list="dl-time-detail-${item.id}" value="${escapeAttr(item.endTime||'')}" onchange="updateTimelineItemField('${item.id}','endTime',this.value)"></div>
+        <div class="field-cell" style="grid-column:1/-1;"><label>Location</label><input type="text" list="dl-loc-detail-${item.id}" value="${escapeAttr(item.location||'')}" onchange="updateTimelineItemField('${item.id}','location',this.value)"></div>
         <div class="field-cell" style="grid-column:1/-1;"><label>Linked Vendor</label>
           <select onchange="updateTimelineItemVendor('${item.id}',this.value)">
             <option value="">No vendor linked</option>
@@ -10170,9 +10209,10 @@ function renderItemDetail(id){
           </select>
         </div>
       </div>
+      ${renderTimelineSuggestLists(item.eventId, 'detail-'+item.id)}
       ` : `
       <h3>${escapeHtml(item.title)}</h3>
-      <div class="im-time">${escapeHtml(item.time)}</div>
+      <div class="im-time">${escapeHtml(timeRangeLabel(item))}</div>
       ${item.location?`<div class="im-row"><b>Location</b><span>${escapeHtml(item.location)}</span></div>`:''}
       `}
       <div class="im-row"><b>Visible to</b><span>${item.tags.map(t=>t.replace('vendor:','')).join(', ')}</span></div>
@@ -12123,6 +12163,7 @@ function renderFloorPlan(readOnly){
   if(!chart) return `<div class="card"><p style="font-size:13px;color:var(--charcoal-faint);">Add a seating chart to get started.</p></div>`;
   const rs = chart.roomSetup;
   const seatable = allSeatableMembers(chart.eventId);
+  const availChartEvents = d.events.filter(e=>!(d.seatingCharts||[]).some(c=>c.eventId===e.id));
   return `
     <div class="seating-layout">
     <div class="card">
@@ -12138,11 +12179,11 @@ function renderFloorPlan(readOnly){
       </div>
       ${readOnly ? '' : `
       <div class="chip-grid" style="align-items:center; margin-bottom:10px;">
-        <select id="newChartEvent" class="select-field-sm" style="width:auto; max-width:190px;">
-          <option value="">+ Add chart for event…</option>
-          ${d.events.filter(e=>!(d.seatingCharts||[]).some(c=>c.eventId===e.id)).map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
-        </select>
-        <button class="btn btn-outline btn-sm" onclick="addSeatingChart()">+ Add Seating Chart</button>
+        ${availChartEvents.length ? `
+        <select id="newChartEvent" class="select-field-sm" style="width:auto; max-width:220px;" onchange="if(this.value){addSeatingChart(this.value);}">
+          <option value="">+ Add seating chart for event…</option>
+          ${availChartEvents.map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
+        </select>` : `<span class="d-sub">A chart's already been added for every event.</span>`}
         ${!chart.isPrimary ? `<a href="#" class="danger-link" onclick="removeSeatingChart('${chart.id}'); return false;">Remove this chart</a>` : ''}
       </div>`}
       <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">${readOnly ? "View-only reference — only guests who RSVP'd yes appear here." : "Only guests who RSVP'd yes appear here — pending and declined guests can't be seated. Each seat around a table shows its exact position and, once assigned, the guest's name — so you can see the seating order and rearrange it by dragging. Drag a guest from the pane onto an open seat, or click an open seat to pick a name."}</p>
@@ -12347,9 +12388,11 @@ function renderSeatingChartSection(readOnly){
     <datalist id="chairStylePresets">${CHAIR_STYLE_PRESETS.map(s=>`<option value="${escapeAttr(s)}">`).join('')}</datalist>
   `;
 }
-function addSeatingChart(){
-  const evEl = document.getElementById('newChartEvent');
-  const eventId = evEl && evEl.value;
+function addSeatingChart(eventId){
+  if(!eventId){
+    const evEl = document.getElementById('newChartEvent');
+    eventId = evEl && evEl.value;
+  }
   if(!eventId) return;
   const ev = dashboardData.events.find(e=>e.id===eventId);
   const newChart = {id:'sc-'+Date.now().toString(36), label:`${ev?ev.name:'Event'} Seating`, eventId, isPrimary:false, roomSetup:{width:40, depth:30, shape:'rectangular'}, decor:[], tables:[]};
@@ -12950,7 +12993,7 @@ function renderWaitlistTab(){
       </div>
       ${info.waiting.length ? `
       <div class="budget-items" style="padding-left:0;">
-        <div class="budget-items-head" style="grid-template-columns:1.3fr 0.6fr 1.1fr 0.7fr 0.9fr 1.3fr 0.9fr;"><span>Guest / Family</span><span>Size</span><span>Category</span><span>Tier</span><span>Added</span><span>Notes</span><span>Actions</span></div>
+        <div class="budget-items-head" style="grid-template-columns:1.3fr 0.6fr 1.1fr 0.7fr 1.8fr 0.9fr;"><span>Guest / Family</span><span>Size</span><span>Category</span><span>Tier</span><span>Notes</span><span>Actions</span></div>
         ${info.waiting.map(h=>renderWaitlistRow(h)).join('')}
       </div>
       ` : `<p style="font-size:13px;color:var(--charcoal-faint);">Nobody is waitlisted right now.</p>`}
@@ -12960,12 +13003,11 @@ function renderWaitlistTab(){
 function renderWaitlistRow(h){
   const above = tiersAboveCurrent(h.tier);
   return `
-    <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:1.3fr 0.6fr 1.1fr 0.7fr 0.9fr 1.3fr 0.9fr; align-items:center;">
+    <div class="budget-item-row budget-item-row-clean" style="grid-template-columns:1.3fr 0.6fr 1.1fr 0.7fr 1.8fr 0.9fr; align-items:center;">
       <span class="readonly-cell" style="cursor:pointer;" onclick="openHouseholdDetail('${h.id}')">${escapeHtml(h.label)}</span>
       <span class="d-sub">${householdPartySize(h)}</span>
       <span class="d-sub">${(h.categories||[]).slice(0,2).map(c=>`<span class="pill pill-neutral" style="margin-right:3px;">${escapeHtml(c)}</span>`).join('') || '—'}</span>
       <span>${tierPill(h.tier)}</span>
-      <span class="d-sub">${h.dateAddedISO ? fmtDateLabel(h.dateAddedISO) : '—'}</span>
       <input type="text" class="select-field-sm" placeholder="Add a note…" value="${escapeAttr(h.waitlistNote||'')}" onchange="updateHouseholdField('${h.id}','waitlistNote',this.value)">
       ${above.length ? `<select class="select-field-sm" style="width:auto;" onchange="if(this.value){updateHouseholdField('${h.id}','tier',this.value); this.value='';}">
         <option value="">Move to…</option>
@@ -14526,7 +14568,7 @@ function renderPlaybookExportDocument(model){
         <div class="pb-export-day-head">${escapeHtml(g.day)}</div>
         ${g.items.map(i=>`
           <div class="pb-export-item">
-            <div class="pb-export-time">${escapeHtml(i.time)}</div>
+            <div class="pb-export-time">${escapeHtml(timeRangeLabel(i))}</div>
             <div class="pb-export-item-body">
               <b>${escapeHtml(i.title)}</b>
               <span>${escapeHtml(i.location||'')}${i.notes?' — '+escapeHtml(i.notes):''}</span>
@@ -14990,7 +15032,7 @@ function renderEventTimelineTab(e){
       <p class="detail-hint" style="margin-top:0;">Editable right here or from Playbook — it's the same list either way, so a change made in one place shows up in the other.</p>
       ${linkedPlaybook.length ? `
       <div class="budget-items" style="padding-left:0;">
-        <div class="budget-items-head" style="grid-template-columns:0.7fr 1.5fr 1.1fr 1.3fr 0.4fr;"><span>Time</span><span>What's happening</span><span>Location</span><span>Vendor</span><span></span></div>
+        <div class="budget-items-head" style="grid-template-columns:0.5fr 0.5fr 1.3fr 1.0fr 1.0fr 0.35fr;"><span>Start</span><span>End</span><span>What's happening</span><span>Location</span><span>Vendor</span><span></span></div>
         ${sortByTime(linkedPlaybook).map(i=>renderTimelineItemRow(i)).join('')}
       </div>` : `<p style="font-size:13px;color:var(--charcoal-faint);">No run-of-show moments for this event yet — add one below.</p>`}
       ${renderAddTimelineItemRow(e.id)}
