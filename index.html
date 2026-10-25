@@ -147,6 +147,20 @@
   .save-status-saved{color:var(--ok);}
   .save-status-error{color:var(--terracotta);}
   .save-status-demo{color:var(--amber); text-transform:uppercase; letter-spacing:0.04em; font-size:11px;}
+
+  /* ---- v1.49.0: undo toast — the lightweight alternative to a confirmation modal for
+     reversible destructive actions. Fixed to the bottom of the viewport, slides up on show. ---- */
+  .undo-toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(16px); z-index:500;
+    display:flex; align-items:center; gap:14px; background:var(--green-deep); color:var(--paper);
+    padding:13px 14px 13px 18px; border-radius:999px; box-shadow:var(--shadow-lg);
+    opacity:0; pointer-events:none; transition:opacity 0.2s ease, transform 0.2s ease; max-width:min(92vw,480px);}
+  .undo-toast.show{opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);}
+  .undo-toast span{font-size:13.5px; line-height:1.4;}
+  .undo-toast-action{background:none; border:none; color:var(--champagne); font-weight:700; font-size:13px; letter-spacing:0.02em; cursor:pointer; padding:4px 2px; white-space:nowrap;}
+  .undo-toast-action:hover{color:var(--champagne-light); text-decoration:underline;}
+  .undo-toast-close{background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer; font-size:12px; padding:4px; line-height:1;}
+  .undo-toast-close:hover{color:rgba(255,255,255,0.85);}
+  @media (max-width:640px){ .undo-toast{bottom:16px; left:16px; right:16px; transform:translateY(16px); max-width:none;} .undo-toast.show{transform:translateY(0);} }
   .two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
   @media (max-width:560px){ .two-col{grid-template-columns:1fr;} }
   .check-inline{display:flex; align-items:center; gap:10px; margin-top:14px; font-size:13.5px; color:var(--charcoal-soft);}
@@ -1880,6 +1894,13 @@
 <div class="item-overlay item-overlay-right" id="pendingRsvpDrawerOverlay" onclick="if(event.target===this) closePendingRsvpDrawer();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
 
+<!-- ============ UNDO TOAST (v1.49.0) ============ -->
+<div class="undo-toast" id="undoToast" role="status" aria-live="polite">
+  <span id="undoToastMsg"></span>
+  <button type="button" class="undo-toast-action" onclick="performUndo()">Undo</button>
+  <button type="button" class="undo-toast-close" onclick="dismissUndoToast()" aria-label="Dismiss">✕</button>
+</div>
+
 <!-- ============ UNIVERSAL SEARCH (topbar) ============ -->
 <div class="search-panel" id="searchPanel">
   <div class="sp-head">
@@ -2021,6 +2042,15 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.49.0', date:'2026-10-25',
+    title:'Undo, instead of losing things for good',
+    items:[
+      'Removing a household, a guest, a wedding party member, an event, a vendor booking, a budget line item, a task, an RSVP survey, an invite rule, or a collaborator now shows a quiet "Removed. Undo" toast at the bottom of the screen for a few seconds, instead of just vanishing — click Undo and it\'s back exactly as it was, dependencies and all (e.g. removing a task that another task depends on restores that link too, not just the task itself).',
+      'This replaces the old all-or-nothing pattern (click Remove, it\'s gone, hope you meant it) with something closer to how Gmail or Google Docs handle deletes — fast to do, cheap to reverse, no "are you sure?" popup slowing you down for something you can just undo.',
+      'Audited every "Save" button in the app now that autosave covers everything (see v1.48.0): there turned out to be only three left, and all three are genuinely atomic actions that deserve a deliberate Save — saving a named logo version, saving a new note, and renaming a seating table (which also has a Cancel, so nothing is lost by backing out). No changes needed there.'
+    ]
+  },
   {
     version:'1.48.0', date:'2026-10-25',
     title:'Real autosave, everywhere — your whole wedding plan now actually saves',
@@ -7010,10 +7040,19 @@ function toggleTaskDone(id){
   reRenderCurrent();
 }
 function removeTask(id){
-  dashboardData.tasks = (dashboardData.tasks||[]).filter(x=>x.id!==id);
-  // clear any dependency pointing at the task we just removed
-  (dashboardData.tasks||[]).forEach(t=>{ if(t.dependsOn===id) t.dependsOn=null; });
+  const idx = (dashboardData.tasks||[]).findIndex(x=>x.id===id);
+  if(idx===-1) return;
+  const removed = dashboardData.tasks[idx];
+  // remember who depended on this task so Undo can restore those links too, not just the task itself
+  const dependents = (dashboardData.tasks||[]).filter(t=>t.dependsOn===id).map(t=>t.id);
+  dashboardData.tasks.splice(idx,1);
+  dependents.forEach(tid=>{ const t = dashboardData.tasks.find(x=>x.id===tid); if(t) t.dependsOn=null; });
   reRenderCurrent();
+  showUndoToast(`"${removed.title}" removed.`, () => {
+    dashboardData.tasks.splice(idx, 0, removed);
+    dependents.forEach(tid=>{ const t = dashboardData.tasks.find(x=>x.id===tid); if(t) t.dependsOn=id; });
+    reRenderCurrent();
+  });
 }
 function addTask(){
   const titleEl = document.getElementById('newTaskTitle');
@@ -8223,8 +8262,15 @@ function updateCollaboratorField(id,field,val){
   document.getElementById('content').innerHTML = renderSettingsModule();
 }
 function removeCollaborator(id){
-  dashboardData.collaborators = dashboardData.collaborators.filter(c=>c.id!==id);
+  const idx = dashboardData.collaborators.findIndex(c=>c.id===id);
+  if(idx===-1) return;
+  const removed = dashboardData.collaborators[idx];
+  dashboardData.collaborators.splice(idx,1);
   document.getElementById('content').innerHTML = renderSettingsModule();
+  showUndoToast(`${removed.name} removed.`, () => {
+    dashboardData.collaborators.splice(idx, 0, removed);
+    document.getElementById('content').innerHTML = renderSettingsModule();
+  });
 }
 /* ---- v1.37.2: "+ Add Collaborator" is now a single button that opens a pop-out collecting
    name, role, access, and email in one place — Natasha's explicit ask, instead of an
@@ -8771,6 +8817,38 @@ function updateNotificationBadge(){
   const dot = bell.querySelector('.dot');
   if(dot) dot.style.display = notificationUnreadCount()>0 ? '' : 'none';
 }
+/* ==================================================================
+   UNDO TOAST (v1.49.0) — the lightweight alternative to a confirmation
+   modal for reversible destructive actions (remove a guest, a task, a
+   vendor booking, …). Call showUndoToast(message, undoFn) right after
+   actually performing the removal; if the person clicks Undo within the
+   window, undoFn() re-inserts whatever was removed and re-renders.
+   Only one toast is shown at a time — a second destructive action while
+   one is already showing replaces it (and its own Undo stops being
+   reachable), matching how these patterns normally work elsewhere.
+================================================================== */
+let undoToastTimer = null;
+let pendingUndoFn = null;
+function showUndoToast(message, undoFn){
+  pendingUndoFn = undoFn;
+  const el = document.getElementById('undoToast');
+  if(!el) return;
+  document.getElementById('undoToastMsg').textContent = message;
+  el.classList.add('show');
+  clearTimeout(undoToastTimer);
+  undoToastTimer = setTimeout(()=>{ dismissUndoToast(); }, 7000);
+}
+function performUndo(){
+  const fn = pendingUndoFn;
+  dismissUndoToast();
+  if(typeof fn==='function') fn();
+}
+function dismissUndoToast(){
+  pendingUndoFn = null;
+  clearTimeout(undoToastTimer);
+  const el = document.getElementById('undoToast');
+  if(el) el.classList.remove('show');
+}
 function markAllNotificationsRead(){
   let changed = false;
   (dashboardData.notifications||[]).forEach(n=>{ if(!n.read){ n.read = true; changed = true; } });
@@ -8979,9 +9057,16 @@ function renderVendorTeamSection(){
   `;
 }
 function removeVendorBooking(id){
-  dashboardData.vendorBookings = (dashboardData.vendorBookings||[]).filter(v=>v.id!==id);
+  const idx = (dashboardData.vendorBookings||[]).findIndex(v=>v.id===id);
+  if(idx===-1) return;
+  const removed = dashboardData.vendorBookings[idx];
+  dashboardData.vendorBookings.splice(idx,1);
   closeVendorBookingDetail();
   document.getElementById('content').innerHTML = renderVendorsModule();
+  showUndoToast(`${removed.vendorName || removed.category} removed.`, () => {
+    dashboardData.vendorBookings.splice(idx, 0, removed);
+    document.getElementById('content').innerHTML = renderVendorsModule();
+  });
 }
 function updateVendorBookingField(id, field, val){
   const vb = (dashboardData.vendorBookings||[]).find(v=>v.id===id);
@@ -9615,8 +9700,15 @@ function linkPartyMemberToGuest(partyId, key){
   document.getElementById('content').innerHTML = renderWeddingParty();
 }
 function removeWeddingPartyMember(id){
-  dashboardData.weddingParty = dashboardData.weddingParty.filter(x=>x.id!==id);
+  const idx = dashboardData.weddingParty.findIndex(x=>x.id===id);
+  if(idx===-1) return;
+  const removed = dashboardData.weddingParty[idx];
+  dashboardData.weddingParty.splice(idx,1);
   backToPartyHub();
+  showUndoToast(`${removed.name} removed from Wedding Party.`, () => {
+    dashboardData.weddingParty.splice(idx, 0, removed);
+    reRenderCurrent();
+  });
 }
 function attireMiniPill(status){
   const map = {confirmed:['pill-ok','Confirmed'], pending:['pill-warn','Pending'], ordered:['pill-neutral','Ordered'], 'not-needed':['pill-neutral','N/A']};
@@ -12833,9 +12925,16 @@ function saveGuestRule(){
   refreshGuestsBackground();
 }
 function deleteGuestRule(ruleId){
-  dashboardData.guestInviteRules = (dashboardData.guestInviteRules||[]).filter(r=>r.id!==ruleId);
+  const idx = (dashboardData.guestInviteRules||[]).findIndex(r=>r.id===ruleId);
+  if(idx===-1) return;
+  const removed = dashboardData.guestInviteRules[idx];
+  dashboardData.guestInviteRules.splice(idx,1);
   if(rulePreviewId===ruleId) rulePreviewId = null;
   refreshGuestsBackground();
+  showUndoToast(`"${removed.name}" rule removed.`, () => {
+    dashboardData.guestInviteRules.splice(idx, 0, removed);
+    refreshGuestsBackground();
+  });
 }
 function toggleRulePreview(ruleId){
   rulePreviewId = rulePreviewId===ruleId ? null : ruleId;
@@ -13592,15 +13691,33 @@ function updateMemberField(householdId, memberId, field, val){
 function removeFamilyMember(householdId, memberId){
   const h = dashboardData.guestHouseholds.find(x=>x.id===householdId);
   if(!h) return;
-  h.members = h.members.filter(m=>m.id!==memberId);
+  const idx = h.members.findIndex(m=>m.id===memberId);
+  if(idx===-1) return;
+  const removed = h.members[idx];
+  h.members.splice(idx,1);
   recomputeHouseholdLabelIfAuto(h);
   refreshGuestsBackground();
   refreshHouseholdDetail();
+  showUndoToast(`${memberDisplayName(removed)} removed.`, () => {
+    const stillThere = dashboardData.guestHouseholds.find(x=>x.id===householdId);
+    if(!stillThere) return; // the whole household was removed in the meantime — nothing sane to restore into
+    stillThere.members.splice(idx, 0, removed);
+    recomputeHouseholdLabelIfAuto(stillThere);
+    refreshGuestsBackground();
+    refreshHouseholdDetail();
+  });
 }
 function removeHousehold(householdId){
-  dashboardData.guestHouseholds = dashboardData.guestHouseholds.filter(h=>h.id!==householdId);
+  const idx = dashboardData.guestHouseholds.findIndex(h=>h.id===householdId);
+  if(idx===-1) return;
+  const removed = dashboardData.guestHouseholds[idx];
+  dashboardData.guestHouseholds.splice(idx,1);
   closeHouseholdDetail();
   refreshGuestsBackground();
+  showUndoToast(`${removed.label} removed.`, () => {
+    dashboardData.guestHouseholds.splice(idx, 0, removed);
+    refreshGuestsBackground();
+  });
 }
 function renameGuestCategory(oldLabel, newLabel){
   newLabel = (newLabel||'').trim();
@@ -13738,10 +13855,17 @@ function toggleSurveyBoolField(id, field){
   refreshGuestsBackground();
 }
 function removeRsvpSurvey(id){
-  dashboardData.rsvpSurveys = dashboardData.rsvpSurveys.filter(s=>s.id!==id);
+  const idx = dashboardData.rsvpSurveys.findIndex(s=>s.id===id);
+  if(idx===-1) return;
+  const removed = dashboardData.rsvpSurveys[idx];
+  dashboardData.rsvpSurveys.splice(idx,1);
   if(surveyBuilderOpenId===id) surveyBuilderOpenId = null;
-  if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule();
-  else refreshGuestsBackground();
+  const rerenderFn = () => { if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule(); else refreshGuestsBackground(); };
+  rerenderFn();
+  showUndoToast(`"${removed.name}" survey removed.`, () => {
+    dashboardData.rsvpSurveys.splice(idx, 0, removed);
+    rerenderFn();
+  });
 }
 function toggleSurveyActive(id){
   const s = dashboardData.rsvpSurveys.find(x=>x.id===id);
@@ -15222,9 +15346,16 @@ function renderDressCodeVisual(dressCodeText){
   `;
 }
 function removeEvent(id){
-  dashboardData.events = dashboardData.events.filter(x=>x.id!==id);
+  const idx = dashboardData.events.findIndex(x=>x.id===id);
+  if(idx===-1) return;
+  const removed = dashboardData.events[idx];
+  dashboardData.events.splice(idx,1);
   eventsView = 'list'; selectedEventId = null;
   document.getElementById('content').innerHTML = renderEventsModule();
+  showUndoToast(`${removed.name} removed.`, () => {
+    dashboardData.events.splice(idx, 0, removed);
+    document.getElementById('content').innerHTML = renderEventsModule();
+  });
 }
 function escapeAttr(s){
   return (s||'').toString().replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -15638,8 +15769,17 @@ function removeBudgetItem(ci, ii){
   refreshBudgetBackground();
 }
 function removeBudgetItemFromDetail(ci, ii){
-  dashboardData.budgetBreakdown[ci].items.splice(ii,1);
+  const cat = dashboardData.budgetBreakdown[ci];
+  if(!cat || !cat.items[ii]) return;
+  const removed = cat.items[ii];
+  cat.items.splice(ii,1);
   closeBudgetItemDetail();
+  showUndoToast(`${removed.name} removed.`, () => {
+    const stillCat = dashboardData.budgetBreakdown[ci];
+    if(!stillCat || stillCat.category!==cat.category) return; // categories shifted — nothing sane to restore into
+    stillCat.items.splice(ii, 0, removed);
+    refreshBudgetBackground();
+  });
 }
 function addBudgetCategory(){
   const nameEl = document.getElementById('newCatName');
