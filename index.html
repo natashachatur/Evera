@@ -49,6 +49,11 @@
   #view-landing.active{display:flex;}
   .landing-motif{position:absolute; inset:0; z-index:0; pointer-events:none;}
   .landing-inner{position:relative; z-index:1; max-width:640px;}
+  .landing-differentiator{margin-top:16px; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-style:italic; font-size:clamp(17px,2.4vw,21px); color:var(--champagne-dark); letter-spacing:0.01em;}
+  .landing-cta-secondary{margin-top:14px; font-size:14px; color:var(--charcoal-faint);}
+  .landing-cta-secondary a{color:var(--green); font-weight:600; border-bottom:1px solid var(--champagne); cursor:pointer;}
+  .landing-stat-strip{margin-top:32px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; font-size:13px; font-weight:700; letter-spacing:0.03em; color:var(--green); font-variant-numeric:tabular-nums;}
+  .landing-stat-strip .dot{color:var(--champagne-dark); font-weight:400;}
   .landing-brand{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:26px; letter-spacing:0.08em; font-weight:600; margin-bottom:56px;}
   .landing-brand .amp{color:var(--champagne); font-style:italic;}
   .landing-inner h1{font-size:clamp(38px,6vw,64px); line-height:1.08;}
@@ -93,8 +98,14 @@
   .auth-tab.active{background:var(--green); color:#fff;}
   .auth-error{background:var(--terracotta-tint); color:var(--terracotta); border-radius:var(--radius-sm); padding:11px 14px; font-size:13px; margin-bottom:18px; display:none;}
   .auth-error.show{display:block;}
+  .auth-success{background:var(--green-tint); color:var(--green-deep); border-radius:var(--radius-sm); padding:11px 14px; font-size:13px; margin-bottom:18px; display:none;}
+  .auth-success.show{display:block;}
   .auth-submit{width:100%; justify-content:center; margin-top:6px;}
   .auth-back{display:block; text-align:center; margin-top:20px; font-size:13px; color:var(--charcoal-faint);}
+  .auth-forgot-link{display:block; text-align:right; margin-top:8px; font-size:12.5px; color:var(--charcoal-faint); font-weight:600;}
+  .auth-google-btn{width:100%; justify-content:center; gap:10px; display:flex; align-items:center;}
+  .auth-divider{display:flex; align-items:center; gap:12px; margin:18px 0; color:var(--charcoal-faint); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;}
+  .auth-divider::before, .auth-divider::after{content:''; flex:1; height:1px; background:var(--line);}
 
   /* ================= AUTH (split branded layout) ================= */
   #view-auth.active{display:flex;}
@@ -724,6 +735,20 @@
   .export-row .btn{padding:9px 16px; font-size:11px;}
   .back-link{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:var(--green); margin-bottom:22px;}
   .back-link svg{width:14px; height:14px;}
+
+  /* ---- v1.47.0: first-event guided tour card ---- */
+  .first-event-tour-card{background:var(--green-deep); color:var(--paper); border-radius:var(--radius); padding:20px 22px; margin-bottom:22px; box-shadow:var(--shadow-lg);}
+  .fet-top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;}
+  .fet-eyebrow{text-transform:uppercase; letter-spacing:0.18em; font-size:10.5px; font-weight:700; color:var(--champagne-light);}
+  .fet-skip{background:none; border:none; color:var(--champagne-light); font-size:12px; font-weight:600; opacity:0.8; text-decoration:underline; padding:0;}
+  .fet-skip:hover{opacity:1;}
+  .fet-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:21px; font-weight:600; margin-bottom:6px;}
+  .fet-body{font-size:13.5px; line-height:1.6; color:var(--ivory-deep); max-width:620px;}
+  .fet-progress{margin-top:16px; height:4px; border-radius:999px; background:rgba(255,255,255,0.18); overflow:hidden;}
+  .fet-progress-fill{height:100%; background:var(--champagne); border-radius:999px; transition:width 0.25s ease;}
+  .fet-actions{margin-top:16px; display:flex; justify-content:flex-end;}
+  .fet-actions .btn-solid{background:var(--champagne); color:var(--green-deep); border:none;}
+  .fet-actions .btn-solid:hover{background:var(--champagne-dark); color:#fff;}
 
   /* ---- wedding party hub ---- */
   .party-summary-strip{display:flex; gap:28px; flex-wrap:wrap; margin-bottom:24px; padding:18px 24px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);}
@@ -1484,17 +1509,17 @@
   </div>
   <div class="landing-inner">
     <div class="landing-brand"><span>Evera</span></div>
-    <h1>Congratulations on getting engaged.</h1>
-    <div class="landing-tagline">One wedding. Every celebration. One plan.</div>
-    <div class="sub">The proposal was on you. The wedding planning is on us. One intelligent plan for your whole wedding — every tradition, every event, each with its own guests, vendors, budget, and look.</div>
-    <div class="landing-feature-pills">
-      <span>Budget</span><span>·</span><span>Guests</span><span>·</span><span>Events</span><span>·</span><span>Vendors</span><span>·</span><span>Timeline</span>
-    </div>
+    <h1>One wedding. Every celebration. One plan.</h1>
+    <div class="landing-differentiator">Evera understands that one wedding can be many celebrations.</div>
+    <div class="sub">Plan every event, guest, vendor, budget and tradition in one connected place.</div>
     <div class="landing-cta">
-      <button class="btn btn-solid" onclick="showAuth('signup')">Build My Wedding</button>
-      <button class="btn btn-outline" onclick="skipToDashboard()">See a Sample Wedding</button>
+      <button class="btn btn-solid" onclick="showAuth('signup')">Start Planning</button>
     </div>
-    <div class="landing-sample-teaser">Peek inside: <strong>Natasha &amp; Matteo</strong> — 150 guests · $100,000 budget · King City &amp; Toronto, ON<br>Mehndi · Sangeet · Rehearsal Dinner · Nikkah Ceremony · Church Ceremony · Civil &amp; Reception</div>
+    <div class="landing-cta-secondary"><a onclick="skipToDashboard()">or explore a sample wedding</a></div>
+    <div class="landing-stat-strip">
+      <span>6 Events</span><span class="dot">·</span><span>150 Guests</span><span class="dot">·</span><span>9 Vendors</span><span class="dot">·</span><span>One Plan</span>
+    </div>
+    <div class="landing-sample-teaser">The sample wedding: <strong>Natasha &amp; Matteo</strong> — King City &amp; Toronto, ON<br>Mehndi · Sangeet · Rehearsal Dinner · Nikkah Ceremony · Church Ceremony · Civil &amp; Reception</div>
     <div class="landing-foot">Already planning with Evera? <a href="#" onclick="showAuth('login'); return false;">Sign in</a></div>
   </div>
 </section>
@@ -1517,23 +1542,32 @@
     </div>
     <div class="auth-form-panel">
       <div class="auth-form-inner">
-        <div class="auth-tabs">
+        <div class="auth-tabs" id="authTabsRow">
           <div class="auth-tab" id="authTabSignup" onclick="setAuthMode('signup')">Create Account</div>
           <div class="auth-tab" id="authTabLogin" onclick="setAuthMode('login')">Sign In</div>
         </div>
+        <div id="authResetHeading" style="display:none; font-weight:700; font-size:15px; margin-bottom:20px;">Reset your password</div>
         <div class="auth-error" id="authError"></div>
+        <div class="auth-success" id="authSuccess"></div>
+        <button type="button" class="btn btn-outline auth-google-btn" id="authGoogleBtn" onclick="handleGoogleAuth()">
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18A13.98 13.98 0 0 1 10.95 24c0-1.45.25-2.86.74-4.18v-5.7H4.34A21.99 21.99 0 0 0 2 24c0 3.55.85 6.9 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>
+          <span>Continue with Google</span>
+        </button>
+        <div class="auth-divider" id="authDivider"><span>or</span></div>
         <form id="authForm" onsubmit="handleAuthSubmit(event)">
           <div class="field-row"><label>Email</label><input type="email" id="auth-email" autocomplete="email" required></div>
-          <div class="field-row">
+          <div class="field-row" id="authPasswordRow">
             <label>Password</label>
             <div class="auth-pw-wrap">
               <input type="password" id="auth-password" autocomplete="current-password" required minlength="6">
               <button type="button" class="auth-pw-toggle" id="authPwToggle" onclick="toggleAuthPasswordVisibility()">Show</button>
             </div>
+            <a href="#" class="auth-forgot-link" id="authForgotLink" onclick="setAuthMode('reset'); return false;" style="display:none;">Forgot your password?</a>
           </div>
           <button type="submit" class="btn btn-solid auth-submit" id="authSubmitBtn">Create Account</button>
         </form>
-        <a href="#" class="auth-back" onclick="goTo('landing'); return false;">← Back</a>
+        <a href="#" class="auth-back" id="authResetBackLink" onclick="setAuthMode('login'); return false;" style="display:none;">← Back to Sign In</a>
+        <a href="#" class="auth-back" id="authLandingBackLink" onclick="goTo('landing'); return false;">← Back</a>
       </div>
     </div>
   </div>
@@ -1808,6 +1842,7 @@
         <div class="tb-left"><h3 id="tbTitle">Home</h3><div class="tb-sub" id="tbSub">What deserves your attention today.</div></div>
       </div>
       <div class="tb-right">
+        <span class="save-status" id="globalSaveStatus"></span>
         <div class="countdown-chip"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><b id="tbCountdown">—</b> to go</div>
         <button class="icon-btn" id="tbSearchBtn" onclick="toggleSearchPanel()" title="Search" aria-label="Search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
         <button class="quickadd-btn" id="tbQuickAdd" onclick="toggleQuickAddPanel()" title="Quick Add" aria-label="Quick Add"><svg class="icon" viewBox="0 0 24 24" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></button>
@@ -1986,6 +2021,26 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.48.0', date:'2026-10-25',
+    title:'Real autosave, everywhere — your whole wedding plan now actually saves',
+    items:[
+      'Big one: every module now actually saves to your account — Events, Guests, Budget, Vendors, Wedding Party, Tasks, Messages, and everything else, not just My Wedding Blueprint. Previously only your Blueprint details (names, date, location, traditions) were saved; everything else lived only in memory and was lost on refresh. That gap is now closed.',
+      'A quiet "Saved ✓" indicator now lives in the top bar on every page, instead of only appearing on the Blueprint page. It shows "Saving…" the moment you change anything, anywhere in the app, and settles to "Saved ✓" once it\'s actually confirmed — so you should never have to wonder whether something you changed stuck. If a save ever fails (e.g. you lose connection), it tells you plainly instead of silently pretending everything\'s fine.',
+      'Autosave is wired at the app level rather than field-by-field, so it covers every module automatically — including ones added after this — instead of needing to be hand-added screen by screen.',
+      'Logging in now restores your real, full saved wedding — not just your Blueprint details with everything else reset to the sample data.'
+    ]
+  },
+  {
+    version:'1.47.0', date:'2026-10-24',
+    title:'Forgot Password, Google Sign-In, a guided first-event tour, and a landing page rewrite',
+    items:[
+      'Forgot Password: the Sign In screen now has a real "Forgot your password?" link that sends an actual password reset email via Firebase. Like most account-recovery flows, it never reveals whether a given email has an Evera account — you get the same "check your inbox" message either way, so no one can use the reset form to find out who has an account.',
+      'Sign in or create an account with Google in one click, via a "Continue with Google" button on both the Create Account and Sign In screens. First-time Google sign-ins go straight into onboarding like a brand-new signup; returning Google users land right back in their wedding. Needs a one-time step in the Firebase Console before it\'s live — see note below.',
+      'Creating your very first event (ever) now opens straight into that event\'s own page with a short, one-time guided tour across its seven tabs — Overview, Guests, Budget, Vendors, Design, Timeline, and Details — explaining what each one is for. It only ever shows once; every event after your first just works the normal way, and you can skip the tour at any point.',
+      'Rewrote the landing page around the actual product proposition. The hero headline is now "One wedding. Every celebration. One plan." (previously a secondary line under an engagement-congratulations headline), with a direct statement of what makes Evera different — "Evera understands that one wedding can be many celebrations" — plus a real stat strip (6 Events · 150 Guests · 9 Vendors · One Plan) pulled from the actual sample wedding instead of a generic feature-pill list.'
+    ]
+  },
   {
     version:'1.46.0', date:'2026-10-24',
     title:'Unified guest tagging, a real bug fix for Invite Rules, a Vendor Team + Messages overhaul, and multi-currency budgets',
@@ -2642,6 +2697,57 @@ let eventsView = 'list';     // 'list' | 'detail'
 let selectedEventId = null;
 // v1.39.0: every event's workspace is now standardized into the same seven tabs.
 let eventDetailTab = 'overview'; // 'overview' | 'guests' | 'budget' | 'vendors' | 'design' | 'timeline' | 'details'
+// v1.47.0: a one-time guided walk through an event's tabs, shown right after the couple
+// creates their very first event, so they know what each tab is for before diving in.
+let firstEventTourActive = false;
+let firstEventTourStep = 0;
+const FIRST_EVENT_TOUR_STEPS = [
+  {tab:'overview', title:'This is your command center', body:'Every event opens here — see what\'s done, what\'s still missing, and the one next best step, at a glance.'},
+  {tab:'guests', title:'Decide who\'s invited', body:'Every event starts invited to your whole guest list. Narrow it down here for something smaller, like a rehearsal dinner or a bridal shower.'},
+  {tab:'budget', title:'Set and track the budget', body:'Give this event a target, then link real line items from your budget — its spending rolls up into your overall wedding total automatically.'},
+  {tab:'vendors', title:'Book your vendors', body:'Shortlist or book whoever\'s working this event — caterer, photographer, DJ, officiant, and anyone else.'},
+  {tab:'design', title:'Capture the look', body:'Save a color palette, dress code, and style notes here so everyone involved is working from the same vision.'},
+  {tab:'timeline', title:'Build the day-of schedule', body:'Lay out the run of show for the day — from the first moment to the last dance.'},
+  {tab:'details', title:'Fill in the logistics', body:'Location, times, dress code, and any special rituals or traditions this celebration should include.'}
+];
+function startFirstEventTour(eventId){
+  selectedEventId = eventId; eventsView = 'detail'; eventDetailTab = FIRST_EVENT_TOUR_STEPS[0].tab;
+  firstEventTourActive = true; firstEventTourStep = 0;
+  document.getElementById('content').innerHTML = renderEventsModule();
+  window.scrollTo(0,0);
+}
+function advanceFirstEventTour(){
+  firstEventTourStep++;
+  if(firstEventTourStep >= FIRST_EVENT_TOUR_STEPS.length){ finishFirstEventTour(); return; }
+  eventDetailTab = FIRST_EVENT_TOUR_STEPS[firstEventTourStep].tab;
+  document.getElementById('content').innerHTML = renderEventsModule();
+}
+function skipFirstEventTour(){ finishFirstEventTour(); }
+function finishFirstEventTour(){
+  firstEventTourActive = false;
+  dashboardData.hasSeenFirstEventTour = true;
+  document.getElementById('content').innerHTML = renderEventsModule();
+}
+function renderFirstEventTourCard(){
+  const stepIdx = firstEventTourStep;
+  const step = FIRST_EVENT_TOUR_STEPS[stepIdx];
+  if(!step) return '';
+  const isLast = stepIdx === FIRST_EVENT_TOUR_STEPS.length - 1;
+  return `
+    <div class="first-event-tour-card">
+      <div class="fet-top">
+        <span class="fet-eyebrow">Quick Tour · Step ${stepIdx+1} of ${FIRST_EVENT_TOUR_STEPS.length}</span>
+        <button class="fet-skip" onclick="skipFirstEventTour()">Skip tour</button>
+      </div>
+      <div class="fet-title">${escapeHtml(step.title)}</div>
+      <div class="fet-body">${escapeHtml(step.body)}</div>
+      <div class="fet-progress"><div class="fet-progress-fill" style="width:${((stepIdx+1)/FIRST_EVENT_TOUR_STEPS.length*100).toFixed(0)}%;"></div></div>
+      <div class="fet-actions">
+        <button class="btn btn-solid btn-sm" onclick="advanceFirstEventTour()">${isLast ? 'Got it, let\'s go' : 'Next: '+FIRST_EVENT_TOUR_STEPS[stepIdx+1].title}</button>
+      </div>
+    </div>
+  `;
+}
 let eventAddFormOpen = false;
 let quickAddMode = 'menu'; // 'menu' | 'note' | 'document' — v1.43.0 Universal Quick Add (topbar +)
 let eventsCategoryFilter = 'all'; // 'all' or one of dashboardData.eventCategories
@@ -3629,6 +3735,16 @@ function goTo(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
   window.scrollTo(0,0);
+  // v1.48.0: every real (non-demo) path into the app funnels through here, so this is the
+  // one safe place to lazily start the universal autosave watcher — see initAutosaveObserver.
+  if(view==='app'){
+    if(currentUser){
+      initAutosaveObserver();
+    } else {
+      const el = document.getElementById('globalSaveStatus');
+      if(el){ el.textContent = 'Sample mode — not saved'; el.className = 'save-status save-status-demo'; }
+    }
+  }
 }
 function skipToDashboard(){
   dashboardData = normalizeDashboardData(defaultDashboardData());
@@ -3649,12 +3765,25 @@ function showAuth(mode){
 }
 function setAuthMode(mode){
   authMode = mode;
-  document.getElementById('authTabSignup').classList.toggle('active', mode==='signup');
-  document.getElementById('authTabLogin').classList.toggle('active', mode==='login');
-  document.getElementById('authSubmitBtn').textContent = mode==='signup' ? 'Create Account' : 'Sign In';
+  const isReset = mode==='reset';
+  document.getElementById('authTabsRow').style.display = isReset ? 'none' : '';
+  document.getElementById('authResetHeading').style.display = isReset ? '' : 'none';
+  document.getElementById('authGoogleBtn').style.display = isReset ? 'none' : '';
+  document.getElementById('authDivider').style.display = isReset ? 'none' : '';
+  document.getElementById('authPasswordRow').style.display = isReset ? 'none' : '';
+  document.getElementById('auth-password').required = !isReset;
+  document.getElementById('authForgotLink').style.display = (mode==='login') ? '' : 'none';
+  document.getElementById('authResetBackLink').style.display = isReset ? '' : 'none';
+  document.getElementById('authLandingBackLink').style.display = isReset ? 'none' : '';
+  if(!isReset){
+    document.getElementById('authTabSignup').classList.toggle('active', mode==='signup');
+    document.getElementById('authTabLogin').classList.toggle('active', mode==='login');
+  }
+  document.getElementById('authSubmitBtn').textContent = isReset ? 'Send Reset Link' : (mode==='signup' ? 'Create Account' : 'Sign In');
   document.getElementById('auth-password').setAttribute('autocomplete', mode==='signup' ? 'new-password' : 'current-password');
   resetAuthPasswordVisibility();
   hideAuthError();
+  hideAuthSuccess();
 }
 function toggleAuthPasswordVisibility(){
   const input = document.getElementById('auth-password');
@@ -3680,6 +3809,16 @@ function hideAuthError(){
   el.textContent = '';
   el.classList.remove('show');
 }
+function showAuthSuccess(msg){
+  const el = document.getElementById('authSuccess');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function hideAuthSuccess(){
+  const el = document.getElementById('authSuccess');
+  el.textContent = '';
+  el.classList.remove('show');
+}
 function friendlyAuthError(err){
   const code = err && err.code || '';
   const map = {
@@ -3690,13 +3829,19 @@ function friendlyAuthError(err){
     'auth/wrong-password':'Incorrect password. Please try again.',
     'auth/invalid-credential':'Incorrect email or password. Please try again.',
     'auth/too-many-requests':'Too many attempts — please wait a moment and try again.',
-    'auth/network-request-failed':'Network error — please check your connection and try again.'
+    'auth/network-request-failed':'Network error — please check your connection and try again.',
+    'auth/popup-closed-by-user':'',
+    'auth/popup-blocked':'Your browser blocked the Google sign-in popup — please allow popups for this site and try again.',
+    'auth/cancelled-popup-request':'',
+    'auth/account-exists-with-different-credential':'An account already exists with that email using a different sign-in method — try signing in with your password instead.',
+    'auth/operation-not-allowed':'Google sign-in isn\'t available right now — please sign in with your email and password instead.'
   };
-  return map[code] || (err && err.message) || 'Something went wrong. Please try again.';
+  return map[code] !== undefined ? map[code] : ((err && err.message) || 'Something went wrong. Please try again.');
 }
 async function handleAuthSubmit(event){
   event.preventDefault();
   hideAuthError();
+  hideAuthSuccess();
   const email = document.getElementById('auth-email').value.trim();
   const password = document.getElementById('auth-password').value;
   if(!window.everaFirebase){
@@ -3706,6 +3851,24 @@ async function handleAuthSubmit(event){
   const btn = document.getElementById('authSubmitBtn');
   const originalLabel = btn.textContent;
   btn.disabled = true;
+  if(authMode==='reset'){
+    btn.textContent = 'Sending…';
+    try{
+      await window.everaFirebase.resetPassword(email);
+      showAuthSuccess('If an account exists for that email, a password reset link is on its way. Check your inbox.');
+    } catch(err){
+      // Never reveal whether an account exists for this email — treat "not found" the same as success.
+      if(err && err.code === 'auth/user-not-found'){
+        showAuthSuccess('If an account exists for that email, a password reset link is on its way. Check your inbox.');
+      } else {
+        showAuthError(friendlyAuthError(err));
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+    return;
+  }
   btn.textContent = authMode==='signup' ? 'Creating account…' : 'Signing in…';
   try{
     if(authMode==='signup'){
@@ -3726,6 +3889,36 @@ async function handleAuthSubmit(event){
   } finally {
     btn.disabled = false;
     btn.textContent = originalLabel;
+  }
+}
+async function handleGoogleAuth(){
+  hideAuthError();
+  hideAuthSuccess();
+  if(!window.everaFirebase){
+    showAuthError('Still connecting to the server — please try again in a moment.');
+    return;
+  }
+  const btn = document.getElementById('authGoogleBtn');
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span>Connecting to Google…</span>';
+  try{
+    const { user, isNewUser } = await window.everaFirebase.signInWithGoogle();
+    currentUser = user;
+    dashboardData = normalizeDashboardData(defaultDashboardData());
+    if(isNewUser){
+      goTo('onboarding');
+    } else {
+      await loadAndApplyWeddingRecord(user.uid);
+      goTo('app');
+      renderRoute('home');
+    }
+  } catch(err){
+    const msg = friendlyAuthError(err);
+    if(msg) showAuthError(msg); // popup-closed / cancelled-popup-request are silent no-ops
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
   }
 }
 function handleSignOut(){
@@ -3754,49 +3947,19 @@ function updateAccountUI(){
 }
 
 /* ==================================================================
-   FIRESTORE — persisting the "My Wedding" master record per account
-   (real database wiring; everything else in dashboardData is still
-   in-memory sample data pending future passes)
+   FIRESTORE — persisting the full wedding plan per account
+   v1.48.0: previously only the My Wedding Blueprint fields (names, date,
+   location, weddingProfile, logo) were saved — every other module (Events,
+   Guests, Budget, Vendors, Wedding Party, Tasks, Messages, …) lived only
+   in memory and vanished on refresh. The whole of dashboardData is now
+   the saved record, and autosave is wired globally (see initAutosaveObserver
+   below) instead of per-field, so nothing can be silently forgotten.
 ================================================================== */
 function getWeddingRecordPayload(){
-  const d = dashboardData;
-  return {
-    partner1: d.partner1 ?? '',
-    partner2: d.partner2 ?? '',
-    partner1First: d.partner1First ?? '',
-    partner1Last: d.partner1Last ?? '',
-    partner2First: d.partner2First ?? '',
-    partner2Last: d.partner2Last ?? '',
-    assistantEnabled: d.assistantEnabled !== false,
-    logoDraft: d.logoDraft || {elements:[], background:'#FFFFFF'},
-    logoVersions: d.logoVersions || [],
-    logoFinalVersionId: d.logoFinalVersionId || null,
-    coupleLogo: d.coupleLogo || null,
-    nameChange: {
-      partner1: {
-        choice: d.nameChange?.partner1?.choice || '',
-        newLast: d.nameChange?.partner1?.newLast || '',
-        checklist: d.nameChange?.partner1?.checklist || {}
-      },
-      partner2: {
-        choice: d.nameChange?.partner2?.choice || '',
-        newLast: d.nameChange?.partner2?.newLast || '',
-        checklist: d.nameChange?.partner2?.checklist || {}
-      }
-    },
-    weddingDateISO: d.weddingDateISO || null,
-    weddingDateLabel: d.weddingDateLabel || '',
-    location: d.location ?? '',
-    guestCount: Number(d.guestCount) || 0,
-    budgetTotal: Number(d.budgetTotal) || 0,
-    weddingProfile: {
-      traditions: d.weddingProfile.traditions || [],
-      colorPalette: d.weddingProfile.colorPalette || [],
-      hashtag: d.weddingProfile.hashtag || '',
-      aestheticNotes: d.weddingProfile.aestheticNotes || ''
-    },
-    updatedAt: Date.now()
-  };
+  // JSON round-trip: (a) strips any stray `undefined` values, which the
+  // Firestore SDK rejects outright, and (b) guarantees a plain, serializable
+  // snapshot regardless of what shape dashboardData has grown into.
+  return JSON.parse(JSON.stringify(Object.assign({}, dashboardData, { updatedAt: Date.now() })));
 }
 let weddingSaveTimer = null;
 function persistWeddingRecord(){
@@ -3814,54 +3977,64 @@ function persistWeddingRecord(){
   }, 600);
 }
 function setSaveStatus(status){
-  const el = document.getElementById('weddingSaveStatus');
+  const el = document.getElementById('globalSaveStatus');
   if(!el) return;
   const labels = { saving:'Saving…', saved:'Saved ✓', error:'Couldn\'t save — check your connection' };
   el.textContent = labels[status] || '';
   el.className = 'save-status save-status-' + status;
 }
-/* Loads this user's saved wedding record (if any) and merges it onto the
-   current dashboardData. Returns true if a saved record was found. If none
-   exists yet (brand new account, e.g. from before Firestore existed), this
-   silently leaves the default sample data in place and a save will create
-   their record the next time they edit something. */
+/* v1.48.0: a one-time-computed, neutral "blank account" shape — built from
+   the same real onboarding logic a brand-new signup uses (buildFromOnboarding),
+   seeded with empty/zeroed answers instead of any couple's real answers. This
+   is the safe base an existing account's SAVED record is merged onto when
+   loading: defaultDashboardData() is the rich Natasha & Matteo DEMO content
+   and must never leak into a real account just because an older/sparser saved
+   record happens to be missing a field. */
+function emptyAccountDashboardData(){
+  return buildFromOnboarding({
+    partner1:'', partner2:'', date:'', location:'', guests:0, budget:0,
+    events:[], customEvents:[], approach:'', venue:'progress', style:'',
+    priorities:[], hotel:'', distance:40, assistantEnabled:true
+  });
+}
+/* Loads this user's saved wedding record (if any) and replaces dashboardData
+   with it. Returns true if a saved record was found. If none exists yet
+   (brand new account, or one created before this save existed), this
+   silently leaves the in-progress dashboardData in place and a save will
+   create their full record the next time anything changes. */
 async function loadAndApplyWeddingRecord(uid){
   if(!window.everaFirebase) return false;
   try{
     const data = await window.everaFirebase.loadWeddingRecord(uid);
     if(!data) return false;
-    Object.assign(dashboardData, {
-      partner1: data.partner1 ?? dashboardData.partner1,
-      partner2: data.partner2 ?? dashboardData.partner2,
-      partner1First: data.partner1First ?? dashboardData.partner1First,
-      partner1Last: data.partner1Last ?? dashboardData.partner1Last,
-      partner2First: data.partner2First ?? dashboardData.partner2First,
-      partner2Last: data.partner2Last ?? dashboardData.partner2Last,
-      assistantEnabled: data.assistantEnabled ?? dashboardData.assistantEnabled,
-      logoDraft: data.logoDraft ?? dashboardData.logoDraft,
-      logoVersions: data.logoVersions ?? dashboardData.logoVersions,
-      logoFinalVersionId: data.logoFinalVersionId ?? dashboardData.logoFinalVersionId,
-      coupleLogo: data.coupleLogo ?? dashboardData.coupleLogo,
-      weddingDateISO: data.weddingDateISO ?? dashboardData.weddingDateISO,
-      weddingDateLabel: data.weddingDateLabel ?? dashboardData.weddingDateLabel,
-      location: data.location ?? dashboardData.location,
-      guestCount: data.guestCount ?? dashboardData.guestCount,
-      budgetTotal: data.budgetTotal ?? dashboardData.budgetTotal
-    });
-    if(data.weddingProfile){
-      dashboardData.weddingProfile = Object.assign({}, dashboardData.weddingProfile, data.weddingProfile);
-    }
-    if(data.nameChange){
-      dashboardData.nameChange = {
-        partner1: Object.assign({choice:'',newLast:'',checklist:{}}, dashboardData.nameChange?.partner1, data.nameChange.partner1),
-        partner2: Object.assign({choice:'',newLast:'',checklist:{}}, dashboardData.nameChange?.partner2, data.nameChange.partner2)
-      };
-    }
+    // Merge onto the neutral empty shape (not the demo), then normalize —
+    // this is what makes it safe for an old, narrower saved record (from
+    // before whole-app persistence existed) to load without crashing AND
+    // without any sample-wedding content leaking into a real account.
+    dashboardData = normalizeDashboardData(Object.assign({}, emptyAccountDashboardData(), data));
     return true;
   } catch(err){
     console.error('Failed to load wedding record', err);
     return false;
   }
+}
+/* v1.48.0: universal autosave. Rather than hunting down every mutator function
+   across every module to add a persistWeddingRecord() call (and inevitably
+   missing some, forever), this watches the DOM itself — virtually every data
+   change in this app ends in a re-render, so any real content change anywhere
+   schedules a save. The one thing it must ignore is the save-status indicator's
+   OWN text updates ("Saving…" / "Saved ✓") — without that guard, showing
+   "Saving…" would itself trigger another save, forever resetting the debounce
+   timer and the save would never actually complete. */
+let autosaveObserver = null;
+function initAutosaveObserver(){
+  if(autosaveObserver) return;
+  const statusEl = document.getElementById('globalSaveStatus');
+  autosaveObserver = new MutationObserver((mutations)=>{
+    const meaningful = mutations.some(m => !statusEl || !(m.target===statusEl || statusEl.contains(m.target)));
+    if(meaningful) persistWeddingRecord();
+  });
+  autosaveObserver.observe(document.body, {childList:true, subtree:true, characterData:true});
 }
 /* ---- Granular collaborator permissions (new, Sep 2026): Natasha's explicit ask — per-module,
    per-collaborator access, so e.g. a parent can see Guests but not Budget. Prototype scope: this
@@ -3901,6 +4074,9 @@ function defaultPermissionsForRole(role){
 /* Defensively backfills fields added after the original data model was designed,
    so both the rich sample dataset and freshly-onboarded data always have them. */
 function normalizeDashboardData(d){
+  // v1.47.0: tracks whether the couple has already been walked through the first-event
+  // tab tour, so it only ever fires once (the very first event they ever create).
+  if(d.hasSeenFirstEventTour===undefined) d.hasSeenFirstEventTour = (Array.isArray(d.events) && d.events.length>0);
   (d.budgetBreakdown||[]).forEach(cat=>{
     (cat.items||[]).forEach(it=>{
       if(it.vendorName===undefined) it.vendorName = '';
@@ -5760,7 +5936,7 @@ function renderBlueprintDetailsTab(){
     <div class="bp-section-label">Wedding Profile</div>
     <div class="bp-chapter-label">The Basics</div>
     <div class="card">
-      <div class="card-head"><div><h4>Your Wedding Details</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${currentUser?'<span id="weddingSaveStatus" class="save-status"></span>':'<span class="save-status save-status-demo">Sample mode — not saved</span>'}</div>
+      <div class="card-head"><div><h4>Your Wedding Details</h4><span class="d-sub">One source of truth — other modules read from these details</span></div>${!currentUser?'<span class="save-status save-status-demo">Sample mode — not saved</span>':''}</div>
       <div class="field-grid">
         <div class="field-cell">
           <label>Partner 1</label>
@@ -14458,7 +14634,13 @@ function submitEventAddModal(){
     vendorCategories: EVENT_VENDOR_MAP[name] ? [EVENT_VENDOR_MAP[name]] : []
   });
   closeEventAddModal();
-  document.getElementById('content').innerHTML = renderEventsModule();
+  // v1.47.0: the couple's very first event ever gets a one-time guided tour of its tabs
+  // instead of just dropping them back on the (now one-row) events list.
+  if(d.events.length===1 && !d.hasSeenFirstEventTour){
+    startFirstEventTour(id);
+  } else {
+    document.getElementById('content').innerHTML = renderEventsModule();
+  }
 }
 function openEventDetail(id){
   selectedEventId = id; eventsView = 'detail'; eventDetailTab = 'overview';
@@ -14466,11 +14648,16 @@ function openEventDetail(id){
   window.scrollTo(0,0);
 }
 function backToEventsList(){
+  if(firstEventTourActive){ firstEventTourActive = false; dashboardData.hasSeenFirstEventTour = true; }
   eventsView = 'list'; selectedEventId = null;
   document.getElementById('content').innerHTML = renderEventsModule();
 }
 function switchEventDetailTab(tab){
   eventDetailTab = tab;
+  if(firstEventTourActive){
+    const idx = FIRST_EVENT_TOUR_STEPS.findIndex(s=>s.tab===tab);
+    if(idx>=0) firstEventTourStep = idx;
+  }
   document.getElementById('content').innerHTML = renderEventsModule();
 }
 /* ---- v1.39.0: every event's workspace standardized into the same seven tabs — Overview,
@@ -14656,6 +14843,8 @@ function renderEventDetail(id){
     <div class="seg-control" style="margin:4px 0 22px; flex-wrap:wrap;">
       ${TABS.map(([key,label])=>`<button class="seg-btn ${eventDetailTab===key?'active':''}" onclick="switchEventDetailTab('${key}')">${label}</button>`).join('')}
     </div>
+
+    ${firstEventTourActive ? renderFirstEventTourCard() : ''}
 
     ${eventDetailTab==='overview' ? renderEventOverviewTab(e)
       : eventDetailTab==='guests' ? renderEventGuestsCard(e)
@@ -16891,7 +17080,8 @@ updateStepUI();
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import {
     getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-    onAuthStateChanged, signOut
+    onAuthStateChanged, signOut, sendPasswordResetEmail,
+    GoogleAuthProvider, signInWithPopup, getAdditionalUserInfo
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import {
     getFirestore, doc, getDoc, setDoc
@@ -16926,6 +17116,15 @@ updateStepUI();
     },
     async signOutUser(){
       await signOut(auth);
+    },
+    async resetPassword(email){
+      await sendPasswordResetEmail(auth, email);
+    },
+    async signInWithGoogle(){
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const info = getAdditionalUserInfo(result);
+      return { user: result.user, isNewUser: !!(info && info.isNewUser) };
     },
     // "weddings/{uid}" holds one document per account — the My Wedding master
     // record. Security rules (set in the Firebase console) restrict each
