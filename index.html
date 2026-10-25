@@ -1340,6 +1340,29 @@
   .vrc-reasons li{margin-bottom:4px;}
   .vrc-reasons li.vrc-warn{color:var(--terracotta);}
 
+  /* ---- Decision Centre: side-by-side vendor candidate comparison (v1.53.0) ---- */
+  .decision-compare-row{display:flex; gap:14px; overflow-x:auto; padding-bottom:4px; margin-top:10px;}
+  .decision-candidate-card{flex:1 1 230px; min-width:230px; border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--paper); display:flex; flex-direction:column; gap:8px;}
+  .decision-candidate-card.dc-recommended{border-color:var(--ok); box-shadow:0 0 0 1px var(--ok);}
+  .dc-badges{display:flex; flex-wrap:wrap; gap:5px;}
+  .dc-badge{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; padding:3px 8px; border-radius:999px; background:var(--ok-tint); color:var(--ok);}
+  .dc-name{font-weight:700; font-size:14.5px; color:var(--charcoal); cursor:pointer;}
+  .dc-stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px 10px; font-size:12.5px;}
+  .dc-stat-label{display:block; color:var(--charcoal-faint); font-size:11px; text-transform:uppercase; letter-spacing:0.3px;}
+  .dc-stat-value{display:block; font-weight:600; color:var(--charcoal); margin-top:1px;}
+  .dc-notes{font-size:12px; color:var(--charcoal-soft); line-height:1.5; border-top:1px solid var(--line-soft); padding-top:8px; margin-top:2px;}
+  .insight-note{font-size:12.5px; color:var(--charcoal-soft); background:var(--ivory-deep); border-radius:8px; padding:9px 12px; margin:8px 0 12px; line-height:1.5;}
+  .insight-note b{color:var(--green-deep);}
+
+  /* ---- Couple Collaboration activity feed (v1.53.0) ---- */
+  .activity-feed{display:flex; flex-direction:column; gap:2px;}
+  .activity-row{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line-soft);}
+  .activity-row:last-child{border-bottom:none;}
+  .activity-ico{width:22px; height:22px; border-radius:50%; background:var(--ok-tint); color:var(--ok); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0;}
+  .activity-text{flex:1; font-size:13px; color:var(--charcoal-soft); line-height:1.4;}
+  .activity-text b{color:var(--charcoal);}
+  .activity-when{font-size:11.5px; color:var(--charcoal-faint); white-space:nowrap;}
+
   /* ---- print / export views (Seating Chart floor plan, etc.) ---- */
   #printArea{display:none;}
   .print-header{text-align:center; margin-bottom:18px;}
@@ -2049,6 +2072,17 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.53.0', date:'2026-10-25',
+    title:'Evera Insight, a Decision Centre for comparing vendors, and Couple Collaboration',
+    items:[
+      'Home: Planning Progress now opens with an "Evera Insight" line — one plain-language sentence explaining what\'s actually driving the picture across Venue, Vendors, Guest List, Budget, Events, and Timeline right now (e.g. "Vendors is your biggest open area right now — 6 of 10 categories booked"), instead of six bars with no synthesis. When nothing needs attention, it says so plainly rather than inventing a concern.',
+      'Vendors: a new Decision Centre card gives you a true side-by-side comparison for any category where you\'ve got two or more live options to choose between — cost, contract status, which events each covers, contact info, website, and notes, lined up next to each other. A "Lowest cost" or "Furthest along" badge calls out the honest, factual edge each option has (several can share a badge if they\'re genuinely tied) — never an opaque score. It\'s built from the same vendor bookings My Vendor Team already edits, so it\'s never a separate thing to keep in sync, and it\'s empty with a plain explanation until you actually have two options to weigh.',
+      'Wedding Plan: tasks can now be assigned to "Shared (both of you)" alongside the existing option to assign one to either partner by name — so a task reads as Mine, Partner\'s, or Shared at a glance, right from the same Assigned To field everywhere it already appears (Add a Task, task details, and the existing "View By: Assignee" grouping).',
+      'Wedding Plan: a new Recent Activity card shows what\'s gotten done between you two — "Matteo completed \'Send save-the-dates\', 1 day ago" — for the last several completed tasks assigned to either partner or Shared. Since Evera is still one shared account login today rather than separate per-partner sessions, this reads honestly as a log of what\'s happened on the account, not a live cross-device push notification.',
+      'All three were already on the backlog as Natasha\'s own "good ideas for later" (Wedding Health sub-scores + narrative, a Decision Centre, and Couple Collaboration) — this release is all three, bundled, since none of them need new paid infrastructure or a scoping conversation first.'
+    ]
+  },
   {
     version:'1.52.0', date:'2026-10-25',
     title:'Time ranges for Playbook moments, smart Location/Time suggestions, and a tidier Waitlist and Seating Chart',
@@ -3064,8 +3098,11 @@ function defaultDashboardData(){
       {id:'vb-catering', category:'Catering', role:'', vendorName:'Elmsley Estate (in-house)', status:'booked', contactName:'Natasha Deshmukh', email:'events@elmsleyestate.example', phone:'(416) 555-0134', cost:24000, linkedBudgetItemId:'bi-catering', contractStatus:'signed', notes:'Plated dinner + passed hors d’oeuvres during cocktail hour, plus the Nikkah\'s sweets & tea reception.', eventIds:['ev-nikkah','ev-church','ev-reception'], communications:[
         {id:'comm-cat-1', dateISO:'2026-12-01', type:'quote', direction:'inbound', subject:'Final headcount & menu quote', notes:'Quote locked at 150 guests, plated dinner + bar package.'}
       ]},
-      {id:'vb-photo', category:'Photography', role:'', vendorName:'TBD — 2 finalists', status:'shortlisted', contactName:'', email:'', phone:'', cost:8000, linkedBudgetItemId:'bi-photo', contractStatus:'not-started', notes:'Down to two studios — decision needed by end of month.', eventIds:['ev-nikkah','ev-church','ev-reception'], communications:[
-        {id:'comm-photo-1', dateISO:'2026-09-15', type:'quote', direction:'inbound', subject:'Package quotes received from both finalists', notes:'Both quotes came in within budget — comparing coverage hours.'}
+      {id:'vb-photo', category:'Photography', role:'', vendorName:'Hendrick & Hale Studio', status:'shortlisted', contactName:'Priya Hendrick', email:'priya@hendrickhale.example', phone:'(416) 555-0163', website:'hendrickhale.example', cost:7800, linkedBudgetItemId:'bi-photo', contractStatus:'sent', notes:'8 hours coverage, 2 shooters, same-day preview gallery. Contract sent, waiting on their signature.', eventIds:['ev-nikkah','ev-church','ev-reception'], communications:[
+        {id:'comm-photo-1', dateISO:'2026-09-15', type:'quote', direction:'inbound', subject:'Package quote received', notes:'8-hour package with 2 shooters, within budget.'}
+      ]},
+      {id:'vb-photo-2', category:'Photography', role:'', vendorName:'Maple Lane Photography Co.', status:'shortlisted', contactName:'Dev Okonkwo', email:'dev@maplelanephoto.example', phone:'(647) 555-0188', website:'maplelanephoto.example', cost:8400, linkedBudgetItemId:null, contractStatus:'not-started', notes:'10 hours coverage, 1 shooter + 1 second-shooter add-on, film-style editing. Loved the portfolio but a touch over what Hendrick & Hale quoted.', eventIds:['ev-nikkah','ev-church','ev-reception'], communications:[
+        {id:'comm-photo2-1', dateISO:'2026-09-18', type:'quote', direction:'inbound', subject:'Package quote received', notes:'10-hour package, slightly above budget but strong portfolio match.'}
       ]},
       {id:'vb-officiant', category:'Officiant', role:'Church Ceremony', vendorName:'Rev. Alan Whitcombe', status:'booked', contactName:'Rev. Alan Whitcombe', email:'alan.whitcombe@example.com', phone:'(647) 555-0198', cost:600, linkedBudgetItemId:null, contractStatus:'signed', notes:'No Budget line item yet for the Church officiant fee — add one in Budget to track this cost.', eventIds:['ev-church'], communications:[
         {id:'comm-off-1', dateISO:'2026-10-05', type:'contract', direction:'outbound', subject:'Signed officiant agreement', notes:''}
@@ -3551,15 +3588,15 @@ function defaultDashboardData(){
       {id:'task-f1', title:'Set your overall wedding budget', eventId:null, role:'Couple', priority:'High', done:true, dueDateISO:'2026-05-01', notes:'Landed on a total and how contributions are split.', phase:'foundations', dependsOn:null},
       {id:'task-f2', title:'Choose your wedding date', eventId:null, role:'Couple', priority:'High', done:true, dueDateISO:'2026-05-10', notes:'', phase:'foundations', dependsOn:null},
       {id:'task-f3', title:'Book venue & sign contract', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-01', notes:'Elmsley Estate — deposit paid.', phase:'foundations', dependsOn:'task-f2'},
-      {id:'task-f4', title:'Pay venue deposit', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-05', notes:'', phase:'foundations', dependsOn:'task-f3'},
-      {id:'task-f5', title:'Create the wedding website', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-15', notes:'', phase:'foundations', dependsOn:'task-f2'},
+      {id:'task-f4', title:'Pay venue deposit', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-05', notes:'', phase:'foundations', dependsOn:'task-f3', assignedTo:'partner-1', completedAt: Date.now()-9*86400000},
+      {id:'task-f5', title:'Create the wedding website', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-15', notes:'', phase:'foundations', dependsOn:'task-f2', assignedTo:'partner-2', completedAt: Date.now()-6*86400000},
       {id:'task-f6', title:'Choose your wedding party', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-20', notes:'', phase:'foundations', dependsOn:null},
       /* -- 6–9 months out: lock in the major vendors -- */
-      {id:'task-g1', title:'Book officiant', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-07-01', notes:'', phase:'p6to9', dependsOn:'task-f3'},
+      {id:'task-g1', title:'Book officiant', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-07-01', notes:'', phase:'p6to9', dependsOn:'task-f3', assignedTo:'shared', completedAt: Date.now()-4*86400000},
       {id:'task-g4', title:'Get florist quotes & compare', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-09-01', notes:'', phase:'p6to9', dependsOn:'task-f3'},
       {id:'task-6', title:'Confirm hotel room block', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-01', notes:'', phase:'p6to9', dependsOn:null},
-      {id:'task-7', title:'Book hair & makeup trial', eventId:'ev-church', role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-20', notes:'', phase:'p6to9', dependsOn:null},
-      {id:'task-3', title:'Send save-the-dates', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-25', notes:'', phase:'p6to9', dependsOn:'task-f3'},
+      {id:'task-7', title:'Book hair & makeup trial', eventId:'ev-church', role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-20', notes:'', phase:'p6to9', dependsOn:null, assignedTo:'partner-1', completedAt: Date.now()-2*86400000},
+      {id:'task-3', title:'Send save-the-dates', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-08-25', notes:'', phase:'p6to9', dependsOn:'task-f3', assignedTo:'partner-2', completedAt: Date.now()-26*3600000},
       {id:'task-8', title:'Send Mehndi outfit colour swatches', eventId:'ev-mehndi', role:'Wedding Party', priority:'Low', done:false, dueDateISO:'2026-09-05', notes:'', phase:'p6to9', dependsOn:'task-f6'},
       {id:'task-2', title:'Finalize florist contract', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-09-15', notes:'', phase:'p6to9', dependsOn:'task-g4'},
       {id:'task-g2', title:'Book caterer & schedule tasting', eventId:null, role:'Couple', priority:'High', done:false, dueDateISO:'2026-09-20', notes:'', phase:'p6to9', dependsOn:'task-f3'},
@@ -4447,6 +4484,7 @@ function normalizeDashboardData(d){
     if(t.notes===undefined) t.notes = '';
     if(t.assignedTo===undefined) t.assignedTo = null;
     if(t.milestone===undefined) t.milestone = false;
+    if(t.completedAt===undefined) t.completedAt = null;
   });
   // v1.46.0: a wedding-party member's "Assigned Tasks" used to live in its own m.tasks array,
   // completely invisible to the overarching Wedding Plan. One-time migration: fold any legacy
@@ -5143,6 +5181,7 @@ function renderHome(){
       </div>
       <div class="card">
         <div class="card-head"><h4>Planning Progress</h4></div>
+        <div class="insight-note"><b>✦ Evera Insight:</b> ${escapeHtml(weddingHealthInsight({d, venueEntry, vb, eventsPlanned, overdueTasks, isOverBudget, totalSpent, unallocated}))}</div>
         <div class="progress-checklist">
           <div class="pc-row" onclick="renderRoute('vendors')">
             <span class="pc-label">Venue</span>
@@ -5187,6 +5226,40 @@ function renderHome(){
   `;
 }
 
+// v1.53.0: Evera Insight — a single synthesized sentence explaining what's actually driving the
+// Planning Progress picture, reusing the exact same six signals those rows already compute rather
+// than inventing new ones. Picks whichever category most needs attention (by a simple, transparent
+// "how far from done" estimate per category) and names it with its real numbers; when nothing
+// stands out, says so plainly instead of forcing a concern that isn't there.
+function weddingHealthInsight(ctx){
+  const {d, venueEntry, vb, eventsPlanned, overdueTasks, isOverBudget, totalSpent, unallocated} = ctx;
+  const candidates = [];
+  if(!(venueEntry && venueEntry.status==='booked')){
+    candidates.push({need:100, text:"Venue is the one thing still holding everything else back — booking it unlocks realistic planning for catering, guest capacity, and your timeline."});
+  }
+  if(vb.total){
+    const bookedFrac = vb.booked/vb.total;
+    if(bookedFrac<1) candidates.push({need:Math.round((1-bookedFrac)*90), text:`Vendors is your biggest open area right now — ${vb.booked} of ${vb.total} categories booked. Check "Decision Needed Soon" on Vendors for what to prioritize.`});
+  }
+  if(isOverBudget){
+    candidates.push({need:95, text:`Budget needs attention — you're ${fmtMoney(totalSpent-(d.budgetTotal||0))} over your total budget right now.`});
+  } else if(unallocated<0){
+    candidates.push({need:55, text:`Budget is worth a look — your planned categories add up to ${fmtMoney(Math.abs(unallocated))} more than your total budget allows for.`});
+  }
+  if(d.guestCount){
+    const invitedFrac = (d.rsvp.invited||0)/d.guestCount;
+    if(invitedFrac<1) candidates.push({need:Math.round((1-invitedFrac)*70), text:`Guest List could use attention — only ${d.rsvp.invited||0} of your estimated ${d.guestCount} guests have been invited so far.`});
+  }
+  if(d.events.length && eventsPlanned<d.events.length){
+    candidates.push({need:Math.round((1-eventsPlanned/d.events.length)*60), text:`Events is your next focus — ${eventsPlanned} of ${d.events.length} have enough detail filled in to feel ready.`});
+  }
+  if(overdueTasks>0){
+    candidates.push({need:85, text:`Timeline needs attention — ${pluralize(overdueTasks,'task is','tasks are')} overdue on your Wedding Plan.`});
+  }
+  if(!candidates.length) return "Every area is tracking well right now — venue, vendors, guest list, budget, events, and your timeline are all in good shape.";
+  candidates.sort((a,b)=>b.need-a.need);
+  return candidates[0].text;
+}
 function donutGradient(breakdown, total){
   const r=48, cx=60, cy=60, circ = 2*Math.PI*r;
   let offset = 0;
@@ -6848,7 +6921,7 @@ function togglePlanGroup(key){
    tasks. Untitled/unassigned tasks land in a trailing "Unassigned" bucket rather than being hidden. */
 function renderPlanAssigneeGroups(tasks){
   const nameById = {};
-  taggablePeople().forEach(p=>{ nameById[p.id]=p.name; });
+  taskAssigneeOptions().forEach(p=>{ nameById[p.id]=p.name; });
   const buckets = {};
   tasks.forEach(t=>{
     const key = t.assignedTo || 'unassigned';
@@ -6881,6 +6954,54 @@ function renderPlanCategoryGroups(tasks){
   }).join('');
 }
 function switchPlanViewMode(mode){ planViewMode = mode; document.getElementById('content').innerHTML = renderPlanModule(); }
+// v1.53.0: Couple Collaboration activity feed — a plain-language log of what's gotten done on
+// tasks assigned to either partner or to "Shared," powered by the completedAt timestamp toggleTaskDone
+// now records. There's one shared account login today (not separate per-partner sessions), so this
+// reads as "what's gotten done between you two" rather than a cross-device notification — an honest
+// framing given the current single-login architecture.
+function relativeTimeLabel(ts){
+  if(!ts) return '';
+  const diffMs = Date.now() - ts;
+  const mins = Math.floor(diffMs/60000);
+  if(mins<1) return 'just now';
+  if(mins<60) return `${mins} min${mins===1?'':'s'} ago`;
+  const hours = Math.floor(mins/60);
+  if(hours<24) return `${hours} hour${hours===1?'':'s'} ago`;
+  const days = Math.floor(hours/24);
+  if(days<7) return `${days} day${days===1?'':'s'} ago`;
+  const weeks = Math.floor(days/7);
+  if(weeks<5) return `${weeks} week${weeks===1?'':'s'} ago`;
+  return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+function coupleActivityFeed(){
+  const d = dashboardData;
+  const nameById = {};
+  taskAssigneeOptions().forEach(p=>{ nameById[p.id]=p.name; });
+  return (d.tasks||[])
+    .filter(t=>t.done && t.completedAt && ['partner-1','partner-2','shared'].includes(t.assignedTo))
+    .sort((a,b)=>b.completedAt-a.completedAt)
+    .slice(0,6)
+    .map(t=>({ title:t.title, who: nameById[t.assignedTo] || 'Someone', milestone:!!t.milestone, when: relativeTimeLabel(t.completedAt) }));
+}
+function renderCoupleActivityCard(){
+  const d = dashboardData;
+  if(!(d.partner1 && d.partner2)) return '';
+  const feed = coupleActivityFeed();
+  if(!feed.length) return '';
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Recent Activity</h4><span class="d-sub">What's gotten done between you two</span></div>
+      <div class="activity-feed">
+        ${feed.map(item=>`
+          <div class="activity-row">
+            <span class="activity-ico">✓</span>
+            <span class="activity-text"><b>${escapeHtml(item.who)}</b> completed ${item.milestone?'🏁 ':''}&quot;${escapeHtml(item.title)}&quot;</span>
+            <span class="activity-when">${escapeHtml(item.when)}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  `;
+}
 function renderPlanTasksTab(){
   const d = dashboardData;
   const tasks = filteredTasks();
@@ -6914,6 +7035,7 @@ function renderPlanTasksTab(){
       <div class="ps-stat"><div class="ps-num" style="${stats.overdue>0?'color:var(--terracotta);':''}">${stats.overdue}</div><div class="ps-label">Overdue</div></div>
       <div class="ps-stat"><div class="ps-num">${stats.pctDone}%</div><div class="ps-label">Complete</div></div>
     </div>
+    ${renderCoupleActivityCard()}
     ${renderSuggestedTasksCard()}
     <div class="card">
       <div class="card-head">
@@ -6971,9 +7093,22 @@ function renderPlanTasksTab(){
     </div>
   `;
 }
+// v1.53.0: Couple Collaboration — a task can be assigned to "Shared (both of you)" in addition to
+// any one person, right alongside the existing roster (which already lets a task go to either
+// partner by name — that's "Mine"/"Partner's" without any new concept). Kept as its own helper
+// rather than folded into taggablePeople() itself, since "Shared" isn't a real mentionable person
+// and shouldn't show up in @mention autocomplete elsewhere in the app.
+function taskAssigneeOptions(){
+  const people = taggablePeople();
+  const d = dashboardData;
+  if(d.partner1 && d.partner2 && people.length>=2){
+    return [...people.slice(0,2), {id:'shared', name:'Shared (both of you)', type:'Couple'}, ...people.slice(2)];
+  }
+  return people;
+}
 function taskAssigneeLabel(t){
   if(!t.assignedTo) return null;
-  const p = taggablePeople().find(x=>x.id===t.assignedTo);
+  const p = taskAssigneeOptions().find(x=>x.id===t.assignedTo);
   return p ? p.name : null;
 }
 function renderPlanTaskRow(t){
@@ -7010,7 +7145,7 @@ function renderPlanTaskRow(t){
         <div class="field-cell" style="max-width:220px;"><label>Assigned To</label>
           <select onchange="updateTaskField('${t.id}','assignedTo',this.value||null)">
             <option value="">Unassigned</option>
-            ${taggablePeople().map(p=>`<option value="${p.id}" ${t.assignedTo===p.id?'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
+            ${taskAssigneeOptions().map(p=>`<option value="${p.id}" ${t.assignedTo===p.id?'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
           </select>
         </div>
         <div class="field-cell" style="max-width:160px;">
@@ -7080,6 +7215,7 @@ function toggleTaskDone(id){
   if(!t) return;
   if(!t.done && taskBlockedBy(t)) return; // can't complete a task while its dependency is still open
   t.done = !t.done;
+  t.completedAt = t.done ? Date.now() : null; // v1.53.0: powers the Couple Activity feed
   reRenderCurrent();
 }
 function removeTask(id){
@@ -7127,7 +7263,7 @@ function closeAddTaskModal(){
 function renderAddTaskModal(){
   if(!addTaskModalOpen) return '';
   const d = dashboardData;
-  const people = taggablePeople();
+  const people = taskAssigneeOptions();
   return `
     <div class="item-modal">
       <button class="im-close" onclick="closeAddTaskModal()">✕</button>
@@ -8603,6 +8739,67 @@ function vendorBookingDeclineLabel(vb){
   if(vb.status!=='declined' || !vb.declineReason) return '';
   return vb.declineReason==='Other' ? (vb.declineReasonOther || 'Other') : vb.declineReason;
 }
+/* ---- Decision Centre (v1.53.0): side-by-side comparison for any category where there are
+   two or more live (shortlisted or still-searching) candidate bookings — e.g. two photography
+   studios both quoted and under consideration. Nothing fabricated: every stat shown comes from
+   the same vendorBookings fields My Vendor Team already edits, so the comparison stays accurate
+   the moment either booking changes. "Lowest cost" / "Furthest along" badges are plainly labeled
+   facts, not an opaque score — several candidates can share a badge if they're genuinely tied. */
+function vendorDecisionCategories(){
+  const byCat = vendorBookingsByCategory();
+  const out = [];
+  Object.keys(byCat).forEach(cat=>{
+    const live = byCat[cat].filter(vb=>vb.status==='shortlisted' || vb.status==='searching');
+    if(live.length>=2) out.push({category:cat, candidates:live});
+  });
+  return out;
+}
+function decisionCandidateBadges(vb, group){
+  const badges = [];
+  const costed = group.filter(v=>v.cost>0);
+  if(costed.length>1){
+    const minCost = Math.min(...costed.map(v=>v.cost));
+    if(vb.cost===minCost && vb.cost>0) badges.push('💰 Lowest cost');
+  }
+  const contractRank = {'signed':2,'sent':1,'not-started':0};
+  const maxRank = Math.max(...group.map(v=>contractRank[v.contractStatus]??0));
+  if(maxRank>0 && (contractRank[vb.contractStatus]??0)===maxRank) badges.push('📝 Furthest along');
+  return badges;
+}
+function renderDecisionCandidateCard(vb, group){
+  const badges = decisionCandidateBadges(vb, group);
+  return `
+    <div class="decision-candidate-card ${badges.length?'dc-recommended':''}">
+      ${badges.length ? `<div class="dc-badges">${badges.map(b=>`<span class="dc-badge">${b}</span>`).join('')}</div>` : ''}
+      <div class="dc-name" onclick="openVendorBookingDetail('${vb.id}')">${escapeHtml(vb.vendorName||'Unnamed option')}</div>
+      <div class="dc-stat-grid">
+        <div><span class="dc-stat-label">Cost</span><span class="dc-stat-value">${vb.cost?fmtMoney(vb.cost):'—'}</span></div>
+        <div><span class="dc-stat-label">Contract</span><span class="dc-stat-value" style="text-transform:capitalize;">${vb.contractStatus.replace('-',' ')}</span></div>
+        <div><span class="dc-stat-label">Status</span><span class="dc-stat-value">${vb.status==='shortlisted'?'Shortlisted':'Searching'}</span></div>
+        <div><span class="dc-stat-label">Covers</span><span class="dc-stat-value">${vb.eventIds && vb.eventIds.length ? pluralize(vb.eventIds.length,'event','events') : 'All events'}</span></div>
+      </div>
+      ${(vb.contactName || vb.phone) ? `<div class="d-sub">${[vb.contactName, vb.phone].filter(Boolean).map(s=>escapeHtml(s)).join(' · ')}</div>` : ''}
+      ${vb.website ? `<a href="${escapeAttr(normalizeWebsiteUrl(vb.website))}" target="_blank" rel="noopener" class="ch-link">Visit website →</a>` : ''}
+      ${vb.notes ? `<div class="dc-notes">${escapeHtml(vb.notes)}</div>` : ''}
+    </div>
+  `;
+}
+function renderDecisionCentre(){
+  const cats = vendorDecisionCategories();
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Decision Centre</h4><span class="d-sub">Side-by-side, for any category where you're still deciding between options</span></div>
+      ${cats.length ? cats.map(({category, candidates})=>`
+        <div class="detail-section" style="margin-top:16px; padding-top:14px;">
+          <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(category)}</h4><span class="d-sub">${pluralize(candidates.length,'option','options')}</span></div>
+          <div class="decision-compare-row">
+            ${candidates.map(vb=>renderDecisionCandidateCard(vb, candidates)).join('')}
+          </div>
+        </div>
+      `).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">Nothing to compare yet — once a category has two or more shortlisted or still-searching bookings (like two photographers you've both gotten quotes from), they'll line up here side by side.</p>`}
+    </div>
+  `;
+}
 function vendorBookingStatusCounts(){
   const list = dashboardData.vendorBookings||[];
   return {
@@ -9367,6 +9564,7 @@ function renderVendorsModule(){
   return `
     ${renderVendorAddButton()}
     ${renderVendorTeamSection()}
+    ${renderDecisionCentre()}
     <div class="party-summary-strip hero-strip">
       <div class="ps-stat"><div class="ps-num">${booked.length}</div><div class="ps-label">Booked</div></div>
       <div class="ps-stat"><div class="ps-num" style="${soon.length?'color:var(--terracotta);':''}">${soon.length}</div><div class="ps-label">Decision Needed Soon</div></div>
