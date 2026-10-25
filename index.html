@@ -2043,6 +2043,17 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.50.0', date:'2026-10-25',
+    title:'Empty states that teach, instead of saying "nothing here"',
+    items:[
+      'My Vendor Team (inside Vendors), on a brand-new account with zero vendor bookings, now shows "Let\'s build your vendor team" with concrete starting categories — Venue, Photography, Catering — instead of a plain "No vendor bookings yet" line, and a button that opens the Add Vendor form already set to the first one.',
+      'All Guests (inside Guests), on a brand-new account with zero households added, now shows "Let\'s start your guest list," references the guest-count estimate from your onboarding answers when you gave one, and a button that adds your first household and opens it for editing right away.',
+      'Budget now shows "Let\'s set up your budget" whenever your total budget is still $0 — explaining what Evera will do with it (track allocation and spending across every category automatically) and a button that jumps straight to the Total Budget field. It disappears the moment you set a real number.',
+      'Audited the other places Natasha asked about — Wedding Party, Website, and Playbook. Wedding Party already had a strong teaching empty state (example roles, a clear "why invite your party" explanation, a direct Add button) and needed no changes. Website is a settings panel rather than a list that can be "empty," so the same pattern doesn\'t apply there. Playbook already explains itself contextually ("Your Playbook will build itself" / "Nothing assigned yet") since it\'s generated from other modules rather than filled in by hand — also left as-is.',
+      'None of this touches the sample wedding — it still opens full and rich, exactly as before. These new empty states only show up on a real account that genuinely has nothing in that section yet, never when a filter just happens to match nothing (that still shows the plain "no matches" message).'
+    ]
+  },
+  {
     version:'1.49.0', date:'2026-10-25',
     title:'Undo, instead of losing things for good',
     items:[
@@ -9052,9 +9063,31 @@ function renderVendorTeamSection(){
             }).join('')}
           </div>
         </div>
-      `).join('') : `<p style="font-size:13px;color:var(--charcoal-faint);">${vendorTeamFilter==='all' ? 'No vendor bookings yet — use "+ Add Vendor" at the top of the page, or book straight from a recommendation.' : 'No vendor bookings match this filter.'}</p>`}
+      `).join('') : (vendorTeamFilter==='all' ? renderEmptyVendorTeamState() : `<p style="font-size:13px;color:var(--charcoal-faint);">No vendor bookings match this filter.</p>`)}
     </div>
   `;
+}
+function renderEmptyVendorTeamState(){
+  const d = dashboardData;
+  const startingCats = vendorStarterCategories();
+  return `
+    <div class="empty-state">
+      <svg class="icon" viewBox="0 0 24 24">${ICONS.vendors}</svg>
+      <h4>Let's build your vendor team</h4>
+      <p>Evera recommends starting with ${startingCats.map(c=>`<strong>${escapeHtml(c)}</strong>`).join(', ')} — these tend to book up first${d.weddingDateISO ? ' this far from your date' : ''}.</p>
+      <button class="btn btn-solid btn-sm" style="margin-top:4px;" onclick="openVendorAddModal({presetCategory:'${escapeAttr(startingCats[0]||'')}'})">+ Add a Vendor</button>
+    </div>
+  `;
+}
+// Which categories to lead with in a fresh empty state — same priority order used when
+// seeding a new account's starter vendor list in buildFromOnboarding, so the suggestion
+// here is consistent with what the account was actually set up with, not an arbitrary list.
+function vendorStarterCategories(){
+  const priorityOrder = ['Venue','Photography','Catering','Florals','Music/DJ','Hair & Makeup'];
+  const have = (dashboardData.vendors||[]).map(v=>v.category);
+  const ordered = priorityOrder.filter(c=>have.includes(c));
+  const rest = have.filter(c=>!priorityOrder.includes(c));
+  return (ordered.length ? ordered : priorityOrder).concat(rest).slice(0,3);
 }
 function removeVendorBooking(id){
   const idx = (dashboardData.vendorBookings||[]).findIndex(v=>v.id===id);
@@ -13247,10 +13280,21 @@ function renderGuestListTab(){
       <p class="d-sub" style="margin:-6px 0 14px;">${households.length} of ${(d.guestHouseholds||[]).length} families/parties shown${d.guestCount ? ` · ${stats.totalIndividuals} of ~${d.guestCount} guests added individually` : ''}</p>
       <div style="display:flex; gap:20px; align-items:flex-start;">
         <div style="flex:1; min-width:0;">
-          ${households.length ? renderGuestsGroupedView(households) : `<p style="font-size:13px;color:var(--charcoal-faint);">No families or guests match this filter yet.</p>`}
+          ${households.length ? renderGuestsGroupedView(households) : ((d.guestHouseholds||[]).length ? `<p style="font-size:13px;color:var(--charcoal-faint);">No families or guests match this filter yet.</p>` : renderEmptyGuestListState())}
         </div>
         ${guestsFiltersPanelOpen ? renderGuestsFiltersPanel() : ''}
       </div>
+    </div>
+  `;
+}
+function renderEmptyGuestListState(){
+  const d = dashboardData;
+  return `
+    <div class="empty-state">
+      <svg class="icon" viewBox="0 0 24 24">${ICONS.guests}</svg>
+      <h4>Let's start your guest list</h4>
+      <p>Add family, friends and guests as households so you can track RSVPs, meals and seating together${d.guestCount ? ` — you told us to expect around ${d.guestCount} guests` : ''}.</p>
+      <button class="btn btn-solid btn-sm" style="margin-top:4px;" onclick="quickAddHousehold()">+ Add a Family, Party, or Guest</button>
     </div>
   `;
 }
@@ -15473,11 +15517,18 @@ function renderBudgetOverviewTab(){
     ? `You're over budget by ${fmtMoney(overallOverspendAmt)} — ${fmtMoney(totalSpent)} committed against a ${fmtMoney(d.budgetTotal)} total.`
     : paceNote;
   return `
+    ${d.budgetTotal===0 ? `
+    <div class="empty-state" style="margin-bottom:16px;">
+      <svg class="icon" viewBox="0 0 24 24">${ICONS.budget}</svg>
+      <h4>Let's set up your budget</h4>
+      <p>Add your total budget below and Evera will track allocation and spending across every category — venue, catering, photography and the rest — automatically as you book vendors and add costs.</p>
+      <button class="btn btn-solid btn-sm" style="margin-top:4px;" onclick="document.getElementById('budgetTotalInput').focus()">Set Your Total Budget</button>
+    </div>` : ''}
     <div class="card budget-hero-card">
       <div class="party-summary-strip budget-stat-strip">
         <div class="ps-stat">
           <div class="ps-label" style="margin-bottom:4px;">Total Budget</div>
-          <input type="text" inputmode="decimal" class="budget-total-input" value="${fmtMoneyCents(d.budgetTotal)}" onfocus="this.value=${d.budgetTotal||0}; this.select();" onblur="updateBudgetTotal(this.value)">
+          <input type="text" inputmode="decimal" id="budgetTotalInput" class="budget-total-input" value="${fmtMoneyCents(d.budgetTotal)}" onfocus="this.value=${d.budgetTotal||0}; this.select();" onblur="updateBudgetTotal(this.value)">
         </div>
         <div class="ps-stat"><div class="ps-num">${fmtMoney(totalPlanned)}</div><div class="ps-label">Allocated</div></div>
         <div class="ps-stat"><div class="ps-num">${fmtMoney(totalSpent)}</div><div class="ps-label">Committed / Paid</div></div>
