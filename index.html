@@ -1179,6 +1179,7 @@
   .seg-control-xs .seg-btn{padding:6px 12px; font-size:11px;}
   .detail-hint{font-size:12px; color:var(--charcoal-faint); margin-top:10px; line-height:1.5;}
   .detail-hint-alert{color:var(--terracotta); font-weight:600;}
+  .detail-hint-warn{color:var(--amber); font-weight:600;}
   .budget-item-row-clean{grid-template-columns:1.8fr 0.8fr 0.8fr 1.6fr 0.4fr; cursor:pointer; border-radius:8px; padding:9px 6px;}
   .budget-item-row-clean:hover{background:var(--ivory-deep);}
   .cr-chevron-wrap{display:flex; justify-content:flex-end;}
@@ -1351,14 +1352,13 @@
   .pp-placeholder-lg{font-size:56px; opacity:0.45;}
 
   /* ---- Vendor recommendations ---- */
-  .vendor-rec-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; margin-top:10px;}
-  .vendor-rec-card{border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--paper); display:flex; flex-direction:column; gap:10px;}
-  .vrc-head{display:flex; justify-content:space-between; gap:10px; align-items:flex-start;}
-  .vrc-name{font-weight:700; font-size:14.5px; color:var(--charcoal);}
-  .vrc-rating{font-size:12.5px; font-weight:700; color:var(--amber); white-space:nowrap;}
-  .vrc-reasons{margin:0; padding-left:18px; font-size:12px; color:var(--charcoal-soft); line-height:1.55;}
-  .vrc-reasons li{margin-bottom:4px;}
-  .vrc-reasons li.vrc-warn{color:var(--terracotta);}
+  .vendor-rec-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; margin-top:10px;}
+  .vendor-rec-card{border:1px solid var(--line); border-radius:10px; padding:11px; background:var(--paper); display:flex; flex-direction:column; gap:6px;}
+  .vrc-head{display:flex; justify-content:space-between; gap:8px; align-items:flex-start;}
+  .vrc-name{font-weight:700; font-size:13px; color:var(--charcoal);}
+  .vrc-rating{font-size:11.5px; font-weight:700; color:var(--amber); white-space:nowrap;}
+  .vrc-reasons{margin:0; font-size:11.5px; color:var(--charcoal-soft); line-height:1.5;}
+  .vrc-reasons.vrc-warn{color:var(--terracotta);}
 
   /* ---- Decision Centre: side-by-side vendor candidate comparison (v1.53.0) ---- */
   .decision-compare-row{display:flex; gap:14px; overflow-x:auto; padding-bottom:4px; margin-top:10px;}
@@ -2111,6 +2111,26 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.58.0', date:'2026-10-28',
+    title:'Favorite your inspiration, link vendors from either side, and multi-vendor Playbook moments',
+    items:[
+      'Inspiration: tap ☆ on any image to favorite it. Once you\'ve favorited a few, Generate Mood Board and the Master Palette\'s Generate from Inspiration use only your favorites instead of pulling from everything you\'ve uploaded — so one standout shot doesn\'t get diluted by a big folder of references. Nothing changes until you favorite something.',
+      'Budget ↔ Vendors: you can now start a vendor link from either side. A Budget line item without a vendor yet shows a "Choose a vendor to link" picker right there, same effect as linking from that vendor\'s own detail page — plus a quick Unlink action once something\'s linked.',
+      'Playbook: a moment can now be tagged to more than one vendor — both your photographer and videographer on "First Look," for example. Shows as removable chips with a picker to add another, in the Event Timeline tab, the standalone Playbook, and the moment detail view alike.',
+      'Recommended For You (Vendors): redesigned smaller, with a "Show me recommendations for" dropdown so you can narrow to one category at a time, plus contact info and a website link on every match — not just the fit explanation.'
+    ]
+  },
+  {
+    version:'1.57.0', date:'2026-10-28',
+    title:'Budget: Planned stays true to your original budget, Spent (Actual) tracks real cost',
+    items:[
+      'Fixed: a linked vendor\'s cost was overwriting both the Planned and the Spent amount on its budget line item, so your original budget disappeared the moment a vendor\'s real price differed from it. Now Planned is always the figure you set — your original budget for that line — and only Spent (Actual) follows a linked vendor\'s cost once they\'re booked or under signed contract. You can edit Planned directly at any time, even on a vendor-linked item, so Budget vs. Actual is always a real, honest comparison.',
+      'Add a Vendor: Category is now a dropdown of your categories in use (Photography, Catering, etc.) with a "+ Create new category…" option if you need something new — no more retyping the same category by hand. The Role field is still there, unchanged.',
+      'Budget Overview: a new "Reserve Target" stat shows a suggested cushion — 10% of your Total Budget by default, editable inline — for costs you haven\'t planned for yet. This is a separate planning guideline from any "Contingency" category you track as its own budget line item, so the two won\'t be confused for each other.',
+      'Events → Guests: when your invited count climbs to within 90% of a venue\'s capacity, you\'ll now see an amber heads-up before it becomes a real problem — separate from the existing red alert for when you\'re already over.'
+    ]
+  },
   {
     version:'1.56.0', date:'2026-10-28',
     title:'Ask your own get-to-know-you questions, with quick-add suggestions',
@@ -3184,14 +3204,14 @@ function defaultDashboardData(){
       {category:'Officiant', name:'Booked', status:'booked'}
     ],
     vendorRecommendations:[
-      {id:'vr-1', category:'Florals', name:'Bloom & Bough Co.', location:'King City, ON', priceRange:'$$', priceEstimate:6800, rating:4.9, reviewCount:128, specialty:'Specializes in mandap and mehndi floral installations — a strong fit for pairing your Ceremony and Mehndi florals under one contract.'},
-      {id:'vr-2', category:'Florals', name:'Terracotta & Vine', location:'Toronto, ON', priceRange:'$$$', priceEstimate:11500, rating:4.8, reviewCount:74, specialty:'Known for lush, garden-style reception florals with same-day delivery across the GTA.'},
-      {id:'vr-3', category:'Music/DJ', name:'Toronto Sound Collective', location:'Toronto, ON', priceRange:'$$', priceEstimate:2800, rating:4.7, reviewCount:203, specialty:"Bilingual MC experience and a deep South Asian wedding playlist library — pairs well with your Mehndi dhol performance."},
-      {id:'vr-4', category:'Music/DJ', name:'Nightingale Audio', location:'Vaughan, ON', priceRange:'$$$', priceEstimate:4200, rating:4.9, reviewCount:51, specialty:'Premium sound system built for large ballrooms — sized for your 150-guest Reception.'},
-      {id:'vr-5', category:'Hair & Makeup', name:'Glow Atelier', location:'Toronto, ON', priceRange:'$', priceEstimate:1200, rating:4.8, reviewCount:96, specialty:'On-site bridal party team that can cover your full 6-person wedding party in one morning.'},
-      {id:'vr-6', category:'Hair & Makeup', name:'Vellum Beauty Studio', location:'King City, ON', priceRange:'$$', priceEstimate:1900, rating:5.0, reviewCount:40, specialty:'Trial + day-of packages specializing in long-wear makeup built for outdoor ceremonies.'},
-      {id:'vr-7', category:'Mehndi Artist', name:'Henna by Naila', location:'Mississauga, ON', priceRange:'$$', priceEstimate:1500, rating:4.9, reviewCount:152, specialty:'Traditional bridal mehndi plus guest henna stations — matches your Mehndi event\'s dhol-and-henna program.'},
-      {id:'vr-8', category:'Mehndi Artist', name:'Intricate Ink Henna', location:'Brampton, ON', priceRange:'$', priceEstimate:900, rating:4.6, reviewCount:68, specialty:'Budget-friendly guest henna stations, well suited to a Mehndi guest count as large as yours (120).'}
+      {id:'vr-1', category:'Florals', name:'Bloom & Bough Co.', location:'King City, ON', priceRange:'$$', priceEstimate:6800, rating:4.9, reviewCount:128, specialty:'Specializes in mandap and mehndi floral installations — a strong fit for pairing your Ceremony and Mehndi florals under one contract.', website:'bloomandbough.example', contactEmail:'hello@bloomandbough.example', contactPhone:'(905) 555-0119'},
+      {id:'vr-2', category:'Florals', name:'Terracotta & Vine', location:'Toronto, ON', priceRange:'$$$', priceEstimate:11500, rating:4.8, reviewCount:74, specialty:'Known for lush, garden-style reception florals with same-day delivery across the GTA.', website:'terracottaandvine.example', contactEmail:'studio@terracottaandvine.example', contactPhone:'(416) 555-0142'},
+      {id:'vr-3', category:'Music/DJ', name:'Toronto Sound Collective', location:'Toronto, ON', priceRange:'$$', priceEstimate:2800, rating:4.7, reviewCount:203, specialty:"Bilingual MC experience and a deep South Asian wedding playlist library — pairs well with your Mehndi dhol performance.", website:'torontosoundcollective.example', contactEmail:'bookings@torontosoundcollective.example', contactPhone:'(416) 555-0176'},
+      {id:'vr-4', category:'Music/DJ', name:'Nightingale Audio', location:'Vaughan, ON', priceRange:'$$$', priceEstimate:4200, rating:4.9, reviewCount:51, specialty:'Premium sound system built for large ballrooms — sized for your 150-guest Reception.', website:'nightingaleaudio.example', contactEmail:'info@nightingaleaudio.example', contactPhone:'(905) 555-0163'},
+      {id:'vr-5', category:'Hair & Makeup', name:'Glow Atelier', location:'Toronto, ON', priceRange:'$', priceEstimate:1200, rating:4.8, reviewCount:96, specialty:'On-site bridal party team that can cover your full 6-person wedding party in one morning.', website:'glowatelier.example', contactEmail:'hello@glowatelier.example', contactPhone:'(416) 555-0177'},
+      {id:'vr-6', category:'Hair & Makeup', name:'Vellum Beauty Studio', location:'King City, ON', priceRange:'$$', priceEstimate:1900, rating:5.0, reviewCount:40, specialty:'Trial + day-of packages specializing in long-wear makeup built for outdoor ceremonies.', website:'vellumbeauty.example', contactEmail:'book@vellumbeauty.example', contactPhone:'(905) 555-0142'},
+      {id:'vr-7', category:'Mehndi Artist', name:'Henna by Naila', location:'Mississauga, ON', priceRange:'$$', priceEstimate:1500, rating:4.9, reviewCount:152, specialty:'Traditional bridal mehndi plus guest henna stations — matches your Mehndi event\'s dhol-and-henna program.', website:'hennabynaila.example', contactEmail:'naila@hennabynaila.example', contactPhone:'(905) 555-0188'},
+      {id:'vr-8', category:'Mehndi Artist', name:'Intricate Ink Henna', location:'Brampton, ON', priceRange:'$', priceEstimate:900, rating:4.6, reviewCount:68, specialty:'Budget-friendly guest henna stations, well suited to a Mehndi guest count as large as yours (120).', website:'intricateinkhenna.example', contactEmail:'book@intricateinkhenna.example', contactPhone:'(905) 555-0104'}
     ],
     vendorBookings:[
       {id:'vb-venue', category:'Venue', role:'', vendorName:'Elmsley Estate', status:'booked', contactName:'Natasha Deshmukh (Venue Coordinator)', email:'events@elmsleyestate.example', phone:'(416) 555-0134', cost:18000, linkedBudgetItemId:'bi-venue', contractStatus:'signed', notes:'Ceremony lawn + ballroom package. Indoor conservatory is the confirmed rain plan.', eventIds:[], communications:[
@@ -3925,7 +3945,7 @@ function buildFromOnboarding(a){
     weddingParty:[], bachParties:[], broadcasts:[], unavailability:[], vendorBookings:[],
     keyRoles:[], vendorDirectory:[], delegateRoles:[], emergencyKit:{}, feedbackSubmissions:[],
     musicSelections:{}, ceremonyReadings:{}, decorPlans:{}, eventMenus:{}, flatLayLists:{}, hairMakeupSchedules:{},
-    playbookTimeline: evNames.map((name,i)=>({id:'auto'+i, eventId:null, vendorId:null, day: hasDate ? 'See your Events workspace for exact timing' : 'Date TBD', time:'—', title:name, tags:['coordinator','weddingparty'], location:'TBD', notes:''})),
+    playbookTimeline: evNames.map((name,i)=>({id:'auto'+i, eventId:null, vendorIds:[], day: hasDate ? 'See your Events workspace for exact timing' : 'Date TBD', time:'—', title:name, tags:['coordinator','weddingparty'], location:'TBD', notes:''})),
     playbookContacts:[],
     playbookNotes:{dietary:'No dietary notes yet — these appear once guests start RSVPing.', accessibility:'No accessibility notes yet.', rainPlan:'No rain plan set yet — add one from your venue\'s indoor options.', emergency:'Add an on-site emergency contact once your venue is booked.'},
     weddingProfile:{ traditions:[], colorPalette:['#38473B','#C7A467','#CBB2A6','#FAF6EE'], hashtag:'', aestheticNotes:'' },
@@ -4343,6 +4363,9 @@ function normalizeDashboardData(d){
   });
   // v1.56.0: the couple's own open-ended survey questions (see PARTY_SURVEY_SUGGESTED_QUESTIONS above).
   if(!Array.isArray(d.partyCustomSurveyQuestions)) d.partyCustomSurveyQuestions = [];
+  // v1.57.0: a standing contingency reserve percentage against the Total Budget — defaults to 10%,
+  // a common wedding-budget cushion, rather than 0/none, per Natasha's explicit "should always have one."
+  if(d.budgetContingencyPct===undefined || d.budgetContingencyPct===null || isNaN(Number(d.budgetContingencyPct))) d.budgetContingencyPct = 10;
   if(!Array.isArray(d.keyRoles)) d.keyRoles = [];
   if(!Array.isArray(d.vendorDirectory)) d.vendorDirectory = [];
   if(!Array.isArray(d.delegateRoles)) d.delegateRoles = [];
@@ -4356,10 +4379,21 @@ function normalizeDashboardData(d){
   if(!d.hairMakeupSchedules || typeof d.hairMakeupSchedules!=='object') d.hairMakeupSchedules = {};
   if(d.ceremonyOrder && d.ceremonyOrder.eventId===undefined) d.ceremonyOrder.eventId = null;
   // Ad-hoc timeline items + vendor linking (v1.26.0)
-  (d.playbookTimeline||[]).forEach(item=>{ if(item.eventId===undefined) item.eventId = null; if(item.vendorId===undefined) item.vendorId = null; if(item.endTime===undefined) item.endTime = ''; });
+  (d.playbookTimeline||[]).forEach(item=>{
+    if(item.eventId===undefined) item.eventId = null;
+    // v1.58.0: a moment can now be tagged to more than one vendor — migrate the old single vendorId into the new array.
+    if(!Array.isArray(item.vendorIds)) item.vendorIds = item.vendorId ? [item.vendorId] : [];
+    delete item.vendorId;
+    if(item.endTime===undefined) item.endTime = '';
+  });
   if(!Array.isArray(d.feedbackSubmissions)) d.feedbackSubmissions = [];
   if(!Array.isArray(d.vendors)) d.vendors = [];
   if(!Array.isArray(d.vendorRecommendations)) d.vendorRecommendations = [];
+  d.vendorRecommendations.forEach(r=>{
+    if(r.website===undefined) r.website = '';
+    if(r.contactEmail===undefined) r.contactEmail = '';
+    if(r.contactPhone===undefined) r.contactPhone = '';
+  });
   if(!Array.isArray(d.vendorBookings)) d.vendorBookings = [];
   d.vendorBookings.forEach(vb=>{
     if(vb.role===undefined) vb.role = '';
@@ -4647,6 +4681,8 @@ function normalizeDashboardData(d){
       if(!board.categories[c.key]) board.categories[c.key] = {images:[], notes:''};
       if(!Array.isArray(board.categories[c.key].images)) board.categories[c.key].images = [];
       if(board.categories[c.key].notes===undefined) board.categories[c.key].notes = '';
+      // v1.58.0: favoriting imported inspiration images
+      board.categories[c.key].images.forEach(img=>{ if(img.favorite===undefined) img.favorite = false; });
     });
   });
   // one-time migration: carry the old freeform mood boards' images/notes into the new Decor
@@ -6288,7 +6324,7 @@ function renderBlueprintDetailsTab(){
         <span id="hexColorError" style="font-size:11.5px;color:var(--terracotta);display:none;">Enter a valid hex code, e.g. #C7A467</span>
       </div>
       <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);">
-        <div class="d-sub" style="margin-bottom:8px;">Pull colours straight from the images you've added across your Inspiration boards</div>
+        <div class="d-sub" style="margin-bottom:8px;">Pull colours straight from the images you've added across your Inspiration boards${hasFavoritedInspirationImages()?' — using only your ★ favorited images right now':''}</div>
         <button class="btn btn-outline btn-sm" id="genPaletteBtn" onclick="generateMasterPaletteFromInspiration()" ${hasInspirationImages()?'':'disabled title="Add some inspiration images first"'}>🎨 Generate from Inspiration</button>
         <div id="paletteGenSuggestions" style="margin-top:10px;"></div>
       </div>
@@ -6854,6 +6890,8 @@ function renderEventGuestsCard(e){
   const limited = Array.isArray(e.limitedGuestHouseholdIds);
   const totalHouseholds = (dashboardData.guestHouseholds||[]).length;
   const overCapacity = e.venueCapacity && stats.invited > e.venueCapacity;
+  // v1.57.0: a heads-up before you're actually over, not just a too-late flag once you are.
+  const approachingCapacity = !overCapacity && e.venueCapacity && stats.invited >= e.venueCapacity*0.9;
   const lastSent = (e.inviteSentLog&&e.inviteSentLog.length) ? e.inviteSentLog[e.inviteSentLog.length-1] : null;
   return `
     <div class="card">
@@ -6873,6 +6911,7 @@ function renderEventGuestsCard(e){
         <div class="field-mini"><label>Planned Invite Send Date</label><input type="date" style="max-width:150px;" value="${e.inviteSendDateISO||''}" onchange="updateEventField('${e.id}','inviteSendDateISO',this.value)"></div>
       </div>
       ${overCapacity ? `<p class="detail-hint detail-hint-alert" style="margin-top:8px;">⚠ ${stats.invited} invited is over your ${e.venueCapacity} venue capacity — trim the guest list or confirm the venue can flex.</p>` : ''}
+      ${approachingCapacity ? `<p class="detail-hint detail-hint-warn" style="margin-top:8px;">⚠ ${stats.invited} invited is getting close to your ${e.venueCapacity} venue capacity — worth keeping an eye on before it's an issue.</p>` : ''}
       <div style="margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <button class="btn btn-outline btn-sm" onclick="markEventInvitesSent('${e.id}')">📨 Mark Invites Sent</button>
         ${lastSent ? `<span class="d-sub">Sent ${new Date(lastSent.sentAt).toLocaleDateString()} — simulated, no real email/text goes out yet.</span>` : ''}
@@ -7494,7 +7533,7 @@ function renderInspirationModule(){
   return `
     <div class="card">
       <div class="card-head"><h4>Inspiration</h4><span class="d-sub">One board per event, so the look stays connected to your plan</span></div>
-      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Upload your own reference images for each category below — Evera doesn't fabricate inspiration photos for you. Once you've added some, your Master Colour Palette (on Wedding Blueprint) can pull real colours straight from them.</p>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Upload your own reference images for each category below — Evera doesn't fabricate inspiration photos for you. Once you've added some, your Master Colour Palette (on Wedding Blueprint) can pull real colours straight from them. Tap ☆ on any image to favorite it — once you've favorited a few, Generate Mood Board and Generate from Inspiration use only your favorites instead of everything you've uploaded.</p>
     </div>
     ${d.events.length ? `
     <div style="display:flex;justify-content:flex-end;margin:-6px 0 12px;">
@@ -7527,7 +7566,7 @@ function renderInspirationCategory(board, cat){
     <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);">
       <div class="detail-section-head"><h5 style="margin:0;">${escapeHtml(cat.label)}</h5></div>
       <div style="display:flex; flex-wrap:wrap; gap:8px; margin:8px 0;">
-        ${data.images.map(img=>`<div style="position:relative;width:72px;height:72px;"><img src="${img.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--line);"><a href="#" onclick="removeInspirationImage('${board.id}','${cat.key}','${img.id}'); return false;" style="position:absolute;top:2px;right:2px;background:rgba(43,42,38,0.7);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;">✕</a></div>`).join('')}
+        ${data.images.map(img=>`<div style="position:relative;width:72px;height:72px;"><img src="${img.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid ${img.favorite?'var(--champagne-dark)':'var(--line)'};${img.favorite?'box-shadow:0 0 0 1.5px var(--champagne-dark);':''}"><a href="#" title="${img.favorite?'Remove from favorites':'Favorite this image'}" onclick="toggleInspirationImageFavorite('${board.id}','${cat.key}','${img.id}'); return false;" style="position:absolute;bottom:2px;left:2px;background:rgba(43,42,38,0.7);color:${img.favorite?'var(--champagne-light)':'#fff'};border-radius:50%;width:18px;height:18px;font-size:11px;display:flex;align-items:center;justify-content:center;text-decoration:none;">${img.favorite?'★':'☆'}</a><a href="#" onclick="removeInspirationImage('${board.id}','${cat.key}','${img.id}'); return false;" style="position:absolute;top:2px;right:2px;background:rgba(43,42,38,0.7);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;">✕</a></div>`).join('')}
         <label style="width:72px;height:72px;border:1.3px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--charcoal-faint);font-size:20px;">+
           <input type="file" accept="image/*" multiple style="display:none;" onchange="uploadInspirationImages('${board.id}','${cat.key}',event)">
         </label>
@@ -7576,7 +7615,7 @@ function uploadInspirationImages(boardId, catKey, evt){
   let remaining = files.length;
   files.forEach(file=>{
     resizeImageFile(file).then(src=>{
-      if(src) board.categories[catKey].images.push({id:'img-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), src});
+      if(src) board.categories[catKey].images.push({id:'img-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), src, favorite:false});
       remaining--;
       // v1.46.0: this now renders from the event's Design tab (currentRouteKey is 'events', not the
       // retired standalone 'inspiration' route) — the old check here never matched, so a fresh
@@ -7590,6 +7629,31 @@ function removeInspirationImage(boardId, catKey, imgId){
   if(!board) return;
   board.categories[catKey].images = board.categories[catKey].images.filter(i=>i.id!==imgId);
   document.getElementById('content').innerHTML = renderInspirationModule();
+}
+// v1.58.0: favoriting imported inspiration images — once at least one image is favorited
+// (anywhere, for the palette generator; on a given event's board, for its mood board),
+// only favorited images feed the Master Palette's "Generate from Inspiration" and that
+// event's Generate Mood Board — everything else still shows normally in the boards themselves.
+function toggleInspirationImageFavorite(boardId, catKey, imgId){
+  const board = findInspirationBoard(boardId);
+  if(!board) return;
+  const img = (board.categories[catKey].images||[]).find(i=>i.id===imgId);
+  if(!img) return;
+  img.favorite = !img.favorite;
+  document.getElementById('content').innerHTML = renderInspirationModule();
+}
+function hasFavoritedInspirationImages(){
+  return (dashboardData.inspirationBoards||[]).some(b=>Object.values(b.categories||{}).some(c=>(c.images||[]).some(img=>img.favorite)));
+}
+function allFavoritedInspirationImageSrcs(){
+  const out = [];
+  (dashboardData.inspirationBoards||[]).forEach(b=>{
+    Object.values(b.categories||{}).forEach(cat=>{ (cat.images||[]).forEach(img=>{ if(img.favorite) out.push(img.src); }); });
+  });
+  return out;
+}
+function boardHasFavoritedImages(board){
+  return Object.values(board.categories||{}).some(c=>(c.images||[]).some(img=>img.favorite));
 }
 function updateInspirationNotes(boardId, catKey, val){
   const board = findInspirationBoard(boardId);
@@ -7668,7 +7732,10 @@ function allInspirationImageSrcs(){
   return out;
 }
 async function generatePaletteFromInspiration(){
-  const srcs = allInspirationImageSrcs();
+  // v1.58.0: once anything is favorited, only favorites feed palette generation — otherwise
+  // fall back to everything uploaded, same as before favoriting existed.
+  const favSrcs = allFavoritedInspirationImageSrcs();
+  const srcs = favSrcs.length ? favSrcs : allInspirationImageSrcs();
   if(!srcs.length) return [];
   return extractPaletteFromSrcs(srcs, 6);
 }
@@ -7679,15 +7746,19 @@ async function renderGeneratedMoodBoardBody(eventId){
   const e = d.events.find(ev=>ev.id===eventId);
   const board = (d.inspirationBoards||[]).find(b=>b.eventId===eventId);
   if(!e || !board) return { header:'', palette:[], sections:'' };
+  // v1.58.0: once this event's board has any favorited images, the mood board (collage + pulled
+  // palette) uses only those — otherwise it falls back to everything on the board, same as before.
+  const useFavoritesOnly = boardHasFavoritedImages(board);
   const srcs = [];
-  INSPIRATION_CATEGORIES.forEach(c=>{ (board.categories[c.key].images||[]).forEach(img=>srcs.push(img.src)); });
+  INSPIRATION_CATEGORIES.forEach(c=>{ (board.categories[c.key].images||[]).forEach(img=>{ if(!useFavoritesOnly || img.favorite) srcs.push(img.src); }); });
   const palette = srcs.length ? await extractPaletteFromSrcs(srcs, 6) : [];
   const sections = INSPIRATION_CATEGORIES.map(c=>{
     const data = board.categories[c.key];
-    if(!data.images.length && !data.notes) return '';
-    return { key:c.key, label:c.label, images:data.images, notes:data.notes };
+    const images = useFavoritesOnly ? (data.images||[]).filter(img=>img.favorite) : (data.images||[]);
+    if(!images.length && !data.notes) return '';
+    return { key:c.key, label:c.label, images, notes:data.notes };
   }).filter(Boolean);
-  return { event:e, palette, sections };
+  return { event:e, palette, sections, usingFavoritesOnly: useFavoritesOnly };
 }
 // Round-robins one image from each category in turn, so adjacent tiles come from different
 // categories — a real juxtaposition of the inspiration, rather than one category block after another.
@@ -7743,14 +7814,14 @@ function renderMoodBoardModalFromCache(){
   const overlay = document.getElementById('moodBoardOverlay');
   if(overlay) overlay.innerHTML = buildMoodBoardModalHtml(moodBoardCache);
 }
-function buildMoodBoardModalHtml({event, palette, sections}){
+function buildMoodBoardModalHtml({event, palette, sections, usingFavoritesOnly}){
   const notesSections = sections.filter(s=>s.notes);
   return `
     <div class="item-modal item-modal-xl">
       <button class="im-close" onclick="closeGeneratedMoodBoard();">✕</button>
       <div class="eyebrow">Mood Board</div>
       <h3 style="margin:4px 0 4px;">${escapeHtml(event.name)}</h3>
-      <p class="d-sub" style="margin:0 0 14px;">${event.dateISO?fmtDateLabel(event.dateISO):'Date to be decided'}</p>
+      <p class="d-sub" style="margin:0 0 14px;">${event.dateISO?fmtDateLabel(event.dateISO):'Date to be decided'}${usingFavoritesOnly?' · ★ Showing your favorited images only':''}</p>
       ${palette.length ? `
         <div class="d-sub" style="margin-bottom:8px;">Pulled from your images — select the ones you love, then commit them to this event's colour palette</div>
         <div class="palette-band" style="margin-bottom:8px;">
@@ -7785,9 +7856,9 @@ async function openGeneratedMoodBoard(eventId){
   const overlay = document.getElementById('moodBoardOverlay');
   overlay.innerHTML = `<div class="item-modal item-modal-xl"><button class="im-close" onclick="closeGeneratedMoodBoard();">✕</button><p class="d-sub">Pulling together your mood board…</p></div>`;
   overlay.classList.add('open');
-  const { event, palette, sections } = await renderGeneratedMoodBoardBody(eventId);
+  const { event, palette, sections, usingFavoritesOnly } = await renderGeneratedMoodBoardBody(eventId);
   if(!event){ closeGeneratedMoodBoard(); return; }
-  moodBoardCache = { event, palette, sections };
+  moodBoardCache = { event, palette, sections, usingFavoritesOnly };
   moodBoardSelectedColors = [];
   moodBoardCommitMsg = '';
   overlay.innerHTML = buildMoodBoardModalHtml(moodBoardCache);
@@ -8785,8 +8856,12 @@ function vendorMatchReasons(r){
   if(r.specialty) reasons.push({text:r.specialty, warn:false});
   return reasons;
 }
+// v1.58.0: redesigned smaller per Natasha's request — top match reason only (not the full list),
+// plus real(ly shaped) contact info and a site link so a couple can actually reach out. Still the
+// same curated sample data underneath (see Tier 4 #14 in the backlog) — not a live marketplace.
 function renderVendorRecCard(r){
   const reasons = vendorMatchReasons(r);
+  const topReason = reasons[0];
   return `
     <div class="vendor-rec-card">
       <div class="vrc-head">
@@ -8796,16 +8871,17 @@ function renderVendorRecCard(r){
         </div>
         <div class="vrc-rating">★ ${r.rating.toFixed(1)} <span class="d-sub">(${r.reviewCount})</span></div>
       </div>
-      <ul class="vrc-reasons">
-        ${reasons.map(x=>`<li${x.warn?' class="vrc-warn"':''}>${escapeHtml(x.text)}</li>`).join('')}
-      </ul>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="btn btn-outline btn-sm" onclick="shortlistVendorRecommendation('${r.id}')">+ Add to Shortlist</button>
-        <button class="btn btn-outline btn-sm" onclick="bookVendorRecommendation('${r.id}')">✓ Book This Vendor</button>
+      ${topReason ? `<p class="vrc-reasons" style="margin:0;${topReason.warn?'color:var(--terracotta);':''}">${escapeHtml(topReason.text)}</p>` : ''}
+      ${(r.website||r.contactEmail||r.contactPhone) ? `<div class="d-sub" style="font-size:11.5px; line-height:1.5;">${[r.contactEmail, r.contactPhone, r.website?`<a href="#" onclick="return false;" style="color:var(--green);">${escapeHtml(r.website)}</a>`:''].filter(Boolean).map(escapeIfPlain).join(' · ')}</div>` : ''}
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" style="padding:8px 14px; font-size:11.5px;" onclick="shortlistVendorRecommendation('${r.id}')">+ Shortlist</button>
+        <button class="btn btn-outline btn-sm" style="padding:8px 14px; font-size:11.5px;" onclick="bookVendorRecommendation('${r.id}')">✓ Book</button>
       </div>
     </div>
   `;
 }
+// small helper: escapeHtml everything in the contact line except the already-built website <a> tag
+function escapeIfPlain(s){ return /^<a /.test(s) ? s : escapeHtml(s); }
 function updateVendorField(vi, field, val){
   const v = dashboardData.vendors[vi];
   if(!v) return;
@@ -9347,6 +9423,20 @@ function renderNotificationsPanel(){
    {presetCategory, autoAssignChartId, autoAssignTableId} when opened from the Seating Chart's
    "seat a vendor here" dropdown, so saving both creates the booking and seats it in one step. */
 let vendorAddFormOpen = null;
+/* v1.57.0: Add Vendor's Category field is now a pick list — every category already in use across
+   real vendor bookings, plus the app's own suggested starting categories — with a "+ Create new
+   category…" option that reveals a plain text field, instead of one bare free-text box. */
+function vendorCategoryChoices(){
+  const inUse = (dashboardData.vendorBookings||[]).map(v=>v.category).filter(Boolean);
+  const suggested = dashboardData.vendorCategoriesSuggested||[];
+  return Array.from(new Set([...suggested, ...inUse])).sort((a,b)=>a.localeCompare(b));
+}
+function handleNewVBCategorySelect(val){
+  const wrap = document.getElementById('newVBCategoryCustomWrap');
+  if(!wrap) return;
+  if(val==='__new__'){ wrap.style.display='block'; const inp = document.getElementById('newVBCategoryCustom'); if(inp) inp.focus(); }
+  else wrap.style.display='none';
+}
 function openVendorAddModal(opts){
   vendorAddFormOpen = opts || {};
   document.getElementById('vendorAddOverlay').innerHTML = renderVendorAddModal();
@@ -9368,7 +9458,15 @@ function renderVendorAddModal(){
       <h3 style="margin-top:4px;">Add a Vendor</h3>
       <p class="detail-hint" style="margin-top:-4px;">Fill in what you know now — every field here can be changed later from My Vendor Team.</p>
       <div class="field-grid" style="margin-top:14px;">
-        <div class="field-cell"><label>Category</label><input type="text" id="newVBCategory" placeholder="e.g. Hair & Makeup" value="${escapeAttr(ctx.presetCategory||'')}"></div>
+        <div class="field-cell"><label>Category</label>
+          <select id="newVBCategory" onchange="handleNewVBCategorySelect(this.value)">
+            ${vendorCategoryChoices().map(c=>`<option value="${escapeAttr(c)}" ${ctx.presetCategory===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
+            <option value="__new__" ${ctx.presetCategory && !vendorCategoryChoices().includes(ctx.presetCategory) ? 'selected':''}>+ Create new category…</option>
+          </select>
+          <div id="newVBCategoryCustomWrap" style="display:${ctx.presetCategory && !vendorCategoryChoices().includes(ctx.presetCategory) ? 'block':'none'}; margin-top:6px;">
+            <input type="text" id="newVBCategoryCustom" placeholder="Type your own category" value="${escapeAttr(ctx.presetCategory && !vendorCategoryChoices().includes(ctx.presetCategory) ? ctx.presetCategory : '')}">
+          </div>
+        </div>
         <div class="field-cell"><label>Role (optional)</label><input type="text" id="newVBRole" placeholder="e.g. Bridesmaids"></div>
         <div class="field-cell"><label>Vendor Name</label><input type="text" id="newVBName" placeholder="Business or vendor name"></div>
         <div class="field-cell"><label>Contact Name</label><input type="text" id="newVBContact" placeholder="Who you deal with"></div>
@@ -9413,8 +9511,9 @@ function renderVendorAddModal(){
 }
 function submitVendorAddModal(){
   const catEl = document.getElementById('newVBCategory');
-  const category = (catEl.value||'').trim();
-  if(!category){ catEl.focus(); return; }
+  const catCustomEl = document.getElementById('newVBCategoryCustom');
+  const category = catEl.value==='__new__' ? (catCustomEl.value||'').trim() : (catEl.value||'').trim();
+  if(!category){ (catEl.value==='__new__' ? catCustomEl : catEl).focus(); return; }
   const roleEl = document.getElementById('newVBRole');
   const nameEl = document.getElementById('newVBName');
   const contactEl = document.getElementById('newVBContact');
@@ -9647,7 +9746,7 @@ function renderVendorBookingDetailModal(id){
           </select>
         </div>
       </div>
-      ${linkedItem ? `<p class="detail-hint">🔗 Linked to Budget's <strong>${escapeHtml(linkedItem.name)}</strong> line item — this vendor's Cost above now drives that item's Planned/Spent amounts automatically, so update the cost here rather than in Budget. <a href="#" onclick="closeVendorBookingDetail(); renderRoute('budget'); return false;">Open in Budget</a>.</p>` : `<p class="detail-hint">Not linked to a Budget line item yet — link one above so this vendor's cost and status drive that line item automatically instead of being tracked twice.</p>`}
+      ${linkedItem ? `<p class="detail-hint">🔗 Linked to Budget's <strong>${escapeHtml(linkedItem.name)}</strong> line item — this vendor's Cost above now drives that item's Spent (Actual) amount automatically once they're booked or under signed contract, so update the cost here rather than in Budget. That line item's own Planned amount stays exactly as the couple set it, so Budget can always show planned vs. actual. <a href="#" onclick="closeVendorBookingDetail(); renderRoute('budget'); return false;">Open in Budget</a>.</p>` : `<p class="detail-hint">Not linked to a Budget line item yet — link one above so this vendor's cost and status drive that line item's Actual spend automatically, without touching its own Planned amount.</p>`}
       <div class="chip-grid" style="margin-top:8px; gap:4px;">
         <span class="pp-label" style="width:100%;">Which events does this vendor cover?</span>
         ${(vb.eventIds&&vb.eventIds.length) ? vb.eventIds.map(eid=>{ const ev = d.events.find(e=>e.id===eid); return ev ? `<span class="attach-chip">${escapeHtml(ev.name)}<a href="#" onclick="toggleVendorBookingEvent('${vb.id}','${eid}'); return false;">×</a></span>` : ''; }).join('') : '<span class="d-sub">All events (not limited to a specific date)</span>'}
@@ -9683,12 +9782,19 @@ function renderVendorBookingDetailModal(id){
     </div>
   `;
 }
+let vendorRecFilterCategory = null; // v1.58.0: null = all categories shown, grouped (original behavior)
+function setVendorRecFilterCategory(val){
+  vendorRecFilterCategory = val || null;
+  document.getElementById('content').innerHTML = renderVendorsModule();
+}
 function renderVendorsModule(){
   const d = dashboardData;
   const vendors = d.vendors||[];
   const recs = d.vendorRecommendations||[];
   const byCategory = {};
   recs.forEach(r=>{ (byCategory[r.category] = byCategory[r.category]||[]).push(r); });
+  const recCategories = Object.keys(byCategory).sort();
+  const shownCategories = vendorRecFilterCategory && byCategory[vendorRecFilterCategory] ? [vendorRecFilterCategory] : recCategories;
   const booked = vendors.filter(v=>vendorDecisionBucket(v)==='booked');
   const soon = vendors.filter(v=>vendorDecisionBucket(v)==='soon');
   const later = vendors.filter(v=>vendorDecisionBucket(v)==='later');
@@ -9715,7 +9821,16 @@ function renderVendorsModule(){
     <div class="card">
       <div class="card-head"><h4>Recommended For You</h4><span class="d-sub">Matched to your budget, date, and booking status</span></div>
       <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Each match explains why it's a fit — pulled from what's actually in your Budget, Events, and vendor status, not a generic list. Location matches check both your <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('my-wedding');">venue${d.location?` (${escapeHtml(d.location)})`:''}</span> and your home${d.homeLocation?` (${escapeHtml(d.homeLocation)})`:''} — set both in Wedding Blueprint if a location looks off.</p>
-      ${Object.keys(byCategory).length ? Object.keys(byCategory).map(cat=>{
+      ${recCategories.length ? `
+      <div class="field-cell" style="max-width:260px; margin-bottom:4px;">
+        <label>Show me recommendations for</label>
+        <select onchange="setVendorRecFilterCategory(this.value)">
+          <option value="">All categories</option>
+          ${recCategories.map(c=>`<option value="${escapeAttr(c)}" ${vendorRecFilterCategory===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
+        </select>
+      </div>
+      ` : ''}
+      ${shownCategories.length ? shownCategories.map(cat=>{
         const catStatus = vendors.find(v=>v.category===cat);
         return `
         <div class="detail-section" style="margin-top:18px; padding-top:16px;">
@@ -10484,17 +10599,26 @@ function timeRangeLabel(item){
   if(item.time && item.endTime) return `${item.time} – ${item.endTime}`;
   return item.time || '';
 }
+// v1.58.0: a moment can now be tagged to more than one vendor (e.g. both photographer and
+// videographer for "First Look") — chips for what's linked, plus a picker to add another.
+function renderTimelineItemVendorCell(item){
+  const linked = (item.vendorIds||[]).map(vid=>(dashboardData.vendorBookings||[]).find(v=>v.id===vid)).filter(Boolean);
+  const available = (dashboardData.vendorBookings||[]).filter(vb=>!(item.vendorIds||[]).includes(vb.id));
+  return `<div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
+    ${linked.map(vb=>`<span style="display:inline-flex;align-items:center;gap:4px;background:var(--green-tint);color:var(--green-deep);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap;">${escapeHtml(vb.vendorName||vb.category)}<a href="#" title="Unlink" onclick="removeTimelineItemVendor('${item.id}','${vb.id}'); return false;" style="color:inherit;text-decoration:none;font-weight:700;">✕</a></span>`).join('')}
+    <select class="select-field-sm" style="width:auto;max-width:150px;" onchange="if(this.value){ addTimelineItemVendor('${item.id}', this.value); }">
+      <option value="">${linked.length?'+ Add another':'Link a vendor'}</option>
+      ${available.map(vb=>`<option value="${vb.id}">${escapeHtml(vb.vendorName||vb.category)} — ${escapeHtml(vb.category)}</option>`).join('')}
+    </select>
+  </div>`;
+}
 function renderTimelineItemRow(item){
-  const vbOptions = (dashboardData.vendorBookings||[]).map(vb=>`<option value="${vb.id}" ${item.vendorId===vb.id?'selected':''}>${escapeHtml(vb.vendorName||vb.category)} — ${escapeHtml(vb.category)}</option>`).join('');
-  return `<div class="budget-item-row" style="grid-template-columns:0.5fr 0.5fr 1.3fr 1.0fr 1.0fr 0.35fr; align-items:center;">
+  return `<div class="budget-item-row" style="grid-template-columns:0.5fr 0.5fr 1.3fr 1.0fr 1.2fr 0.35fr; align-items:center;">
     <input type="text" class="select-field-sm" list="dl-time-${item.id}" value="${escapeAttr(item.time)}" placeholder="Start" onchange="updateTimelineItemField('${item.id}','time',this.value)">
     <input type="text" class="select-field-sm" list="dl-time-${item.id}" value="${escapeAttr(item.endTime||'')}" placeholder="End" onchange="updateTimelineItemField('${item.id}','endTime',this.value)">
     <input type="text" class="select-field-sm" value="${escapeAttr(item.title)}" placeholder="What's happening" onchange="updateTimelineItemField('${item.id}','title',this.value)">
     <input type="text" class="select-field-sm" list="dl-loc-${item.id}" value="${escapeAttr(item.location||'')}" placeholder="Location" onchange="updateTimelineItemField('${item.id}','location',this.value)">
-    <select class="select-field-sm" onchange="updateTimelineItemVendor('${item.id}',this.value)">
-      <option value="">No vendor linked</option>
-      ${vbOptions}
-    </select>
+    ${renderTimelineItemVendorCell(item)}
     <a href="#" class="danger-link" onclick="removeTimelineItem('${item.id}'); return false;">Remove</a>
     ${renderTimelineSuggestLists(item.eventId, item.id)}
   </div>`;
@@ -10536,7 +10660,7 @@ function addTimelineItem(eventId){
   }
   dashboardData.playbookTimeline.push({
     id:'tl-'+Date.now().toString(36),
-    eventId, vendorId: vendorId||null,
+    eventId, vendorIds: vendorId ? [vendorId] : [],
     day: timelineDayLabelForEvent(e), time, endTime, title,
     location: location || (e ? (e.location||'') : ''),
     notes:'', tags
@@ -10555,16 +10679,30 @@ function updateTimelineItemField(itemId, field, val){
   reRenderCurrent();
   refreshItemDetail();
 }
-function updateTimelineItemVendor(itemId, vendorId){
+// keep the vendor: tags in sync with every linked booking's category, same bookkeeping addTimelineItem does on create
+function syncTimelineItemVendorTags(item){
+  item.tags = (item.tags||[]).filter(t=>!t.startsWith('vendor:'));
+  const cats = new Set();
+  (item.vendorIds||[]).forEach(vid=>{
+    const vb = (dashboardData.vendorBookings||[]).find(v=>v.id===vid);
+    if(vb && vb.category) cats.add(vb.category);
+  });
+  cats.forEach(c=>item.tags.push('vendor:'+c));
+}
+function addTimelineItemVendor(itemId, vendorId){
+  const item = (dashboardData.playbookTimeline||[]).find(i=>i.id===itemId);
+  if(!item || !vendorId) return;
+  if(!Array.isArray(item.vendorIds)) item.vendorIds = [];
+  if(!item.vendorIds.includes(vendorId)) item.vendorIds.push(vendorId);
+  syncTimelineItemVendorTags(item);
+  reRenderCurrent();
+  refreshItemDetail();
+}
+function removeTimelineItemVendor(itemId, vendorId){
   const item = (dashboardData.playbookTimeline||[]).find(i=>i.id===itemId);
   if(!item) return;
-  item.vendorId = vendorId || null;
-  // keep the vendor: tag in sync with the linked booking's category, same bookkeeping addTimelineItem does on create
-  item.tags = (item.tags||[]).filter(t=>!t.startsWith('vendor:'));
-  if(item.vendorId){
-    const vb = (dashboardData.vendorBookings||[]).find(v=>v.id===item.vendorId);
-    if(vb && vb.category) item.tags.push('vendor:'+vb.category);
-  }
+  item.vendorIds = (item.vendorIds||[]).filter(id=>id!==vendorId);
+  syncTimelineItemVendorTags(item);
   reRenderCurrent();
   refreshItemDetail();
 }
@@ -10593,11 +10731,10 @@ function renderItemDetail(id){
   const d = dashboardData;
   const vendorTag = item.tags.find(t=>t.startsWith('vendor:'));
   const vendorCat = vendorTag ? vendorTag.slice(7) : null;
-  const linkedVendor = item.vendorId ? (d.vendorBookings||[]).find(v=>v.id===item.vendorId) : null;
-  const relatedContact = (!linkedVendor && vendorCat) ? emergencyKeyContacts().find(c=>c.category===vendorCat) : null;
+  const linkedVendors = (item.vendorIds||[]).map(vid=>(d.vendorBookings||[]).find(v=>v.id===vid)).filter(Boolean);
+  const relatedContact = (!linkedVendors.length && vendorCat) ? emergencyKeyContacts().find(c=>c.category===vendorCat) : null;
   const relatedMembers = (d.weddingParty||[]).filter(m=>m.events.some(e=>item.title.includes(e)));
   const isPlaybookItem = (d.playbookTimeline||[]).some(i=>i.id===item.id);
-  const vbOptions = (d.vendorBookings||[]).map(vb=>`<option value="${vb.id}" ${item.vendorId===vb.id?'selected':''}>${escapeHtml(vb.vendorName||vb.category)} — ${escapeHtml(vb.category)}</option>`).join('');
   return `
     <div class="item-modal">
       <button class="im-close" onclick="closeItemDetail()">✕</button>
@@ -10609,11 +10746,8 @@ function renderItemDetail(id){
         <div class="field-cell"><label>Start Time</label><input type="text" list="dl-time-detail-${item.id}" value="${escapeAttr(item.time)}" onchange="updateTimelineItemField('${item.id}','time',this.value)"></div>
         <div class="field-cell"><label>End Time</label><input type="text" list="dl-time-detail-${item.id}" value="${escapeAttr(item.endTime||'')}" onchange="updateTimelineItemField('${item.id}','endTime',this.value)"></div>
         <div class="field-cell" style="grid-column:1/-1;"><label>Location</label><input type="text" list="dl-loc-detail-${item.id}" value="${escapeAttr(item.location||'')}" onchange="updateTimelineItemField('${item.id}','location',this.value)"></div>
-        <div class="field-cell" style="grid-column:1/-1;"><label>Linked Vendor</label>
-          <select onchange="updateTimelineItemVendor('${item.id}',this.value)">
-            <option value="">No vendor linked</option>
-            ${vbOptions}
-          </select>
+        <div class="field-cell" style="grid-column:1/-1;"><label>Linked Vendors</label>
+          ${renderTimelineItemVendorCell(item)}
         </div>
       </div>
       ${renderTimelineSuggestLists(item.eventId, 'detail-'+item.id)}
@@ -10624,7 +10758,7 @@ function renderItemDetail(id){
       `}
       <div class="im-row"><b>Visible to</b><span>${item.tags.map(t=>t.replace('vendor:','')).join(', ')}</span></div>
       ${relatedContact?`<div class="im-row"><b>Vendor Contact</b><span>${escapeHtml(relatedContact.business)} · ${escapeHtml(relatedContact.phone)}</span></div>`:''}
-      ${linkedVendor?`<div class="im-row"><b>Linked Vendor</b><span>${escapeHtml(linkedVendor.vendorName||linkedVendor.category)} (${escapeHtml(linkedVendor.category)}) — <a href="#" onclick="closeItemDetail(); renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${linkedVendor.id}'),0); return false;">view →</a></span></div>`:''}
+      ${linkedVendors.length?`<div class="im-row"><b>Linked Vendor${linkedVendors.length>1?'s':''}</b><span>${linkedVendors.map(lv=>`${escapeHtml(lv.vendorName||lv.category)} (${escapeHtml(lv.category)}) — <a href="#" onclick="closeItemDetail(); renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${lv.id}'),0); return false;">view →</a>`).join('; ')}</span></div>`:''}
       ${relatedMembers.length?`<div class="im-row"><b>Wedding Party</b><span>${relatedMembers.map(m=>escapeHtml(m.name)).join(', ')}</span></div>`:''}
       ${item.notes?`<div class="im-notes">${escapeHtml(item.notes)}</div>`:''}
       ${isPlaybookItem?`<div style="margin-top:14px;"><a href="#" class="danger-link" onclick="removeTimelineItem('${item.id}'); closeItemDetail(); return false;">Remove this timeline item</a></div>`:''}
@@ -16080,12 +16214,19 @@ function escapeJsAttr(s){
    BUDGET
 ================================================================== */
 const BUDGET_COLORS = ['#38473B','#C7A467','#CBB2A6','#4C6355','#A8834A','#8B8577','#B5793A','#AE5B41','#E7DFCF','#6B4E3D','#7A8B76','#D4A574'];
-/* ---- Vendor↔Budget sync (new, Sep 2026): Natasha's explicit call — "vendor is the source of
-   truth." Once a real Vendor Team booking is linked to a Budget line item (vb.linkedBudgetItemId),
-   that vendor's own Cost and booking status drive the item's effective planned/committed amounts
-   everywhere in Budget, rather than the two being tracked (and drifting) independently. The item's
-   own planned/spent fields stay in the data model as a fallback for items with no real vendor
-   linked yet, and as history if the vendor link is ever removed. */
+/* ---- Vendor↔Budget sync ----
+   Originally (Sep 2026, v1.32.0): "vendor is the source of truth" — once linked, the vendor's own
+   Cost drove BOTH the item's Planned and Spent amounts, so the two could never drift apart. In
+   practice that meant the couple's original budgeted figure got silently overwritten the moment a
+   vendor's real cost came in different from what was planned — Natasha ran into exactly this with a
+   sample vendor, and asked (2026-10-28) that what was budgeted originally hold true, with the actual
+   reflected separately, so a true budget-vs-actual comparison stays possible.
+   v1.57.0: Planned now always stays the item's own entered figure — what the couple actually
+   budgeted — never overwritten by a vendor's cost. Spent/Actual still follows the linked vendor's
+   real Cost once that vendor is actually committed (booked or under signed contract), since that IS
+   the real money being spent; before that point there's no real spend yet, so it stays 0 same as
+   before. This is what makes "we budgeted $1,500, we're actually paying $1,200" a real, visible
+   comparison instead of one number quietly replacing the other. */
 function vendorBookingForBudgetItem(itemId){
   if(!itemId) return null;
   return (dashboardData.vendorBookings||[]).find(vb=>vb.linkedBudgetItemId===itemId) || null;
@@ -16094,8 +16235,7 @@ function isVendorCommitted(vb){
   return vb.status==='booked' || vb.contractStatus==='signed';
 }
 function effectiveItemPlanned(item){
-  const vb = vendorBookingForBudgetItem(item.id);
-  return vb ? (vb.cost||0) : item.planned;
+  return item.planned;
 }
 function effectiveItemSpent(item){
   const vb = vendorBookingForBudgetItem(item.id);
@@ -16104,6 +16244,29 @@ function effectiveItemSpent(item){
 }
 function categoryPlanned(cat){ return (cat.items||[]).reduce((s,i)=>s+effectiveItemPlanned(i),0); }
 function categorySpent(cat){ return (cat.items||[]).reduce((s,i)=>s+effectiveItemSpent(i),0); }
+/* ---- v1.58.0: bidirectional vendor <-> budget linking — the link itself still lives on the
+   vendor booking (linkedBudgetItemId), same as before; this just lets the couple start it from
+   the Budget line-item side too, instead of only from the vendor's own detail page. ---- */
+function budgetItemLinkableVendors(){
+  // Only offer vendors that aren't already linked elsewhere — a vendor still only links to one
+  // Budget line item today (see backlog #35 for the open multi-link question).
+  return (dashboardData.vendorBookings||[]).filter(vb=>!vb.linkedBudgetItemId);
+}
+function linkVendorToBudgetItemFromBudget(itemId, vendorBookingId){
+  if(!itemId || !vendorBookingId) return;
+  const vb = (dashboardData.vendorBookings||[]).find(v=>v.id===vendorBookingId);
+  if(!vb) return;
+  vb.linkedBudgetItemId = itemId;
+  refreshBudgetBackground();
+  refreshBudgetItemDetail();
+}
+function unlinkVendorFromBudgetItem(itemId){
+  const vb = (dashboardData.vendorBookings||[]).find(v=>v.linkedBudgetItemId===itemId);
+  if(!vb) return;
+  vb.linkedBudgetItemId = null;
+  refreshBudgetBackground();
+  refreshBudgetItemDetail();
+}
 function vendorStatusFor(category){
   const v = (dashboardData.vendors||[]).find(v=>v.category===category);
   return v ? v.status : null;
@@ -16193,7 +16356,12 @@ function renderBudgetOverviewTab(){
         <div class="ps-stat"><div class="ps-num">${fmtMoney(totalPlanned)}</div><div class="ps-label">Allocated</div></div>
         <div class="ps-stat"><div class="ps-num">${fmtMoney(totalSpent)}</div><div class="ps-label">Committed / Paid</div></div>
         <div class="ps-stat"><div class="ps-num" style="${(d.budgetTotal-totalPlanned)<0?'color:var(--terracotta);':''}">${unallocatedStat(d.budgetTotal-totalPlanned).display}</div><div class="ps-label">${unallocatedStat(d.budgetTotal-totalPlanned).label}</div></div>
+        <div class="ps-stat">
+          <div class="ps-num">${fmtMoney(Math.round((d.budgetTotal||0)*(d.budgetContingencyPct||0)/100))}</div>
+          <div class="ps-label">Reserve Target (<input type="number" min="0" max="100" value="${d.budgetContingencyPct}" style="width:32px; border:none; border-bottom:1px solid var(--line); background:transparent; font-size:11px; font-weight:700; color:var(--charcoal-faint); text-transform:uppercase; letter-spacing:0.05em; padding:0; font-family:inherit;" onchange="updateBudgetContingencyPct(this.value)">%)</div>
+        </div>
       </div>
+      <p class="d-sub" style="margin-top:8px;">A suggested cushion — ${d.budgetContingencyPct||0}% of your Total Budget — for costs you haven't planned for yet. This is a planning guideline, separate from any "Contingency" category you track as its own budget line item.</p>
       <p class="pace-note" style="margin-top:14px; ${isOverallOverBudget?'color:var(--terracotta); font-weight:600;':''}">${isOverallOverBudget?'⚠ ':''}${statusLine}</p>
       <button class="btn btn-outline btn-sm" style="margin-top:4px;" onclick="toggleBudgetBreakdown()">${budgetShowBreakdown ? 'Hide full breakdown' : 'View full breakdown'} ${budgetShowBreakdown?'↑':'→'}</button>
     </div>
@@ -16457,6 +16625,19 @@ function updateBudgetTotal(val){
   dashboardData.budgetTotal = parseMoneyInput(val);
   document.getElementById('content').innerHTML = renderBudgetModule();
 }
+/* v1.57.0: a standing contingency reserve — a % of the Total Budget set aside for costs that
+   weren't planned for. Purely informational today (shown as its own "Reserve Target" stat
+   alongside Allocated/Committed/Unallocated); it doesn't reduce what's available to allocate,
+   since the couple can already see Unallocated and decide for themselves whether to spend into
+   the reserve. Labeled "Reserve Target," not "Contingency," since the sample budget already has
+   its own ordinary "Contingency" category/line item — this is a separate planning guideline, not
+   a line in Master Budget. */
+function updateBudgetContingencyPct(val){
+  let pct = Number(val);
+  if(isNaN(pct)) pct = 0;
+  dashboardData.budgetContingencyPct = Math.max(0, Math.min(100, pct));
+  document.getElementById('content').innerHTML = renderBudgetModule();
+}
 let budgetDetailKey = null; // {ci, ii} — which line item's drill-in is open, if any
 function refreshBudgetBackground(){
   document.getElementById('content').innerHTML = renderBudgetModule();
@@ -16704,10 +16885,8 @@ function renderBudgetItemDetail(ci, ii){
       <input type="text" class="budget-detail-title" value="${escapeAttr(item.name)}" onchange="updateBudgetItem(${ci},${ii},'name',this.value)">
 
       <div class="field-grid" style="margin-top:16px;">
-        <div class="field-cell"><label>Planned</label>${linkedVb
-          ? `<input type="number" value="${ePlanned}" disabled style="opacity:0.7; cursor:not-allowed;">`
-          : `<input type="number" min="0" value="${item.planned}" onchange="updateBudgetItem(${ci},${ii},'planned',this.value)">`}</div>
-        <div class="field-cell"><label>Spent</label>${linkedVb
+        <div class="field-cell"><label>Planned</label><input type="number" min="0" value="${item.planned}" onchange="updateBudgetItem(${ci},${ii},'planned',this.value)"></div>
+        <div class="field-cell"><label>Spent${linkedVb?' (Actual)':''}</label>${linkedVb
           ? `<input type="number" value="${eSpent}" disabled style="opacity:0.7; cursor:not-allowed;">`
           : `<input type="number" min="0" value="${item.spent}" onchange="updateBudgetItem(${ci},${ii},'spent',this.value)">`}</div>
         ${linkedVb ? '' : `
@@ -16726,8 +16905,20 @@ function renderBudgetItemDetail(ci, ii){
         </div>
       </div>
       ${linkedVb ? `
-      <p class="detail-hint">🔗 Linked to <strong>${escapeHtml(linkedVb.vendorName||linkedVb.category)}</strong> ${statusPill(linkedVb.status)} — Planned and Spent above now follow this vendor's own Cost field, so they can't drift apart. <a href="#" onclick="closeBudgetItemDetail(); renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${linkedVb.id}'),0); return false;">Edit cost on the Vendor page →</a></p>
-      ` : `<p class="detail-hint">Not linked to a real Vendor Team booking yet — link one from that vendor's own detail page ("Linked Budget Line Item") so its cost and status drive Planned/Spent here automatically instead of being typed twice.</p>`}
+      <p class="detail-hint">🔗 Linked to <strong>${escapeHtml(linkedVb.vendorName||linkedVb.category)}</strong> ${statusPill(linkedVb.status)} — Spent (Actual) above follows this vendor's own Cost field automatically once they're booked or under signed contract, so it's always what you're really paying. Planned stays exactly what you set below — your original budget for this line — so you can see how the two compare. <a href="#" onclick="closeBudgetItemDetail(); renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${linkedVb.id}'),0); return false;">Edit cost on the Vendor page →</a> · <a href="#" onclick="unlinkVendorFromBudgetItem('${item.id}'); return false;">Unlink</a></p>
+      ` : `
+      <div class="detail-hint" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <span>Not linked to a real Vendor Team booking yet — link one below so its cost and status drive your Actual spend here automatically, while Planned stays your own original budgeted figure.</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:6px;">
+        <select id="budgetLinkVendorPicker-${item.id}" style="max-width:280px;">
+          <option value="">— Choose a vendor to link —</option>
+          ${budgetItemLinkableVendors().map(vb=>`<option value="${vb.id}">${escapeHtml(vb.category)} — ${escapeHtml(vb.vendorName||'Unnamed')}</option>`).join('')}
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="linkVendorToBudgetItemFromBudget('${item.id}', document.getElementById('budgetLinkVendorPicker-${item.id}').value)">Link Vendor</button>
+      </div>
+      ${budgetItemLinkableVendors().length===0 ? '<p class="d-sub" style="margin-top:4px;">Every vendor in My Vendor Team is already linked to a line item — add a vendor there first, or link from that vendor\'s own detail page.</p>' : ''}
+      `}
 
       <div class="detail-section">
         <div class="detail-section-head">
