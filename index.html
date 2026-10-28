@@ -1187,29 +1187,30 @@
   @media (max-width:900px){ .budget-item-row-clean{grid-template-columns:1fr 1fr; row-gap:4px;} }
 
   /* ---- ceremony order: processional/recessional/altar lineup ---- */
-  .order-row{display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-top:1px solid var(--line-soft);}
+  .order-row{display:flex; align-items:flex-start; gap:8px; padding:7px 0; border-top:1px solid var(--line-soft);}
   .order-row:first-child{border-top:none;}
-  .order-num{width:22px; height:22px; border-radius:50%; background:var(--ivory-deep); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--charcoal-soft); flex-shrink:0; margin-top:5px;}
-  .order-body{flex:1; display:flex; flex-direction:column; gap:6px; min-width:0;}
-  .order-body input{padding:7px 10px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:var(--charcoal);}
+  .order-num{width:18px; height:18px; border-radius:50%; background:var(--ivory-deep); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:var(--charcoal-soft); flex-shrink:0; margin-top:4px;}
+  .order-body{flex:1; display:flex; flex-direction:column; gap:4px; min-width:0;}
+  .order-body input{padding:5px 8px; border-radius:7px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px; color:var(--charcoal);}
   .order-people-select{padding:6px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12px; color:var(--charcoal);}
-  .order-controls{display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex-shrink:0;}
-  .ord-btn{width:24px; height:24px; border-radius:6px; border:1px solid var(--line); background:var(--paper); cursor:pointer; font-size:12px; color:var(--charcoal-soft);}
+  .order-controls{display:flex; flex-direction:column; align-items:flex-end; gap:3px; flex-shrink:0;}
+  .ord-btn{width:20px; height:20px; border-radius:6px; border:1px solid var(--line); background:var(--paper); cursor:pointer; font-size:11px; color:var(--charcoal-soft);}
   .ord-btn:disabled{opacity:0.35; cursor:default;}
-  .altar-visual{background:var(--green-tint); border:1px solid var(--line); border-radius:var(--radius); padding:22px 16px 14px;}
-  .altar-stage{text-align:center; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:17px; font-weight:700; color:var(--green-deep); padding-bottom:16px; margin-bottom:16px; background-image:repeating-linear-gradient(90deg, var(--champagne-dark) 0 8px, transparent 8px 16px); background-position:bottom; background-repeat:repeat-x; background-size:100% 2px;}
-  .altar-row{display:flex; align-items:flex-start; justify-content:center; gap:22px; flex-wrap:wrap; min-height:90px;}
-  .altar-side{display:flex; align-items:flex-start; gap:14px; flex:1; flex-wrap:wrap;}
+  .altar-visual{background:var(--green-tint); border:1px solid var(--line); border-radius:var(--radius); padding:12px 14px 9px;}
+  .altar-stage{text-align:center; font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:15px; font-weight:700; color:var(--green-deep); padding-bottom:9px; margin-bottom:9px; background-image:repeating-linear-gradient(90deg, var(--champagne-dark) 0 8px, transparent 8px 16px); background-position:bottom; background-repeat:repeat-x; background-size:100% 2px;}
+  .altar-row{display:flex; align-items:flex-start; justify-content:center; gap:10px; flex-wrap:wrap; min-height:62px;}
+  .altar-side{display:flex; align-items:flex-start; gap:7px; flex:1; flex-wrap:wrap;}
   .altar-side-groom{justify-content:flex-end; flex-direction:row-reverse;}
   .altar-side-bride{justify-content:flex-start; flex-direction:row;}
-  .altar-person{display:flex; flex-direction:column; align-items:center; gap:6px; width:64px;}
-  .altar-person-label{font-size:10.5px; color:var(--charcoal-soft); text-align:center; line-height:1.25;}
+  .altar-person{display:flex; flex-direction:column; align-items:center; gap:3px; width:46px;}
+  .altar-person .pm-avatar{width:36px; height:36px; font-size:12px;}
+  .altar-person-label{font-size:9.5px; color:var(--charcoal-soft); text-align:center; line-height:1.15;}
   .altar-person-couple .altar-person-label{font-weight:700; color:var(--green-deep);}
   .altar-empty-note{font-size:11.5px; color:var(--charcoal-faint); font-style:italic;}
-  .altar-aisle{display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; padding:0 4px;}
-  .altar-aisle-line{width:2px; height:46px; background:repeating-linear-gradient(180deg, var(--champagne-dark) 0 6px, transparent 6px 12px);}
+  .altar-aisle{display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0; padding:0 4px;}
+  .altar-aisle-line{width:2px; height:32px; background:repeating-linear-gradient(180deg, var(--champagne-dark) 0 6px, transparent 6px 12px);}
   .altar-aisle-label{font-size:9.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--charcoal-faint); font-weight:700;}
-  .altar-guests-label{text-align:center; font-size:11px; color:var(--charcoal-faint); margin-top:16px; font-style:italic;}
+  .altar-guests-label{text-align:center; font-size:10.5px; color:var(--charcoal-faint); margin-top:8px; font-style:italic;}
   .floor-canvas{position:relative; width:100%; background:var(--paper); border:2px solid var(--line); border-radius:12px; overflow:visible; margin-top:4px;}
   .floor-table{position:absolute; transform:translate(-50%,-50%); background:linear-gradient(150deg,var(--champagne-light),var(--rose)); border:2px solid var(--champagne-dark); display:flex; align-items:center; justify-content:center; cursor:grab; box-shadow:var(--shadow-sm,0 2px 6px rgba(0,0,0,0.08));}
   .floor-table:active{cursor:grabbing;}
@@ -2111,6 +2112,19 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.59.0', date:'2026-10-28',
+    title:'A larger batch: photographer/videographer rosters, a merged & compact Ceremony Order with side-swap, Run Book exports, and cash envelopes',
+    items:[
+      'Photo Shot List: your Photographers card is now Photographers & Videographers — tag each person as one or the other when you add them (or change it anytime), and give yourself as many of each as you need.',
+      'Photo Shot List: setting a shot\'s Event now auto-fills its Location from that event\'s own location if you haven\'t typed one yet — no more re-typing "Elmsley Estate — Ceremony Lawn" on every single shot. Each shot can also now link directly to a Playbook timeline moment, and your Run Book\'s per-event "Photo Shot List" section shows the actual shots (not just a count) with their photographer, location, and linked moment.',
+      'Ceremony Order: Processional, Altar Lineup, and Recessional are now one merged card in sequence instead of three separate ones, and the Altar Lineup visual and lists are noticeably more compact. A new "⇄ Switch sides" link lets you swap which side of the aisle each team stands/sits on without touching who\'s actually on which team. The "+ Add person…" picker on the Altar Lineup and Processional/Recessional now also includes anyone tagged in Wedding Party Hub\'s Immediate Family & Key People — grandparents, a flower girl, a ring bearer, or any other custom role you\'ve tagged — not just the couple and formal Wedding Party.',
+      'Run Book: added the same Export Couple Master / Coordinator Sheet / Wedding-Party Guide (PDF) buttons you already had on the Playbook Timeline tab, right at the top of the Run Book tab too. The Couple Master export is now genuinely comprehensive — it also includes your full Photo Shot List, Ceremony Order, Reading Selections (with full passage text and anyone you need to discuss it with), Décor & Menu per event, and the new Cash Envelopes & Gratuities list below.',
+      'Run Book: new "Cash Envelopes & Gratuities" card — track who needs a cash tip or envelope day-of (officiant, delivery crews, anyone paid in cash), the amount, and whether it\'s been prepared, with a running total.',
+      'Wedding Party Hub: Delegate Roles now show read-only right in the Hub (with a link back to the Run Book to edit), so you can see who\'s doing what day-of without switching tabs.',
+      'Playbook Timeline: the four role tabs (Couple/Planner, Coordinator, Vendor, Wedding Party) are now a single "Filter by view" dropdown instead of separate tab buttons — same filtering, one control. (We also found that the "preview before export" you asked about was already built — opening any export already shows you the full document before you print or save as PDF.)'
+    ]
+  },
   {
     version:'1.58.0', date:'2026-10-28',
     title:'Favorite your inspiration, link vendors from either side, and multi-vendor Playbook moments',
@@ -4369,10 +4383,13 @@ function normalizeDashboardData(d){
   if(!Array.isArray(d.keyRoles)) d.keyRoles = [];
   if(!Array.isArray(d.vendorDirectory)) d.vendorDirectory = [];
   if(!Array.isArray(d.delegateRoles)) d.delegateRoles = [];
+  if(!Array.isArray(d.cashEnvelopes)) d.cashEnvelopes = [];
+  d.cashEnvelopes.forEach(c=>{ if(c.prepared===undefined) c.prepared=false; if(c.amount===undefined) c.amount=0; if(c.notes===undefined) c.notes=''; });
   if(!d.emergencyKit || typeof d.emergencyKit!=='object') d.emergencyKit = {};
   // Run Book Phase 2 (v1.25.0) — per-event content, keyed by eventId
   if(!d.musicSelections || typeof d.musicSelections!=='object') d.musicSelections = {};
   if(!d.ceremonyReadings || typeof d.ceremonyReadings!=='object') d.ceremonyReadings = {};
+  Object.keys(d.ceremonyReadings).forEach(eid=>{ (d.ceremonyReadings[eid]||[]).forEach(r=>{ if(r.passageText===undefined) r.passageText=''; if(r.discussWith===undefined) r.discussWith=''; }); });
   if(!d.decorPlans || typeof d.decorPlans!=='object') d.decorPlans = {};
   if(!d.eventMenus || typeof d.eventMenus!=='object') d.eventMenus = {};
   if(!d.flatLayLists || typeof d.flatLayLists!=='object') d.flatLayLists = {};
@@ -4415,10 +4432,12 @@ function normalizeDashboardData(d){
   if(!Array.isArray(d.notifications)) d.notifications = []; // rich-text @mention notifications (v1.29.0), in-app only
   if(!d.savingsPlan) d.savingsPlan = {currentSavings:0, contributionAmount:0, contributionFrequency:'monthly', startDateISO: isoFromDate(new Date())};
   if(!d.giftCalculator) d.giftCalculator = {perPerson:0, perFamily:0, basis:'added'};
-  if(!Array.isArray(d.photographers)) d.photographers = [{id:'photog-a', label:'Photographer A', side:'partner1'}];
+  if(!Array.isArray(d.photographers)) d.photographers = [{id:'photog-a', label:'Photographer A', side:'partner1', type:'photographer'}];
+  d.photographers.forEach(p=>{ if(p.type===undefined) p.type = 'photographer'; });
   if(!Array.isArray(d.shotList)) d.shotList = [];
-  d.shotList.forEach(s=>{ if(s.photographerId===undefined) s.photographerId = null; if(s.location===undefined) s.location = ''; if(s.notes===undefined) s.notes = ''; });
+  d.shotList.forEach(s=>{ if(s.photographerId===undefined) s.photographerId = null; if(s.location===undefined) s.location = ''; if(s.notes===undefined) s.notes = ''; if(s.linkedMomentId===undefined) s.linkedMomentId = null; });
   if(!d.ceremonyOrder) d.ceremonyOrder = {processional:[], recessional:[], altarLineup:{groomSide:[], brideSide:[]}};
+  if(d.ceremonyOrder.sidesSwapped===undefined) d.ceremonyOrder.sidesSwapped = false;
   if(!Array.isArray(d.guestCategories)) d.guestCategories = [`${d.partner1}'s Side`, `${d.partner2}'s Side`, `${d.partner1}'s Family`, `${d.partner2}'s Family`, 'Friends'];
   if(!Array.isArray(d.guestHouseholds)) d.guestHouseholds = [];
   // v1.40.0: persistent, reusable tag-based invite rules (Guests → Invite Rules) — distinct from
@@ -10086,7 +10105,7 @@ function renderPartyHubTab(){
             <div class="pm-top"><div class="pm-avatar">?</div><div><div class="pm-name">Not yet invited</div><div class="pm-role">${role}</div></div></div>
           </div>`).join('')}
       </div>
-      <div style="margin-top:28px;">${renderKeyPeopleCard()}</div>
+      <div style="margin-top:28px;">${renderKeyPeopleCard()}${renderDelegateRolesReadOnlyCard()}</div>
     `;
   }
   const totalTasks = members.reduce((s,m)=>s+tasksForPartyMember(m).length,0);
@@ -10096,6 +10115,7 @@ function renderPartyHubTab(){
   return `
     ${renderReminderStrip()}
     ${renderKeyPeopleCard()}
+    ${renderDelegateRolesReadOnlyCard()}
     <div class="party-summary-strip">
       <div class="ps-stat"><div class="ps-num">${members.length}</div><div class="ps-label">Wedding Party Members</div></div>
       <div class="ps-stat"><div class="ps-num">${roles}</div><div class="ps-label">Roles</div></div>
@@ -11030,12 +11050,13 @@ function renderPlaybookTimelineSection(){
   return `
     <div class="module-header">
       <div class="mh-copy">
-        <div class="seg-control">
-          <button class="seg-btn ${playbookRole==='couple'?'active':''}" onclick="switchPlaybookRole('couple')">Couple / Planner</button>
-          <button class="seg-btn ${playbookRole==='coordinator'?'active':''}" onclick="switchPlaybookRole('coordinator')">Coordinator</button>
-          <button class="seg-btn ${playbookRole==='vendor'?'active':''}" onclick="switchPlaybookRole('vendor')">Vendor</button>
-          <button class="seg-btn ${playbookRole==='weddingparty'?'active':''}" onclick="switchPlaybookRole('weddingparty')">Wedding Party</button>
-        </div>
+        <label style="font-size:11.5px; font-weight:700; color:var(--charcoal-faint); text-transform:uppercase; margin-right:8px;">Filter by view:</label>
+        <select class="select-field-sm" style="font-weight:700;" onchange="switchPlaybookRole(this.value)">
+          <option value="couple" ${playbookRole==='couple'?'selected':''}>Couple / Planner</option>
+          <option value="coordinator" ${playbookRole==='coordinator'?'selected':''}>Coordinator</option>
+          <option value="vendor" ${playbookRole==='vendor'?'selected':''}>Vendor</option>
+          <option value="weddingparty" ${playbookRole==='weddingparty'?'selected':''}>Wedding Party</option>
+        </select>
       </div>
       <div class="export-row">
         <button class="btn btn-outline btn-sm" onclick="openPlaybookExportPreview('couple')">📄 Export Couple Master (PDF)</button>
@@ -11160,10 +11181,19 @@ function renderPlaybookContactsCard(){
 ================================================================== */
 function renderRunBookSection(){
   return `
+    <div class="module-header">
+      <div class="mh-copy"><h4 style="margin:0;">Run Book</h4><span class="d-sub">Everything for the day of, exportable as a ready-to-print playbook</span></div>
+      <div class="export-row">
+        <button class="btn btn-outline btn-sm" onclick="openPlaybookExportPreview('couple')">📄 Export Couple Master (PDF)</button>
+        <button class="btn btn-outline btn-sm" onclick="openPlaybookExportPreview('coordinator')">📄 Export Coordinator Sheet (PDF)</button>
+        <button class="btn btn-outline btn-sm" onclick="openPlaybookExportPreview('weddingparty')">📄 Export Wedding-Party Guide (PDF)</button>
+      </div>
+    </div>
     ${renderPerEventRunbookIntro()}
     ${renderFamilyContactListCard()}
     ${renderVendorDirectoryCard()}
     ${renderDelegateRolesCard()}
+    ${renderCashEnvelopesCard()}
     ${renderEmergencyKitCard()}
   `;
 }
@@ -11243,7 +11273,10 @@ function renderPerEventRunbookCard(e){
         </div>
         <div class="detail-section">
           <div class="detail-section-head"><h5 style="margin:0;">Photo Shot List</h5><span class="ch-link" style="cursor:pointer;" onclick="event.stopPropagation(); switchPlaybookSection('shotlist');">View in Shot List →</span></div>
-          ${shots.length ? `<p class="d-sub" style="margin:0;">${shots.length} shot${shots.length===1?'':'s'} tagged (${shots.filter(s=>s.priority==='must-have').length} must-have).</p>` : '<p class="d-sub">No shots tagged to this event yet.</p>'}
+          ${shots.length ? `<p class="d-sub" style="margin:0 0 6px;">${shots.length} shot${shots.length===1?'':'s'} tagged (${shots.filter(s=>s.priority==='must-have').length} must-have).</p>${shots.map(s=>{
+            const moment = s.linkedMomentId ? (d.playbookTimeline||[]).find(m=>m.id===s.linkedMomentId) : null;
+            return `<div class="pb-contact-row"><div><div style="font-weight:600;">${escapeHtml(s.title)}${s.priority==='must-have'?' <span style="color:var(--amber);font-size:11px;">★ must-have</span>':''}</div><div class="pc-role">${escapeHtml(photogLabel(s.photographerId))}${s.location?` · ${escapeHtml(s.location)}`:''}${moment?` · Linked to: ${escapeHtml(moment.title)}`:''}</div></div></div>`;
+          }).join('')}` : '<p class="d-sub">No shots tagged to this event yet.</p>'}
         </div>
         ${hasCeremonyOrder ? `
         <div class="detail-section">
@@ -11281,7 +11314,14 @@ function renderPerEventRunbookCard(e){
         </div>
         <div class="detail-section">
           <div class="detail-section-head"><h5 style="margin:0;">Reading Selection / Officiant Script</h5></div>
-          ${readings.length ? readings.map((r,ri)=>`<div class="pb-contact-row" style="align-items:flex-start;"><div><div style="font-weight:600;">${escapeHtml(r.title)}</div><div class="pc-role">Read by ${escapeHtml(r.reader)}${r.notes?` — ${escapeHtml(r.notes)}`:''}</div></div><a href="#" class="danger-link" onclick="removeCeremonyReading('${e.id}',${ri}); return false;">Remove</a></div>`).join('') : '<p class="d-sub">None added yet.</p>'}
+          ${readings.length ? readings.map((r,ri)=>`<div class="pb-contact-row" style="align-items:flex-start; flex-direction:column; gap:6px;">
+            <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;">
+              <div><div style="font-weight:600;">${escapeHtml(r.title)}</div><div class="pc-role">Read by ${escapeHtml(r.reader)}${r.notes?` — ${escapeHtml(r.notes)}`:''}${r.discussWith?` · Discuss with: ${escapeHtml(r.discussWith)}`:''}</div></div>
+              <a href="#" class="danger-link" onclick="removeCeremonyReading('${e.id}',${ri}); return false;">Remove</a>
+            </div>
+            <textarea class="select-field-sm" style="width:100%; min-height:50px; font-family:inherit;" placeholder="Full passage / script text (optional)" onchange="updateCeremonyReadingField('${e.id}',${ri},'passageText',this.value)">${escapeHtml(r.passageText||'')}</textarea>
+            <input type="text" class="select-field-sm" style="width:100%;" placeholder="Needs to be discussed with (e.g. officiant, reader) — optional" value="${escapeAttr(r.discussWith||'')}" onchange="updateCeremonyReadingField('${e.id}',${ri},'discussWith',this.value)">
+          </div>`).join('') : '<p class="d-sub">None added yet.</p>'}
           <div class="custom-add-row" style="margin-top:8px; flex-wrap:wrap;">
             <input type="text" id="newReading-${e.id}-title" placeholder="Reading / moment title">
             <input type="text" id="newReading-${e.id}-reader" placeholder="Reader">
@@ -11344,11 +11384,17 @@ function addCeremonyReading(eventId){
   const notes = (document.getElementById(`newReading-${eventId}-notes`).value||'').trim();
   if(!title || !reader) return;
   if(!dashboardData.ceremonyReadings[eventId]) dashboardData.ceremonyReadings[eventId] = [];
-  dashboardData.ceremonyReadings[eventId].push({id:'cr-'+Date.now().toString(36), title, reader, notes});
+  dashboardData.ceremonyReadings[eventId].push({id:'cr-'+Date.now().toString(36), title, reader, notes, passageText:'', discussWith:''});
   document.getElementById('content').innerHTML = renderPlaybook();
 }
 function removeCeremonyReading(eventId, idx){
   dashboardData.ceremonyReadings[eventId].splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function updateCeremonyReadingField(eventId, idx, field, val){
+  const r = (dashboardData.ceremonyReadings[eventId]||[])[idx];
+  if(!r) return;
+  r[field] = val;
   document.getElementById('content').innerHTML = renderPlaybook();
 }
 function addRunbookDecorItem(eventId){
@@ -11526,6 +11572,57 @@ function removeDelegateRole(idx){
   dashboardData.delegateRoles.splice(idx,1);
   document.getElementById('content').innerHTML = renderPlaybook();
 }
+function renderCashEnvelopesCard(){
+  const d = dashboardData;
+  const list = d.cashEnvelopes||[];
+  const total = list.reduce((sum,c)=>sum+(Number(c.amount)||0),0);
+  const preparedTotal = list.filter(c=>c.prepared).reduce((sum,c)=>sum+(Number(c.amount)||0),0);
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Cash Envelopes &amp; Gratuities</h4><span class="d-sub">${fmtMoney(preparedTotal)} of ${fmtMoney(total)} prepared</span></div>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Who needs a cash tip or envelope on the day of — officiant, delivery crews, vendors paid in cash — and whether it's been prepared.</p>
+      ${list.length ? list.map((c,ci)=>`
+        <div class="pb-contact-row" style="align-items:flex-start;">
+          <label style="display:flex; align-items:center; gap:4px; flex-shrink:0; margin-top:2px;">
+            <input type="checkbox" ${c.prepared?'checked':''} onchange="updateCashEnvelopeField(${ci},'prepared',this.checked)">
+          </label>
+          <div style="flex:1;">
+            <div style="font-weight:600;">${escapeHtml(c.recipient)}${c.role?` — ${escapeHtml(c.role)}`:''}</div>
+            ${c.notes?`<div class="pc-role">${escapeHtml(c.notes)}</div>`:''}
+          </div>
+          <span class="d-sub" style="font-weight:700;">${fmtMoney(Number(c.amount)||0)}</span>
+          <a href="#" class="danger-link" onclick="removeCashEnvelope(${ci}); return false;">Remove</a>
+        </div>
+      `).join('') : '<p style="font-size:12.5px;color:var(--charcoal-faint);">No envelopes added yet.</p>'}
+      <div class="custom-add-row" style="margin-top:12px; flex-wrap:wrap;">
+        <input type="text" id="newEnvRecipient" placeholder="Recipient (e.g. Officiant)" style="flex:1; min-width:140px;">
+        <input type="text" id="newEnvRole" placeholder="Role (optional)" style="flex:1; min-width:120px;">
+        <input type="number" id="newEnvAmount" placeholder="Amount" style="max-width:100px;">
+        <input type="text" id="newEnvNotes" placeholder="Notes (optional)" style="flex:1; min-width:140px;">
+        <button class="btn btn-outline btn-sm" onclick="addCashEnvelope()">+ Add</button>
+      </div>
+    </div>
+  `;
+}
+function addCashEnvelope(){
+  const recipient = (document.getElementById('newEnvRecipient').value||'').trim();
+  const role = (document.getElementById('newEnvRole').value||'').trim();
+  const amount = Number(document.getElementById('newEnvAmount').value)||0;
+  const notes = (document.getElementById('newEnvNotes').value||'').trim();
+  if(!recipient) return;
+  dashboardData.cashEnvelopes.push({id:'env-'+Date.now().toString(36), recipient, role, amount, prepared:false, notes});
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function updateCashEnvelopeField(idx, field, val){
+  const c = dashboardData.cashEnvelopes[idx];
+  if(!c) return;
+  c[field] = val;
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function removeCashEnvelope(idx){
+  dashboardData.cashEnvelopes.splice(idx,1);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
 function renderEmergencyKitCard(){
   const d = dashboardData;
   const cats = Object.keys(d.emergencyKit||{});
@@ -11604,6 +11701,10 @@ function shotRowHtml(s, si){
     </div>
     <div class="custom-add-row" style="margin:2px 0 10px; flex-wrap:wrap;">
       <input type="text" class="select-field-sm" placeholder="Location (e.g. Conservatory Garden)" style="flex:1; min-width:180px;" value="${escapeAttr(s.location||'')}" onchange="updateShotField(${si},'location',this.value)">
+      <select class="select-field-sm" style="flex:1; min-width:170px;" onchange="updateShotField(${si},'linkedMomentId',this.value||null)" ${!s.eventId?'disabled title="Assign an event first to link a timeline moment"':''}>
+        <option value="">— Link to a timeline moment —</option>
+        ${(d.playbookTimeline||[]).filter(m=>m.eventId===s.eventId).map(m=>`<option value="${m.id}" ${s.linkedMomentId===m.id?'selected':''}>${escapeHtml(m.title)}${m.time&&m.time!=='—'?' ('+escapeHtml(m.time)+')':''}</option>`).join('')}
+      </select>
       <input type="text" class="select-field-sm" placeholder="Details for the photographer (optional)" style="flex:2; min-width:220px;" value="${escapeAttr(s.notes||'')}" onchange="updateShotField(${si},'notes',this.value)">
     </div>`;
 }
@@ -11632,14 +11733,21 @@ function renderShotListSection(){
   } else {
     body = `<div class="budget-items" style="padding-left:0;">${groupHeader}${list.map((s,si)=>shotRowHtml(s,si)).join('')}</div>`;
   }
+  const photogCount = photogs.filter(p=>p.type!=='videographer').length;
+  const videoCount = photogs.filter(p=>p.type==='videographer').length;
   return `
     <div class="card">
-      <div class="card-head"><h4>Photographers</h4><span class="d-sub">${photogs.length} on the roster</span></div>
-      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Add each photographer shooting the day and who they're primarily covering — the shot list below can then be divided between them.</p>
+      <div class="card-head"><h4>Photographers &amp; Videographers</h4><span class="d-sub">${photogCount} photographer${photogCount===1?'':'s'} · ${videoCount} videographer${videoCount===1?'':'s'}</span></div>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Add each photographer or videographer shooting the day and who they're primarily covering — the shot list below can then be divided between them.</p>
       <div class="chip-grid" style="margin-bottom:12px;">
         ${photogs.map(p=>`
           <span class="attach-chip" style="padding:6px 10px;">
+            <span style="font-size:10px;">${p.type==='videographer'?'🎥':'📷'}</span>
             <input type="text" value="${escapeAttr(p.label)}" style="border:none;background:none;font-size:11.5px;font-weight:700;color:var(--charcoal-soft);width:${Math.max(70,p.label.length*7)}px;" onchange="updatePhotographerField('${p.id}','label',this.value)">
+            <select style="border:none;background:none;font-size:11.5px;color:var(--charcoal-faint);" onchange="updatePhotographerField('${p.id}','type',this.value)">
+              <option value="photographer" ${p.type!=='videographer'?'selected':''}>photographer</option>
+              <option value="videographer" ${p.type==='videographer'?'selected':''}>videographer</option>
+            </select>
             <select style="border:none;background:none;font-size:11.5px;color:var(--charcoal-faint);" onchange="updatePhotographerField('${p.id}','side',this.value)">
               <option value="partner1" ${p.side==='partner1'?'selected':''}>covers ${escapeHtml(d.partner1)}'s side</option>
               <option value="partner2" ${p.side==='partner2'?'selected':''}>covers ${escapeHtml(d.partner2)}'s side</option>
@@ -11649,8 +11757,12 @@ function renderShotListSection(){
           </span>`).join('')}
       </div>
       <div class="custom-add-row">
-        <input type="text" id="newPhotogLabel" placeholder="e.g. Photographer C">
-        <button class="btn btn-outline btn-sm" onclick="addPhotographer()">+ Add Photographer</button>
+        <input type="text" id="newPhotogLabel" placeholder="e.g. Photographer C or Videographer B">
+        <select id="newPhotogType" class="select-field-sm">
+          <option value="photographer">Photographer</option>
+          <option value="videographer">Videographer</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="addPhotographer()">+ Add</button>
       </div>
     </div>
     <div class="card">
@@ -11669,8 +11781,13 @@ function renderShotListSection(){
 function updateShotField(si, field, val){
   const s = dashboardData.shotList[si];
   if(!s) return;
-  if(field==='eventId' || field==='photographerId') s[field] = val || null;
+  if(field==='eventId' || field==='photographerId' || field==='linkedMomentId') s[field] = val || null;
   else s[field] = val;
+  if(field==='eventId' && val && !s.location){
+    const ev = dashboardData.events.find(e=>e.id===val);
+    if(ev && ev.location) s.location = ev.location;
+  }
+  if(field==='eventId') s.linkedMomentId = null; // moment belongs to the previous event's timeline
   document.getElementById('content').innerHTML = renderPlaybook();
 }
 function addShot(){
@@ -11686,9 +11803,11 @@ function removeShot(si){
 }
 function addPhotographer(){
   const el = document.getElementById('newPhotogLabel');
+  const typeEl = document.getElementById('newPhotogType');
   const label = (el.value||'').trim();
   if(!label) return;
-  dashboardData.photographers.push({id:'photog-'+Date.now().toString(36), label, side:'both'});
+  const type = (typeEl && typeEl.value) || 'photographer';
+  dashboardData.photographers.push({id:'photog-'+Date.now().toString(36), label, side:'both', type});
   document.getElementById('content').innerHTML = renderPlaybook();
 }
 function updatePhotographerField(id, field, val){
@@ -11787,6 +11906,23 @@ function renderKeyPeopleCard(){
         <div style="flex:1; min-width:260px;">${renderKeyPeopleSide('partner1')}</div>
         <div style="flex:1; min-width:260px;">${renderKeyPeopleSide('partner2')}</div>
       </div>
+    </div>
+  `;
+}
+function goToRunbookDelegateRoles(){
+  renderRoute('playbook');
+  switchPlaybookSection('runbook');
+}
+function renderDelegateRolesReadOnlyCard(){
+  const roles = dashboardData.delegateRoles||[];
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Delegate Roles — Day Of</h4><span class="ch-link" style="cursor:pointer;" onclick="goToRunbookDelegateRoles()">Edit in Run Book →</span></div>
+      ${roles.length ? roles.map(r=>`
+        <div class="pb-contact-row" style="align-items:flex-start;">
+          <div><div style="font-weight:600;">${escapeHtml(r.name)} — ${escapeHtml(r.role)}</div>${r.details ? `<div class="pc-role" style="white-space:normal;">${escapeHtml(r.details)}</div>` : ''}</div>
+        </div>
+      `).join('') : '<p style="font-size:12.5px;color:var(--charcoal-faint);">No delegate roles assigned yet — add them from the Run Book.</p>'}
     </div>
   `;
 }
@@ -11978,54 +12114,91 @@ function generateShotCombinations(){
 /* ==================================================================
    CEREMONY ORDER (processional / recessional / altar lineup)
 ================================================================== */
+function ceremonyFamilyOptions(){
+  // v1.59.0: pull in grandparents, flower girls, ring bearers, or any other relationship-tagged
+  // Key Person from Wedding Party Hub's "Immediate Family & Key People" card, so the processional/
+  // altar lineup isn't limited to just the couple and the formal Wedding Party.
+  const d = dashboardData;
+  const out = [];
+  [['partner1',d.partner1],['partner2',d.partner2]].forEach(([pk,partnerName])=>{
+    familyHouseholdsForSide(pk).forEach(h=>{
+      (h.members||[]).forEach(m=>{
+        if(m.relationship) out.push({id:'fam-'+m.id, name:`${familyMemberFullName(m)} (${m.relationship} — ${partnerName}'s side)`});
+      });
+    });
+  });
+  return out;
+}
 function ceremonyPeopleOptions(){
   const d = dashboardData;
-  return [{id:'partner1', name:`${d.partner1} (Partner 1)`}, {id:'partner2', name:`${d.partner2} (Partner 2)`}, ...d.weddingParty.map(m=>({id:m.id, name:`${m.name} (${m.role})`}))];
+  return [{id:'partner1', name:`${d.partner1} (Partner 1)`}, {id:'partner2', name:`${d.partner2} (Partner 2)`}, ...d.weddingParty.map(m=>({id:m.id, name:`${m.name} (${m.role})`})), ...ceremonyFamilyOptions()];
 }
 function resolvePersonName(id){
   const d = dashboardData;
   if(id==='partner1') return d.partner1;
   if(id==='partner2') return d.partner2;
+  if(typeof id==='string' && id.indexOf('fam-')===0){
+    const memberId = id.slice(4);
+    for(const h of (d.guestHouseholds||[])){
+      const m = (h.members||[]).find(x=>x.id===memberId);
+      if(m) return familyMemberFullName(m);
+    }
+    return id;
+  }
   const m = d.weddingParty.find(x=>x.id===id);
   return m ? effectivePartyName(m) : id;
+}
+function toggleCeremonySidesSwapped(){
+  dashboardData.ceremonyOrder.sidesSwapped = !dashboardData.ceremonyOrder.sidesSwapped;
+  document.getElementById('content').innerHTML = renderPlaybook();
 }
 function renderCeremonyOrderSection(){
   const d = dashboardData;
   const co = d.ceremonyOrder;
+  const swapped = !!co.sidesSwapped;
+  const leftKey = swapped ? 'brideSide' : 'groomSide';
+  const rightKey = swapped ? 'groomSide' : 'brideSide';
+  const leftLabel = swapped ? d.partner1 : d.partner2;
+  const rightLabel = swapped ? d.partner2 : d.partner1;
+  const unavailable = p => co.altarLineup.groomSide.includes(p.id) || co.altarLineup.brideSide.includes(p.id);
   return `
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-head"><h4>Processional (Walking In)</h4></div>
-        ${renderOrderList('processional', co.processional)}
-        <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="addOrderEntry('processional')">+ Add Entry</button>
-      </div>
-      <div class="card">
-        <div class="card-head"><h4>Recessional (Walking Out)</h4></div>
-        ${renderOrderList('recessional', co.recessional)}
-        <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="addOrderEntry('recessional')">+ Add Entry</button>
-      </div>
-    </div>
     <div class="card">
-      <div class="card-head"><h4>Altar Lineup</h4></div>
-      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Who stands where once the wedding party reaches the altar, in order outward from the couple.</p>
-      ${renderAltarVisual(co, d)}
-      <div class="grid-2" style="margin-top:22px;">
-        <div>
-          <div class="eyebrow" style="margin-bottom:8px;">${escapeHtml(d.partner2)}'s Side</div>
-          ${renderLineupList('groomSide', co.altarLineup.groomSide)}
-          <select class="select-field-sm" style="margin-top:8px;" onchange="if(this.value){addLineupPerson('groomSide',this.value); this.value='';}">
-            <option value="">+ Add person…</option>
-            ${ceremonyPeopleOptions().filter(p=>!co.altarLineup.groomSide.includes(p.id) && !co.altarLineup.brideSide.includes(p.id)).map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
-          </select>
+      <div class="card-head"><h4>Processional, Altar Lineup &amp; Recessional</h4></div>
+      <p style="font-size:12.5px;color:var(--charcoal-faint);margin-top:0;">Who walks in, where everyone stands once the wedding party reaches the altar, and who walks out — in sequence.</p>
+
+      <div class="detail-section" style="margin-top:6px; padding-top:12px;">
+        <div class="detail-section-head"><h5 style="margin:0;">Processional (Walking In)</h5></div>
+        ${renderOrderList('processional', co.processional)}
+        <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addOrderEntry('processional')">+ Add Entry</button>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-head"><h5 style="margin:0;">Altar Lineup</h5><a href="#" class="ch-link" onclick="toggleCeremonySidesSwapped(); return false;" title="Swap which side of the aisle each team sits/stands on">⇄ Switch sides</a></div>
+        ${renderAltarVisual(co, d)}
+        <div class="grid-2" style="margin-top:12px;">
+          <div>
+            <div class="eyebrow" style="margin-bottom:6px;">${escapeHtml(leftLabel)}'s Side</div>
+            ${renderLineupList(leftKey, co.altarLineup[leftKey])}
+            <select class="select-field-sm" style="margin-top:6px;" onchange="if(this.value){addLineupPerson('${leftKey}',this.value); this.value='';}">
+              <option value="">+ Add person…</option>
+              ${ceremonyPeopleOptions().filter(p=>!unavailable(p)).map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <div class="eyebrow" style="margin-bottom:6px;">${escapeHtml(rightLabel)}'s Side</div>
+            ${renderLineupList(rightKey, co.altarLineup[rightKey])}
+            <select class="select-field-sm" style="margin-top:6px;" onchange="if(this.value){addLineupPerson('${rightKey}',this.value); this.value='';}">
+              <option value="">+ Add person…</option>
+              ${ceremonyPeopleOptions().filter(p=>!unavailable(p)).map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
+            </select>
+          </div>
         </div>
-        <div>
-          <div class="eyebrow" style="margin-bottom:8px;">${escapeHtml(d.partner1)}'s Side</div>
-          ${renderLineupList('brideSide', co.altarLineup.brideSide)}
-          <select class="select-field-sm" style="margin-top:8px;" onchange="if(this.value){addLineupPerson('brideSide',this.value); this.value='';}">
-            <option value="">+ Add person…</option>
-            ${ceremonyPeopleOptions().filter(p=>!co.altarLineup.groomSide.includes(p.id) && !co.altarLineup.brideSide.includes(p.id)).map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
-          </select>
-        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-head"><h5 style="margin:0;">Recessional (Walking Out)</h5></div>
+        ${renderOrderList('recessional', co.recessional)}
+        <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addOrderEntry('recessional')">+ Add Entry</button>
       </div>
     </div>
     ${renderCeremonyGuestSeatingPreview()}
@@ -12068,21 +12241,26 @@ function altarPersonNode(pid, isCouplePerson){
     </div>`;
 }
 function renderAltarVisual(co, d){
+  const swapped = !!co.sidesSwapped;
   const groomSide = co.altarLineup.groomSide||[];
   const brideSide = co.altarLineup.brideSide||[];
+  // Visual left/right slots stay fixed in the DOM; which underlying side array feeds which
+  // slot is what "Switch sides" toggles, so groomSide/brideSide keep their original meaning.
+  const leftIds = swapped ? brideSide : groomSide;
+  const rightIds = swapped ? groomSide : brideSide;
   return `
     <div class="altar-visual">
       <div class="altar-stage">Altar / Officiant</div>
       <div class="altar-row">
         <div class="altar-side altar-side-groom">
-          ${groomSide.length ? groomSide.map((pid,i)=>altarPersonNode(pid, i===0)).join('') : '<div class="altar-empty-note">No one placed yet</div>'}
+          ${leftIds.length ? leftIds.map((pid,i)=>altarPersonNode(pid, i===0)).join('') : '<div class="altar-empty-note">No one placed yet</div>'}
         </div>
         <div class="altar-aisle">
           <div class="altar-aisle-line"></div>
           <div class="altar-aisle-label">Aisle</div>
         </div>
         <div class="altar-side altar-side-bride">
-          ${brideSide.length ? brideSide.map((pid,i)=>altarPersonNode(pid, i===0)).join('') : '<div class="altar-empty-note">No one placed yet</div>'}
+          ${rightIds.length ? rightIds.map((pid,i)=>altarPersonNode(pid, i===0)).join('') : '<div class="altar-empty-note">No one placed yet</div>'}
         </div>
       </div>
       <div class="altar-guests-label">↓ Guests face this way ↓</div>
@@ -15180,7 +15358,17 @@ function buildPlaybookExportModel(role){
     delegateRoles: d.delegateRoles||[],
     emergencyKit: d.emergencyKit||{},
     notes: d.playbookNotes||{},
-    familyContacts
+    familyContacts,
+    // v1.59.0: "the runbook needs to have everything" — the couple's full export now also
+    // carries the shot list, ceremony order, readings (incl. full passage + who to discuss with),
+    // décor/menu, and cash envelopes, mirroring what the per-event Run Book card already shows.
+    events: showFullRunBook ? (d.events||[]) : [],
+    shotList: showFullRunBook ? (d.shotList||[]) : [],
+    ceremonyOrder: showFullRunBook ? d.ceremonyOrder : null,
+    ceremonyReadings: showFullRunBook ? (d.ceremonyReadings||{}) : {},
+    decorPlans: showFullRunBook ? (d.decorPlans||{}) : {},
+    eventMenus: showFullRunBook ? (d.eventMenus||{}) : {},
+    cashEnvelopes: showFullRunBook ? (d.cashEnvelopes||[]) : []
   };
 }
 function renderPbExportContactBlock(label, rows){
@@ -15250,6 +15438,34 @@ function renderPlaybookExportDocument(model){
       `).join('') : '<p class="d-sub">Nothing added yet.</p>'}
     ` : ''}
     ${model.showFullRunBook ? `
+      <div class="pb-export-section-title">Photo Shot List</div>
+      ${model.shotList.length ? model.shotList.map(s=>`<div style="margin-bottom:6px; font-size:12px; line-height:1.5;"><b>${escapeHtml(s.title)}</b>${s.priority==='must-have'?' <span style="color:var(--amber);">★ must-have</span>':''}<br><span style="color:var(--charcoal-faint);">${escapeHtml(photogLabel(s.photographerId))}${s.location?' · '+escapeHtml(s.location):''}${s.notes?' — '+escapeHtml(s.notes):''}</span></div>`).join('') : '<p class="d-sub">No shots added yet.</p>'}
+
+      <div class="pb-export-section-title">Ceremony Order</div>
+      ${model.ceremonyOrder && (model.ceremonyOrder.processional||[]).length ? `<div style="margin-bottom:8px;"><b style="font-size:12px;">Processional</b>${model.ceremonyOrder.processional.map(en=>`<div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(en.roleText)}: ${escapeHtml(en.personIds.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div>`).join('')}</div>` : ''}
+      ${model.ceremonyOrder && ((model.ceremonyOrder.altarLineup.groomSide||[]).length || (model.ceremonyOrder.altarLineup.brideSide||[]).length) ? `<div style="margin-bottom:8px;"><b style="font-size:12px;">Altar Lineup</b><div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(d.partner2)}'s side: ${escapeHtml(model.ceremonyOrder.altarLineup.groomSide.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div><div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(d.partner1)}'s side: ${escapeHtml(model.ceremonyOrder.altarLineup.brideSide.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div></div>` : ''}
+      ${model.ceremonyOrder && (model.ceremonyOrder.recessional||[]).length ? `<div style="margin-bottom:8px;"><b style="font-size:12px;">Recessional</b>${model.ceremonyOrder.recessional.map(en=>`<div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(en.roleText)}: ${escapeHtml(en.personIds.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div>`).join('')}</div>` : ''}
+      ${(!model.ceremonyOrder || (!(model.ceremonyOrder.processional||[]).length && !(model.ceremonyOrder.recessional||[]).length && !(model.ceremonyOrder.altarLineup.groomSide||[]).length && !(model.ceremonyOrder.altarLineup.brideSide||[]).length)) ? '<p class="d-sub">No ceremony order set yet.</p>' : ''}
+
+      <div class="pb-export-section-title">Reading Selections / Officiant Script</div>
+      ${model.events.filter(e=>(model.ceremonyReadings[e.id]||[]).length).length ? model.events.filter(e=>(model.ceremonyReadings[e.id]||[]).length).map(e=>`
+        <div style="margin-bottom:8px;"><b style="font-size:12px;">${escapeHtml(e.name)}</b>
+        ${model.ceremonyReadings[e.id].map(r=>`<div style="font-size:12px;color:var(--charcoal-soft);margin-top:2px;"><b>${escapeHtml(r.title)}</b> — Read by ${escapeHtml(r.reader)}${r.notes?' ('+escapeHtml(r.notes)+')':''}${r.discussWith?'<br><i>Discuss with: '+escapeHtml(r.discussWith)+'</i>':''}${r.passageText?'<div style="margin-top:2px; white-space:pre-wrap;">'+escapeHtml(r.passageText)+'</div>':''}</div>`).join('')}
+        </div>`).join('') : '<p class="d-sub">No readings added yet.</p>'}
+
+      <div class="pb-export-section-title">Décor &amp; Menu</div>
+      ${model.events.map(e=>{
+        const decor=(model.decorPlans[e.id]||[]); const menu=model.eventMenus[e.id];
+        if(!decor.length && !menu) return '';
+        return `<div style="margin-bottom:8px;"><b style="font-size:12px;">${escapeHtml(e.name)}</b>
+          ${decor.length?`<div style="font-size:12px;color:var(--charcoal-soft);">Décor: ${escapeHtml(decor.map(dc=>dc.item+(dc.quantity?' ('+dc.quantity+')':'')).join(', '))}</div>`:''}
+          ${menu?`<div style="font-size:12px;color:var(--charcoal-soft);">Menu: ${escapeHtml((menu.courses||[]).map(c=>c.course+': '+c.dish).join(' · '))}</div>`:''}
+        </div>`;
+      }).join('') || '<p class="d-sub">No décor or menu details added yet.</p>'}
+
+      <div class="pb-export-section-title">Cash Envelopes &amp; Gratuities</div>
+      ${model.cashEnvelopes.length ? model.cashEnvelopes.map(c=>`<div style="font-size:12px;color:var(--charcoal-soft);margin-bottom:3px;">${c.prepared?'☑':'☐'} ${escapeHtml(c.recipient)}${c.role?' — '+escapeHtml(c.role):''}: ${escapeHtml(fmtMoney(Number(c.amount)||0))}${c.notes?' ('+escapeHtml(c.notes)+')':''}</div>`).join('') : '<p class="d-sub">No cash envelopes added yet.</p>'}
+
       <div class="pb-export-section-title">Special Notes</div>
       <dl class="pb-export-notes">
         <dt>Dietary</dt><dd>${escapeHtml(model.notes.dietary||'')}</dd>
