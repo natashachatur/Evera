@@ -2112,6 +2112,14 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.56.0', date:'2026-10-28',
+    title:'Ask your own get-to-know-you questions, with quick-add suggestions',
+    items:[
+      'Settings → Get-to-Know-You Survey Questions: alongside the 7 toggleable trivia questions, you can now add your own completely open-ended questions to the Wedding Party Hub\'s onboarding survey — type any question you want to ask, or quick-add one of 6 ready-made suggestions (favourite memory with you two, nicknames, a perfect day off, coffee or tea, a fun fact, a favourite movie/show right now) with one click.',
+      'Every open-ended question you add shows up as a plain text field on your party\'s survey form, and every answer shows up in the read-only summary you see afterward — same as the built-in trivia questions. A suggestion already added drops off the quick-add list so you don\'t add it twice; removing a question takes it out of the live survey and the summary immediately.'
+    ]
+  },
+  {
     version:'1.55.0', date:'2026-10-28',
     title:'Wedding Party Hub: a task link to add your party, dress/suit voting, and configurable survey questions',
     items:[
@@ -2968,7 +2976,8 @@ function defaultSurveyResponses(){
     bestGift:'', starbucksOrder:'', favoriteBeverage:'', favoriteSnack:'', dancefloorSong:'', allergies:'',
     sleevePreference:'', sleeveOther:'', topSize:'', bottomSize:'', dressBudget:'', dressBudgetOther:'', necklinePreference:'', necklineOther:'',
     professionalServices:['','','',''], avoidDates:'', bachIdeas:'', bachDestinationRecs:'', travelDuration:'', travelDurationOther:'', openToJointBach:'', openToJointBachOther:'', otherNotes:'',
-    suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:''
+    suitBudget:'', suitBudgetOther:'', avoidDatesGroom:'', bachDestinationRecsGroom:'', travelDurationGroom:'', travelDurationGroomOther:'', openToJointBachGroom:'', openToJointBachGroomOther:'',
+    customAnswers:{} // v1.56.0: answers to the couple's own open-ended survey questions, keyed by question id
   };
 }
 
@@ -2993,6 +3002,19 @@ const PARTY_SURVEY_OPTIONAL_QUESTIONS = [
   {id:'favoriteSnack', label:'Favourite snack'},
   {id:'dancefloorSong', label:"Favourite song that'll get you on the dance floor"},
   {id:'allergies', label:'Any allergies we should know about?'}
+];
+
+/* v1.56.0: besides the fixed toggleable list above, the couple can add their own open-ended
+   questions to the survey. dashboardData.partyCustomSurveyQuestions holds those — each one
+   {id, label} — and PARTY_SURVEY_SUGGESTED_QUESTIONS is a curated list of ready-made questions
+   they can quick-add with one click instead of typing one from scratch. */
+const PARTY_SURVEY_SUGGESTED_QUESTIONS = [
+  "What's your favorite memory with the two of us?",
+  'Any nicknames you go by?',
+  "What's your idea of a perfect day off?",
+  'Coffee person or tea person?',
+  "What's a fun fact about you most people don't know?",
+  "What's your favorite movie or show right now?"
 ];
 
 /* ==================================================================
@@ -4319,6 +4341,8 @@ function normalizeDashboardData(d){
   PARTY_SURVEY_OPTIONAL_QUESTIONS.forEach(q=>{
     if(d.partySurveyQuestionsEnabled[q.id]===undefined) d.partySurveyQuestionsEnabled[q.id] = true;
   });
+  // v1.56.0: the couple's own open-ended survey questions (see PARTY_SURVEY_SUGGESTED_QUESTIONS above).
+  if(!Array.isArray(d.partyCustomSurveyQuestions)) d.partyCustomSurveyQuestions = [];
   if(!Array.isArray(d.keyRoles)) d.keyRoles = [];
   if(!Array.isArray(d.vendorDirectory)) d.vendorDirectory = [];
   if(!Array.isArray(d.delegateRoles)) d.delegateRoles = [];
@@ -10208,6 +10232,9 @@ function renderSurveyResponsesCard(m){
   if(qEnabled.favoriteSnack) rows.push(['Favourite snack', s.favoriteSnack]);
   if(qEnabled.dancefloorSong) rows.push(['Dance-floor song', s.dancefloorSong]);
   if(qEnabled.allergies) rows.push(['Allergies', s.allergies]);
+  (dashboardData.partyCustomSurveyQuestions||[]).forEach(q=>{
+    rows.push([q.label, (s.customAnswers||{})[q.id] || '—']);
+  });
   if(m.partyGroup==='Bridesmaids'){
     rows.push(
       ['Sleeve preference', s.sleevePreference==='Other' ? s.sleeveOther : s.sleevePreference],
@@ -10631,6 +10658,18 @@ function updateSurveyField(memberId, field, val){
   m.survey[field] = val;
   refreshPortalPreviewIfOpen(memberId);
 }
+/* v1.56.0: the couple's own open-ended questions (dashboardData.partyCustomSurveyQuestions) answer
+   into m.survey.customAnswers, keyed by question id, rather than a fixed field name. */
+function surveyCustomInputField(memberId, qid, label, value){
+  return `<div class="survey-field"><label>${escapeHtml(label)}</label><input type="text" value="${escapeAttr(value||'')}" onchange="updateSurveyCustomField('${memberId}','${qid}',this.value)"></div>`;
+}
+function updateSurveyCustomField(memberId, qid, val){
+  const m = dashboardData.weddingParty.find(x=>x.id===memberId);
+  if(!m || !m.survey) return;
+  if(!m.survey.customAnswers || typeof m.survey.customAnswers!=='object') m.survey.customAnswers = {};
+  m.survey.customAnswers[qid] = val;
+  refreshPortalPreviewIfOpen(memberId);
+}
 function updateSurveyListField(memberId, field, idx, val){
   const m = dashboardData.weddingParty.find(x=>x.id===memberId);
   if(!m || !m.survey) return;
@@ -10677,6 +10716,7 @@ function renderMemberSurveyBlock(m){
         ${dashboardData.partySurveyQuestionsEnabled.favoriteSnack ? surveyInputField(m.id,'favoriteSnack','Favourite snack',s.favoriteSnack) : ''}
         ${dashboardData.partySurveyQuestionsEnabled.dancefloorSong ? surveyInputField(m.id,'dancefloorSong',"Favourite song that'll get you on the dance floor!",s.dancefloorSong) : ''}
         ${dashboardData.partySurveyQuestionsEnabled.allergies ? surveyInputField(m.id,'allergies','Any allergies we should know about?',s.allergies) : ''}
+        ${(dashboardData.partyCustomSurveyQuestions||[]).map(q=>surveyCustomInputField(m.id, q.id, q.label, (s.customAnswers||{})[q.id])).join('')}
       </div>
       ${m.partyGroup==='Bridesmaids' ? `
       <div class="survey-section">
@@ -14768,14 +14808,57 @@ function togglePartySurveyQuestion(id){
   q[id] = !q[id];
   document.getElementById('content').innerHTML = renderSettingsModule();
 }
+/* v1.56.0: the couple's own open-ended questions, added by typing one in or quick-adding a
+   suggestion. Unlike the fixed toggleable list above, these don't need an enabled/disabled state —
+   adding one shows it everywhere, removing it takes it away everywhere. */
+function addCustomPartySurveyQuestion(label){
+  const trimmed = (label||'').trim();
+  if(!trimmed) return;
+  if(!Array.isArray(dashboardData.partyCustomSurveyQuestions)) dashboardData.partyCustomSurveyQuestions = [];
+  dashboardData.partyCustomSurveyQuestions.push({id:'custom-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), label:trimmed});
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function addCustomPartySurveyQuestionFromInput(){
+  const input = document.getElementById('partySurveyCustomInput');
+  if(!input) return;
+  addCustomPartySurveyQuestion(input.value);
+}
+function removeCustomPartySurveyQuestion(id){
+  dashboardData.partyCustomSurveyQuestions = (dashboardData.partyCustomSurveyQuestions||[]).filter(q=>q.id!==id);
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
 function renderPartySurveyQuestionsCard(){
   const enabled = dashboardData.partySurveyQuestionsEnabled;
+  const custom = dashboardData.partyCustomSurveyQuestions||[];
+  const customLabelsLower = custom.map(q=>q.label.toLowerCase());
+  const suggestionsLeft = PARTY_SURVEY_SUGGESTED_QUESTIONS.filter(sg=>!customLabelsLower.includes(sg.toLowerCase()));
   return `
     <div class="card">
       <div class="card-head"><div><h4>Get-to-Know-You Survey Questions</h4><span class="d-sub">Toggle the trivia questions on your Wedding Party Hub's onboarding survey — names, email, sizes and budgets always stay</span></div></div>
       ${PARTY_SURVEY_OPTIONAL_QUESTIONS.map(q=>`
         <div class="event-mini-row"><div class="em-name">${escapeHtml(q.label)}</div><input type="checkbox" style="width:16px;height:16px;" ${enabled[q.id]?'checked':''} onchange="togglePartySurveyQuestion('${q.id}')"></div>
       `).join('')}
+      ${custom.length ? `
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);">
+          <div class="d-sub" style="margin-bottom:8px;">Your own open-ended questions</div>
+          ${custom.map(q=>`
+            <div class="event-mini-row"><div class="em-name">${escapeHtml(q.label)}</div><a href="#" onclick="removeCustomPartySurveyQuestion('${q.id}'); return false;" style="font-size:12px;color:var(--terracotta); font-weight:600;">Remove</a></div>
+          `).join('')}
+        </div>
+      ` : ''}
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);">
+        <div class="d-sub" style="margin-bottom:8px;">Add your own open-ended question</div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="partySurveyCustomInput" placeholder="e.g. What's your favorite travel memory with us?" style="flex:1;" onkeydown="if(event.key==='Enter'){ event.preventDefault(); addCustomPartySurveyQuestionFromInput(); }">
+          <button class="btn btn-ghost" type="button" onclick="addCustomPartySurveyQuestionFromInput()">+ Add</button>
+        </div>
+        ${suggestionsLeft.length ? `
+          <div class="d-sub" style="margin-top:14px;margin-bottom:6px;">Or quickly add one of these:</div>
+          <div class="chip-grid">
+            ${suggestionsLeft.map(sg=>`<span class="chip" style="cursor:pointer;" onclick="addCustomPartySurveyQuestion('${sg.replace(/'/g,"\\'")}')">+ ${escapeHtml(sg)}</span>`).join('')}
+          </div>
+        ` : ''}
+      </div>
     </div>
   `;
 }
