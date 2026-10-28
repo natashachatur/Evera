@@ -888,6 +888,20 @@
   .plan-task-meta{display:flex; flex-wrap:wrap; align-items:center; gap:3px 10px; margin-top:4px; font-size:12px; font-weight:400; color:var(--charcoal-faint); line-height:1.4;}
   .plan-task-meta-item{white-space:nowrap;}
   .plan-task-edit{text-decoration:underline; text-decoration-style:dotted; text-underline-offset:2px;}
+  .plan-task-action-link{color:var(--green); font-weight:700;}
+  .plan-task-action-link:hover{text-decoration:underline;}
+
+  /* ---- v1.55.0: dress/suit voting ---- */
+  .attire-vote-card{margin-bottom:18px;}
+  .attire-vote-options{display:flex; flex-direction:column; gap:1px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--line-soft);}
+  .attire-vote-option{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 14px; background:var(--paper); border-bottom:1px solid var(--line-soft);}
+  .attire-vote-option:last-child{border-bottom:none;}
+  .avo-main{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .avo-label{font-size:13.5px; font-weight:600; color:var(--charcoal);}
+  a.avo-label{color:var(--green);}
+  a.avo-label:hover{text-decoration:underline;}
+  .avo-tally{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); background:var(--ivory-deep); padding:3px 9px; border-radius:999px;}
+  .attire-vote-picks{margin-top:14px; border-top:1px solid var(--line-soft); padding-top:4px;}
   @media (max-width:900px){ .budget-items-head{display:none;} .budget-item-row{grid-template-columns:1fr 1fr; row-gap:6px; padding:11px 0; border-top:1px dashed var(--line-soft);} }
   .budget-item-row2{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:0 0 12px 0; margin-bottom:2px; border-bottom:1px dashed var(--line-soft);}
   .budget-item-row2 > input.select-field-sm{width:auto; flex:0 0 200px;}
@@ -2098,6 +2112,16 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.55.0', date:'2026-10-28',
+    title:'Wedding Party Hub: a task link to add your party, dress/suit voting, and configurable survey questions',
+    items:[
+      'Wedding Plan: the "Choose your wedding party" task now carries a direct "+ Add Wedding Party Member →" link right in the task row — click it and it jumps straight to Wedding Party with the Add Member flow already open, instead of leaving you to go find it yourself. Adding someone through that link automatically checks the task off for you.',
+      'Wedding Party → Lookbook: new Dress Voting and Suit Voting cards let you track opinions on outfit options without pretending Evera has a live public poll it doesn\'t. You paste in links to the options you\'re considering (Birdy Grey, Azazie, a store page, anything), and as each bridesmaid or groomsman tells you their pick — by text, by email, in person — you record it from a simple dropdown. The card shows an honest running tally, and it only appears for a group once there\'s actually a Bridesmaids or Groomsmen party to vote.',
+      'Settings: a new "Get-to-Know-You Survey Questions" card lets you turn off whichever of the 7 just-for-fun trivia questions (Team Bride/Groom, best gift ever, Starbucks order, favourite drink, favourite snack, dance-floor song, allergies) you don\'t want to ask — names, emails, and the Bridesmaids/Groomsmen-specific logistics questions (sizes, budgets, bach planning) always stay since those aren\'t optional trivia. Off means off everywhere: it disappears from the survey your party fills out and from the read-only summary you see afterward. Defaults to everything on, so nothing changes for you until you open this card.',
+      'All three were sitting on the backlog as the "Wedding Party Hub enhancements" cluster. The fourth item in that cluster — actually building out a dedicated Wedding Party Hub view — still needs a scoping conversation with you before any of that gets built, so it\'s intentionally not part of this release.'
+    ]
+  },
+  {
     version:'1.54.0', date:'2026-10-25',
     title:'Onboarding restructured from 10 steps into 5 stages',
     items:[
@@ -2948,6 +2972,29 @@ function defaultSurveyResponses(){
   };
 }
 
+/* v1.55.0: dress/suit voting — link-based, not a real Azazie integration (see backlog). The couple
+   adds a few option links per attire-uniform group, then records each person's pick as they let
+   the couple know (text, email, in person) — there's no individual wedding-party sign-in yet, so
+   this isn't a live public poll, just a shared tally the couple keeps up to date. */
+const ATTIRE_VOTE_GROUPS = ['Bridesmaids','Groomsmen'];
+const ATTIRE_VOTE_GROUP_LABELS = { Bridesmaids:'Dress Voting', Groomsmen:'Suit Voting' };
+const ATTIRE_VOTE_GROUP_NOUN = { Bridesmaids:'dress', Groomsmen:'suit' };
+
+/* v1.55.0: which of the Section 1 "get to know you" trivia questions show on the Wedding Party
+   Hub's onboarding survey — configurable from Settings, same toggle-template pattern as the FAQ
+   builder. Identity fields (name/email) and the Bridesmaids/Groomsmen logistics sections (sizes,
+   budgets, bach planning) are left out of this list on purpose — they're operational, not optional
+   trivia, so always shown. */
+const PARTY_SURVEY_OPTIONAL_QUESTIONS = [
+  {id:'team', label:'Team Bride or Team Groom?'},
+  {id:'bestGift', label:"Best gift you've ever received?"},
+  {id:'starbucksOrder', label:"Starbucks order (optional)"},
+  {id:'favoriteBeverage', label:'Favourite alcoholic or non-alcoholic beverage'},
+  {id:'favoriteSnack', label:'Favourite snack'},
+  {id:'dancefloorSong', label:"Favourite song that'll get you on the dance floor"},
+  {id:'allergies', label:'Any allergies we should know about?'}
+];
+
 /* ==================================================================
    WEDDING PARTY <-> GUEST LIST LINKING (v1.45.0)
    A wedding party member is also a guest — they need an RSVP, a seat, a meal choice, same as
@@ -3624,7 +3671,7 @@ function defaultDashboardData(){
       {id:'task-f3', title:'Book venue & sign contract', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-01', notes:'Elmsley Estate — deposit paid.', phase:'foundations', dependsOn:'task-f2'},
       {id:'task-f4', title:'Pay venue deposit', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-06-05', notes:'', phase:'foundations', dependsOn:'task-f3', assignedTo:'partner-1', completedAt: Date.now()-9*86400000},
       {id:'task-f5', title:'Create the wedding website', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-15', notes:'', phase:'foundations', dependsOn:'task-f2', assignedTo:'partner-2', completedAt: Date.now()-6*86400000},
-      {id:'task-f6', title:'Choose your wedding party', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-20', notes:'', phase:'foundations', dependsOn:null},
+      {id:'task-f6', title:'Choose your wedding party', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-06-20', notes:'', phase:'foundations', dependsOn:null, actionRoute:'addWeddingPartyMember'},
       /* -- 6–9 months out: lock in the major vendors -- */
       {id:'task-g1', title:'Book officiant', eventId:'ev-church', role:'Couple', priority:'High', done:true, dueDateISO:'2026-07-01', notes:'', phase:'p6to9', dependsOn:'task-f3', assignedTo:'shared', completedAt: Date.now()-4*86400000},
       {id:'task-g4', title:'Get florist quotes & compare', eventId:null, role:'Couple', priority:'Medium', done:true, dueDateISO:'2026-09-01', notes:'', phase:'p6to9', dependsOn:'task-f3'},
@@ -4259,6 +4306,19 @@ function normalizeDashboardData(d){
       if(!Array.isArray(m.survey.professionalServices) || m.survey.professionalServices.length<4) m.survey.professionalServices = ['','','',''];
     }
   });
+  // v1.55.0: link-based dress/suit voting — one vote set per attire-uniform group.
+  if(!d.attireVoting || typeof d.attireVoting!=='object') d.attireVoting = {};
+  ATTIRE_VOTE_GROUPS.forEach(g=>{
+    if(!d.attireVoting[g] || typeof d.attireVoting[g]!=='object') d.attireVoting[g] = {options:[], picks:{}};
+    if(!Array.isArray(d.attireVoting[g].options)) d.attireVoting[g].options = [];
+    if(!d.attireVoting[g].picks || typeof d.attireVoting[g].picks!=='object') d.attireVoting[g].picks = {};
+  });
+  // v1.55.0: which "get-to-know-you" survey questions the couple wants shown — defaults all on,
+  // so existing accounts see no behavior change until they open the new Settings card.
+  if(!d.partySurveyQuestionsEnabled || typeof d.partySurveyQuestionsEnabled!=='object') d.partySurveyQuestionsEnabled = {};
+  PARTY_SURVEY_OPTIONAL_QUESTIONS.forEach(q=>{
+    if(d.partySurveyQuestionsEnabled[q.id]===undefined) d.partySurveyQuestionsEnabled[q.id] = true;
+  });
   if(!Array.isArray(d.keyRoles)) d.keyRoles = [];
   if(!Array.isArray(d.vendorDirectory)) d.vendorDirectory = [];
   if(!Array.isArray(d.delegateRoles)) d.delegateRoles = [];
@@ -4519,6 +4579,7 @@ function normalizeDashboardData(d){
     if(t.assignedTo===undefined) t.assignedTo = null;
     if(t.milestone===undefined) t.milestone = false;
     if(t.completedAt===undefined) t.completedAt = null;
+    if(t.actionRoute===undefined) t.actionRoute = null; // v1.55.0: optional "jump straight to the flow" CTA
   });
   // v1.46.0: a wedding-party member's "Assigned Tasks" used to live in its own m.tasks array,
   // completely invisible to the overarching Wedding Plan. One-time migration: fold any legacy
@@ -7167,6 +7228,7 @@ function renderPlanTaskRow(t){
           ${blockedBy ? `<span class="plan-task-meta-item" style="font-weight:600; color:var(--terracotta);">🔒 Blocked by: ${escapeHtml(blockedBy.title)}</span>` : ''}
           ${assigneeName ? `<span class="plan-task-meta-item">👤 ${escapeHtml(assigneeName)}</span>` : ''}
           ${t.notes?`<span class="plan-task-meta-item">${escapeHtml(t.notes)}</span>`:''}
+          ${(!t.done && t.actionRoute && TASK_ACTIONS[t.actionRoute]) ? `<a href="#" class="plan-task-meta-item plan-task-action-link" onclick="event.stopPropagation(); ${TASK_ACTIONS[t.actionRoute].onclick}; return false;">${escapeHtml(TASK_ACTIONS[t.actionRoute].label)}</a>` : ''}
           <span class="plan-task-meta-item plan-task-edit">${planExpandedTaskId===t.id?'Hide':'Edit'} details</span>
         </div>
       </span>
@@ -8445,6 +8507,7 @@ function renderSettingsModule(){
     </div>
 
     ${renderSurveysSettingsCard()}
+    ${renderPartySurveyQuestionsCard()}
 
     <div class="card">
       <div class="card-head"><div><h4>Guest Categories</h4><span class="d-sub">Rename or remove the categories available in Guest Management</span></div></div>
@@ -9852,6 +9915,7 @@ function submitPartyMemberAddModal(){
   }
 
   const m = createWeddingPartyMember({householdId, memberId, name, email, phone, role, side, partyGroup, events});
+  autoCompleteTasksWithAction('addWeddingPartyMember'); // v1.55.0: finishing the flow finishes the linked task too
   closePartyMemberAddModal();
   openMemberDetail(m.id);
 }
@@ -10132,13 +10196,18 @@ function renderSurveyResponsesCard(m){
         <p style="font-size:13px;color:var(--charcoal-faint);">${escapeHtml(m.name.split(' ')[0])} hasn't filled this out yet. Use "Preview Their Portal" above to see (or fill in on their behalf) the survey exactly as they'd see it.</p>
       </div>`;
   }
+  const qEnabled = dashboardData.partySurveyQuestionsEnabled;
   const rows = [
     ['Name', [s.firstName, s.middleInitial, s.lastName].filter(Boolean).join(' ')],
-    ['Email', s.email], ['Team', s.team],
-    ['Best gift ever received', s.bestGift], ['Starbucks order', s.starbucksOrder || '—'],
-    ['Favourite beverage', s.favoriteBeverage], ['Favourite snack', s.favoriteSnack],
-    ['Dance-floor song', s.dancefloorSong], ['Allergies', s.allergies]
+    ['Email', s.email]
   ];
+  if(qEnabled.team) rows.push(['Team', s.team]);
+  if(qEnabled.bestGift) rows.push(['Best gift ever received', s.bestGift]);
+  if(qEnabled.starbucksOrder) rows.push(['Starbucks order', s.starbucksOrder || '—']);
+  if(qEnabled.favoriteBeverage) rows.push(['Favourite beverage', s.favoriteBeverage]);
+  if(qEnabled.favoriteSnack) rows.push(['Favourite snack', s.favoriteSnack]);
+  if(qEnabled.dancefloorSong) rows.push(['Dance-floor song', s.dancefloorSong]);
+  if(qEnabled.allergies) rows.push(['Allergies', s.allergies]);
   if(m.partyGroup==='Bridesmaids'){
     rows.push(
       ['Sleeve preference', s.sleevePreference==='Other' ? s.sleeveOther : s.sleevePreference],
@@ -10180,6 +10249,74 @@ function renderMemberBachNote(m){
   `;
 }
 
+/* ---- v1.55.0: dress/suit voting ---- */
+function attireVoteTally(group){
+  const v = dashboardData.attireVoting[group];
+  const tally = {};
+  (v.options||[]).forEach(o=>{ tally[o.id] = 0; });
+  Object.values(v.picks||{}).forEach(optId=>{ if(tally[optId]!==undefined) tally[optId]++; });
+  return tally;
+}
+function addAttireVoteOption(group){
+  const labelEl = document.getElementById(`attireVoteLabel-${group}`);
+  const urlEl = document.getElementById(`attireVoteUrl-${group}`);
+  const label = (labelEl.value||'').trim();
+  if(!label){ labelEl.focus(); return; }
+  const url = (urlEl.value||'').trim();
+  dashboardData.attireVoting[group].options.push({id:'av-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), label, url});
+  reRenderCurrent();
+}
+function removeAttireVoteOption(group, optionId){
+  const v = dashboardData.attireVoting[group];
+  v.options = v.options.filter(o=>o.id!==optionId);
+  Object.keys(v.picks).forEach(memberId=>{ if(v.picks[memberId]===optionId) delete v.picks[memberId]; });
+  reRenderCurrent();
+}
+function setMemberAttireVote(group, memberId, optionId){
+  const v = dashboardData.attireVoting[group];
+  if(optionId) v.picks[memberId] = optionId;
+  else delete v.picks[memberId];
+  reRenderCurrent();
+}
+function renderAttireVotingCard(group, members){
+  if(!members.length) return '';
+  const v = dashboardData.attireVoting[group];
+  const tally = attireVoteTally(group);
+  const noun = ATTIRE_VOTE_GROUP_NOUN[group];
+  const totalPicked = Object.keys(v.picks).length;
+  return `
+    <div class="card attire-vote-card">
+      <div class="card-head"><h4>${escapeHtml(ATTIRE_VOTE_GROUP_LABELS[group])}</h4><span class="d-sub">Add a few ${noun} links, then record each person's pick as they let you know</span></div>
+      ${v.options.length ? `
+      <div class="attire-vote-options">
+        ${v.options.map(o=>`
+          <div class="attire-vote-option">
+            <div class="avo-main">
+              ${o.url ? `<a href="${escapeAttr(o.url)}" target="_blank" rel="noopener" class="avo-label">${escapeHtml(o.label)} ↗</a>` : `<span class="avo-label">${escapeHtml(o.label)}</span>`}
+              <span class="avo-tally">${tally[o.id]||0} ${tally[o.id]===1?'pick':'picks'}</span>
+            </div>
+            <a href="#" class="danger-link" onclick="removeAttireVoteOption('${group}','${o.id}'); return false;">✕</a>
+          </div>`).join('')}
+      </div>` : `<p class="detail-hint" style="margin-top:0;">No options yet — add a link below to get started.</p>`}
+      <div class="custom-add-row" style="margin-top:10px;">
+        <input type="text" id="attireVoteLabel-${group}" placeholder="e.g. Birdy Grey — Taupe A-line">
+        <input type="text" id="attireVoteUrl-${group}" placeholder="Link (optional)">
+        <button class="btn btn-outline btn-sm" onclick="addAttireVoteOption('${group}')">+ Add Option</button>
+      </div>
+      ${v.options.length ? `
+      <div class="attire-vote-picks">
+        ${members.map(m=>`
+          <div class="event-mini-row">
+            <div class="em-name">${escapeHtml(effectivePartyName(m))}</div>
+            <select onchange="setMemberAttireVote('${group}','${m.id}', this.value||null)">
+              <option value="">No pick yet</option>
+              ${v.options.map(o=>`<option value="${o.id}" ${v.picks[m.id]===o.id?'selected':''}>${escapeHtml(o.label)}</option>`).join('')}
+            </select>
+          </div>`).join('')}
+      </div>
+      <p class="detail-hint">${totalPicked} of ${members.length} ${members.length===1?'has':'have'} a recorded pick. Evera doesn't have individual sign-ins yet, so this isn't a live public poll — it's a shared tally you keep up to date as people let you know.</p>` : ''}
+    </div>`;
+}
 function renderLookbookTab(){
   const d = dashboardData;
   if(!d.weddingParty.length){
@@ -10187,7 +10324,8 @@ function renderLookbookTab(){
   }
   const groupOrder = ['Bridesmaids','Groomsmen','Parents','Other'];
   const groups = groupOrder.map(g=>({group:g, members:d.weddingParty.filter(m=>(m.partyGroup||'Other')===g)})).filter(g=>g.members.length);
-  return groups.map((g,gi)=>`
+  const votingCards = ATTIRE_VOTE_GROUPS.map(g=>renderAttireVotingCard(g, d.weddingParty.filter(m=>(m.partyGroup||'Other')===g))).join('');
+  return votingCards + groups.map((g,gi)=>`
     <div class="detail-section" style="${gi===0?'margin-top:0; padding-top:0; border-top:none;':''}">
       <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(g.group)}</h4><span class="d-sub">${g.members.length} ${g.members.length===1?'person':'people'}</span></div>
       <div class="lookbook-grid">
@@ -10532,13 +10670,13 @@ function renderMemberSurveyBlock(m){
           ${surveyInputField(m.id,'middleInitial','Middle Initial',s.middleInitial)}
           ${surveyInputField(m.id,'email','Email Address',s.email)}
         </div>
-        <div class="survey-field"><label>Team Bride or Team Groom?</label>${surveyRadioRow(m.id,'team',['Team Bride','Team Groom'],s.team)}</div>
-        ${surveyInputField(m.id,'bestGift',"Best gift you've ever received?",s.bestGift)}
-        ${surveyInputField(m.id,'starbucksOrder',"If you drink Starbucks, what's your order? (optional)",s.starbucksOrder)}
-        ${surveyInputField(m.id,'favoriteBeverage','Favourite alcoholic or non-alcoholic beverage',s.favoriteBeverage)}
-        ${surveyInputField(m.id,'favoriteSnack','Favourite snack',s.favoriteSnack)}
-        ${surveyInputField(m.id,'dancefloorSong',"Favourite song that'll get you on the dance floor!",s.dancefloorSong)}
-        ${surveyInputField(m.id,'allergies','Any allergies we should know about?',s.allergies)}
+        ${dashboardData.partySurveyQuestionsEnabled.team ? `<div class="survey-field"><label>Team Bride or Team Groom?</label>${surveyRadioRow(m.id,'team',['Team Bride','Team Groom'],s.team)}</div>` : ''}
+        ${dashboardData.partySurveyQuestionsEnabled.bestGift ? surveyInputField(m.id,'bestGift',"Best gift you've ever received?",s.bestGift) : ''}
+        ${dashboardData.partySurveyQuestionsEnabled.starbucksOrder ? surveyInputField(m.id,'starbucksOrder',"If you drink Starbucks, what's your order? (optional)",s.starbucksOrder) : ''}
+        ${dashboardData.partySurveyQuestionsEnabled.favoriteBeverage ? surveyInputField(m.id,'favoriteBeverage','Favourite alcoholic or non-alcoholic beverage',s.favoriteBeverage) : ''}
+        ${dashboardData.partySurveyQuestionsEnabled.favoriteSnack ? surveyInputField(m.id,'favoriteSnack','Favourite snack',s.favoriteSnack) : ''}
+        ${dashboardData.partySurveyQuestionsEnabled.dancefloorSong ? surveyInputField(m.id,'dancefloorSong',"Favourite song that'll get you on the dance floor!",s.dancefloorSong) : ''}
+        ${dashboardData.partySurveyQuestionsEnabled.allergies ? surveyInputField(m.id,'allergies','Any allergies we should know about?',s.allergies) : ''}
       </div>
       ${m.partyGroup==='Bridesmaids' ? `
       <div class="survey-section">
@@ -10677,6 +10815,38 @@ function renderSeatingLockBanner(){
 function unlockPlaybookSeating(){ playbookSeatingUnlocked = true; reRenderCurrent(); }
 function lockPlaybookSeating(){ playbookSeatingUnlocked = false; reRenderCurrent(); }
 function jumpToGuestSeating(){ guestsModuleTab = 'seating'; renderRoute('guests'); }
+
+/* ==================================================================
+   TASK → FLOW LINKS (v1.55.0)
+   A task can optionally carry t.actionRoute, a key into TASK_ACTIONS,
+   so the task row shows a direct "jump straight into it" CTA instead of
+   just a checkbox. Completing the linked flow can also auto-complete
+   the task — see autoCompleteTasksWithAction() below.
+================================================================== */
+const TASK_ACTIONS = {
+  addWeddingPartyMember: {
+    label: '+ Add Wedding Party Member →',
+    onclick: "jumpToAddWeddingPartyMember()"
+  }
+};
+function jumpToAddWeddingPartyMember(){
+  partyView = 'hub';
+  renderRoute('wedding-party');
+  openPartyMemberAddModal();
+}
+/* Called after a flow linked from a task completes (e.g. a wedding party member is added),
+   so the task reflects it automatically instead of asking the couple to check it off too. */
+function autoCompleteTasksWithAction(actionRoute){
+  let changed = false;
+  (dashboardData.tasks||[]).forEach(t=>{
+    if(t.actionRoute===actionRoute && !t.done){
+      t.done = true;
+      t.completedAt = Date.now();
+      changed = true;
+    }
+  });
+  return changed;
+}
 function renderPlaybookTimelineSection(){
   const d = dashboardData;
   if(!playbookVendorCategory){
@@ -14587,6 +14757,25 @@ function renderSurveysSettingsCard(){
         }).join('')}
       </div>` : `<p style="font-size:13px;color:var(--charcoal-faint);">No surveys yet — create one in Guest Management.</p>`}
       <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Add new surveys or questions from <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('guests')">Guest Management →</span></p>
+    </div>
+  `;
+}
+/* v1.55.0: lets the couple toggle which "get to know you" trivia questions appear on the
+   Wedding Party Hub's onboarding survey — same toggle-template pattern as the FAQ Builder above.
+   Identity fields and the Bridesmaids/Groomsmen logistics sections always show. */
+function togglePartySurveyQuestion(id){
+  const q = dashboardData.partySurveyQuestionsEnabled;
+  q[id] = !q[id];
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function renderPartySurveyQuestionsCard(){
+  const enabled = dashboardData.partySurveyQuestionsEnabled;
+  return `
+    <div class="card">
+      <div class="card-head"><div><h4>Get-to-Know-You Survey Questions</h4><span class="d-sub">Toggle the trivia questions on your Wedding Party Hub's onboarding survey — names, email, sizes and budgets always stay</span></div></div>
+      ${PARTY_SURVEY_OPTIONAL_QUESTIONS.map(q=>`
+        <div class="event-mini-row"><div class="em-name">${escapeHtml(q.label)}</div><input type="checkbox" style="width:16px;height:16px;" ${enabled[q.id]?'checked':''} onchange="togglePartySurveyQuestion('${q.id}')"></div>
+      `).join('')}
     </div>
   `;
 }
