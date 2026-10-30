@@ -1963,6 +1963,8 @@
 <div class="item-overlay" id="playbookExportOverlay" onclick="if(event.target===this) closePlaybookExportPreview();"><!-- injected --></div>
 <div class="item-overlay" id="rsvpDrilldownOverlay" onclick="if(event.target===this) closeEventRsvpDrilldown();"><!-- injected --></div>
 <div class="item-overlay" id="surveyPreviewOverlay" onclick="if(event.target===this) closeSurveyPreview();"><!-- injected --></div>
+<div class="item-overlay" id="docUploadOverlay" onclick="if(event.target===this) cancelDocUpload();"><!-- injected --></div>
+<input type="file" id="globalDocFileInput" accept="image/*,.pdf,.doc,.docx,.txt" style="display:none;" onchange="handleDocFileInput(event)">
 <div class="item-overlay item-overlay-right" id="pendingRsvpDrawerOverlay" onclick="if(event.target===this) closePendingRsvpDrawer();"><!-- injected --></div>
 <div id="printArea"><!-- injected for print/export views --></div>
 
@@ -2094,7 +2096,7 @@ const MODULE_INFO = {
   'messages':{title:'Messages', desc:"Every important wedding conversation — with vendors, planners, and your wedding party — kept in one retrievable history.", bullets:['Vendor & planner communication history','Wedding-party group threads','Searchable, associated with the right event']},
   'website':{title:'Website', desc:"Your public wedding website — design, pages and access, generated from the same live data as your planning space — no duplicate entry. RSVPs themselves are managed in Guests.", bullets:['Fully customizable look & feel','Event-specific page visibility','Custom domain & password protection']},
   'playbook':{title:'Playbook', desc:"A living, exportable operational run-of-show generated from your Evera data — not a separate document to maintain.", bullets:['Master & per-event timelines','Role-specific exports (vendor, coordinator, wedding party)','Always up to date with your planning data']},
-  'documents':{title:'Documents', desc:"Contracts, invoices, floor plans and planning notes — stored and associated with the right wedding, event, vendor or person.", bullets:['Planning notes, linked to events','Contracts, invoices & floor plans','Attached directly from Budget line items']},
+  'documents':{title:'Documents', desc:"Contracts, invoices, floor plans and planning notes — stored and associated with the right wedding, event, vendor or person.", bullets:['Planning notes, linked to events','Real file uploads with version history','Suggested name, type, event & vendor — you approve or edit']},
   'guides':{title:'Guides & Tips', desc:"Curated best practices and knowledge articles to help you plan with confidence — from budgeting to etiquette to day-of logistics.", bullets:['Budgeting & vendor-booking timelines','Etiquette & wedding-party guidance','Day-of logistics checklists']},
   'settings':{title:'Settings', desc:"Manage your account, collaborators, notification preferences, and wedding-wide settings.", bullets:['Collaborator roles & permissions','Notification preferences','Account & billing']}
 };
@@ -2114,6 +2116,28 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.62.0', date:'2026-10-30',
+    title:'Real document uploads, with version history and suggested tagging',
+    items:[
+      'Documents → Files: "Add a File" now uploads a real file (contract, invoice, receipt, floor plan, photo) instead of just typing a name. Evera suggests a name, type, linked event, and linked vendor from the file itself — real OCR text for image uploads, filename-based for everything else — and you always review and can change anything before it\'s added. Nothing is ever applied automatically.',
+      'Version control: uploading something that looks like it matches an existing document offers "treat this as a new version of ___" — accept it and it joins that document\'s version history instead of becoming a separate file; the Files list shows the latest version with earlier ones listed underneath, each still viewable.',
+      'Vendor Bookings get a real Documents section for the first time — upload or link a file right from a vendor\'s own page, and it automatically shows up in the main Documents list too.',
+      'Budget line items\' Attachments now upload a real file directly (previously just a name + type, no actual file) — same suggestion-and-review flow, attached straight to that line item.',
+      'Files are capped at 2MB each to keep your whole saved wedding safely under its storage limit — an oversized photo is automatically resized and recompressed for you; other oversized files (like a very large PDF) get a clear message to compress or re-scan at a lower resolution.',
+      'Every file you\'ve already added (the sample contracts/invoices, or anything added before this version) is unaffected — it\'s marked "(no file)" with a one-click "Upload file →" to attach the real thing whenever you\'re ready.'
+    ]
+  },
+  {
+    version:'1.61.0', date:'2026-10-30',
+    title:'Fixed: Spent (Actual) now follows your real Payment Schedule, not just a linked vendor\'s full cost',
+    items:[
+      'Budget bugfix: when a line item is linked to a vendor AND has its own Payment Schedule, Spent (Actual) now totals only the payments you\'ve actually marked Paid — e.g. a $10,000 photography contract with a $6,000 deposit paid shows Spent as $6,000, not the full $10,000. Before this fix, Spent jumped straight to the vendor\'s full committed cost the moment they were booked or signed, regardless of how much had really been paid.',
+      'If there\'s no Payment Schedule yet, Spent still falls back to the vendor\'s committed cost as the best available stand-in (unchanged) — now with a note under the field explaining which source it\'s following.',
+      'Budget Item Detail now flags it directly when a linked vendor\'s committed Cost doesn\'t match your Planned amount — e.g. "Test Photo Co.\'s committed Cost is $10,000 — $2,000 over your Planned amount of $8,000" — so that gap is visible on the item itself, not just implied. Planned is still never auto-overwritten; this is a visibility fix, not a new sync rule.',
+      'Also fixed the same underlying bug in vendor recommendations\' "fits within your remaining budget" reasoning, which was reading each line item\'s raw Planned/Spent fields directly instead of the real vendor-aware figures.'
+    ]
+  },
   {
     version:'1.60.0', date:'2026-10-30',
     title:'Account self-service, per-collaborator notifications, a payment reminder lead time, and editable Document Types',
@@ -4488,6 +4512,18 @@ function normalizeDashboardData(d){
     });
   });
   if(!Array.isArray(d.documents)) d.documents = [];
+  // v1.62.0: real file upload, version control, and OCR/filename-suggested tagging — every
+  // existing metadata-only document (sample data, or anything added before this version)
+  // backfills into its own one-document "group" at version 1 with no file attached yet.
+  d.documents.forEach(doc=>{
+    if(doc.groupId===undefined) doc.groupId = doc.id;
+    if(doc.version===undefined) doc.version = 1;
+    if(doc.dataUrl===undefined) doc.dataUrl = null;
+    if(doc.mimeType===undefined) doc.mimeType = null;
+    if(doc.fileSize===undefined) doc.fileSize = null;
+    if(doc.linkedVendorId===undefined) doc.linkedVendorId = null;
+    if(doc.suggestionSource===undefined) doc.suggestionSource = null;
+  });
   if(!Array.isArray(d.notes)) d.notes = [];
   if(d.couplePhoto===undefined) d.couplePhoto = null;
   if(d.coupleLogo===undefined) d.coupleLogo = null;
@@ -9104,7 +9140,7 @@ function categoryBudgetRemaining(vendorCategory){
   let planned = 0, spent = 0;
   (d.budgetBreakdown||[]).forEach(c=>{
     (c.items||[]).forEach(it=>{
-      if(it.vendorCategory === vendorCategory){ planned += it.planned; spent += it.spent; }
+      if(it.vendorCategory === vendorCategory){ planned += effectiveItemPlanned(it); spent += effectiveItemSpent(it); }
     });
   });
   return {planned, spent, remaining: planned - spent};
@@ -9541,7 +9577,7 @@ function quickAddGo(type){
     renderRoute('documents');
     docsTab = 'files';
     document.getElementById('content').innerHTML = renderDocumentsModule();
-    setTimeout(()=>{ const f=document.getElementById('newDocName'); if(f) f.focus(); }, 0);
+    setTimeout(()=>{ const f=document.getElementById('quickAddUploadBtn'); if(f) f.focus(); }, 0);
   }
 }
 /* ---- v1.43.0: Universal Search — one box in the topbar searching across every entity type
@@ -10059,6 +10095,7 @@ function renderVendorBookingDetailModal(id){
         `).join('') : `<p style="font-size:12.5px;color:var(--charcoal-faint);">No messages logged yet.</p>`}
         <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addVendorCommunication('${vb.id}')">+ Log a Message</button>
       </div>
+      ${renderVendorDocumentsSection(vb)}
       <a href="#" class="danger-link" style="display:inline-block;margin-top:16px;" onclick="removeVendorBooking('${vb.id}'); return false;">Remove this vendor booking</a>
     </div>
   `;
@@ -16743,7 +16780,19 @@ function isVendorCommitted(vb){
 function effectiveItemPlanned(item){
   return item.planned;
 }
+/* v1.61.0 bugfix: a real Payment Schedule is ground truth for what's actually been paid —
+   Spent (Actual) now totals the schedule's own "paid" entries (e.g. a $10,000 contract with only
+   a $6,000 deposit paid shows Spent as $6,000, not the full $10,000) instead of always jumping
+   straight to the vendor's full committed Cost the moment they're booked/signed. Returns null
+   when there's no schedule yet, so the caller can fall back sensibly. */
+function paymentScheduleSpentSoFar(item){
+  const sched = item.paymentSchedule || [];
+  if(!sched.length) return null;
+  return sched.reduce((s,p)=> s + (p.paid ? (p.amount||0) : 0), 0);
+}
 function effectiveItemSpent(item){
+  const scheduleSpent = paymentScheduleSpentSoFar(item);
+  if(scheduleSpent !== null) return scheduleSpent;
   const vb = vendorBookingForBudgetItem(item.id);
   if(vb) return isVendorCommitted(vb) ? (vb.cost||0) : 0;
   return item.spent;
@@ -17330,6 +17379,503 @@ const PAYMENT_FREQUENCIES = [
   {key:'monthly', label:'Monthly'}
 ];
 function docIcon(cat){ return {contract:'📄', invoice:'🧾', receipt:'🧾', floorplan:'🗺️', other:'📎'}[cat] || '📎'; }
+
+/* ==================================================================
+   DOCUMENTS v1.62.0 — real file upload, version control, and
+   OCR/filename-suggested tagging. See New Request #63 in the backlog.
+   Every upload goes through this one pipeline regardless of where it
+   started (Files tab, a Vendor Booking's own Documents section, or a
+   Budget line item's Attachments) so versioning/suggestions/size caps
+   behave identically everywhere.
+================================================================== */
+const MAX_DOC_BYTES = 2*1024*1024; // 2MB decoded — the whole saved wedding lives in ONE Firestore
+  // document capped at 1MB total, so real files need a hard ceiling well under that even as they accumulate.
+const DOC_TYPE_KEYWORDS = {
+  contract: ['contract','agreement'],
+  invoice: ['invoice','bill'],
+  receipt: ['receipt','paid in full','payment received'],
+  floorplan: ['floor plan','floorplan','site plan','seating plan','layout']
+};
+const TESSERACT_CDN_URL = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+
+function readFileAsDataUrl(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>resolve(reader.result);
+    reader.onerror = ()=>reject(reader.error || new Error('Could not read file'));
+    reader.readAsDataURL(file);
+  });
+}
+function estimateDataUrlBytes(dataUrl){
+  if(!dataUrl) return 0;
+  const comma = dataUrl.indexOf(',');
+  const base64 = comma>=0 ? dataUrl.slice(comma+1) : dataUrl;
+  const len = base64.length;
+  const padding = base64.endsWith('==') ? 2 : (base64.endsWith('=') ? 1 : 0);
+  return Math.max(0, Math.floor(len*3/4) - padding);
+}
+/* Auto-shrinks an oversized image client-side (resize to a max dimension, re-encode as JPEG at
+   decreasing quality) so a phone photo of a contract doesn't need to be rejected outright —
+   Natasha's chosen approach over simply bouncing every oversized upload back to her. */
+function shrinkImageToDataUrl(file, maxBytes){
+  return new Promise((resolve)=>{
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = ()=>{
+      URL.revokeObjectURL(url);
+      let w = img.naturalWidth||0, h = img.naturalHeight||0;
+      if(!w || !h){ resolve(null); return; }
+      const maxDim = 1600;
+      if(w>maxDim || h>maxDim){
+        const scale = maxDim/Math.max(w,h);
+        w = Math.round(w*scale); h = Math.round(h*scale);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,w,h); // flattens transparency so a shrunk PNG never goes black
+      ctx.drawImage(img, 0, 0, w, h);
+      let quality = 0.9, out = canvas.toDataURL('image/jpeg', quality);
+      while(estimateDataUrlBytes(out) > maxBytes && quality > 0.3){
+        quality -= 0.15;
+        out = canvas.toDataURL('image/jpeg', quality);
+      }
+      resolve(estimateDataUrlBytes(out) <= maxBytes ? out : null);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); resolve(null); };
+    img.src = url;
+  });
+}
+function loadScriptOnce(src){
+  window.__loadedScripts = window.__loadedScripts || {};
+  if(window.__loadedScripts[src]) return window.__loadedScripts[src];
+  const p = new Promise((resolve, reject)=>{
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = ()=>resolve(true);
+    s.onerror = ()=>reject(new Error('Failed to load '+src));
+    document.head.appendChild(s);
+  });
+  window.__loadedScripts[src] = p;
+  return p;
+}
+/* ---- honest, lightweight suggestion heuristics — every result here is a SUGGESTION only;
+   nothing from this section is ever written to a document without the uploader confirming it
+   in the review modal, per Natasha's explicit "only suggest, let them accept or change" ask. ---- */
+function normalizeDocNameForMatch(name){
+  return (name||'')
+    .toLowerCase()
+    .replace(/\.[a-z0-9]{2,5}$/,'')
+    .replace(/\b(v\d+|version\s*\d+|final|copy|signed|draft|scan|scanned|updated)\b/g,'')
+    .replace(/[^a-z0-9]+/g,' ')
+    .trim();
+}
+function tokenOverlap(a, b){
+  const ta = new Set(a.split(' ').filter(Boolean));
+  const tb = new Set(b.split(' ').filter(Boolean));
+  if(!ta.size || !tb.size) return 0;
+  let shared = 0;
+  ta.forEach(t=>{ if(tb.has(t)) shared++; });
+  return shared / Math.max(ta.size, tb.size);
+}
+function latestDocumentsByGroup(){
+  const latest = {};
+  (dashboardData.documents||[]).forEach(doc=>{
+    const g = doc.groupId || doc.id;
+    if(!latest[g] || (doc.version||1) > (latest[g].version||1)) latest[g] = doc;
+  });
+  return latest;
+}
+/* Finds the closest-matching existing document (by name, boosted by a shared vendor/event)
+   so a re-upload of something already on file can offer "this looks like a new version of…"
+   instead of creating a disconnected duplicate. Returns null below a reasonable similarity floor. */
+function findVersionMatch(suggestedName, context){
+  const normSuggested = normalizeDocNameForMatch(suggestedName);
+  if(!normSuggested) return null;
+  const latestByGroup = latestDocumentsByGroup();
+  let best = null, bestScore = 0;
+  Object.values(latestByGroup).forEach(doc=>{
+    const score = tokenOverlap(normSuggested, normalizeDocNameForMatch(doc.name));
+    if(score > bestScore){ bestScore = score; best = doc; }
+  });
+  if(!best || bestScore < 0.5) return null;
+  if(context && (context.linkedVendorId || context.linkedEventId)){
+    const scopedCandidates = Object.values(latestByGroup).filter(doc=>
+      (context.linkedVendorId && doc.linkedVendorId===context.linkedVendorId) ||
+      (context.linkedEventId && doc.linkedEventId===context.linkedEventId)
+    ).map(doc=>({doc, score: tokenOverlap(normSuggested, normalizeDocNameForMatch(doc.name))}))
+      .filter(x=>x.score>=0.4).sort((a,b)=>b.score-a.score);
+    if(scopedCandidates[0] && scopedCandidates[0].score >= bestScore-0.15){ best = scopedCandidates[0].doc; bestScore = scopedCandidates[0].score; }
+  }
+  return {doc: best, score: bestScore, confident: bestScore >= 0.8};
+}
+function suggestDocTypeFromText(text){
+  const low = (text||'').toLowerCase();
+  for(const key in DOC_TYPE_KEYWORDS){
+    if(DOC_TYPE_KEYWORDS[key].some(kw=>low.includes(kw))) return key;
+  }
+  return null;
+}
+function suggestVendorFromText(text){
+  const low = (text||'').toLowerCase();
+  let best = null;
+  (dashboardData.vendorBookings||[]).forEach(vb=>{
+    const name = (vb.vendorName||'').toLowerCase().trim();
+    if(name.length>=4 && low.includes(name)){
+      if(!best || name.length > (best.vendorName||'').length) best = vb;
+    }
+  });
+  return best;
+}
+function suggestEventFromText(text){
+  const low = (text||'').toLowerCase();
+  let best = null;
+  (dashboardData.events||[]).forEach(ev=>{
+    const name = (ev.name||'').toLowerCase().trim();
+    if(name.length>=4 && low.includes(name)){
+      if(!best || name.length > (best.name||'').length) best = ev;
+    }
+  });
+  return best;
+}
+function cleanedFilenameLabel(filename){
+  const cleaned = (filename||'Document')
+    .replace(/\.[a-z0-9]{2,5}$/i,'')
+    .replace(/[_\-]+/g,' ')
+    .replace(/\s+/g,' ')
+    .trim()
+    .replace(/\b\w/g, c=>c.toUpperCase());
+  return cleaned || 'Document';
+}
+function buildSuggestedName(originalFileName, vendorMatch, typeKey){
+  const typeLabel = ((dashboardData.documentTypes||[]).find(t=>t.key===typeKey)||{}).label;
+  if(vendorMatch && typeLabel) return `${vendorMatch.vendorName} — ${typeLabel}`;
+  if(vendorMatch) return `${vendorMatch.vendorName} — ${cleanedFilenameLabel(originalFileName)}`;
+  return cleanedFilenameLabel(originalFileName);
+}
+
+/* ---- the upload → suggest → review → confirm pipeline ---- */
+let pendingDocUpload = null;
+/* One shared hidden file input (see the #globalDocFileInput element) handles every upload entry
+   point — Files tab, a Vendor Booking's own Documents section, Budget's Attachments — so the
+   size cap, auto-shrink, versioning, and suggestion logic only exist in one place. The caller
+   sets what this upload is "for" via triggerDocUpload(context) right before opening the picker.
+   context: {linkedEventId, linkedVendorId, linkedVendorCategory, budgetAttach:{ci,ii}, existingDocId} */
+function triggerDocUpload(context){
+  window.__pendingUploadContext = context || {};
+  const inp = document.getElementById('globalDocFileInput');
+  if(inp) inp.click();
+}
+function handleDocFileInput(event){
+  const file = event.target.files && event.target.files[0];
+  event.target.value = '';
+  const context = window.__pendingUploadContext || {};
+  window.__pendingUploadContext = null;
+  if(!file) return;
+  beginDocumentUpload(file, context);
+}
+async function beginDocumentUpload(file, context){
+  const isImage = /^image\//.test(file.type);
+  let dataUrl = null, tooLarge = false;
+  if(isImage){
+    dataUrl = await shrinkImageToDataUrl(file, MAX_DOC_BYTES);
+    if(!dataUrl) tooLarge = true;
+  } else if(file.size > MAX_DOC_BYTES){
+    tooLarge = true;
+  } else {
+    try{ dataUrl = await readFileAsDataUrl(file); } catch(e){ tooLarge = true; }
+  }
+  if(tooLarge || !dataUrl){
+    pendingDocUpload = {
+      error: `"${file.name}" is too large to upload (${(file.size/1024/1024).toFixed(1)}MB). Please compress it or re-scan at a lower resolution — files need to be under ${(MAX_DOC_BYTES/1024/1024).toFixed(0)}MB.`,
+      context: context||{}
+    };
+    openDocUploadReviewModal();
+    return;
+  }
+  const fileSize = estimateDataUrlBytes(dataUrl);
+  const typeFromFilename = suggestDocTypeFromText(file.name);
+  const vendorFromFilename = context.linkedVendorId
+    ? (dashboardData.vendorBookings||[]).find(v=>v.id===context.linkedVendorId)
+    : suggestVendorFromText(file.name);
+  const eventFromFilename = context.linkedEventId
+    ? (dashboardData.events||[]).find(e=>e.id===context.linkedEventId)
+    : suggestEventFromText(file.name);
+  const suggestedName = buildSuggestedName(file.name, vendorFromFilename, typeFromFilename || 'other');
+  const versionMatch = findVersionMatch(suggestedName, context);
+  pendingDocUpload = {
+    originalFileName: file.name,
+    dataUrl, mimeType: file.type || 'application/octet-stream', fileSize,
+    context: context||{},
+    fields: {
+      name: suggestedName,
+      categoryKey: typeFromFilename || 'other',
+      eventId: (eventFromFilename && eventFromFilename.id) || context.linkedEventId || '',
+      vendorBookingId: (vendorFromFilename && vendorFromFilename.id) || context.linkedVendorId || ''
+    },
+    touched: {name:false, categoryKey:false, eventId:false, vendorBookingId:false},
+    suggestionSource: 'filename',
+    ocrStatus: isImage ? 'pending' : 'skipped',
+    versionMatch,
+    versionMatchChosen: versionMatch ? versionMatch.confident : false
+  };
+  openDocUploadReviewModal();
+  if(isImage) runOcrForPendingUpload();
+}
+async function runOcrForPendingUpload(){
+  if(!pendingDocUpload || pendingDocUpload.ocrStatus!=='pending') return;
+  try{
+    await loadScriptOnce(TESSERACT_CDN_URL);
+    if(!window.Tesseract) throw new Error('Tesseract unavailable');
+    const result = await window.Tesseract.recognize(pendingDocUpload.dataUrl, 'eng');
+    const text = (result && result.data && result.data.text) || '';
+    if(!pendingDocUpload) return; // cancelled while this was running
+    pendingDocUpload.ocrText = text;
+    pendingDocUpload.ocrStatus = 'done';
+    pendingDocUpload.suggestionSource = text.trim() ? 'ocr' : 'filename';
+    refineSuggestionsFromOcr(text);
+  } catch(err){
+    if(!pendingDocUpload) return;
+    pendingDocUpload.ocrStatus = 'failed'; // e.g. no network to the CDN — filename-based suggestion still stands
+  }
+  if(pendingDocUpload) renderOpenDocUploadReviewIfOpen();
+}
+function refineSuggestionsFromOcr(text){
+  if(!pendingDocUpload) return;
+  const f = pendingDocUpload.fields, t = pendingDocUpload.touched;
+  const typeGuess = suggestDocTypeFromText(text);
+  const vendorGuess = suggestVendorFromText(text);
+  const eventGuess = suggestEventFromText(text);
+  if(typeGuess && !t.categoryKey) f.categoryKey = typeGuess;
+  if(vendorGuess && !t.vendorBookingId) f.vendorBookingId = vendorGuess.id;
+  if(eventGuess && !t.eventId) f.eventId = eventGuess.id;
+  if(!t.name){
+    const vendorMatch = vendorGuess || (f.vendorBookingId ? (dashboardData.vendorBookings||[]).find(v=>v.id===f.vendorBookingId) : null);
+    f.name = buildSuggestedName(pendingDocUpload.originalFileName, vendorMatch, f.categoryKey);
+    pendingDocUpload.versionMatch = findVersionMatch(f.name, pendingDocUpload.context);
+    pendingDocUpload.versionMatchChosen = pendingDocUpload.versionMatch ? pendingDocUpload.versionMatch.confident : false;
+  }
+}
+function renderOpenDocUploadReviewIfOpen(){
+  const overlay = document.getElementById('docUploadOverlay');
+  if(overlay && overlay.classList.contains('open')) overlay.innerHTML = renderDocUploadReviewModal();
+}
+function openDocUploadReviewModal(){
+  document.getElementById('docUploadOverlay').innerHTML = renderDocUploadReviewModal();
+  document.getElementById('docUploadOverlay').classList.add('open');
+}
+function closeDocUploadReview(){
+  pendingDocUpload = null;
+  document.getElementById('docUploadOverlay').classList.remove('open');
+}
+function updatePendingDocField(field, val){
+  if(!pendingDocUpload || !pendingDocUpload.fields) return;
+  pendingDocUpload.fields[field] = val;
+  pendingDocUpload.touched[field] = true;
+  if(field==='name'){
+    pendingDocUpload.versionMatch = findVersionMatch(val, pendingDocUpload.context);
+    pendingDocUpload.versionMatchChosen = pendingDocUpload.versionMatch ? pendingDocUpload.versionMatch.confident : false;
+  }
+  document.getElementById('docUploadOverlay').innerHTML = renderDocUploadReviewModal();
+}
+function toggleVersionMatchChoice(val){
+  if(!pendingDocUpload) return;
+  pendingDocUpload.versionMatchChosen = !!val;
+  document.getElementById('docUploadOverlay').innerHTML = renderDocUploadReviewModal();
+}
+function cancelDocUpload(){ closeDocUploadReview(); }
+function confirmDocUpload(){
+  if(!pendingDocUpload || pendingDocUpload.error) return;
+  const f = pendingDocUpload.fields;
+  const name = (f.name||'').trim() || pendingDocUpload.originalFileName || 'Document';
+  const ctx = pendingDocUpload.context || {};
+  if(!Array.isArray(dashboardData.documents)) dashboardData.documents = [];
+
+  if(ctx.existingDocId){
+    const existing = dashboardData.documents.find(x=>x.id===ctx.existingDocId);
+    if(existing){
+      existing.dataUrl = pendingDocUpload.dataUrl;
+      existing.mimeType = pendingDocUpload.mimeType;
+      existing.fileSize = pendingDocUpload.fileSize;
+      existing.name = name;
+      existing.category = f.categoryKey || existing.category;
+      existing.linkedEventId = f.eventId || existing.linkedEventId;
+      existing.linkedVendorId = f.vendorBookingId || existing.linkedVendorId;
+      const vb0 = f.vendorBookingId ? (dashboardData.vendorBookings||[]).find(v=>v.id===f.vendorBookingId) : null;
+      if(vb0) existing.linkedVendorCategory = vb0.category;
+      finishDocUpload(ctx);
+      return;
+    }
+  }
+
+  let groupId, version;
+  if(pendingDocUpload.versionMatch && pendingDocUpload.versionMatchChosen){
+    groupId = pendingDocUpload.versionMatch.doc.groupId || pendingDocUpload.versionMatch.doc.id;
+    const sameGroup = dashboardData.documents.filter(x=>(x.groupId||x.id)===groupId);
+    version = Math.max(0, ...sameGroup.map(x=>x.version||1)) + 1;
+  } else {
+    groupId = 'doc-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,5);
+    version = 1;
+  }
+  const vendorBooking = f.vendorBookingId ? (dashboardData.vendorBookings||[]).find(v=>v.id===f.vendorBookingId) : null;
+  const doc = {
+    id: 'doc-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+    name,
+    category: f.categoryKey || 'other',
+    linkedEventId: f.eventId || null,
+    linkedVendorId: vendorBooking ? vendorBooking.id : null,
+    linkedVendorCategory: vendorBooking ? vendorBooking.category : (ctx.linkedVendorCategory || null),
+    dateAdded: isoFromDate(new Date()),
+    notes: '',
+    dataUrl: pendingDocUpload.dataUrl,
+    mimeType: pendingDocUpload.mimeType,
+    fileSize: pendingDocUpload.fileSize,
+    groupId, version,
+    suggestionSource: pendingDocUpload.suggestionSource || null
+  };
+  dashboardData.documents.unshift(doc);
+  if(ctx.budgetAttach){
+    const item = dashboardData.budgetBreakdown[ctx.budgetAttach.ci] && dashboardData.budgetBreakdown[ctx.budgetAttach.ci].items[ctx.budgetAttach.ii];
+    if(item){
+      if(!Array.isArray(item.attachmentIds)) item.attachmentIds = [];
+      item.attachmentIds.push(doc.id);
+    }
+  }
+  finishDocUpload(ctx);
+}
+function finishDocUpload(ctx){
+  closeDocUploadReview();
+  if(typeof refreshBudgetBackground==='function') refreshBudgetBackground();
+  if(ctx && ctx.budgetAttach && typeof refreshBudgetItemDetail==='function') refreshBudgetItemDetail();
+  if(ctx && ctx.linkedVendorId && typeof refreshVendorBookingDetail==='function') refreshVendorBookingDetail();
+  const contentEl = document.getElementById('content');
+  if(contentEl && typeof currentRouteKey!=='undefined' && currentRouteKey==='documents') contentEl.innerHTML = renderDocumentsModule();
+}
+function renderDocUploadReviewModal(){
+  if(!pendingDocUpload) return '';
+  if(pendingDocUpload.error){
+    return `
+      <div class="item-modal">
+        <button class="im-close" onclick="cancelDocUpload()">✕</button>
+        <div class="eyebrow" style="color:var(--terracotta);">File too large</div>
+        <p class="detail-hint detail-hint-alert" style="margin-top:8px;">${escapeHtml(pendingDocUpload.error)}</p>
+        <button class="btn btn-outline btn-sm" style="margin-top:12px;" onclick="cancelDocUpload()">Close</button>
+      </div>
+    `;
+  }
+  const d = dashboardData;
+  const f = pendingDocUpload.fields;
+  const vm = pendingDocUpload.versionMatch;
+  const sizeLabel = pendingDocUpload.fileSize ? `${(pendingDocUpload.fileSize/1024).toFixed(0)} KB` : '';
+  const sourceLabel = pendingDocUpload.ocrStatus==='pending' ? 'Scanning the document for text (OCR)…'
+    : pendingDocUpload.suggestionSource==='ocr' ? 'Suggested from scanned text (OCR)'
+    : pendingDocUpload.ocrStatus==='failed' ? 'Suggested from the filename — OCR scan couldn\'t run (no connection)'
+    : 'Suggested from the filename';
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="cancelDocUpload()">✕</button>
+      <div class="eyebrow">Review before adding</div>
+      <h3 style="margin-top:4px;">${escapeHtml(pendingDocUpload.originalFileName)}</h3>
+      <p class="detail-hint" style="margin-top:0;">${sizeLabel ? sizeLabel+' · ' : ''}${escapeHtml(sourceLabel)} — everything below is a suggestion. Change anything before adding it.</p>
+      <div class="field-cell" style="margin-top:10px;">
+        <label>Name</label>
+        <input type="text" value="${escapeAttr(f.name)}" onchange="updatePendingDocField('name', this.value)">
+      </div>
+      <div class="field-grid" style="margin-top:4px;">
+        <div class="field-cell"><label>Type</label>
+          <select onchange="updatePendingDocField('categoryKey', this.value)">
+            ${(d.documentTypes||[]).map(t=>`<option value="${t.key}" ${f.categoryKey===t.key?'selected':''}>${escapeHtml(t.label)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>Linked Event</label>
+          <select onchange="updatePendingDocField('eventId', this.value)">
+            <option value="">No linked event</option>
+            ${d.events.map(e=>`<option value="${e.id}" ${f.eventId===e.id?'selected':''}>${escapeHtml(e.name)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>Linked Vendor</label>
+          <select onchange="updatePendingDocField('vendorBookingId', this.value)">
+            <option value="">No linked vendor</option>
+            ${(d.vendorBookings||[]).map(vb=>`<option value="${vb.id}" ${f.vendorBookingId===vb.id?'selected':''}>${escapeHtml(vb.category)} — ${escapeHtml(vb.vendorName||'Unnamed')}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      ${vm ? `
+      <label class="detail-hint" style="display:flex; align-items:flex-start; gap:8px; margin-top:10px; cursor:pointer;">
+        <input type="checkbox" style="margin-top:3px;" ${pendingDocUpload.versionMatchChosen?'checked':''} onchange="toggleVersionMatchChoice(this.checked)">
+        <span>This looks like a new version of <strong>${escapeHtml(vm.doc.name)}</strong> (added ${escapeHtml(fmtDateLabel(vm.doc.dateAdded))}, currently v${vm.doc.version||1}). Treat this upload as the next version instead of a separate file.</span>
+      </label>
+      ` : ''}
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button class="btn btn-solid btn-sm" onclick="confirmDocUpload()">+ Add ${vm && pendingDocUpload.versionMatchChosen ? 'as New Version' : 'File'}</button>
+        <button class="btn btn-outline btn-sm" onclick="cancelDocUpload()">Cancel</button>
+      </div>
+    </div>
+  `;
+}
+
+/* Groups a flat list of documents by groupId, newest version first within each group, groups
+   themselves sorted by their latest version's date — used by both the Files tab and a Vendor
+   Booking's own Documents section so version history looks and behaves identically everywhere. */
+function groupedDocumentRows(docs){
+  const groups = {};
+  (docs||[]).forEach(doc=>{
+    const g = doc.groupId || doc.id;
+    (groups[g] = groups[g]||[]).push(doc);
+  });
+  return Object.values(groups).map(versions=>{
+    versions.sort((a,b)=>(b.version||1)-(a.version||1));
+    return {latest: versions[0], older: versions.slice(1)};
+  }).sort((a,b)=> new Date(b.latest.dateAdded||0) - new Date(a.latest.dateAdded||0));
+}
+function removeDocument(id){
+  dashboardData.documents = (dashboardData.documents||[]).filter(doc=>doc.id!==id);
+  dashboardData.budgetBreakdown.forEach(cat=> (cat.items||[]).forEach(it=>{ if(Array.isArray(it.attachmentIds)) it.attachmentIds = it.attachmentIds.filter(id2=>id2!==id); }));
+  if(typeof currentRouteKey!=='undefined' && currentRouteKey==='documents'){
+    const c = document.getElementById('content'); if(c) c.innerHTML = renderDocumentsModule();
+  }
+  if(typeof refreshVendorBookingDetail==='function') refreshVendorBookingDetail();
+  if(typeof refreshBudgetItemDetail==='function') refreshBudgetItemDetail();
+  if(typeof refreshBudgetBackground==='function') refreshBudgetBackground();
+}
+function unlinkDocumentFromVendor(vbId, docId){
+  const doc = (dashboardData.documents||[]).find(x=>x.id===docId);
+  if(doc && doc.linkedVendorId===vbId) doc.linkedVendorId = null;
+  if(typeof refreshVendorBookingDetail==='function') refreshVendorBookingDetail();
+}
+function linkExistingDocumentToVendor(vbId, docId){
+  if(!docId) return;
+  const doc = (dashboardData.documents||[]).find(x=>x.id===docId);
+  const vb = (dashboardData.vendorBookings||[]).find(v=>v.id===vbId);
+  if(doc && vb){ doc.linkedVendorId = vb.id; doc.linkedVendorCategory = vb.category; }
+  if(typeof refreshVendorBookingDetail==='function') refreshVendorBookingDetail();
+}
+function renderVendorDocumentsSection(vb){
+  const d = dashboardData;
+  const docs = (d.documents||[]).filter(doc=>doc.linkedVendorId===vb.id);
+  const groups = groupedDocumentRows(docs);
+  const linkable = (d.documents||[]).filter(doc=>doc.linkedVendorId!==vb.id);
+  return `
+    <div class="detail-section">
+      <div class="detail-section-head"><h4 style="margin:0;">Documents</h4><span class="d-sub">Contracts, invoices, receipts — attached right to this vendor</span></div>
+      ${groups.length ? groups.map(g=>`
+        <div class="attach-row" style="margin-top:0; align-items:flex-start;">
+          <span class="attach-chip">${docIcon(g.latest.category)} ${g.latest.dataUrl ? `<a href="${g.latest.dataUrl}" target="_blank" rel="noopener noreferrer" style="color:inherit;">${escapeHtml(g.latest.name)}</a>` : escapeHtml(g.latest.name)}${g.older.length?` <span class="d-sub">(v${g.latest.version||1})</span>`:''}<a href="#" onclick="removeDocument('${g.latest.id}'); return false;" title="Remove">×</a></span>
+        </div>
+        ${g.older.length ? `<div class="d-sub" style="margin:2px 0 8px 2px;">${g.older.map(o=>`v${o.version||1} (${escapeHtml(fmtDateLabel(o.dateAdded))})${o.dataUrl?` — <a href="${o.dataUrl}" target="_blank" rel="noopener noreferrer">view</a>`:''} · <a href="#" onclick="removeDocument('${o.id}'); return false;" class="danger-link" style="font-size:11px;">remove</a>`).join(' &nbsp;·&nbsp; ')}</div>` : ''}
+      `).join('') : `<p class="detail-hint" style="margin-top:0;">No documents attached to this vendor yet — upload a contract, invoice, or receipt, or link one already in Documents.</p>`}
+      <div class="attach-row">
+        ${linkable.length ? `
+        <select class="select-field-sm attach-select" onchange="if(this.value){linkExistingDocumentToVendor('${vb.id}',this.value); this.value='';}">
+          <option value="">Link existing document…</option>
+          ${linkable.map(doc=>`<option value="${doc.id}">${escapeHtml(doc.name)}</option>`).join('')}
+        </select>` : ''}
+        <button class="btn btn-outline btn-sm" onclick="triggerDocUpload({linkedVendorId:'${vb.id}', linkedVendorCategory:'${escapeJsAttr(vb.category)}'})">+ Upload a File</button>
+      </div>
+    </div>
+  `;
+}
+
 function attachExistingDocument(ci, ii, docId){
   const item = dashboardData.budgetBreakdown[ci].items[ii];
   if(!item) return;
@@ -17346,18 +17892,9 @@ function detachDocument(ci, ii, docId){
   refreshBudgetItemDetail();
 }
 function quickAddAttachment(ci, ii){
-  const nameEl = document.getElementById(`newAttachName-${ci}-${ii}`);
-  const catEl = document.getElementById(`newAttachCat-${ci}-${ii}`);
-  const name = (nameEl.value||'').trim();
-  if(!name) return;
-  const category = catEl.value;
   const item = dashboardData.budgetBreakdown[ci].items[ii];
-  const doc = {id:'doc-'+Date.now().toString(36), name, category, linkedEventId:item.eventId||null, linkedVendorCategory:item.vendorCategory||null, dateAdded: isoFromDate(new Date()), notes:''};
-  dashboardData.documents.push(doc);
-  if(!Array.isArray(item.attachmentIds)) item.attachmentIds = [];
-  item.attachmentIds.push(doc.id);
-  refreshBudgetBackground();
-  refreshBudgetItemDetail();
+  if(!item) return;
+  triggerDocUpload({linkedEventId:item.eventId||null, linkedVendorCategory:item.vendorCategory||null, budgetAttach:{ci,ii}});
 }
 
 /* ---- budget line item drill-in detail ---- */
@@ -17379,6 +17916,8 @@ function renderBudgetItemDetail(ci, ii){
   const vendorOptions = budgetVendorOptions();
   const linkedVb = vendorBookingForBudgetItem(item.id);
   const ePlanned = effectiveItemPlanned(item), eSpent = effectiveItemSpent(item);
+  const scheduleSpent = paymentScheduleSpentSoFar(item); // null = no schedule yet, else the real $ paid-to-date
+  const costMismatch = linkedVb && (linkedVb.cost||0) !== item.planned;
   const scheduleTotal = (item.paymentSchedule||[]).reduce((s,p)=>s+(p.amount||0),0);
   const scheduleMismatch = (item.paymentSchedule||[]).length>0 && scheduleTotal !== ePlanned;
   const totalAllocHours = (item.eventAllocations||[]).reduce((s,a)=>s+(a.hours||0),0);
@@ -17392,9 +17931,19 @@ function renderBudgetItemDetail(ci, ii){
 
       <div class="field-grid" style="margin-top:16px;">
         <div class="field-cell"><label>Planned</label><input type="number" min="0" value="${item.planned}" onchange="updateBudgetItem(${ci},${ii},'planned',this.value)"></div>
-        <div class="field-cell"><label>Spent${linkedVb?' (Actual)':''}</label>${linkedVb
-          ? `<input type="number" value="${eSpent}" disabled style="opacity:0.7; cursor:not-allowed;">`
-          : `<input type="number" min="0" value="${item.spent}" onchange="updateBudgetItem(${ci},${ii},'spent',this.value)">`}</div>
+        <div class="field-cell">
+          <label>Spent${(scheduleSpent!==null || linkedVb)?' (Actual)':''}</label>
+          ${scheduleSpent!==null
+            ? `<input type="number" value="${eSpent}" disabled style="opacity:0.7; cursor:not-allowed;">`
+            : linkedVb
+              ? `<input type="number" value="${eSpent}" disabled style="opacity:0.7; cursor:not-allowed;">`
+              : `<input type="number" min="0" value="${item.spent}" onchange="updateBudgetItem(${ci},${ii},'spent',this.value)">`}
+          ${scheduleSpent!==null
+            ? `<span class="d-sub" style="display:block;margin-top:4px;">Total of payments marked Paid below (${fmtMoney(scheduleSpent)} of ${fmtMoney(scheduleTotal)} scheduled)${linkedVb?` — once everything's paid this will reach ${fmtMoney(linkedVb.cost||0)}.`:'.'}</span>`
+            : linkedVb
+              ? `<span class="d-sub" style="display:block;margin-top:4px;">Follows ${escapeHtml(linkedVb.vendorName||linkedVb.category)}'s committed Cost until you add a Payment Schedule below.</span>`
+              : ''}
+        </div>
         ${linkedVb ? '' : `
         <div class="field-cell"><label>Vendor Category</label>
           <select onchange="updateBudgetItem(${ci},${ii},'vendorCategory',this.value||null)">
@@ -17411,7 +17960,10 @@ function renderBudgetItemDetail(ci, ii){
         </div>
       </div>
       ${linkedVb ? `
-      <p class="detail-hint">🔗 Linked to <strong>${escapeHtml(linkedVb.vendorName||linkedVb.category)}</strong> ${statusPill(linkedVb.status)} — Spent (Actual) above follows this vendor's own Cost field automatically once they're booked or under signed contract, so it's always what you're really paying. Planned stays exactly what you set below — your original budget for this line — so you can see how the two compare. <a href="#" onclick="closeBudgetItemDetail(); renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${linkedVb.id}'),0); return false;">Edit cost on the Vendor page →</a> · <a href="#" onclick="unlinkVendorFromBudgetItem('${item.id}'); return false;">Unlink</a></p>
+      <p class="detail-hint">🔗 Linked to <strong>${escapeHtml(linkedVb.vendorName||linkedVb.category)}</strong> ${statusPill(linkedVb.status)} — ${scheduleSpent!==null ? 'Spent (Actual) above totals what\'s actually been paid from the Payment Schedule below' : 'Spent (Actual) above follows this vendor\'s own Cost field automatically once they\'re booked or under signed contract'}, so it's always what you're really paying. Planned stays exactly what you set below — your original budget for this line — so you can see how the two compare. <a href="#" onclick="closeBudgetItemDetail(); renderRoute('vendors'); setTimeout(()=>openVendorBookingDetail('${linkedVb.id}'),0); return false;">Edit cost on the Vendor page →</a> · <a href="#" onclick="unlinkVendorFromBudgetItem('${item.id}'); return false;">Unlink</a></p>
+      ${costMismatch ? `
+      <p class="detail-hint detail-hint-alert">⚠️ ${escapeHtml(linkedVb.vendorName||linkedVb.category)}'s committed Cost is ${fmtMoney(linkedVb.cost||0)} — ${(linkedVb.cost||0) > item.planned ? `${fmtMoney((linkedVb.cost||0)-item.planned)} over` : `${fmtMoney(item.planned-(linkedVb.cost||0))} under`} your Planned amount of ${fmtMoney(item.planned)}. Planned is never overwritten automatically — update it above if you want this line to reflect what the vendor is really charging.</p>
+      ` : ''}
       ` : `
       <div class="detail-hint" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <span>Not linked to a real Vendor Team booking yet — link one below so its cost and status drive your Actual spend here automatically, while Planned stays your own original budgeted figure.</span>
@@ -17492,7 +18044,7 @@ function renderBudgetItemDetail(ci, ii){
           ${(item.attachmentIds||[]).map(docId=>{
             const doc = (d.documents||[]).find(x=>x.id===docId);
             if(!doc) return '';
-            return `<span class="attach-chip">${docIcon(doc.category)} ${escapeHtml(doc.name)}<a href="#" onclick="detachDocument(${ci},${ii},'${docId}'); return false;" title="Remove attachment">×</a></span>`;
+            return `<span class="attach-chip">${docIcon(doc.category)} ${doc.dataUrl ? `<a href="${doc.dataUrl}" target="_blank" rel="noopener noreferrer" style="color:inherit;">${escapeHtml(doc.name)}</a>` : escapeHtml(doc.name)}<a href="#" onclick="detachDocument(${ci},${ii},'${docId}'); return false;" title="Remove attachment">×</a></span>`;
           }).join('')}
         </div>
         <div class="attach-row">
@@ -17500,11 +18052,7 @@ function renderBudgetItemDetail(ci, ii){
             <option value="">Link existing document…</option>
             ${(d.documents||[]).filter(doc=>!(item.attachmentIds||[]).includes(doc.id)).map(doc=>`<option value="${doc.id}">${escapeHtml(doc.name)}</option>`).join('')}
           </select>
-          <input type="text" class="attach-input" id="newAttachName-${ci}-${ii}" placeholder="Attach new invoice/contract…">
-          <select class="select-field-sm" id="newAttachCat-${ci}-${ii}" style="max-width:110px;">
-            ${(d.documentTypes||[]).map(c=>`<option value="${c.key}">${escapeHtml(c.label)}</option>`).join('')}
-          </select>
-          <button class="btn btn-outline btn-sm" onclick="quickAddAttachment(${ci},${ii})">+ Attach</button>
+          <button class="btn btn-outline btn-sm" onclick="quickAddAttachment(${ci},${ii})">+ Upload a File</button>
         </div>
       </div>
 
@@ -18406,59 +18954,44 @@ function removeNote(id){
 }
 function renderFilesTab(){
   const d = dashboardData;
-  const docs = (d.documents||[]).slice().sort((a,b)=> new Date(b.dateAdded)-new Date(a.dateAdded));
+  const groups = groupedDocumentRows(d.documents||[]);
   return `
     <div class="card">
       <div class="card-head"><h4>Add a File</h4></div>
-      <div class="custom-add-row" style="flex-wrap:wrap;">
-        <input type="text" id="newDocName" placeholder="File name (e.g. Florist Contract.pdf)">
-        <select id="newDocCategory" class="select-field-sm">
-          ${(d.documentTypes||[]).map(c=>`<option value="${c.key}">${escapeHtml(c.label)}</option>`).join('')}
-        </select>
-        <select id="newDocEvent" class="select-field-sm">
-          <option value="">No linked event</option>
-          ${d.events.map(e=>`<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('')}
-        </select>
-        <button class="btn btn-outline btn-sm" onclick="addDocument()">+ Add File</button>
-      </div>
+      <p class="detail-hint" style="margin-top:0;">Upload a contract, invoice, receipt, or floor plan. Evera will suggest a name, type, event, and vendor from the file itself — you'll get to review and change any of it before it's added.</p>
+      <button class="btn btn-solid btn-sm" id="quickAddUploadBtn" onclick="triggerDocUpload({})">+ Upload a File</button>
     </div>
     <div class="card">
       <div class="card-head"><h4>All Files</h4></div>
-      ${docs.length ? `
+      ${groups.length ? `
       <div class="budget-items">
         <div class="budget-items-head" style="grid-template-columns: 1.8fr 0.9fr 1fr 1fr 1fr 0.6fr;"><span>File</span><span>Type</span><span>Linked Event</span><span>Vendor</span><span>Added</span><span></span></div>
-        ${docs.map(doc=>{
+        ${groups.map(g=>{
+          const doc = g.latest;
           const ev = doc.linkedEventId ? d.events.find(e=>e.id===doc.linkedEventId) : null;
+          const vb = doc.linkedVendorId ? (d.vendorBookings||[]).find(v=>v.id===doc.linkedVendorId) : null;
           const usedBy = [];
           d.budgetBreakdown.forEach(cat=> (cat.items||[]).forEach(it=>{ if((it.attachmentIds||[]).includes(doc.id)) usedBy.push(it.name); }));
+          const nameCell = doc.dataUrl
+            ? `<a href="${doc.dataUrl}" target="_blank" rel="noopener noreferrer" class="readonly-cell" style="color:inherit;" title="${usedBy.length?'Attached to: '+escapeAttr(usedBy.join(', ')):'View file'}">${docIcon(doc.category)} ${escapeHtml(doc.name)}</a>`
+            : `<span class="readonly-cell" title="${usedBy.length?'Attached to: '+escapeAttr(usedBy.join(', ')):'No file uploaded yet'}">${docIcon(doc.category)} ${escapeHtml(doc.name)} <em class="d-sub">(no file)</em></span>`;
           return `
-          <div class="budget-item-row" style="grid-template-columns: 1.8fr 0.9fr 1fr 1fr 1fr 0.6fr;">
-            <span class="readonly-cell" title="${usedBy.length?'Attached to: '+escapeAttr(usedBy.join(', ')):''}">${docIcon(doc.category)} ${escapeHtml(doc.name)}</span>
+          <div class="budget-item-row" style="grid-template-columns: 1.8fr 0.9fr 1fr 1fr 1fr 0.6fr; align-items:flex-start;">
+            <div>
+              ${nameCell}
+              ${g.older.length ? `<div class="d-sub" style="margin-top:3px;">${g.older.length} earlier version${g.older.length===1?'':'s'}: ${g.older.map(o=>`${o.dataUrl?`<a href="${o.dataUrl}" target="_blank" rel="noopener noreferrer">v${o.version||1}</a>`:`v${o.version||1}`}`).join(', ')}</div>` : ''}
+              ${!doc.dataUrl ? `<a href="#" class="ch-link" style="font-size:11.5px;" onclick="triggerDocUpload({existingDocId:'${doc.id}'}); return false;">Upload file →</a>` : ''}
+            </div>
             <span class="d-sub">${escapeHtml((d.documentTypes||[]).find(c=>c.key===doc.category)?.label || doc.category)}</span>
             <span class="d-sub">${ev ? escapeHtml(ev.name) : '—'}</span>
-            <span class="d-sub">${escapeHtml(doc.linkedVendorCategory || '—')}</span>
+            <span class="d-sub">${vb ? escapeHtml(vb.vendorName||vb.category) : escapeHtml(doc.linkedVendorCategory || '—')}</span>
             <span class="d-sub">${escapeHtml(fmtDateLabel(doc.dateAdded))}</span>
             <a href="#" class="danger-link" onclick="removeDocument('${doc.id}'); return false;">Remove</a>
           </div>`;
         }).join('')}
-      </div>` : '<p style="font-size:13px;color:var(--charcoal-faint);">No files yet — contracts and invoices you attach from Budget line items will also show up here.</p>'}
+      </div>` : '<p style="font-size:13px;color:var(--charcoal-faint);">No files yet — upload one above, or attach one from a Budget line item or a vendor\'s own page and it\'ll show up here too.</p>'}
     </div>
   `;
-}
-function addDocument(){
-  const nameEl = document.getElementById('newDocName');
-  const catEl = document.getElementById('newDocCategory');
-  const eventEl = document.getElementById('newDocEvent');
-  const name = (nameEl.value||'').trim();
-  if(!name) return;
-  if(!dashboardData.documents) dashboardData.documents = [];
-  dashboardData.documents.unshift({id:'doc-'+Date.now().toString(36), name, category:catEl.value, linkedEventId:eventEl.value||null, linkedVendorCategory:null, dateAdded:isoFromDate(new Date()), notes:''});
-  document.getElementById('content').innerHTML = renderDocumentsModule();
-}
-function removeDocument(id){
-  dashboardData.documents = (dashboardData.documents||[]).filter(doc=>doc.id!==id);
-  dashboardData.budgetBreakdown.forEach(cat=> (cat.items||[]).forEach(it=>{ if(Array.isArray(it.attachmentIds)) it.attachmentIds = it.attachmentIds.filter(id2=>id2!==id); }));
-  document.getElementById('content').innerHTML = renderDocumentsModule();
 }
 
 /* ==================================================================
