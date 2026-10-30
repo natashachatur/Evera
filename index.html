@@ -1953,7 +1953,9 @@
 <div class="item-overlay" id="partyMemberAddOverlay" onclick="if(event.target===this) closePartyMemberAddModal();"><!-- injected --></div>
 <div class="item-overlay" id="budgetCategoryDeleteOverlay" onclick="if(event.target===this) closeBudgetCategoryDelete();"><!-- injected --></div>
 <div class="item-overlay" id="collaboratorPermissionsOverlay" onclick="if(event.target===this) closeCollaboratorPermissions();"><!-- injected --></div>
+<div class="item-overlay" id="collaboratorNotificationsOverlay" onclick="if(event.target===this) closeCollaboratorNotifications();"><!-- injected --></div>
 <div class="item-overlay" id="addCollaboratorOverlay" onclick="if(event.target===this) closeAddCollaborator();"><!-- injected --></div>
+<div class="item-overlay" id="deleteAccountOverlay" onclick="if(event.target===this) closeDeleteAccountModal();"><!-- injected --></div>
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div class="item-overlay" id="calendarItemOverlay" onclick="if(event.target===this) closeCalendarItemDetail();"><!-- injected --></div>
@@ -2112,6 +2114,17 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.60.0', date:'2026-10-30',
+    title:'Account self-service, per-collaborator notifications, a payment reminder lead time, and editable Document Types',
+    items:[
+      'Settings → Account: while signed in, you can now change your email and password directly (both ask you to re-confirm your current password first, or re-confirm with Google if that\'s how you signed in) — no more needing to sign out and use Forgot Password just to update them.',
+      'Settings → Account → Danger Zone: a real account-deletion flow. Type your email to confirm, re-confirm who you are, and your entire saved wedding — every event, guest, vendor, budget line, everything — along with your sign-in, is permanently deleted. No undo, by design, since this is the one action in Evera that genuinely can\'t be put back — you\'ll see a clear warning before it happens.',
+      'Settings → Notification Preferences: a new "remind me this many days before a payment is due" field (defaults to 30) now actually drives the "payments due soon" heads-up on your Home dashboard, instead of that being fixed at 30 days under the hood.',
+      'Settings → Collaborators & Permissions: each collaborator now gets their own "Notify →" link to set their own alert preferences (weekly digest, task reminders, RSVP alerts, vendor message alerts) — independent of yours, so a planner or a parent isn\'t stuck sharing your settings.',
+      'Settings → new "Document Types" card: rename, remove, or add the types available in Documents and when attaching a file to a Budget line item (Contract, Invoice, Receipt — new — Floor Plan, Other, or your own) — same rename/remove pattern as Guest Categories and Event Categories. "Other" always stays as a fallback.'
+    ]
+  },
   {
     version:'1.59.0', date:'2026-10-28',
     title:'A larger batch: photographer/videographer rosters, a merged & compact Ceremony Order with side-swap, Run Book exports, and cash envelopes',
@@ -4079,7 +4092,9 @@ function friendlyAuthError(err){
     'auth/popup-blocked':'Your browser blocked the Google sign-in popup — please allow popups for this site and try again.',
     'auth/cancelled-popup-request':'',
     'auth/account-exists-with-different-credential':'An account already exists with that email using a different sign-in method — try signing in with your password instead.',
-    'auth/operation-not-allowed':'Google sign-in isn\'t available right now — please sign in with your email and password instead.'
+    'auth/operation-not-allowed':'Google sign-in isn\'t available right now — please sign in with your email and password instead.',
+    'auth/requires-recent-login':'For your security, please re-enter your password to confirm this.',
+    'auth/missing-password':'Please enter your current password.'
   };
   return map[code] !== undefined ? map[code] : ((err && err.message) || 'Something went wrong. Please try again.');
 }
@@ -4170,6 +4185,144 @@ function handleSignOut(){
   if(window.everaFirebase){ window.everaFirebase.signOutUser(); }
   currentUser = null;
   goTo('landing');
+}
+/* ==================================================================
+   ACCOUNT SELF-SERVICE (v1.60.0) — change email/password while signed
+   in, and account deletion. All three are security-sensitive Firebase
+   operations that require a "recent login," so each reauthenticates
+   first: a password-provider account re-enters its current password,
+   a Google-signed-in account re-runs the Google popup. Natasha's own
+   request, alongside Forgot Password (Tier 1 #1) which only covers
+   being locked out — this is the companion for while you're signed in.
+================================================================== */
+function isGoogleAuthUser(){
+  return !!(currentUser && currentUser.providerData && currentUser.providerData.some(p=>p.providerId==='google.com'));
+}
+function isPasswordAuthUser(){
+  return !!(currentUser && currentUser.providerData && currentUser.providerData.some(p=>p.providerId==='password'));
+}
+function showAccountMsg(elId, text, isError){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  el.textContent = text;
+  el.className = 'detail-hint' + (isError ? ' detail-hint-alert' : '');
+  el.style.display = text ? '' : 'none';
+}
+async function reauthenticateCurrentUser(passwordFieldId){
+  if(isGoogleAuthUser()){
+    await window.everaFirebase.reauthenticateWithGoogle();
+    return;
+  }
+  const pwEl = document.getElementById(passwordFieldId);
+  const pw = pwEl ? pwEl.value : '';
+  if(!pw){ const err = new Error(''); err.code = 'auth/missing-password'; throw err; }
+  await window.everaFirebase.reauthenticateWithPassword(pw);
+}
+async function handleChangeEmail(){
+  if(!window.everaFirebase || !currentUser) return;
+  showAccountMsg('changeEmailMsg', '', false);
+  const newEmailEl = document.getElementById('settingsNewEmail');
+  const newEmail = (newEmailEl.value||'').trim();
+  if(!newEmail){ showAccountMsg('changeEmailMsg', 'Enter a new email address.', true); return; }
+  if(newEmail.toLowerCase() === (currentUser.email||'').toLowerCase()){ showAccountMsg('changeEmailMsg', 'That\'s already your email address.', true); return; }
+  const btn = document.getElementById('changeEmailBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Updating…';
+  try{
+    await reauthenticateCurrentUser('settingsEmailCurrentPassword');
+    await window.everaFirebase.changeEmail(newEmail);
+    currentUser = window.everaFirebase.auth.currentUser;
+    document.getElementById('content').innerHTML = renderSettingsModule();
+    showAccountMsg('changeEmailMsg', 'Email updated to ' + newEmail + '.', false);
+  } catch(err){
+    showAccountMsg('changeEmailMsg', friendlyAuthError(err), true);
+  } finally {
+    btn.disabled = false; btn.textContent = originalLabel;
+  }
+}
+async function handleChangePassword(){
+  if(!window.everaFirebase || !currentUser) return;
+  showAccountMsg('changePasswordMsg', '', false);
+  const newPwEl = document.getElementById('settingsNewPassword');
+  const confirmPwEl = document.getElementById('settingsConfirmPassword');
+  const newPw = newPwEl.value, confirmPw = confirmPwEl.value;
+  if(!newPw || newPw.length<6){ showAccountMsg('changePasswordMsg', 'Please use a password with at least 6 characters.', true); return; }
+  if(newPw !== confirmPw){ showAccountMsg('changePasswordMsg', 'Passwords don\'t match.', true); return; }
+  const btn = document.getElementById('changePasswordBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Updating…';
+  try{
+    await reauthenticateCurrentUser('settingsPasswordCurrentPassword');
+    await window.everaFirebase.changePassword(newPw);
+    document.getElementById('content').innerHTML = renderSettingsModule();
+    showAccountMsg('changePasswordMsg', 'Password updated.', false);
+  } catch(err){
+    showAccountMsg('changePasswordMsg', friendlyAuthError(err), true);
+  } finally {
+    btn.disabled = false; btn.textContent = originalLabel;
+  }
+}
+/* ---- Delete Account — irreversible, so it gets a real confirmation modal (type your email
+   to confirm) rather than the app's usual Undo-toast pattern, which only works for actions
+   that can actually be put back. ---- */
+function openDeleteAccountModal(){
+  document.getElementById('deleteAccountOverlay').innerHTML = renderDeleteAccountModal();
+  document.getElementById('deleteAccountOverlay').classList.add('open');
+}
+function closeDeleteAccountModal(){
+  document.getElementById('deleteAccountOverlay').classList.remove('open');
+}
+function renderDeleteAccountModal(){
+  const email = currentUser ? currentUser.email : '';
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="closeDeleteAccountModal()">✕</button>
+      <div class="eyebrow" style="color:var(--terracotta);">Delete Account</div>
+      <h3 style="margin-top:4px;">This can't be undone</h3>
+      <p class="detail-hint detail-hint-alert" style="margin-top:0;">Deleting your account permanently removes your entire saved wedding — every event, guest, vendor, budget line, and everything else — along with your sign-in. There's no undo and no recovery once this is done.</p>
+      <div class="field-cell" style="margin-top:14px;">
+        <label>Type your email (${escapeHtml(email)}) to confirm</label>
+        <input type="email" id="deleteAccountEmailConfirm" placeholder="${escapeAttr(email)}">
+      </div>
+      ${isPasswordAuthUser() ? `
+      <div class="field-cell" style="margin-top:10px;">
+        <label>Current Password</label>
+        <input type="password" id="deleteAccountPassword" placeholder="Confirm it's really you">
+      </div>` : `
+      <p class="detail-hint" style="margin-top:10px;">You'll be asked to confirm with Google when you click delete below.</p>
+      `}
+      <p class="detail-hint" id="deleteAccountMsg" style="display:none;"></p>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button class="btn btn-solid btn-sm" style="background:var(--terracotta); border-color:var(--terracotta);" id="confirmDeleteAccountBtn" onclick="confirmDeleteAccount()">Permanently Delete My Account</button>
+        <button class="btn btn-outline btn-sm" onclick="closeDeleteAccountModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+}
+async function confirmDeleteAccount(){
+  if(!window.everaFirebase || !currentUser) return;
+  const typedEmail = (document.getElementById('deleteAccountEmailConfirm').value||'').trim();
+  if(typedEmail.toLowerCase() !== (currentUser.email||'').toLowerCase()){
+    showAccountMsg('deleteAccountMsg', 'That doesn\'t match your account email.', true);
+    return;
+  }
+  const btn = document.getElementById('confirmDeleteAccountBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  try{
+    const pwFieldId = isPasswordAuthUser() ? 'deleteAccountPassword' : null;
+    await reauthenticateCurrentUser(pwFieldId);
+    const uid = currentUser.uid;
+    try{ await window.everaFirebase.deleteWeddingRecord(uid); } catch(e){ /* proceed even if nothing was ever saved */ }
+    await window.everaFirebase.deleteAccount();
+    currentUser = null;
+    dashboardData = normalizeDashboardData(defaultDashboardData());
+    closeDeleteAccountModal();
+    goTo('landing');
+  } catch(err){
+    showAccountMsg('deleteAccountMsg', friendlyAuthError(err), true);
+    btn.disabled = false; btn.textContent = originalLabel;
+  }
 }
 /* Called by the Firebase module script (bottom of page) whenever auth state changes,
    including once on page load if the browser already has a signed-in session. */
@@ -4755,6 +4908,10 @@ function normalizeDashboardData(d){
   if(d.website.passwordProtected===undefined) d.website.passwordProtected = false;
   if(d.website.sitePassword===undefined) d.website.sitePassword = '';
   if(!d.notificationPrefs) d.notificationPrefs = {emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false};
+  if(d.notificationPrefs.paymentReminderLeadDays===undefined) d.notificationPrefs.paymentReminderLeadDays = 30;
+  if(!Array.isArray(d.collaborators)) d.collaborators = [];
+  d.collaborators.forEach(c=>{ if(!c.notificationPrefs) c.notificationPrefs = {emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false}; });
+  if(!Array.isArray(d.documentTypes)) d.documentTypes = [{key:'contract',label:'Contract'},{key:'invoice',label:'Invoice'},{key:'receipt',label:'Receipt'},{key:'floorplan',label:'Floor Plan'},{key:'other',label:'Other'}];
   d.events.forEach(e=>{
     if(e.publicVisibility===undefined) e.publicVisibility = true;
     if(!Array.isArray(e.colorPalette)) e.colorPalette = [];
@@ -5273,13 +5430,13 @@ function vendorDecisionBucket(v){
    suggestions card, and the "Your Vision" card are all retired — their useful signal is folded
    into tiers 1/2, and Home no longer needs to be a second copy of Budget/Vendors/Guests. ---- */
 function homeAttentionSignals(ctx){
-  const {d, topAction, nextUp, overdueTasks, dueSoonTotal, isOverBudget, totalSpent, days} = ctx;
+  const {d, topAction, nextUp, overdueTasks, dueSoonTotal, isOverBudget, totalSpent, days, paymentLeadDays} = ctx;
   const missingAddressCount = (d.guestHouseholds||[]).filter(h=>!(h.address && h.address.street && h.address.street.trim())).length;
   const behindScheduleVendors = (d.vendors||[]).filter(v=>CORE_VENDOR_LEAD_DAYS[v.category] && v.status!=='booked' && days!==null && days<=CORE_VENDOR_LEAD_DAYS[v.category]);
   const items = [];
   if(overdueTasks>0) items.push({sev:4, icon:'warn', text:`${pluralize(overdueTasks,'task','tasks')} overdue`, ctaLabel:'Review', ctaRoute:'my-wedding'});
   behindScheduleVendors.forEach(v=>items.push({sev:3, icon:'warn', text:`${v.category} booking is behind schedule`, ctaLabel:'Review', ctaRoute:'vendors'}));
-  if(dueSoonTotal>0) items.push({sev:3, icon:'warn', text:`${fmtMoney(dueSoonTotal)} in payments due in the next 30 days`, ctaLabel:'Review', ctaRoute:'budget'});
+  if(dueSoonTotal>0) items.push({sev:3, icon:'warn', text:`${fmtMoney(dueSoonTotal)} in payments due in the next ${paymentLeadDays||30} days`, ctaLabel:'Review', ctaRoute:'budget'});
   if(isOverBudget) items.push({sev:3, icon:'warn', text:`You're over budget by ${fmtMoney(totalSpent-d.budgetTotal)}`, ctaLabel:'Review', ctaRoute:'budget'});
   if(missingAddressCount>0) items.push({sev:1, icon:'neutral', text:`${pluralize(missingAddressCount,'guest household','guest households')} still need${missingAddressCount===1?'s':''} an address`, ctaLabel:'Review', ctaRoute:'guests'});
   nextUp.filter(a=>a!==topAction).forEach(a=>items.push({sev:1, icon:'neutral', text:a.title, ctaLabel:a.ctaLabel||'View', ctaRoute:a.ctaRoute}));
@@ -5300,14 +5457,15 @@ function renderHome(){
     .sort((a,b)=> new Date(a.dateISO) - new Date(b.dateISO))
     .slice(0,5);
   const now = new Date();
-  const in30 = new Date(now.getTime()+30*86400000);
-  const dueSoonTotal = upcomingPayments.filter(dl=>{ const t=new Date(dl.dateISO+'T00:00:00'); return t>=now && t<=in30; }).reduce((s,dl)=>s+dl._amt,0);
+  const paymentLeadDays = (d.notificationPrefs && d.notificationPrefs.paymentReminderLeadDays) || 30;
+  const inLead = new Date(now.getTime()+paymentLeadDays*86400000);
+  const dueSoonTotal = upcomingPayments.filter(dl=>{ const t=new Date(dl.dateISO+'T00:00:00'); return t>=now && t<=inLead; }).reduce((s,dl)=>s+dl._amt,0);
   const venueEntry = (d.vendors||[]).find(v=>v.category==='Venue');
   const eventsPlanned = d.events.filter(e=>eventCompleteness(e).pct>=60).length;
   const overdueTasks = (d.tasks||[]).filter(t=>!t.done && t.dueDateISO && new Date(t.dueDateISO+'T00:00:00')<now).length;
   const unallocated = (d.budgetTotal||0) - totalPlanned;
   const isOverBudget = totalSpent > (d.budgetTotal||0) && (d.budgetTotal||0) > 0;
-  const attentionItems = homeAttentionSignals({d, topAction, nextUp, overdueTasks, dueSoonTotal, isOverBudget, totalSpent, days});
+  const attentionItems = homeAttentionSignals({d, topAction, nextUp, overdueTasks, dueSoonTotal, isOverBudget, totalSpent, days, paymentLeadDays});
 
   return `
     <div class="home-photo-hero ${d.couplePhoto ? 'has-photo' : ''}">
@@ -8565,6 +8723,41 @@ function renderSettingsModule(){
         <div class="field-cell"><label>Partner's Name</label><input type="text" value="${escapeAttr(d.partner2)}" disabled></div>
       </div>
       <p style="font-size:12px;color:var(--charcoal-faint);margin-top:10px;">Names are split into first &amp; last name in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('my-wedding')">Wedding Blueprint →</span></p>
+
+      ${currentUser ? (isGoogleAuthUser() ? `
+      <div class="detail-section">
+        <div class="detail-section-head"><h4>Email &amp; Password</h4></div>
+        <p class="detail-hint" style="margin-top:0;">You signed in with Google, so your email and password are managed through your Google Account rather than here.</p>
+      </div>
+      ` : `
+      <div class="detail-section">
+        <div class="detail-section-head"><h4>Change Email</h4></div>
+        <div class="field-grid">
+          <div class="field-cell"><label>New Email</label><input type="email" id="settingsNewEmail" placeholder="${escapeAttr(currentUser.email||'')}"></div>
+          <div class="field-cell"><label>Current Password</label><input type="password" id="settingsEmailCurrentPassword" placeholder="Confirm it's you"></div>
+        </div>
+        <p class="detail-hint" id="changeEmailMsg" style="display:none;"></p>
+        <button class="btn btn-outline btn-sm" id="changeEmailBtn" style="margin-top:8px;" onclick="handleChangeEmail()">Update Email</button>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-head"><h4>Change Password</h4></div>
+        <div class="field-grid">
+          <div class="field-cell"><label>New Password</label><input type="password" id="settingsNewPassword" placeholder="At least 6 characters"></div>
+          <div class="field-cell"><label>Confirm New Password</label><input type="password" id="settingsConfirmPassword" placeholder="Re-type it"></div>
+          <div class="field-cell"><label>Current Password</label><input type="password" id="settingsPasswordCurrentPassword" placeholder="Confirm it's you"></div>
+        </div>
+        <p class="detail-hint" id="changePasswordMsg" style="display:none;"></p>
+        <button class="btn btn-outline btn-sm" id="changePasswordBtn" style="margin-top:8px;" onclick="handleChangePassword()">Update Password</button>
+      </div>
+      `) : ''}
+
+      ${currentUser ? `
+      <div class="detail-section">
+        <div class="detail-section-head"><h4 style="color:var(--terracotta);">Danger Zone</h4></div>
+        <p class="detail-hint" style="margin-top:0;">Permanently delete your account and everything saved in it. This can't be undone.</p>
+        <button class="btn btn-outline btn-sm" style="border-color:var(--terracotta); color:var(--terracotta);" onclick="openDeleteAccountModal()">Delete My Account</button>
+      </div>
+      ` : ''}
     </div>
 
     <div class="card">
@@ -8606,13 +8799,18 @@ function renderSettingsModule(){
     </div>
 
     <div class="card">
-      <div class="card-head"><h4>Notification Preferences</h4></div>
+      <div class="card-head"><h4>Notification Preferences</h4><span class="d-sub">Your own alerts — set per-collaborator alerts in Collaborators &amp; Permissions below</span></div>
       ${[
         ['emailDigest','Weekly email digest'],
         ['taskReminders','Task due-date reminders'],
         ['rsvpAlerts','New RSVP alerts'],
         ['vendorMessageAlerts','Vendor message alerts']
       ].map(([key,label])=>`<div class="event-mini-row"><div class="em-name">${label}</div><input type="checkbox" style="width:16px;height:16px;" ${np[key]?'checked':''} onchange="toggleNotificationPref('${key}')"></div>`).join('')}
+      <div class="event-mini-row">
+        <div class="em-name">Remind me about a payment this many days before it's due</div>
+        <input type="number" min="1" max="120" style="width:64px; padding:6px 8px; border-radius:7px; border:1px solid var(--line); background:var(--ivory); font-size:13px; text-align:center;" value="${np.paymentReminderLeadDays}" onchange="updatePaymentReminderLeadDays(this.value)">
+      </div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Drives the "payments due soon" heads-up on your Home dashboard.</p>
     </div>
 
     <div class="card">
@@ -8656,6 +8854,22 @@ function renderSettingsModule(){
     </div>
 
     <div class="card">
+      <div class="card-head"><div><h4>Document Types</h4><span class="d-sub">Rename or remove the types available in Documents and when attaching a file</span></div></div>
+      <div class="budget-items" style="padding-left:0;">
+        ${(d.documentTypes||[]).map(t=>`
+          <div class="budget-item-row" style="grid-template-columns:1fr 0.4fr;">
+            <input type="text" class="select-field-sm" value="${escapeAttr(t.label)}" onchange="renameDocumentType('${escapeJsAttr(t.key)}', this.value)">
+            ${t.key==='other' ? `<span></span>` : `<a href="#" class="danger-link" onclick="removeDocumentType('${escapeJsAttr(t.key)}'); return false;">✕</a>`}
+          </div>`).join('')}
+      </div>
+      <div class="custom-add-row" style="margin-top:12px;">
+        <input type="text" id="newDocumentTypeLabel" placeholder="New type (e.g. Permit, Rider)">
+        <button class="btn btn-outline btn-sm" onclick="addDocumentTypeFromSettings()">+ Add Type</button>
+      </div>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">"Other" always stays, as a fallback for anything you haven't typed yet. Removing a type moves any file already tagged with it to "Other."</p>
+    </div>
+
+    <div class="card">
       <div class="card-head"><div><h4>Guest Tiers</h4><span class="d-sub">Tier A, B, and C are the recommended defaults — add your own if you need more</span></div></div>
       <div class="budget-items" style="padding-left:0;">
         ${(d.guestTiers||[]).map(t=>`
@@ -8673,15 +8887,16 @@ function renderSettingsModule(){
     <div class="card">
       <div class="card-head"><h4>Collaborators &amp; Permissions</h4><span class="d-sub">Everyone with access to this Evera workspace</span></div>
       <div class="budget-items" style="padding-left:0;">
-        <div class="budget-items-head" style="grid-template-columns:1.1fr 1.3fr 0.9fr 0.7fr 0.4fr;"><span>Name</span><span>Email</span><span>Role</span><span>Access</span><span></span></div>
+        <div class="budget-items-head" style="grid-template-columns:1fr 1.2fr 0.8fr 0.55fr 0.6fr 0.35fr;"><span>Name</span><span>Email</span><span>Role</span><span>Access</span><span>Notify</span><span></span></div>
         ${d.collaborators.map(c=>`
-          <div class="budget-item-row" style="grid-template-columns:1.1fr 1.3fr 0.9fr 0.7fr 0.4fr; align-items:center;">
+          <div class="budget-item-row" style="grid-template-columns:1fr 1.2fr 0.8fr 0.55fr 0.6fr 0.35fr; align-items:center;">
             <input type="text" class="select-field-sm" value="${escapeAttr(c.name)}" onchange="updateCollaboratorField('${c.id}','name',this.value)">
             <input type="text" class="select-field-sm" value="${escapeAttr(c.email)}" onchange="updateCollaboratorField('${c.id}','email',this.value)">
             <select class="select-field-sm" onchange="updateCollaboratorField('${c.id}','role',this.value)">
               ${['Couple','Wedding Planner','Parent','Family','Wedding Party','Vendor'].map(r=>`<option value="${r}" ${c.role===r?'selected':''}>${r}</option>`).join('')}
             </select>
             <a href="#" style="font-size:12px;font-weight:700;color:var(--green);border-bottom:1px solid var(--champagne);" onclick="openCollaboratorPermissions('${c.id}'); return false;">Manage →</a>
+            <a href="#" style="font-size:12px;font-weight:700;color:var(--green);border-bottom:1px solid var(--champagne);" onclick="openCollaboratorNotifications('${c.id}'); return false;">Notify →</a>
             <a href="#" class="danger-link" onclick="removeCollaborator('${c.id}'); return false;">✕</a>
           </div>`).join('')}
       </div>
@@ -8733,7 +8948,53 @@ function renderCollaboratorPermissionsModal(){
     </div>
   `;
 }
+/* ---- Per-collaborator notification preferences (v1.60.0): same toggle set as the couple's
+   own Notification Preferences card, but one per person — a planner or a parent in Collaborators
+   shouldn't be stuck with (or silently miss) whatever the couple's own alerts happen to be set to. ---- */
+let collaboratorNotificationsState = null; // collaborator id whose notification modal is open, if any
+function openCollaboratorNotifications(id){
+  collaboratorNotificationsState = id;
+  document.getElementById('collaboratorNotificationsOverlay').innerHTML = renderCollaboratorNotificationsModal();
+  document.getElementById('collaboratorNotificationsOverlay').classList.add('open');
+}
+function closeCollaboratorNotifications(){
+  collaboratorNotificationsState = null;
+  document.getElementById('collaboratorNotificationsOverlay').classList.remove('open');
+}
+function updateCollaboratorNotificationPref(id, key){
+  const c = dashboardData.collaborators.find(x=>x.id===id);
+  if(!c) return;
+  if(!c.notificationPrefs) c.notificationPrefs = {emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false};
+  c.notificationPrefs[key] = !c.notificationPrefs[key];
+  document.getElementById('collaboratorNotificationsOverlay').innerHTML = renderCollaboratorNotificationsModal();
+}
+function renderCollaboratorNotificationsModal(){
+  const c = dashboardData.collaborators.find(x=>x.id===collaboratorNotificationsState);
+  if(!c) return '';
+  const np = c.notificationPrefs || {};
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="closeCollaboratorNotifications()">✕</button>
+      <div class="eyebrow">Notification Preferences</div>
+      <h3 style="margin-top:4px;">${escapeHtml(c.name)}</h3>
+      <p class="detail-hint" style="margin-top:-4px;">What ${escapeHtml(c.name.split(' ')[0]||c.name)} gets alerted about — independent of your own preferences above.</p>
+      ${[
+        ['emailDigest','Weekly email digest'],
+        ['taskReminders','Task due-date reminders'],
+        ['rsvpAlerts','New RSVP alerts'],
+        ['vendorMessageAlerts','Vendor message alerts']
+      ].map(([key,label])=>`<div class="event-mini-row"><div class="em-name">${label}</div><input type="checkbox" style="width:16px;height:16px;" ${np[key]?'checked':''} onchange="updateCollaboratorNotificationPref('${c.id}','${key}')"></div>`).join('')}
+    </div>
+  `;
+}
 function toggleNotificationPref(key){ dashboardData.notificationPrefs[key] = !dashboardData.notificationPrefs[key]; document.getElementById('content').innerHTML = renderSettingsModule(); }
+function updatePaymentReminderLeadDays(val){
+  let n = Math.round(Number(val));
+  if(!Number.isFinite(n)) n = 30; // empty/non-numeric input falls back to the default lead time
+  n = Math.max(1, Math.min(120, n)); // Math.max/min here, not ||, so a legitimately-typed 0 clamps to 1 instead of silently reverting to 30
+  dashboardData.notificationPrefs.paymentReminderLeadDays = n;
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
 function updateCurrency(code){
   dashboardData.currency = code;
   document.getElementById('content').innerHTML = renderSettingsModule();
@@ -8792,7 +9053,8 @@ function submitAddCollaborator(){
     name,
     email:(eEl && eEl.value || '').trim(),
     role:newCollaboratorDraft.role||'Family',
-    permissions: newCollaboratorDraft.permissions || defaultPermissionsForRole(newCollaboratorDraft.role||'Family')
+    permissions: newCollaboratorDraft.permissions || defaultPermissionsForRole(newCollaboratorDraft.role||'Family'),
+    notificationPrefs: {emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false}
   });
   closeAddCollaborator();
   document.getElementById('content').innerHTML = renderSettingsModule();
@@ -9326,7 +9588,7 @@ function universalSearchResults(query){
     if((t.title||'').toLowerCase().includes(q)) results.push({type:'Task', icon:'✓', title:t.title, sub:t.done?'Done':(t.dueDateISO?'Due '+fmtDateLabel(t.dueDateISO):'No due date'), action:()=>{ renderRoute('my-wedding'); blueprintTab='checklist'; document.getElementById('content').innerHTML=renderMyWeddingModule(); }});
   });
   (d.documents||[]).forEach(doc=>{
-    if((doc.name||'').toLowerCase().includes(q)) results.push({type:'Document', icon:'📄', title:doc.name, sub:(DOC_CATEGORIES.find(c=>c.key===doc.category)||{}).label||doc.category, action:()=>{ renderRoute('documents'); docsTab='files'; document.getElementById('content').innerHTML=renderDocumentsModule(); }});
+    if((doc.name||'').toLowerCase().includes(q)) results.push({type:'Document', icon:'📄', title:doc.name, sub:((dashboardData.documentTypes||[]).find(c=>c.key===doc.category)||{}).label||doc.category, action:()=>{ renderRoute('documents'); docsTab='files'; document.getElementById('content').innerHTML=renderDocumentsModule(); }});
   });
   (d.notes||[]).forEach(n=>{
     if(`${n.title||''} ${n.body||''}`.toLowerCase().includes(q)) results.push({type:'Note', icon:'📝', title:n.title||'Untitled note', sub:(n.body||'').slice(0,60), action:()=>{ renderRoute('documents'); docsTab='notes'; document.getElementById('content').innerHTML=renderDocumentsModule(); }});
@@ -15582,6 +15844,34 @@ function addEventCategoryFromSettings(){
   el.value = '';
   document.getElementById('content').innerHTML = renderSettingsModule();
 }
+/* Document Types (v1.60.0): same rename/remove/add pattern as Guest & Event Categories, but
+   keyed by a stable `key` rather than the label text itself — documents reference a type by
+   key, so renaming the label in place never breaks an existing document's tagging. "Other" is
+   kept permanent as the fallback a removed type's documents land on. */
+function renameDocumentType(key, newLabel){
+  newLabel = (newLabel||'').trim();
+  if(!newLabel){ document.getElementById('content').innerHTML = renderSettingsModule(); return; }
+  const t = (dashboardData.documentTypes||[]).find(x=>x.key===key);
+  if(t) t.label = newLabel;
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function removeDocumentType(key){
+  if(key==='other') return;
+  dashboardData.documentTypes = (dashboardData.documentTypes||[]).filter(t=>t.key!==key);
+  (dashboardData.documents||[]).forEach(doc=>{ if(doc.category===key) doc.category = 'other'; });
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function addDocumentTypeFromSettings(){
+  const el = document.getElementById('newDocumentTypeLabel');
+  const label = (el.value||'').trim();
+  if(!label) return;
+  if(!Array.isArray(dashboardData.documentTypes)) dashboardData.documentTypes = [];
+  if(!dashboardData.documentTypes.some(t=>t.label.toLowerCase()===label.toLowerCase())){
+    dashboardData.documentTypes.push({key:'doctype-'+Date.now().toString(36), label});
+  }
+  el.value = '';
+  document.getElementById('content').innerHTML = renderSettingsModule();
+}
 /* Inline "+ New category" affordance right on an event's own Details card, mirroring the
    household inline-add-category pattern in Guest Management — no need to leave the page. */
 function toggleNewEventCategoryPrompt(eventId){
@@ -17039,7 +17329,7 @@ const PAYMENT_FREQUENCIES = [
   {key:'installments', label:'Installments'},
   {key:'monthly', label:'Monthly'}
 ];
-function docIcon(cat){ return {contract:'📄', invoice:'🧾', floorplan:'🗺️', other:'📎'}[cat] || '📎'; }
+function docIcon(cat){ return {contract:'📄', invoice:'🧾', receipt:'🧾', floorplan:'🗺️', other:'📎'}[cat] || '📎'; }
 function attachExistingDocument(ci, ii, docId){
   const item = dashboardData.budgetBreakdown[ci].items[ii];
   if(!item) return;
@@ -17212,9 +17502,7 @@ function renderBudgetItemDetail(ci, ii){
           </select>
           <input type="text" class="attach-input" id="newAttachName-${ci}-${ii}" placeholder="Attach new invoice/contract…">
           <select class="select-field-sm" id="newAttachCat-${ci}-${ii}" style="max-width:110px;">
-            <option value="contract">Contract</option>
-            <option value="invoice">Invoice</option>
-            <option value="other">Other</option>
+            ${(d.documentTypes||[]).map(c=>`<option value="${c.key}">${escapeHtml(c.label)}</option>`).join('')}
           </select>
           <button class="btn btn-outline btn-sm" onclick="quickAddAttachment(${ci},${ii})">+ Attach</button>
         </div>
@@ -18116,12 +18404,6 @@ function removeNote(id){
   dashboardData.notes = (dashboardData.notes||[]).filter(n=>n.id!==id);
   document.getElementById('content').innerHTML = renderDocumentsModule();
 }
-const DOC_CATEGORIES = [
-  {key:'contract', label:'Contract'},
-  {key:'invoice', label:'Invoice'},
-  {key:'floorplan', label:'Floor Plan'},
-  {key:'other', label:'Other'}
-];
 function renderFilesTab(){
   const d = dashboardData;
   const docs = (d.documents||[]).slice().sort((a,b)=> new Date(b.dateAdded)-new Date(a.dateAdded));
@@ -18131,7 +18413,7 @@ function renderFilesTab(){
       <div class="custom-add-row" style="flex-wrap:wrap;">
         <input type="text" id="newDocName" placeholder="File name (e.g. Florist Contract.pdf)">
         <select id="newDocCategory" class="select-field-sm">
-          ${DOC_CATEGORIES.map(c=>`<option value="${c.key}">${c.label}</option>`).join('')}
+          ${(d.documentTypes||[]).map(c=>`<option value="${c.key}">${escapeHtml(c.label)}</option>`).join('')}
         </select>
         <select id="newDocEvent" class="select-field-sm">
           <option value="">No linked event</option>
@@ -18152,7 +18434,7 @@ function renderFilesTab(){
           return `
           <div class="budget-item-row" style="grid-template-columns: 1.8fr 0.9fr 1fr 1fr 1fr 0.6fr;">
             <span class="readonly-cell" title="${usedBy.length?'Attached to: '+escapeAttr(usedBy.join(', ')):''}">${docIcon(doc.category)} ${escapeHtml(doc.name)}</span>
-            <span class="d-sub">${escapeHtml(DOC_CATEGORIES.find(c=>c.key===doc.category)?.label || doc.category)}</span>
+            <span class="d-sub">${escapeHtml((d.documentTypes||[]).find(c=>c.key===doc.category)?.label || doc.category)}</span>
             <span class="d-sub">${ev ? escapeHtml(ev.name) : '—'}</span>
             <span class="d-sub">${escapeHtml(doc.linkedVendorCategory || '—')}</span>
             <span class="d-sub">${escapeHtml(fmtDateLabel(doc.dateAdded))}</span>
@@ -18339,10 +18621,12 @@ updateStageUI();
   import {
     getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
     onAuthStateChanged, signOut, sendPasswordResetEmail,
-    GoogleAuthProvider, signInWithPopup, getAdditionalUserInfo
+    GoogleAuthProvider, signInWithPopup, getAdditionalUserInfo,
+    updatePassword, updateEmail, deleteUser, reauthenticateWithCredential,
+    EmailAuthProvider, reauthenticateWithPopup
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import {
-    getFirestore, doc, getDoc, setDoc
+    getFirestore, doc, getDoc, setDoc, deleteDoc
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   // Public web config for the Evera Firebase project (evera-0824).
@@ -18383,6 +18667,35 @@ updateStageUI();
       const result = await signInWithPopup(auth, provider);
       const info = getAdditionalUserInfo(result);
       return { user: result.user, isNewUser: !!(info && info.isNewUser) };
+    },
+    // v1.60.0: account self-service while signed in — change email/password, and account
+    // deletion. Firebase requires a "recent login" for all three, so each reauthenticates
+    // first (password-provider accounts re-enter their password; Google accounts re-run the
+    // Google popup) rather than relying on however long ago the original sign-in happened.
+    async reauthenticateWithPassword(currentPassword){
+      const user = auth.currentUser;
+      if(!user) throw new Error('Not signed in.');
+      const cred = EmailAuthProvider.credential(user.email, currentPassword);
+      await reauthenticateWithCredential(user, cred);
+    },
+    async reauthenticateWithGoogle(){
+      const provider = new GoogleAuthProvider();
+      await reauthenticateWithPopup(auth.currentUser, provider);
+    },
+    async changeEmail(newEmail){
+      await updateEmail(auth.currentUser, newEmail);
+    },
+    async changePassword(newPassword){
+      await updatePassword(auth.currentUser, newPassword);
+    },
+    async deleteAccount(){
+      await deleteUser(auth.currentUser);
+    },
+    async deleteWeddingRecord(uid){
+      await deleteDoc(doc(db, 'weddings', uid));
+    },
+    isPasswordProvider(user){
+      return !!(user && user.providerData && user.providerData.some(p=>p.providerId==='password'));
     },
     // "weddings/{uid}" holds one document per account — the My Wedding master
     // record. Security rules (set in the Firebase console) restrict each
