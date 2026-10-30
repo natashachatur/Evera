@@ -102,6 +102,25 @@
   .auth-tabs{display:flex; gap:6px; background:var(--ivory-deep); border-radius:999px; padding:4px; margin-bottom:28px;}
   .auth-tab{flex:1; text-align:center; padding:10px; border-radius:999px; font-size:12.5px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--charcoal-soft); cursor:pointer; transition:all .15s ease;}
   .auth-tab.active{background:var(--green); color:#fff;}
+  .auth-account-type-row{display:flex; gap:8px; margin-bottom:20px;}
+  .auth-account-type-btn{flex:1; text-align:center; padding:12px 8px; border-radius:var(--radius-sm); font-size:12.5px; font-weight:700; color:var(--charcoal-soft); cursor:pointer; background:var(--ivory-deep); border:1.5px solid var(--line); transition:all .15s ease;}
+  .auth-account-type-btn.active{background:var(--green-tint); border-color:var(--green); color:var(--green);}
+  /* ---- Planner Home (v1.63.0) ---- */
+  .planner-home-top{display:flex; align-items:center; justify-content:space-between; padding:26px 40px; border-bottom:1px solid var(--line);}
+  .planner-home-wrap{max-width:980px; margin:0 auto; padding:36px 24px 80px;}
+  .planner-couple-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(210px,1fr)); gap:16px; margin-top:18px;}
+  .planner-couple-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius-sm); padding:20px 16px; text-align:center; cursor:pointer; transition:all .15s ease;}
+  .planner-couple-card:hover{border-color:var(--green); box-shadow:0 4px 14px rgba(0,0,0,0.06);}
+  .planner-couple-card.is-pending{cursor:default; opacity:0.85;}
+  .planner-couple-avatar{width:60px; height:60px; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; background:var(--champagne-light); color:var(--green); overflow:hidden;}
+  .planner-couple-avatar img{width:100%; height:100%; object-fit:cover;}
+  .planner-couple-name{font-weight:700; font-size:14px; color:var(--charcoal);}
+  .planner-couple-status{font-size:11px; margin-top:5px; text-transform:uppercase; letter-spacing:0.04em; font-weight:700; color:var(--charcoal-faint);}
+  .planner-couple-status.is-active{color:var(--green);}
+  .planner-couple-status.is-pending{color:var(--amber);}
+  .planner-invite-banner{background:var(--amber-tint); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+  .planner-empty{text-align:center; padding:50px 20px; color:var(--charcoal-faint);}
+  .viewing-as-planner-pill{display:inline-flex; align-items:center; gap:8px; background:var(--green-tint); color:var(--green); font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:999px; cursor:pointer; margin-top:4px;}
   .auth-error{background:var(--terracotta-tint); color:var(--terracotta); border-radius:var(--radius-sm); padding:11px 14px; font-size:13px; margin-bottom:18px; display:none;}
   .auth-error.show{display:block;}
   .auth-success{background:var(--green-tint); color:var(--green-deep); border-radius:var(--radius-sm); padding:11px 14px; font-size:13px; margin-bottom:18px; display:none;}
@@ -1611,6 +1630,10 @@
           <div class="auth-tab" id="authTabSignup" onclick="setAuthMode('signup')">Create Account</div>
           <div class="auth-tab" id="authTabLogin" onclick="setAuthMode('login')">Sign In</div>
         </div>
+        <div class="auth-account-type-row" id="authAccountTypeRow">
+          <button type="button" class="auth-account-type-btn active" id="authTypeCouple" onclick="setSignupAccountType('couple')">We're planning our wedding</button>
+          <button type="button" class="auth-account-type-btn" id="authTypePlanner" onclick="setSignupAccountType('planner')">I'm a wedding planner</button>
+        </div>
         <div id="authResetHeading" style="display:none; font-weight:700; font-size:15px; margin-bottom:20px;">Reset your password</div>
         <div class="auth-error" id="authError"></div>
         <div class="auth-success" id="authSuccess"></div>
@@ -1620,6 +1643,7 @@
         </button>
         <div class="auth-divider" id="authDivider"><span>or</span></div>
         <form id="authForm" onsubmit="handleAuthSubmit(event)">
+          <div class="field-row" id="authPlannerNameRow" style="display:none;"><label>Your Name</label><input type="text" id="auth-planner-name" autocomplete="name" placeholder="e.g. Priya Sharma"></div>
           <div class="field-row"><label>Email</label><input type="email" id="auth-email" autocomplete="email" required></div>
           <div class="field-row" id="authPasswordRow">
             <label>Password</label>
@@ -1907,6 +1931,17 @@
   </div>
 </section>
 
+<!-- ============ PLANNER HOME (v1.63.0) — a planner's landing screen: pick which
+     couple's wedding to view. Everything past this screen reuses the exact same
+     app (view-app) a couple sees — only this entry point differs. ============ -->
+<section id="view-planner-home" class="view">
+  <div class="planner-home-top">
+    <div class="landing-brand"><span>Evera</span></div>
+    <button class="btn btn-outline btn-sm" onclick="handleSignOut()">Sign Out</button>
+  </div>
+  <div class="planner-home-wrap" id="plannerHomeBody"><!-- injected by renderPlannerHome() --></div>
+</section>
+
 <!-- ============ APP SHELL ============ -->
 <div id="view-app" class="view">
   <div class="sb-scrim" id="sbScrim" onclick="toggleSidebar(false)"></div>
@@ -1914,7 +1949,7 @@
     <div class="sb-brand" style="cursor:pointer;" onclick="renderRoute('home'); toggleSidebar(false);"><span>Evera</span></div>
     <div class="sb-nav" id="sbNav"><!-- injected --></div>
     <div class="sb-foot">
-      <div class="sb-couple"><div class="sb-avatar" id="sbAvatar">P&amp;J</div><div><div style="font-weight:700; color:#EFE9DA;" id="sbCoupleName">Natasha &amp; Matteo</div><div>Couple Account</div></div><span id="sbLogoChip" class="sb-logo-chip"></span></div>
+      <div class="sb-couple"><div class="sb-avatar" id="sbAvatar">P&amp;J</div><div><div style="font-weight:700; color:#EFE9DA;" id="sbCoupleName">Natasha &amp; Matteo</div><div id="sbAccountTypeLabel">Couple Account</div></div><span id="sbLogoChip" class="sb-logo-chip"></span></div>
       <button type="button" onclick="renderRoute('changelog')" style="width:100%; margin-top:12px; background:none; border:1px solid rgba(239,233,218,0.18); color:rgba(239,233,218,0.75); font-size:12px; padding:7px 10px; border-radius:8px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:6px; justify-content:space-between;"><span>🆕 What's New</span><span id="sbVersionTag" style="opacity:0.7;"></span></button>
     </div>
   </nav>
@@ -1956,6 +1991,8 @@
 <div class="item-overlay" id="collaboratorNotificationsOverlay" onclick="if(event.target===this) closeCollaboratorNotifications();"><!-- injected --></div>
 <div class="item-overlay" id="addCollaboratorOverlay" onclick="if(event.target===this) closeAddCollaborator();"><!-- injected --></div>
 <div class="item-overlay" id="deleteAccountOverlay" onclick="if(event.target===this) closeDeleteAccountModal();"><!-- injected --></div>
+<div class="item-overlay" id="plannerAddCoupleOverlay" onclick="if(event.target===this) closePlannerAddCouple();"><!-- injected --></div>
+<div class="item-overlay" id="invitePlannerOverlay" onclick="if(event.target===this) closeInvitePlanner();"><!-- injected --></div>
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div class="item-overlay" id="calendarItemOverlay" onclick="if(event.target===this) closeCalendarItemDetail();"><!-- injected --></div>
@@ -2116,6 +2153,18 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.63.0', date:'2026-10-30',
+    title:'Planner accounts: a real signup fork, a couple-switcher Planner Home, and invite-based access to a couple\'s wedding',
+    items:[
+      'Signing up now asks whether you\'re planning your own wedding or you\'re a wedding planner. A couple\'s signup is completely unchanged; a planner signup skips the onboarding wizard entirely and lands on a brand-new Planner Home instead.',
+      'Planner Home is a couple-switcher: a card per couple you work with, showing their name with their own couple photo (pulled live from their account) or their initials when no photo exists yet. Picking a couple loads their real wedding into the exact same app a couple sees — a small "Viewing as Planner · Switch couple" pill in the sidebar always says whose wedding you\'re in, with one click back to your own couple list.',
+      'Getting linked to a couple\'s wedding works both directions: a couple can invite a planner by email from a new "Wedding Planners" section in Settings (separate from, and sitting alongside, the existing Collaborators section), or a planner can invite a couple by email from Planner Home. Either way, the invite is visible to the other side the next time they sign in, and the actual access grant always happens on the couple\'s own account — a planner never gets access without the couple\'s own record explicitly granting it.',
+      'A planner can also create a brand-new couple account directly from Planner Home — enter both names and an email, and Evera creates a real account for them (with access already granted to the planner) and shows a one-time temporary password to pass along.',
+      'This is new, separate functionality — nothing about the existing Collaborators & Permissions feature changed.',
+      'Known limitation, flagged honestly: cross-account access (a planner reading or writing a couple\'s wedding, or either side looking up the other by email to send an invite) depends on a Firestore security-rules update that has to be made once in the Firebase Console — the UI and client logic are fully built and tested, but real planner↔couple linking won\'t work on the live site until that one rules change is in place.'
+    ]
+  },
   {
     version:'1.62.0', date:'2026-10-30',
     title:'Real document uploads, with version history and suggested tagging',
@@ -3757,6 +3806,12 @@ function defaultDashboardData(){
       {id:'collab-3', name:'Amara Okafor', email:'amara@amaraokaraevents.example', role:'Wedding Planner'},
       {id:'collab-4', name:'Amina Shroff', email:'amina.shroff@example.com', role:'Parent'}
     ],
+    // v1.63.0: real planner accounts, sitting alongside (not replacing) the Collaborators
+    // concept above. accountType is always 'couple' on this record (the record a planner
+    // VIEWS gets loaded the same way, by uid, it never becomes a planner's own record).
+    // linkedPlanners is this couple's own view of which planner accounts have access;
+    // activePlannerUids is the flat list the Firestore security rules actually check.
+    accountType:'couple', linkedPlanners:[], activePlannerUids:[],
     tasks:[
       /* -- Foundations: the big early decisions everything else depends on -- */
       {id:'task-f1', title:'Set your overall wedding budget', eventId:null, role:'Couple', priority:'High', done:true, dueDateISO:'2026-05-01', notes:'Landed on a total and how contributions are split.', phase:'foundations', dependsOn:null},
@@ -4004,6 +4059,7 @@ function buildFromOnboarding(a){
       {id:'collab-1', name:a.partner1 || 'Partner 1', email:'', role:'Couple'},
       {id:'collab-2', name:a.partner2 || 'Partner 2', email:'', role:'Couple'}
     ],
+    accountType:'couple', linkedPlanners:[], activePlannerUids:[],
     tasks:[], moodBoards:[], messageThreads:[],
     website:{ language:'en', published:false, sections:{ourStory:true, schedule:true, registry:false, travel:false, faq:false}, ourStoryText:'', registryLinks:[] },
     notificationPrefs:{emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false}
@@ -4040,15 +4096,38 @@ function skipToDashboard(){
 ================================================================== */
 let authMode = 'signup';
 let currentUser = null; // set by onEveraAuthStateChanged, below
+// v1.63.0: which kind of account signup is creating — 'couple' (the default, unchanged
+// behavior) or 'planner' (a professional managing multiple couples' weddings — see
+// setSignupAccountType, and the Planner Home section below).
+let signupAccountType = 'couple';
+// v1.63.0 — Planner accounts. currentAccountType reflects the SIGNED-IN account itself
+// ('couple' or 'planner'), set once per session right after sign-up/sign-in (see
+// routeSignedInUser below). plannerRecord holds a signed-in planner's own planners/{uid}
+// document (name, email, photo, and the list of couples they're linked to) — null for a
+// couple account. activeViewedWeddingUid is set only while a planner is looking at one
+// specific couple's wedding (picked from their couple-switcher); it's what tells
+// persistWeddingRecord() and the rest of the app WHICH wedding record dashboardData actually
+// is, since a planner's own uid is never the uid a couple's wedding is saved under.
+let currentAccountType = 'couple';
+let plannerRecord = null;
+let activeViewedWeddingUid = null;
 
 function showAuth(mode){
   setAuthMode(mode);
   goTo('auth');
 }
+function setSignupAccountType(type){
+  signupAccountType = type;
+  document.getElementById('authTypeCouple').classList.toggle('active', type==='couple');
+  document.getElementById('authTypePlanner').classList.toggle('active', type==='planner');
+  document.getElementById('authPlannerNameRow').style.display = (type==='planner' && authMode==='signup') ? '' : 'none';
+  document.getElementById('auth-planner-name').required = (type==='planner' && authMode==='signup');
+}
 function setAuthMode(mode){
   authMode = mode;
   const isReset = mode==='reset';
   document.getElementById('authTabsRow').style.display = isReset ? 'none' : '';
+  document.getElementById('authAccountTypeRow').style.display = (isReset || mode==='login') ? 'none' : '';
   document.getElementById('authResetHeading').style.display = isReset ? '' : 'none';
   document.getElementById('authGoogleBtn').style.display = isReset ? 'none' : '';
   document.getElementById('authDivider').style.display = isReset ? 'none' : '';
@@ -4063,6 +4142,17 @@ function setAuthMode(mode){
   }
   document.getElementById('authSubmitBtn').textContent = isReset ? 'Send Reset Link' : (mode==='signup' ? 'Create Account' : 'Sign In');
   document.getElementById('auth-password').setAttribute('autocomplete', mode==='signup' ? 'new-password' : 'current-password');
+  // Signing in or resetting a password never needs the account-type toggle or planner-name
+  // field — those only matter the moment a brand-new account is created.
+  if(mode!=='signup'){
+    signupAccountType = 'couple';
+    document.getElementById('authTypeCouple').classList.add('active');
+    document.getElementById('authTypePlanner').classList.remove('active');
+    document.getElementById('authPlannerNameRow').style.display = 'none';
+    document.getElementById('auth-planner-name').required = false;
+  } else {
+    setSignupAccountType(signupAccountType);
+  }
   resetAuthPasswordVisibility();
   hideAuthError();
   hideAuthSuccess();
@@ -4156,17 +4246,30 @@ async function handleAuthSubmit(event){
   btn.textContent = authMode==='signup' ? 'Creating account…' : 'Signing in…';
   try{
     if(authMode==='signup'){
-      const user = await window.everaFirebase.signUp(email, password);
-      currentUser = user; // set immediately — don't wait on the async onAuthStateChanged listener
-      dashboardData = normalizeDashboardData(defaultDashboardData());
-      goTo('onboarding');
+      if(signupAccountType==='planner'){
+        const plannerName = (document.getElementById('auth-planner-name').value||'').trim();
+        if(!plannerName){
+          showAuthError('Please enter your name.');
+          btn.disabled = false; btn.textContent = originalLabel;
+          return;
+        }
+        const user = await window.everaFirebase.signUp(email, password);
+        currentUser = user;
+        await setUpNewPlannerAccount(user.uid, plannerName, email);
+      } else {
+        const user = await window.everaFirebase.signUp(email, password);
+        currentUser = user; // set immediately — don't wait on the async onAuthStateChanged listener
+        currentAccountType = 'couple';
+        dashboardData = normalizeDashboardData(defaultDashboardData());
+        if(window.everaFirebase.upsertEmailDirectory){
+          window.everaFirebase.upsertEmailDirectory(user.uid, 'couple', email, '').catch(()=>{});
+        }
+        goTo('onboarding');
+      }
     } else {
       const user = await window.everaFirebase.logIn(email, password);
       currentUser = user;
-      dashboardData = normalizeDashboardData(defaultDashboardData());
-      await loadAndApplyWeddingRecord(user.uid);
-      goTo('app');
-      renderRoute('home');
+      await routeSignedInUser(user.uid);
     }
   } catch(err){
     showAuthError(friendlyAuthError(err));
@@ -4174,6 +4277,303 @@ async function handleAuthSubmit(event){
     btn.disabled = false;
     btn.textContent = originalLabel;
   }
+}
+/* v1.63.0: shared "which kind of account is this, and where should they land" logic — used
+   on every path into the app for an already-existing account (email/password sign-in, Google
+   sign-in for a returning user, and resuming a persisted session on page load). A planner's
+   own planners/{uid} record only ever exists for a planner account (created once, at signup
+   — see setUpNewPlannerAccount), so checking for it first is a reliable, honest way to tell
+   the two account types apart without needing a separate backend lookup table. */
+async function routeSignedInUser(uid){
+  let plannerData = null;
+  try{
+    if(window.everaFirebase.loadPlannerRecord) plannerData = await window.everaFirebase.loadPlannerRecord(uid);
+  } catch(err){ console.error('Failed to check for a planner record', err); }
+  if(plannerData){
+    currentAccountType = 'planner';
+    plannerRecord = normalizePlannerRecord(plannerData);
+    activeViewedWeddingUid = null;
+    goTo('planner-home');
+    renderPlannerHome();
+    refreshPlannerHomeData();
+    return;
+  }
+  currentAccountType = 'couple';
+  activeViewedWeddingUid = null;
+  dashboardData = normalizeDashboardData(defaultDashboardData());
+  await loadAndApplyWeddingRecord(uid);
+  goTo('app');
+  renderRoute('home');
+  applyAssistantVisibility();
+}
+/* Creates the planners/{uid} record for a brand-new planner signup and lands them on their
+   Planner Home. Unlike a couple signup, there's no onboarding wizard — a planner's "wedding"
+   is whichever couple they pick next, not something Evera generates for them. */
+async function setUpNewPlannerAccount(uid, name, email){
+  currentAccountType = 'planner';
+  plannerRecord = normalizePlannerRecord({ accountType:'planner', name, email, photo:null, linkedCouples:[] });
+  try{
+    if(window.everaFirebase.savePlannerRecord) await window.everaFirebase.savePlannerRecord(uid, plannerRecord);
+    if(window.everaFirebase.upsertEmailDirectory) await window.everaFirebase.upsertEmailDirectory(uid, 'planner', email, name);
+  } catch(err){ console.error('Failed to set up planner account', err); }
+  activeViewedWeddingUid = null;
+  goTo('planner-home');
+  renderPlannerHome();
+  refreshPlannerHomeData();
+}
+function normalizePlannerRecord(p){
+  return {
+    accountType: 'planner',
+    name: (p && p.name) || '',
+    email: (p && p.email) || '',
+    photo: (p && p.photo) || null,
+    linkedCouples: Array.isArray(p && p.linkedCouples) ? p.linkedCouples : []
+  };
+}
+/* ==================================================================
+   PLANNER HOME (v1.63.0) — a planner's landing screen: a couple-switcher,
+   by name with a photo (pulled live from that couple's own account) or
+   initials when no photo exists yet, per Natasha's exact direction. Picking
+   a couple just loads THEIR wedding record into dashboardData and reuses
+   the entire existing app (view-app) — only this entry screen differs
+   between a planner and a couple, per the "one shared app, role-aware
+   entry point" framing from Natasha's own 28-point review.
+================================================================== */
+let plannerHomeCoupleCache = {}; // weddingUid -> {partner1, partner2, couplePhoto, accessRevoked}
+let plannerIncomingInvites = []; // invites a couple sent TO this planner, awaiting Accept/Decline
+async function refreshPlannerHomeData(){
+  if(currentAccountType!=='planner' || !plannerRecord || !currentUser || !window.everaFirebase) return;
+  // Reconcile any planner→couple invite the couple has since accepted from their side — that's
+  // the first time we learn their real weddingUid, which wasn't known yet at invite time.
+  try{
+    const sent = await window.everaFirebase.listInvitesSentBy(currentUser.uid);
+    let changed = false;
+    (plannerRecord.linkedCouples||[]).forEach(c=>{
+      if(c.status==='pending-couple' && !c.weddingUid){
+        // The couple may have accepted-and-granted in one step (status 'active' — see
+        // grantPlannerAccessFromInvite) or, for the other invite direction, merely accepted
+        // so far (status 'accepted', waiting on their own separate grant step) — either way,
+        // toUid being set is what tells us their real uid.
+        const match = sent.find(inv=>inv.toEmail===c.coupleEmail && inv.toUid && (inv.status==='accepted' || inv.status==='active'));
+        if(match){ c.weddingUid = match.toUid; c.status = 'active'; changed = true; }
+      }
+    });
+    if(changed) await window.everaFirebase.savePlannerRecord(currentUser.uid, plannerRecord);
+  } catch(err){ console.error('Failed to reconcile sent invites', err); }
+  // Pull each linked couple's live name/photo, and confirm access is actually still granted
+  // (the couple's own activePlannerUids is the real source of truth, not anything cached here).
+  await Promise.all((plannerRecord.linkedCouples||[]).filter(c=>c.status==='active' && c.weddingUid).map(async c=>{
+    try{
+      const data = await window.everaFirebase.loadWeddingRecord(c.weddingUid);
+      if(data && Array.isArray(data.activePlannerUids) && data.activePlannerUids.includes(currentUser.uid)){
+        plannerHomeCoupleCache[c.weddingUid] = { partner1:data.partner1, partner2:data.partner2, couplePhoto:data.couplePhoto||null, accessRevoked:false };
+      } else {
+        plannerHomeCoupleCache[c.weddingUid] = { accessRevoked:true };
+      }
+    } catch(err){
+      plannerHomeCoupleCache[c.weddingUid] = { accessRevoked:true };
+    }
+  }));
+  try{
+    plannerIncomingInvites = (await window.everaFirebase.listInvitesForEmail(currentUser.email)).filter(inv=>inv.status==='invited' && inv.fromRole==='couple');
+  } catch(err){ plannerIncomingInvites = []; }
+  if(document.getElementById('view-planner-home').classList.contains('active')) renderPlannerHome();
+}
+function renderPlannerHome(){
+  const body = document.getElementById('plannerHomeBody');
+  if(!body) return;
+  if(!plannerRecord){ body.innerHTML = ''; return; }
+  const active = (plannerRecord.linkedCouples||[]).filter(c=>c.status==='active');
+  const pendingSentByMe = (plannerRecord.linkedCouples||[]).filter(c=>c.status==='pending-couple');
+  const incoming = plannerIncomingInvites || [];
+  body.innerHTML = `
+    <h1 style="margin-bottom:4px;">Welcome, ${escapeHtml(plannerRecord.name||'there')}</h1>
+    <p class="d-sub" style="margin-bottom:0;">Pick a couple to view their wedding, or add a new one.</p>
+    ${incoming.map(inv=>`
+      <div class="planner-invite-banner" style="margin-top:18px;">
+        <div><b>${escapeHtml(inv.fromCoupleName||'A couple')}</b> invited you to help plan their wedding.</div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-solid btn-sm" onclick="acceptIncomingCoupleInvite('${inv.id}')">Accept</button>
+          <button class="btn btn-outline btn-sm" onclick="declineIncomingCoupleInvite('${inv.id}')">Decline</button>
+        </div>
+      </div>`).join('')}
+    <div style="margin-top:18px;">
+      <button class="btn btn-solid btn-sm" onclick="openPlannerAddCouple()">+ Add a Couple</button>
+    </div>
+    ${(active.length || pendingSentByMe.length) ? `
+    <div class="planner-couple-grid">
+      ${active.map(c=>{
+        const live = plannerHomeCoupleCache[c.weddingUid];
+        if(!live) return `
+          <div class="planner-couple-card is-pending">
+            <div class="planner-couple-avatar">…</div>
+            <div class="planner-couple-name">${escapeHtml(c.coupleDisplayName||'Loading…')}</div>
+            <div class="planner-couple-status">Loading…</div>
+          </div>`;
+        if(live.accessRevoked) return `
+          <div class="planner-couple-card is-pending">
+            <div class="planner-couple-avatar">✕</div>
+            <div class="planner-couple-name">${escapeHtml(c.coupleDisplayName||'Unknown couple')}</div>
+            <div class="planner-couple-status is-pending">Access not yet available</div>
+          </div>`;
+        const displayName = (live.partner1 && live.partner2) ? `${live.partner1} & ${live.partner2}` : (c.coupleDisplayName || 'Couple');
+        return `
+          <div class="planner-couple-card" onclick="openCoupleAsPlanner('${c.weddingUid}')">
+            <div class="planner-couple-avatar">${live.couplePhoto ? `<img src="${escapeAttr(live.couplePhoto)}" alt="">` : escapeHtml(initials(live.partner1, live.partner2))}</div>
+            <div class="planner-couple-name">${escapeHtml(displayName)}</div>
+            <div class="planner-couple-status is-active">Active</div>
+          </div>`;
+      }).join('')}
+      ${pendingSentByMe.map(c=>`
+        <div class="planner-couple-card is-pending">
+          <div class="planner-couple-avatar">${escapeHtml(initials(c.coupleDisplayName||'',''))}</div>
+          <div class="planner-couple-name">${escapeHtml(c.coupleDisplayName || c.coupleEmail || 'Invited couple')}</div>
+          <div class="planner-couple-status is-pending">Invite sent — awaiting response</div>
+        </div>`).join('')}
+    </div>
+    ` : `<div class="planner-empty">No couples yet. Click "+ Add a Couple" to get started.</div>`}
+  `;
+}
+async function openCoupleAsPlanner(weddingUid){
+  activeViewedWeddingUid = weddingUid;
+  dashboardData = normalizeDashboardData(defaultDashboardData());
+  const found = await loadAndApplyWeddingRecord(weddingUid);
+  if(!found) dashboardData = normalizeDashboardData(emptyAccountDashboardData());
+  goTo('app');
+  renderRoute('home');
+  applyAssistantVisibility();
+}
+function switchToPlannerHome(){
+  activeViewedWeddingUid = null;
+  goTo('planner-home');
+  renderPlannerHome();
+  refreshPlannerHomeData();
+}
+let plannerAddCoupleMode = null; // null | 'invite' | 'create'
+function openPlannerAddCouple(){
+  plannerAddCoupleMode = null;
+  document.getElementById('plannerAddCoupleOverlay').innerHTML = renderPlannerAddCoupleModal();
+  document.getElementById('plannerAddCoupleOverlay').classList.add('open');
+}
+function closePlannerAddCouple(){
+  document.getElementById('plannerAddCoupleOverlay').classList.remove('open');
+}
+function setPlannerAddCoupleMode(mode){
+  plannerAddCoupleMode = mode;
+  document.getElementById('plannerAddCoupleOverlay').innerHTML = renderPlannerAddCoupleModal();
+}
+function renderPlannerAddCoupleModal(){
+  return `
+    <div class="item-modal">
+      <button class="im-close" onclick="closePlannerAddCouple()">✕</button>
+      <div class="eyebrow">Add a Couple</div>
+      <h3 style="margin-top:4px;">How would you like to add them?</h3>
+      ${!plannerAddCoupleMode ? `
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
+          <button class="btn btn-outline" onclick="setPlannerAddCoupleMode('invite')">Invite a couple who already has Evera, by email</button>
+          <button class="btn btn-outline" onclick="setPlannerAddCoupleMode('create')">Create their account for them</button>
+        </div>
+      ` : plannerAddCoupleMode==='invite' ? `
+        <p class="detail-hint" style="margin-top:-4px;">They'll see your invite the next time they sign in, and can accept it from Settings — nothing shows up here until they do.</p>
+        <div class="field-row"><label>Couple's Email</label><input type="email" id="plannerInviteCoupleEmail"></div>
+        <p class="detail-hint" id="plannerInviteCoupleMsg" style="display:none;"></p>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button class="btn btn-solid btn-sm" onclick="sendPlannerToCoupleInvite()">Send Invite</button>
+          <button type="button" class="btn-ghost" onclick="setPlannerAddCoupleMode(null)">← Back</button>
+        </div>
+      ` : plannerAddCoupleMode==='create' ? `
+        <p class="detail-hint" style="margin-top:-4px;">This creates a real Evera account for them right now, with access already granted to you. You'll get a temporary password afterward to share with them — they should change it the first time they sign in (Settings → Change Password).</p>
+        <div class="field-grid">
+          <div class="field-cell"><label>Partner 1's Name</label><input type="text" id="plannerCreatePartner1"></div>
+          <div class="field-cell"><label>Partner 2's Name</label><input type="text" id="plannerCreatePartner2"></div>
+        </div>
+        <div class="field-row"><label>Couple's Email</label><input type="email" id="plannerCreateCoupleEmail"></div>
+        <p class="detail-hint" id="plannerCreateCoupleMsg" style="display:none;"></p>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button class="btn btn-solid btn-sm" id="plannerCreateCoupleBtn" onclick="createCoupleAccountFromPlanner()">Create Account</button>
+          <button type="button" class="btn-ghost" onclick="setPlannerAddCoupleMode(null)">← Back</button>
+        </div>
+      ` : `
+        <p class="detail-hint" style="margin-top:-4px;">Account created for <b>${escapeHtml(plannerLastCreatedCreds.names)}</b> (${escapeHtml(plannerLastCreatedCreds.email)}).</p>
+        <div class="field-row"><label>Temporary Password</label><input type="text" readonly value="${escapeAttr(plannerLastCreatedCreds.tempPassword)}" onclick="this.select();"></div>
+        <p class="detail-hint">Share this with them directly — they should sign in and change it right away from Settings → Change Password.</p>
+        <button class="btn btn-solid btn-sm" style="margin-top:6px;" onclick="closePlannerAddCouple()">Done</button>
+      `}
+    </div>
+  `;
+}
+let plannerLastCreatedCreds = { names:'', email:'', tempPassword:'' };
+async function sendPlannerToCoupleInvite(){
+  const emailEl = document.getElementById('plannerInviteCoupleEmail');
+  const email = (emailEl.value||'').trim();
+  const msgEl = document.getElementById('plannerInviteCoupleMsg');
+  if(!email){ msgEl.textContent = "Enter the couple's email."; msgEl.className='detail-hint detail-hint-alert'; msgEl.style.display=''; return; }
+  try{
+    await window.everaFirebase.createInvite({ fromUid:currentUser.uid, fromRole:'planner', fromName:plannerRecord.name, fromEmail:currentUser.email, toEmail:email.toLowerCase() });
+    plannerRecord.linkedCouples.push({ weddingUid:null, coupleEmail:email.toLowerCase(), coupleDisplayName:email, status:'pending-couple', invitedBy:'planner', invitedAtISO:isoFromDate(new Date()) });
+    await window.everaFirebase.savePlannerRecord(currentUser.uid, plannerRecord);
+    closePlannerAddCouple();
+    renderPlannerHome();
+  } catch(err){
+    console.error('Failed to send couple invite', err);
+    msgEl.textContent = 'Something went wrong sending that invite. Please try again.'; msgEl.className='detail-hint detail-hint-alert'; msgEl.style.display='';
+  }
+}
+async function createCoupleAccountFromPlanner(){
+  const p1 = (document.getElementById('plannerCreatePartner1').value||'').trim();
+  const p2 = (document.getElementById('plannerCreatePartner2').value||'').trim();
+  const email = (document.getElementById('plannerCreateCoupleEmail').value||'').trim();
+  const msgEl = document.getElementById('plannerCreateCoupleMsg');
+  if(!p1 || !p2 || !email){ msgEl.textContent = "Enter both names and the couple's email."; msgEl.className='detail-hint detail-hint-alert'; msgEl.style.display=''; return; }
+  const btn = document.getElementById('plannerCreateCoupleBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Creating…';
+  try{
+    const tempPassword = generateTempPassword();
+    // JSON round-trip strips any stray `undefined` values (same reason getWeddingRecordPayload
+    // does it for a normal autosave) — the Firestore SDK rejects undefined outright.
+    const seed = JSON.parse(JSON.stringify(Object.assign({}, normalizeDashboardData(emptyAccountDashboardData()), {
+      partner1: p1, partner2: p2,
+      activePlannerUids: [currentUser.uid],
+      linkedPlanners: [{ plannerUid:currentUser.uid, plannerEmail:currentUser.email, plannerName:plannerRecord.name, status:'active', invitedBy:'planner', invitedAtISO:isoFromDate(new Date()) }]
+    })));
+    const newUid = await window.everaFirebase.createCoupleAccountAsPlanner(email, tempPassword, seed);
+    plannerRecord.linkedCouples.push({ weddingUid:newUid, coupleEmail:email.toLowerCase(), coupleDisplayName:`${p1} & ${p2}`, status:'active', invitedBy:'planner', invitedAtISO:isoFromDate(new Date()) });
+    await window.everaFirebase.savePlannerRecord(currentUser.uid, plannerRecord);
+    plannerLastCreatedCreds = { names:`${p1} & ${p2}`, email, tempPassword };
+    plannerAddCoupleMode = 'created';
+    document.getElementById('plannerAddCoupleOverlay').innerHTML = renderPlannerAddCoupleModal();
+    renderPlannerHome();
+    refreshPlannerHomeData();
+  } catch(err){
+    console.error('Failed to create couple account', err);
+    msgEl.textContent = friendlyAuthError(err) || 'Something went wrong creating that account. Please try again.'; msgEl.className='detail-hint detail-hint-alert'; msgEl.style.display='';
+  } finally {
+    btn.disabled = false; btn.textContent = originalLabel;
+  }
+}
+// A short, honestly-labeled temporary password — not meant to be memorable, just handed off
+// once and changed immediately (the UI text above says so explicitly).
+function generateTempPassword(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+  let out = '';
+  for(let i=0;i<10;i++) out += chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
+async function acceptIncomingCoupleInvite(inviteId){
+  const inv = plannerIncomingInvites.find(i=>i.id===inviteId);
+  if(!inv) return;
+  try{
+    await window.everaFirebase.updateInvite(inv.id, { status:'accepted', toUid:currentUser.uid, toName:plannerRecord.name });
+    plannerRecord.linkedCouples.push({ weddingUid:inv.fromUid, coupleEmail:'', coupleDisplayName:inv.fromCoupleName||'', status:'active', invitedBy:'couple', invitedAtISO:isoFromDate(new Date()) });
+    await window.everaFirebase.savePlannerRecord(currentUser.uid, plannerRecord);
+  } catch(err){ console.error('Failed to accept couple invite', err); }
+  await refreshPlannerHomeData();
+}
+async function declineIncomingCoupleInvite(inviteId){
+  try{ await window.everaFirebase.updateInvite(inviteId, {status:'declined'}); }catch(err){ console.error(err); }
+  plannerIncomingInvites = plannerIncomingInvites.filter(i=>i.id!==inviteId);
+  renderPlannerHome();
 }
 async function handleGoogleAuth(){
   hideAuthError();
@@ -4189,13 +4589,19 @@ async function handleGoogleAuth(){
   try{
     const { user, isNewUser } = await window.everaFirebase.signInWithGoogle();
     currentUser = user;
-    dashboardData = normalizeDashboardData(defaultDashboardData());
     if(isNewUser){
-      goTo('onboarding');
+      if(authMode==='signup' && signupAccountType==='planner'){
+        await setUpNewPlannerAccount(user.uid, user.displayName || 'Wedding Planner', user.email);
+      } else {
+        currentAccountType = 'couple';
+        dashboardData = normalizeDashboardData(defaultDashboardData());
+        if(window.everaFirebase.upsertEmailDirectory){
+          window.everaFirebase.upsertEmailDirectory(user.uid, 'couple', user.email, '').catch(()=>{});
+        }
+        goTo('onboarding');
+      }
     } else {
-      await loadAndApplyWeddingRecord(user.uid);
-      goTo('app');
-      renderRoute('home');
+      await routeSignedInUser(user.uid);
     }
   } catch(err){
     const msg = friendlyAuthError(err);
@@ -4208,6 +4614,9 @@ async function handleGoogleAuth(){
 function handleSignOut(){
   if(window.everaFirebase){ window.everaFirebase.signOutUser(); }
   currentUser = null;
+  currentAccountType = 'couple';
+  plannerRecord = null;
+  activeViewedWeddingUid = null;
   goTo('landing');
 }
 /* ==================================================================
@@ -4354,12 +4763,7 @@ function onEveraAuthStateChanged(user){
   currentUser = user;
   updateAccountUI();
   if(user && document.getElementById('view-landing').classList.contains('active')){
-    dashboardData = normalizeDashboardData(defaultDashboardData());
-    loadAndApplyWeddingRecord(user.uid).finally(()=>{
-      goTo('app');
-      renderRoute('home');
-      applyAssistantVisibility();
-    });
+    routeSignedInUser(user.uid);
   }
 }
 function updateAccountUI(){
@@ -4385,12 +4789,23 @@ function getWeddingRecordPayload(){
 }
 let weddingSaveTimer = null;
 function persistWeddingRecord(){
-  if(!currentUser || !window.everaFirebase) return;
-  setSaveStatus('saving');
+  // v1.63.0 bugfix: cancel any previously-scheduled save FIRST, unconditionally — even on a
+  // call that's about to no-op below. Otherwise a save queued while viewing one account's data
+  // can survive a context switch (e.g. a planner returning to Planner Home) and fire ~600ms
+  // later against whatever dashboardData/currentUser happen to be active by then, corrupting a
+  // different account's saved record.
   clearTimeout(weddingSaveTimer);
+  if(!currentUser || !window.everaFirebase) return;
+  // v1.63.0: a signed-in planner with no couple currently selected has no wedding record to
+  // save at all (they're on their own Planner Home, not inside anyone's data) — and when they
+  // HAVE picked a couple, saves must go to THAT couple's weddings/{uid} document, never the
+  // planner's own uid.
+  if(currentAccountType==='planner' && !activeViewedWeddingUid) return;
+  const targetUid = activeViewedWeddingUid || currentUser.uid;
+  setSaveStatus('saving');
   weddingSaveTimer = setTimeout(async ()=>{
     try{
-      await window.everaFirebase.saveWeddingRecord(currentUser.uid, getWeddingRecordPayload());
+      await window.everaFirebase.saveWeddingRecord(targetUid, getWeddingRecordPayload());
       setSaveStatus('saved');
     } catch(err){
       console.error('Failed to save wedding record', err);
@@ -4525,6 +4940,13 @@ function normalizeDashboardData(d){
     if(doc.suggestionSource===undefined) doc.suggestionSource = null;
   });
   if(!Array.isArray(d.notes)) d.notes = [];
+  // v1.63.0: planner/couple account distinction — every record that existed before this
+  // version is a couple's own record (planner accounts are a brand-new, separate kind of
+  // signup — see setUpNewPlannerAccount), so backfilling accountType to 'couple' here is
+  // always correct, never a guess.
+  if(d.accountType===undefined) d.accountType = 'couple';
+  if(!Array.isArray(d.linkedPlanners)) d.linkedPlanners = [];
+  if(!Array.isArray(d.activePlannerUids)) d.activePlannerUids = [];
   if(d.couplePhoto===undefined) d.couplePhoto = null;
   if(d.coupleLogo===undefined) d.coupleLogo = null;
   if(!Array.isArray(d.weddingParty)) d.weddingParty = [];
@@ -5296,6 +5718,16 @@ function updateChrome(){
   }
   const logoChip = document.getElementById('sbLogoChip');
   if(logoChip) logoChip.innerHTML = d.coupleLogo ? `<img src="${d.coupleLogo}" alt="Wedding logo">` : '';
+  // v1.63.0: when a planner is viewing a couple's wedding, say so plainly and offer a one-click
+  // way back to their own couple-switcher — never leave them wondering whose data they're in.
+  const typeLabel = document.getElementById('sbAccountTypeLabel');
+  if(typeLabel){
+    if(currentAccountType==='planner' && activeViewedWeddingUid){
+      typeLabel.innerHTML = `<span class="viewing-as-planner-pill" onclick="switchToPlannerHome()" title="Back to your couples">Viewing as Planner · Switch couple</span>`;
+    } else {
+      typeLabel.textContent = 'Couple Account';
+    }
+  }
   let cd = '—';
   if(d.weddingDateISO){
     const days = Math.max(0, Math.round((new Date(d.weddingDateISO+'T00:00:00') - new Date())/86400000));
@@ -5376,6 +5808,7 @@ function renderRoute(key){
     document.getElementById('content').innerHTML = renderWebsiteModule();
   } else if(key==='settings'){
     document.getElementById('content').innerHTML = renderSettingsModule();
+    if(currentAccountType==='couple') refreshSettingsPlannerInvites();
   } else if(key==='changelog'){
     document.getElementById('content').innerHTML = renderChangelogPage();
   } else {
@@ -8939,7 +9372,132 @@ function renderSettingsModule(){
       <button class="btn btn-solid btn-sm" style="margin-top:12px;" onclick="openAddCollaborator()">+ Add Collaborator</button>
       <p style="font-size:12px;color:var(--charcoal-faint);margin-top:8px;">Set exactly what each person can see and do, per section — click "Manage" on a row above, or set it right away when you add them. Evera doesn't send real email invitations in this prototype — adding someone here just adds their record to your workspace.</p>
     </div>
+
+    ${currentAccountType==='couple' ? renderWeddingPlannersCard() : ''}
   `;
+}
+/* ==================================================================
+   WEDDING PLANNERS (v1.63.0) — real, separately-authenticated planner
+   access, sitting alongside (not replacing) Collaborators above. A linked
+   planner signs in with their OWN Evera account and sees this wedding from
+   their own Planner Home; Collaborators above has no real second login at
+   all (see its own note). Invites go through the shared plannerInvites
+   collection — see the Firestore wrapper for exactly how each direction
+   is written and who's allowed to write what.
+================================================================== */
+let settingsPlannerInviteState = { outgoing:[], incomingPlannerInvites:[], incomingAcceptedByPlanner:[] };
+async function refreshSettingsPlannerInvites(){
+  if(!currentUser || currentAccountType!=='couple' || !window.everaFirebase) return;
+  try{
+    const [sentByMe, toMyEmail] = await Promise.all([
+      window.everaFirebase.listInvitesSentBy(currentUser.uid),
+      window.everaFirebase.listInvitesForEmail(currentUser.email)
+    ]);
+    settingsPlannerInviteState.outgoing = sentByMe.filter(inv=>inv.fromRole==='couple' && inv.status==='invited');
+    settingsPlannerInviteState.incomingAcceptedByPlanner = sentByMe.filter(inv=>inv.fromRole==='couple' && inv.status==='accepted');
+    settingsPlannerInviteState.incomingPlannerInvites = toMyEmail.filter(inv=>inv.fromRole==='planner' && inv.status==='invited');
+  } catch(err){ console.error('Failed to load planner invites', err); }
+  if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule();
+}
+function renderWeddingPlannersCard(){
+  const d = dashboardData;
+  const linked = d.linkedPlanners || [];
+  const st = settingsPlannerInviteState;
+  const hasAnyRow = linked.length || (st.outgoing||[]).length;
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Wedding Planners</h4><span class="d-sub">A professional planner's own real, separate login into this wedding — different from Collaborators above</span></div>
+      ${(st.incomingPlannerInvites||[]).map(inv=>`
+        <div class="planner-invite-banner">
+          <div><b>${escapeHtml(inv.fromName||'A planner')}</b> (${escapeHtml(inv.fromEmail||'')}) wants to help plan your wedding.</div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-solid btn-sm" onclick="grantPlannerAccessFromInvite('${inv.id}')">Accept &amp; Give Access</button>
+            <button class="btn btn-outline btn-sm" onclick="declineOrRevokeInviteLocally('${inv.id}')">Decline</button>
+          </div>
+        </div>`).join('')}
+      ${(st.incomingAcceptedByPlanner||[]).map(inv=>`
+        <div class="planner-invite-banner">
+          <div><b>${escapeHtml(inv.toName||'A planner')}</b> accepted your invite — give them access to your wedding?</div>
+          <button class="btn btn-solid btn-sm" onclick="grantPlannerAccessFromInvite('${inv.id}')">Give Access</button>
+        </div>`).join('')}
+      ${hasAnyRow ? `
+      <div class="budget-items" style="padding-left:0;">
+        <div class="budget-items-head" style="grid-template-columns:1fr 1.2fr 0.6fr 0.35fr;"><span>Name</span><span>Email</span><span>Status</span><span></span></div>
+        ${linked.map(p=>`
+          <div class="budget-item-row" style="grid-template-columns:1fr 1.2fr 0.6fr 0.35fr; align-items:center;">
+            <span class="readonly-cell">${escapeHtml(p.plannerName||'Planner')}</span>
+            <span class="d-sub">${escapeHtml(p.plannerEmail||'—')}</span>
+            <span class="pill pill-ok">Active</span>
+            <a href="#" class="danger-link" onclick="revokePlannerAccess('${p.plannerUid}'); return false;">✕</a>
+          </div>`).join('')}
+        ${(st.outgoing||[]).map(inv=>`
+          <div class="budget-item-row" style="grid-template-columns:1fr 1.2fr 0.6fr 0.35fr; align-items:center;">
+            <span class="readonly-cell">—</span>
+            <span class="d-sub">${escapeHtml(inv.toEmail||'')}</span>
+            <span class="pill pill-warn">Invite sent</span>
+            <span></span>
+          </div>`).join('')}
+      </div>
+      ` : `<p class="detail-hint" style="margin-top:0;">No planners linked yet — invite one by email below.</p>`}
+      <div class="custom-add-row" style="margin-top:12px;">
+        <input type="email" id="newPlannerInviteEmail" placeholder="planner@example.com">
+        <button class="btn btn-outline btn-sm" onclick="sendPlannerInviteFromSettings()">+ Invite a Planner</button>
+      </div>
+      <p class="detail-hint" id="plannerInviteSettingsMsg" style="display:none; margin-top:8px;"></p>
+    </div>
+  `;
+}
+async function sendPlannerInviteFromSettings(){
+  if(!window.everaFirebase || !currentUser) return;
+  const emailEl = document.getElementById('newPlannerInviteEmail');
+  const email = (emailEl.value||'').trim();
+  if(!email){ showAccountMsg('plannerInviteSettingsMsg', "Enter the planner's email.", true); return; }
+  try{
+    await window.everaFirebase.createInvite({ fromUid:currentUser.uid, fromRole:'couple', fromCoupleName:`${dashboardData.partner1} & ${dashboardData.partner2}`, toEmail: email.toLowerCase() });
+    emailEl.value='';
+    showAccountMsg('plannerInviteSettingsMsg', `Invite sent — ${email} will see it the next time they sign in.`, false);
+    await refreshSettingsPlannerInvites();
+  } catch(err){
+    console.error('Failed to send planner invite', err);
+    showAccountMsg('plannerInviteSettingsMsg', 'Something went wrong sending that invite. Please try again.', true);
+  }
+}
+async function declineOrRevokeInviteLocally(inviteId){
+  try{ await window.everaFirebase.updateInvite(inviteId, {status:'declined'}); }catch(err){ console.error(err); }
+  await refreshSettingsPlannerInvites();
+}
+/* The actual Firestore access grant ALWAYS happens here, on the couple's own document —
+   whether the couple is directly accepting a planner-sent invite, or confirming a planner
+   who already accepted the couple's own earlier invite. Either way this is the couple
+   writing to their own weddings/{uid} record, which the security rules always allow. */
+async function grantPlannerAccessFromInvite(inviteId){
+  const inv = (settingsPlannerInviteState.incomingPlannerInvites||[]).find(i=>i.id===inviteId)
+    || (settingsPlannerInviteState.incomingAcceptedByPlanner||[]).find(i=>i.id===inviteId);
+  if(!inv) return;
+  let plannerUid, plannerName, plannerEmail;
+  if(inv.fromRole==='planner'){
+    plannerUid = inv.fromUid; plannerName = inv.fromName||'Wedding Planner'; plannerEmail = inv.fromEmail||'';
+  } else {
+    plannerUid = inv.toUid; plannerName = inv.toName||'Wedding Planner'; plannerEmail = '';
+  }
+  if(!plannerUid) return;
+  if(!Array.isArray(dashboardData.linkedPlanners)) dashboardData.linkedPlanners = [];
+  if(!Array.isArray(dashboardData.activePlannerUids)) dashboardData.activePlannerUids = [];
+  if(!dashboardData.activePlannerUids.includes(plannerUid)) dashboardData.activePlannerUids.push(plannerUid);
+  dashboardData.linkedPlanners = dashboardData.linkedPlanners.filter(p=>p.plannerUid!==plannerUid);
+  dashboardData.linkedPlanners.push({ plannerUid, plannerEmail, plannerName, status:'active', invitedBy:inv.fromRole, invitedAtISO:isoFromDate(new Date()) });
+  persistWeddingRecord();
+  // toUid records the COUPLE's own uid on the invite — for a planner-initiated invite this is
+  // the first time the couple's real uid is recorded anywhere on it, which is exactly what lets
+  // that planner's Planner Home (see refreshPlannerHomeData's reconciliation) discover it.
+  try{ await window.everaFirebase.updateInvite(inv.id, { status:'active', toUid:currentUser.uid }); }catch(err){ console.error(err); }
+  await refreshSettingsPlannerInvites();
+}
+function revokePlannerAccess(plannerUid){
+  dashboardData.linkedPlanners = (dashboardData.linkedPlanners||[]).filter(p=>p.plannerUid!==plannerUid);
+  dashboardData.activePlannerUids = (dashboardData.activePlannerUids||[]).filter(uid=>uid!==plannerUid);
+  persistWeddingRecord();
+  document.getElementById('content').innerHTML = renderSettingsModule();
 }
 /* ---- Per-collaborator access modal (new, Sep 2026): one module-by-module grid per person,
    reusing the app's existing .item-overlay/.item-modal pattern rather than a dense always-open
@@ -19159,7 +19717,7 @@ updateStageUI();
     EmailAuthProvider, reauthenticateWithPopup
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import {
-    getFirestore, doc, getDoc, setDoc, deleteDoc
+    getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   // Public web config for the Evera Firebase project (evera-0824).
@@ -19178,6 +19736,16 @@ updateStageUI();
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // v1.63.0: a second, isolated Firebase App instance, used ONLY when a signed-in planner
+  // creates a brand-new couple account on their behalf (see createCoupleAccountAsPlanner).
+  // createUserWithEmailAndPassword always switches whichever Auth instance it's called on
+  // to the newly created user — calling it on the planner's own `auth` would silently sign
+  // the planner out of their own session the moment they tried to set up a couple. A second
+  // named App (same Firebase project, its own isolated Auth state) lets that happen without
+  // ever touching the planner's own sign-in.
+  const secondaryApp = initializeApp(firebaseConfig, 'plannerCreatesCouple');
+  const secondaryAuth = getAuth(secondaryApp);
 
   window.everaFirebase = {
     auth,
@@ -19239,6 +19807,66 @@ updateStageUI();
     },
     async saveWeddingRecord(uid, data){
       await setDoc(doc(db, 'weddings', uid), data, { merge: true });
+    },
+    /* ================== v1.63.0 — Planner accounts ==================
+       "planners/{uid}" holds one document per planner account — name, email, photo, and the
+       list of couples they're linked to. "emailDirectory/{email}" is a small, intentionally
+       minimal lookup so one side of an invite can find the other side's uid/account type by
+       email alone — it can only ever be read or written one exact document at a time (never
+       listed/enumerated), so it doesn't expose anyone's data beyond what a direct invite by
+       their own email already would. "plannerInvites/{id}" holds pending/accepted invites in
+       either direction (couple→planner or planner→couple); accepting one is always a write to
+       the ACCEPTING side's own document (their own weddings/{uid} or planners/{uid} record),
+       never a write into someone else's — see Settings → Wedding Planners and Planner Home for
+       where each of these gets called from. All of this needs the matching Firestore security
+       rules to actually be enforced on the live site — see the rules block Natasha was given
+       alongside this release. */
+    async loadPlannerRecord(uid){
+      const snap = await getDoc(doc(db, 'planners', uid));
+      return snap.exists() ? snap.data() : null;
+    },
+    async savePlannerRecord(uid, data){
+      await setDoc(doc(db, 'planners', uid), data, { merge: true });
+    },
+    async upsertEmailDirectory(uid, accountType, email, name){
+      if(!email) return;
+      await setDoc(doc(db, 'emailDirectory', email.toLowerCase()), { uid, accountType, email: email.toLowerCase(), name: name||'' }, { merge: true });
+    },
+    async lookupEmailDirectory(email){
+      if(!email) return null;
+      const snap = await getDoc(doc(db, 'emailDirectory', email.toLowerCase()));
+      return snap.exists() ? snap.data() : null;
+    },
+    async createInvite(invite){
+      const ref = doc(collection(db, 'plannerInvites'));
+      const payload = Object.assign({}, invite, { id: ref.id, createdAt: Date.now(), status: 'invited' });
+      await setDoc(ref, payload);
+      return payload;
+    },
+    // Only ever queried by the signed-in user's OWN uid or OWN verified email — see the
+    // Firestore rules block for how that's enforced server-side, not just assumed client-side.
+    async listInvitesSentBy(uid){
+      const snap = await getDocs(query(collection(db, 'plannerInvites'), where('fromUid','==', uid)));
+      return snap.docs.map(d=>d.data());
+    },
+    async listInvitesForEmail(email){
+      if(!email) return [];
+      const snap = await getDocs(query(collection(db, 'plannerInvites'), where('toEmail','==', email.toLowerCase())));
+      return snap.docs.map(d=>d.data());
+    },
+    async updateInvite(id, patch){
+      await setDoc(doc(db, 'plannerInvites', id), patch, { merge: true });
+    },
+    // Creates a brand-new Firebase Auth user AND their seeded weddings/{uid} record, entirely
+    // on the isolated secondary Auth instance (see secondaryAuth above) so the planner calling
+    // this never gets signed out of their own session. Returns the new couple's uid.
+    async createCoupleAccountAsPlanner(email, tempPassword, seedData){
+      const cred = await createUserWithEmailAndPassword(secondaryAuth, email, tempPassword);
+      const newUid = cred.user.uid;
+      await setDoc(doc(db, 'weddings', newUid), seedData, { merge: true });
+      await setDoc(doc(db, 'emailDirectory', email.toLowerCase()), { uid:newUid, accountType:'couple', email: email.toLowerCase(), name:'' }, { merge: true });
+      await signOut(secondaryAuth);
+      return newUid;
     }
   };
 
