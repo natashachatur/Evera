@@ -83,6 +83,18 @@
   .stage{display:none;}
   .stage.active{display:block; animation:stepIn .4s ease;}
   @keyframes stepIn{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  /* v1.64.0: the "finish setting up" follow-up flow — same stage-step look as onboarding,
+     kept as a separate class so its stage toggling never collides with the main flow's. */
+  .followup-stage{display:none;}
+  .followup-stage.active{display:block; animation:stepIn .4s ease;}
+  .result-next-action{background:var(--green-tint); border:1px solid var(--green-mid); border-radius:var(--radius); padding:16px 20px; margin:22px 0 4px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .result-next-action .rna-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--green-deep); margin-bottom:3px;}
+  .result-next-action .rna-text{font-size:14px; color:var(--charcoal); line-height:1.4;}
+  /* v1.64.0: the dismissible Home card nudging a couple back to the deferred onboarding
+     questions (style, priorities, planning approach, venue status, travel prefs). */
+  .followup-nudge{background:var(--ivory-deep); border:1px solid var(--line); border-radius:var(--radius); padding:14px 18px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;}
+  .followup-nudge .fn-text{font-size:13.5px; color:var(--charcoal-soft);}
+  .followup-nudge .fn-actions{display:flex; gap:10px; align-items:center; flex-shrink:0;}
   .stage .eyebrow{margin-bottom:10px;}
   .stage h2{font-size:clamp(28px,4vw,38px); line-height:1.2;}
   .stage .step-sub{margin-top:12px; color:var(--charcoal-soft); font-size:14.5px; line-height:1.6;}
@@ -795,6 +807,9 @@
   .ps-stat{}
   .ps-stat .ps-num{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:26px; color:var(--green);}
   .ps-stat .ps-label{font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-top:2px;}
+  /* v1.64.0: a plain-language line under a stat's label — e.g. "Allocated" paired with "Planned
+     across your wedding" — per Natasha's 28-point review (New Request #69 cluster E). */
+  .ps-stat .ps-sublabel{font-size:10.5px; color:var(--charcoal-faint); opacity:0.75; text-transform:none; letter-spacing:0; margin-top:1px; max-width:120px;}
   .party-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
   @media (max-width:1000px){ .party-grid{grid-template-columns:1fr 1fr;} }
   @media (max-width:640px){ .party-grid{grid-template-columns:1fr;} }
@@ -1678,7 +1693,7 @@
   <div class="onboard-wrap" id="stepsWrap">
 
     <div class="stage active" data-stage="1">
-      <div class="eyebrow">Stage 1 of 5 · The Basics</div>
+      <div class="eyebrow">Stage 1 of 3 · The Basics</div>
       <h2>Let's start with the basics</h2>
       <div class="step-sub">Names, date, and location — the framework everything else builds on.</div>
 
@@ -1712,7 +1727,7 @@
     </div>
 
     <div class="stage" data-stage="2">
-      <div class="eyebrow">Stage 2 of 5 · Your Celebration</div>
+      <div class="eyebrow">Stage 2 of 3 · Your Celebration</div>
       <h2>Tell us about your celebration</h2>
       <div class="step-sub">Roughly how many guests, and which events are part of your wedding.</div>
 
@@ -1754,7 +1769,7 @@
     </div>
 
     <div class="stage" data-stage="3">
-      <div class="eyebrow">Stage 3 of 5 · Money</div>
+      <div class="eyebrow">Stage 3 of 3 · Money</div>
       <h2>What's your overall budget?</h2>
       <div class="step-sub">All figures in CAD. Evera will suggest a category breakdown you can adjust anytime.</div>
       <div class="step-body">
@@ -1762,89 +1777,6 @@
           <div class="slider-readout">$<span id="ob-budget-val">100,000</span> <span class="unit">CAD</span></div>
           <input type="range" id="ob-budget" min="20000" max="250000" step="5000" value="100000" oninput="document.getElementById('ob-budget-val').textContent=parseInt(this.value).toLocaleString()">
           <div class="slider-minmax"><span>$20K</span><span>$250K+</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="stage" data-stage="4">
-      <div class="eyebrow">Stage 4 of 5 · Your Vision</div>
-      <h2>What's your vision?</h2>
-      <div class="step-sub">Style and priorities — the vibe and what matters most, refined later in Inspiration.</div>
-
-      <div class="stage-section first">
-        <div class="step-head-row"><h3>What's your aesthetic?</h3><span class="optional-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Optional</span></div>
-        <div class="step-sub">Pick the vibe closest to your vision — you can refine this in your Inspiration board later.</div>
-        <div class="step-body">
-          <div class="style-grid" id="ob-style">
-            <div class="style-swatch" data-val="Modern Romantic"><div class="sw-art" style="background:linear-gradient(135deg,#EDE3CE,#CBB2A6);"></div><div class="sw-label">Modern Romantic</div><div class="sw-mood">Soft • Airy • Contemporary</div></div>
-            <div class="style-swatch" data-val="Classic Elegant"><div class="sw-art" style="background:linear-gradient(135deg,#F4EFE3,#C7A467);"></div><div class="sw-label">Classic Elegant</div><div class="sw-mood">Timeless • Formal • Refined</div></div>
-            <div class="style-swatch" data-val="Boho Chic"><div class="sw-art" style="background:linear-gradient(135deg,#D9C9A8,#8A7355);"></div><div class="sw-label">Boho Chic</div><div class="sw-mood">Relaxed • Natural • Free-Spirited</div></div>
-            <div class="style-swatch" data-val="Minimalist"><div class="sw-art" style="background:linear-gradient(135deg,#F1EEE6,#B9B2A0);"></div><div class="sw-label">Minimalist</div><div class="sw-mood">Clean • Understated • Calm</div></div>
-            <div class="style-swatch" data-val="Glam &amp; Bold"><div class="sw-art" style="background:linear-gradient(135deg,#3C2F2F,#A8834A);"></div><div class="sw-label">Glam &amp; Bold</div><div class="sw-mood">Dramatic • Rich • Opulent</div></div>
-            <div class="style-swatch" data-val="Editorial"><div class="sw-art" style="background:linear-gradient(135deg,#38473B,#26332A);"></div><div class="sw-label">Editorial</div><div class="sw-mood">Moody • Sculptural • Fashion-Forward</div></div>
-          </div>
-          <p style="font-size:11.5px; color:var(--charcoal-faint); margin-top:14px; text-align:center;">Full imagery-driven style cards are on the roadmap — for now, each swatch's colours and mood words are your visual cue.</p>
-        </div>
-      </div>
-
-      <div class="stage-section">
-        <div class="step-head-row"><h3>What matters most to you?</h3><span class="optional-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Optional</span></div>
-        <div class="step-sub">Choose up to three — this helps Evera prioritize your budget and vendor matches.</div>
-        <div class="step-body">
-          <div class="chip-grid" id="ob-priorities">
-            <button type="button" class="chip" data-val="Photography & Video">Photography &amp; Video</button>
-            <button type="button" class="chip" data-val="Food & Drink">Food &amp; Drink</button>
-            <button type="button" class="chip" data-val="Music & Entertainment">Music &amp; Entertainment</button>
-            <button type="button" class="chip" data-val="Florals & Décor">Florals &amp; Décor</button>
-            <button type="button" class="chip" data-val="Fashion & Beauty">Fashion &amp; Beauty</button>
-            <button type="button" class="chip" data-val="Venue & Ambiance">Venue &amp; Ambiance</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="stage" data-stage="5">
-      <div class="eyebrow">Stage 5 of 5 · Planning</div>
-      <h2>How are you planning, and any travel notes?</h2>
-      <div class="step-sub">Your approach, venue status, and travel guidance for guests — the last stretch.</div>
-
-      <div class="stage-section first">
-        <div class="step-head-row"><h3>How are you approaching planning — and is your venue booked?</h3><span class="optional-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Optional</span></div>
-        <div class="step-body">
-          <div class="card-select-grid" id="ob-approach" style="margin-bottom:22px;">
-            <button type="button" class="card-select" data-val="DIY">
-              <svg class="cs-icon icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
-              <div class="cs-title">DIY</div><div class="cs-desc">We're planning it ourselves</div>
-            </button>
-            <button type="button" class="card-select" data-val="Planner">
-              <svg class="cs-icon icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0112 0v2"/><path d="M17 11a4 4 0 010 6"/></svg>
-              <div class="cs-title">With a Planner</div><div class="cs-desc">We have or want a planner</div>
-            </button>
-            <button type="button" class="card-select" data-val="Unsure">
-              <svg class="cs-icon icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2.5 2-2.5 3.5"/><path d="M12 17h.01"/></svg>
-              <div class="cs-title">Not Sure Yet</div><div class="cs-desc">Help us figure it out</div>
-            </button>
-          </div>
-          <div class="field-row"><label>Venue Status</label>
-            <select id="ob-venue">
-              <option value="booked">Venue booked</option>
-              <option value="progress" selected>Searching / in progress</option>
-              <option value="none">Haven't started</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="stage-section">
-        <div class="step-head-row"><h3>Any travel preferences for your guests?</h3><span class="optional-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Optional</span></div>
-        <div class="step-body">
-          <div class="field-row"><label>Preferred Hotel Brand (optional)</label><input type="text" id="ob-hotel" placeholder="e.g. Marriott, Hilton, no preference"></div>
-          <div class="slider-wrap">
-            <div class="slider-readout"><span id="ob-distance-val">40</span> <span class="unit">km max travel distance</span></div>
-            <input type="range" id="ob-distance" min="5" max="100" step="5" value="40" oninput="document.getElementById('ob-distance-val').textContent=this.value">
-            <div class="slider-minmax"><span>5 km</span><span>100+ km</span></div>
-          </div>
-          <div class="check-inline" style="margin-top:18px;"><input type="checkbox" id="ob-assistantEnabled" checked><label for="ob-assistantEnabled" style="margin:0; text-transform:none; font-weight:500; letter-spacing:0;">Enable the Evera Assistant — a helpful floating panel with proactive planning tips (you can turn this on or off anytime in Settings)</label></div>
         </div>
       </div>
     </div>
@@ -1910,8 +1842,126 @@
         <div id="res-vendors" style="margin-top:10px;"></div>
       </div>
     </div>
+    <!-- v1.64.0: one surfaced next action, per Natasha's 28-point review (New Request #69
+         cluster A) — replacing the old forced stop at Inspiration with a single recommendation
+         computed from what's actually known at this point (see renderResult()/recommendedNextAction()). -->
+    <div class="result-next-action" id="res-next-action"></div>
     <div class="result-cta">
-      <button class="btn btn-solid" onclick="goTo('inspiration-intro')">Continue →</button>
+      <button class="btn btn-solid" onclick="goToHomeAfterOnboarding()">Go to my Dashboard →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ONBOARDING FOLLOW-UP (v1.64.0) ============
+     Natasha's 28-point review (New Request #69 cluster A): cut first-pass onboarding down to
+     6 questions, and gather the rest — aesthetic, priorities, planning approach, venue status,
+     travel preferences — contextually afterward instead of forcing them on a brand-new couple
+     before they've seen the app. This reuses the exact same fields/markup/click-handlers that
+     used to be Stages 4 & 5 of onboarding (ob-style, ob-priorities, ob-approach, ob-venue,
+     ob-hotel, ob-distance, ob-assistantEnabled) — only the entry point changed: it now opens
+     from a dismissible Home card (openOnboardingFollowUp()) instead of being forced at signup. -->
+<section id="view-onboarding-followup" class="view">
+  <div class="onboard-top">
+    <div class="landing-brand"><span>Evera</span></div>
+    <div class="step-count" id="fuStepCount">Finish Setting Up · 1 of 2</div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="fuProgressFill"></div></div>
+  <div class="onboard-reassurance">Totally optional — <b>skip</b> anything you haven't decided, and <b>change any answer later</b> from Wedding Blueprint or Settings.</div>
+
+  <div class="onboard-wrap" id="fuStepsWrap">
+
+    <div class="followup-stage active" data-stage="1">
+      <div class="eyebrow">1 of 2 · Your Vision</div>
+      <h2>What's your vision?</h2>
+      <div class="step-sub">Style and priorities — the vibe and what matters most to you.</div>
+
+      <div class="stage-section first">
+        <div class="step-head-row"><h3>What's your aesthetic?</h3><span class="optional-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Optional</span></div>
+        <div class="step-sub">Pick the vibe closest to your vision. You can refine your overall aesthetic — and customize each event — later.</div>
+        <div class="step-body">
+          <div class="style-grid" id="ob-style">
+            <div class="style-swatch" data-val="Modern Romantic"><div class="sw-art" style="background:linear-gradient(135deg,#EDE3CE,#CBB2A6);"></div><div class="sw-label">Modern Romantic</div><div class="sw-mood">Soft • Airy • Contemporary</div></div>
+            <div class="style-swatch" data-val="Classic Elegant"><div class="sw-art" style="background:linear-gradient(135deg,#F4EFE3,#C7A467);"></div><div class="sw-label">Classic Elegant</div><div class="sw-mood">Timeless • Formal • Refined</div></div>
+            <div class="style-swatch" data-val="Boho Chic"><div class="sw-art" style="background:linear-gradient(135deg,#D9C9A8,#8A7355);"></div><div class="sw-label">Boho Chic</div><div class="sw-mood">Relaxed • Natural • Free-Spirited</div></div>
+            <div class="style-swatch" data-val="Minimalist"><div class="sw-art" style="background:linear-gradient(135deg,#F1EEE6,#B9B2A0);"></div><div class="sw-label">Minimalist</div><div class="sw-mood">Clean • Understated • Calm</div></div>
+            <div class="style-swatch" data-val="Glam &amp; Bold"><div class="sw-art" style="background:linear-gradient(135deg,#3C2F2F,#A8834A);"></div><div class="sw-label">Glam &amp; Bold</div><div class="sw-mood">Dramatic • Rich • Opulent</div></div>
+            <div class="style-swatch" data-val="Editorial"><div class="sw-art" style="background:linear-gradient(135deg,#38473B,#26332A);"></div><div class="sw-label">Editorial</div><div class="sw-mood">Moody • Sculptural • Fashion-Forward</div></div>
+          </div>
+          <p style="font-size:11.5px; color:var(--charcoal-faint); margin-top:14px; text-align:center;">Each swatch's colours and mood words are your visual cue for now — pick whichever feels closest.</p>
+        </div>
+      </div>
+
+      <div class="stage-section">
+        <div class="step-head-row"><h3>What matters most to you?</h3><span class="optional-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Optional</span></div>
+        <div class="step-sub">Choose up to three — this helps Evera prioritize your budget and vendor matches.</div>
+        <div class="step-body">
+          <div class="chip-grid" id="ob-priorities">
+            <button type="button" class="chip" data-val="Photography & Video">Photography &amp; Video</button>
+            <button type="button" class="chip" data-val="Food & Drink">Food &amp; Drink</button>
+            <button type="button" class="chip" data-val="Music & Entertainment">Music &amp; Entertainment</button>
+            <button type="button" class="chip" data-val="Florals & Décor">Florals &amp; Décor</button>
+            <button type="button" class="chip" data-val="Fashion & Beauty">Fashion &amp; Beauty</button>
+            <button type="button" class="chip" data-val="Venue & Ambiance">Venue &amp; Ambiance</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="followup-stage" data-stage="2">
+      <div class="eyebrow">2 of 2 · Planning</div>
+      <h2>How are you planning, and any travel notes?</h2>
+      <div class="step-sub">Your approach, venue status, and travel guidance for guests — the last stretch.</div>
+
+      <div class="stage-section first">
+        <div class="step-head-row"><h3>How are you approaching planning — and is your venue booked?</h3><span class="optional-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Optional</span></div>
+        <div class="step-body">
+          <div class="card-select-grid" id="ob-approach" style="margin-bottom:22px;">
+            <button type="button" class="card-select" data-val="DIY">
+              <svg class="cs-icon icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+              <div class="cs-title">DIY</div><div class="cs-desc">We're planning it ourselves</div>
+            </button>
+            <button type="button" class="card-select" data-val="Planner">
+              <svg class="cs-icon icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0112 0v2"/><path d="M17 11a4 4 0 010 6"/></svg>
+              <div class="cs-title">With a Planner</div><div class="cs-desc">We have or want a planner</div>
+            </button>
+            <button type="button" class="card-select" data-val="Unsure">
+              <svg class="cs-icon icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2.5 2-2.5 3.5"/><path d="M12 17h.01"/></svg>
+              <div class="cs-title">Not Sure Yet</div><div class="cs-desc">Help us figure it out</div>
+            </button>
+          </div>
+          <div class="field-row"><label>Venue Status</label>
+            <select id="ob-venue">
+              <option value="booked">Venue booked</option>
+              <option value="progress" selected>Searching / in progress</option>
+              <option value="none">Haven't started</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-section">
+        <div class="step-head-row"><h3>Any travel preferences for your guests?</h3><span class="optional-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Optional</span></div>
+        <div class="step-body">
+          <div class="field-row"><label>Preferred Hotel Brand (optional)</label><input type="text" id="ob-hotel" placeholder="e.g. Marriott, Hilton, no preference"></div>
+          <div class="slider-wrap">
+            <div class="slider-readout"><span id="ob-distance-val">40</span> <span class="unit">km max travel distance</span></div>
+            <input type="range" id="ob-distance" min="5" max="100" step="5" value="40" oninput="document.getElementById('ob-distance-val').textContent=this.value">
+            <div class="slider-minmax"><span>5 km</span><span>100+ km</span></div>
+          </div>
+          <div class="check-inline" style="margin-top:18px;"><input type="checkbox" id="ob-assistantEnabled" checked><label for="ob-assistantEnabled" style="margin:0; text-transform:none; font-weight:500; letter-spacing:0;">Enable the Evera Assistant — a helpful floating panel with proactive planning tips (you can turn this on or off anytime in Settings)</label></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="onboard-wrap" style="padding-top:0;">
+    <div class="step-nav">
+      <button class="btn btn-outline btn-sm" id="fuBtnPrev" onclick="followUpPrevStage()">Back</button>
+      <div class="step-nav-right">
+        <button type="button" class="btn-ghost" id="fuBtnSkip" onclick="followUpSkipStage()">Skip for now</button>
+        <button class="btn btn-solid btn-sm" id="fuBtnNext" onclick="followUpNextStage()">Continue</button>
+      </div>
     </div>
   </div>
 </section>
@@ -2123,7 +2173,7 @@ const NAV_SECTIONS = [
 ];
 
 const MODULE_INFO = {
-  'my-wedding':{title:'Wedding Blueprint', desc:"Your whole plan in one place — vision, roadmap, wedding plan, key milestones, and calendar, alongside your wedding profile, dates, traditions, and master aesthetic.", bullets:['Roadmap, wedding plan, milestones & calendar','Wedding profile & settings','Master aesthetic & colour palette']},
+  'my-wedding':{title:'Wedding Blueprint', desc:"Your whole plan in one place — an overview of your roadmap and milestones, your to-dos, and calendar, alongside your wedding profile, dates, traditions, and master aesthetic.", bullets:['Overview, to-dos & calendar','Wedding profile & settings','Master aesthetic & colour palette']},
   'events':{title:'Events', desc:"Every event in your wedding is its own workspace — with its own guests, vendors, budget, timeline, and look & feel.", bullets:['Unlimited custom events','Per-event guest eligibility & RSVP','Per-event budget, vendors & timeline']},
   'guests':{title:'Guests', desc:"Granular guest and household management connected to every event, RSVP, and seating chart.", bullets:['Households & individual guests','Per-event invitation & RSVP status','Dietary, accessibility & travel needs']},
   'wedding-party':{title:'Wedding Party Hub', desc:"A dedicated, reduced-access portal for your wedding party — their events, tasks, attire, and itinerary.", bullets:['Custom roles, not just bridesmaids/groomsmen','Personal itinerary & task list per member','Lookbook, attire & order status']},
@@ -2153,6 +2203,19 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.64.0', date:'2026-10-30',
+    title:'From your 28-point review: a shorter onboarding, a simpler Wedding Blueprint, a reframed Invite flow, and a Guests front door',
+    items:[
+      'Onboarding is cut from 5 stages to 3 (Basics → Celebration → Money) — roughly a minute faster to your first wedding. The old Stage 4 (Your Vision: aesthetic + priorities) and Stage 5 (Planning: approach, venue, hotel, travel) aren\'t gone — they\'ve moved to a new, dismissible "Finish Setting Up" flow that opens from a card on Home (or "Not now" to dismiss it). Every answer from that flow is saved for real: style now lives in Wedding Profile\'s Master Aesthetic card as a new Style dropdown, and priorities/approach/venue status/hotel preference/travel distance all persist the same way they always would have.',
+      'The Result screen after building your wedding no longer forces a stop at Inspiration — it now shows one computed "Recommended Next" action (pick your date, or confirm your venue, depending on what\'s already known) and goes straight to your Dashboard.',
+      'Known caveat: the old "Inspiration Intro" screen (the forced stop after onboarding) is no longer reachable from anywhere in the app. Its code is still in index.html, deliberately left in place rather than deleted, in case any part of that content is worth resurfacing later — but it\'s dead code for now.',
+      'Wedding Blueprint: the 4 tabs (Roadmap / Wedding Plan / Milestones / Calendar / Wedding Profile) are now 4 tabs (Overview / To-Dos / Calendar / Wedding Profile) — Roadmap and Milestones are merged into one "Overview" tab, stacked top to bottom, since they were always read together.',
+      'Budget: the stat strip (Allocated / Committed-Paid / Unallocated or Over-Allocated) now has a one-line explanation under each number, so it\'s clear at a glance what each figure actually counts.',
+      'Guests → "Invite Rules" is renamed and reframed as "Invite a Group": picking tags and an event now shows you exactly who matches before anything happens, and the primary action is a direct "Invite N Guests" — no rule required. Saving a reusable rule (for inviting the same tag combination again later) is now an optional checkbox rather than the only way in. Every invite — direct or via a saved rule — can be undone from the confirmation toast.',
+      'Guests now leads with a short "N things need your attention" summary (missing addresses, dietary notes to review, guests ready to seat) before the detailed tags/households/RSVP tools underneath — so the overview tab tells you what to do next instead of just showing data.'
+    ]
+  },
   {
     version:'1.63.0', date:'2026-10-30',
     title:'Planner accounts: a real signup fork, a couple-switcher Planner Home, and invite-based access to a couple\'s wedding',
@@ -4947,6 +5010,17 @@ function normalizeDashboardData(d){
   if(d.accountType===undefined) d.accountType = 'couple';
   if(!Array.isArray(d.linkedPlanners)) d.linkedPlanners = [];
   if(!Array.isArray(d.activePlannerUids)) d.activePlannerUids = [];
+  // v1.64.0: deferred onboarding answers — gathered contextually after signup (see the
+  // "Finish Setting Up" follow-up flow) rather than forced into the first-pass wizard. A
+  // pre-v1.64.0 record simply has none of these yet, same as a skipped onboarding stage always
+  // meant "leave this undecided" — not done, not dismissed, so the Home nudge card still offers it.
+  if(d.weddingPriorities===undefined) d.weddingPriorities = [];
+  if(d.planningApproach===undefined) d.planningApproach = '';
+  if(d.venueStatus===undefined) d.venueStatus = 'progress';
+  if(d.preferredHotelBrand===undefined) d.preferredHotelBrand = '';
+  if(d.maxTravelDistanceKm===undefined) d.maxTravelDistanceKm = 40;
+  if(d.onboardingFollowUpDone===undefined) d.onboardingFollowUpDone = false;
+  if(d.onboardingFollowUpDismissed===undefined) d.onboardingFollowUpDismissed = false;
   if(d.couplePhoto===undefined) d.couplePhoto = null;
   if(d.coupleLogo===undefined) d.coupleLogo = null;
   if(!Array.isArray(d.weddingParty)) d.weddingParty = [];
@@ -5229,6 +5303,7 @@ function normalizeDashboardData(d){
   if(!Array.isArray(d.weddingProfile.colorPalette)) d.weddingProfile.colorPalette = ['#38473B','#C7A467','#CBB2A6','#FAF6EE'];
   if(d.weddingProfile.hashtag===undefined) d.weddingProfile.hashtag = '';
   if(d.weddingProfile.aestheticNotes===undefined) d.weddingProfile.aestheticNotes = '';
+  if(d.weddingProfile.styleKeyword===undefined) d.weddingProfile.styleKeyword = ''; // v1.64.0: the onboarding/follow-up aesthetic-swatch pick (e.g. "Classic Elegant"), shown as a small label next to Aesthetic Notes
   ['partner1','partner2'].forEach(key=>{
     if(d[key+'First']===undefined || d[key+'Last']===undefined){
       const parts = (d[key]||'').trim().split(/\s+/);
@@ -5467,8 +5542,16 @@ function skipInspirationIntro(){
    ONBOARDING FLOW
 ================================================================== */
 let currentStage = 1;
-const TOTAL_STAGES = 5; // v1.54.0: restructured from 10 one-question steps into 5 themed stages
+// v1.64.0: cut from 5 stages to 3 (Basics, Celebration, Money) per Natasha's 28-point review
+// (New Request #69 cluster A) — style/priorities/approach/venue/travel are now gathered later,
+// contextually, via the "Finish Setting Up" follow-up flow below (see openOnboardingFollowUp).
+const TOTAL_STAGES = 3; // v1.54.0: restructured from 10 one-question steps into 5 themed stages; v1.64.0: 5 → 3
 const onboardAnswers = { partner1:'', partner2:'', date:'', location:'', guests:150, budget:100000, events:DEFAULT_EVENTS.slice(), customEvents:[], approach:'', venue:'progress', style:'', priorities:[], hotel:'', distance:40, assistantEnabled:true };
+// v1.64.0: the "Finish Setting Up" follow-up flow's own stage counter — separate from
+// currentStage/TOTAL_STAGES above so the two flows' stage-toggling logic never collides
+// (they're rendered with different classes, .stage vs .followup-stage, for the same reason).
+let followUpStage = 1;
+const FOLLOWUP_TOTAL_STAGES = 2;
 
 /* ---- Events step: quick-add tradition shortcuts + individual event toggles + custom events ---- */
 function isEventSelected(name){ return onboardAnswers.events.includes(name); }
@@ -5571,7 +5654,12 @@ function collectStage(n){
   }
   if(n===2){ onboardAnswers.guests = parseInt(document.getElementById('ob-guests').value,10); }
   if(n===3){ onboardAnswers.budget = parseInt(document.getElementById('ob-budget').value,10); }
-  if(n===5){
+}
+// v1.64.0: the follow-up flow's own version of collectStage — gathers whatever belongs to its
+// stage n (1-indexed within the follow-up flow, not the main one). Style/priorities are, same
+// as before, live-bound via their own click listeners rather than read here.
+function collectFollowUpStage(n){
+  if(n===2){
     onboardAnswers.venue = document.getElementById('ob-venue').value;
     onboardAnswers.hotel = document.getElementById('ob-hotel').value.trim();
     onboardAnswers.distance = parseInt(document.getElementById('ob-distance').value,10);
@@ -5609,6 +5697,100 @@ function skipStage(){
   updateStageUI();
 }
 
+/* ---- v1.64.0: "Finish Setting Up" follow-up flow — opened later from a dismissible Home
+   card (openOnboardingFollowUp), not forced at signup. Mirrors the main onboarding wizard's
+   stage/nav pattern exactly, just scoped to its own counter and its own 2 stages. ---- */
+function openOnboardingFollowUp(){
+  const d = dashboardData;
+  // Prefill from whatever's already saved (re-opening this later to change an answer), else
+  // the same sensible defaults the original onboarding wizard used.
+  onboardAnswers.style = (d.weddingProfile && d.weddingProfile.styleKeyword) || '';
+  onboardAnswers.priorities = Array.isArray(d.weddingPriorities) ? [...d.weddingPriorities] : [];
+  onboardAnswers.approach = d.planningApproach || '';
+  onboardAnswers.venue = d.venueStatus || 'progress';
+  onboardAnswers.hotel = d.preferredHotelBrand || '';
+  onboardAnswers.distance = (d.maxTravelDistanceKm!=null) ? d.maxTravelDistanceKm : 40;
+  onboardAnswers.assistantEnabled = d.assistantEnabled !== false;
+  // These selection widgets are plain DOM elements toggled via class, not re-rendered from
+  // state (same pattern the original wizard used) — so reflect the prefilled answers by hand.
+  document.querySelectorAll('#ob-style .style-swatch').forEach(el=>el.classList.toggle('selected', el.dataset.val===onboardAnswers.style));
+  document.querySelectorAll('#ob-priorities .chip').forEach(el=>el.classList.toggle('selected', onboardAnswers.priorities.includes(el.dataset.val)));
+  document.querySelectorAll('#ob-approach .card-select').forEach(el=>el.classList.toggle('selected', el.dataset.val===onboardAnswers.approach));
+  document.getElementById('ob-venue').value = onboardAnswers.venue;
+  document.getElementById('ob-hotel').value = onboardAnswers.hotel;
+  document.getElementById('ob-distance').value = onboardAnswers.distance;
+  document.getElementById('ob-distance-val').textContent = onboardAnswers.distance;
+  document.getElementById('ob-assistantEnabled').checked = onboardAnswers.assistantEnabled;
+  followUpStage = 1;
+  updateFollowUpStageUI();
+  goTo('onboarding-followup');
+}
+function updateFollowUpStageUI(){
+  document.querySelectorAll('.followup-stage').forEach(s=>s.classList.toggle('active', parseInt(s.dataset.stage)===followUpStage));
+  document.getElementById('fuStepCount').textContent = `Finish Setting Up · ${followUpStage} of ${FOLLOWUP_TOTAL_STAGES}`;
+  document.getElementById('fuProgressFill').style.width = (followUpStage/FOLLOWUP_TOTAL_STAGES*100)+'%';
+  document.getElementById('fuBtnPrev').style.visibility = followUpStage===1 ? 'hidden' : 'visible';
+  document.getElementById('fuBtnNext').textContent = followUpStage===FOLLOWUP_TOTAL_STAGES ? 'Save & Finish' : 'Continue';
+  document.getElementById('fuBtnSkip').textContent = followUpStage===FOLLOWUP_TOTAL_STAGES ? 'Skip & finish' : 'Skip for now';
+}
+function followUpNextStage(){
+  collectFollowUpStage(followUpStage);
+  if(followUpStage===FOLLOWUP_TOTAL_STAGES){ finishOnboardingFollowUp(); return; }
+  followUpStage++;
+  updateFollowUpStageUI();
+}
+function followUpPrevStage(){
+  if(followUpStage===1) return;
+  collectFollowUpStage(followUpStage);
+  followUpStage--;
+  updateFollowUpStageUI();
+}
+function followUpSkipStage(){
+  // Same semantics as the main wizard's skipStage() — leaves this stage's answers untouched
+  // rather than collecting blanks.
+  if(followUpStage===FOLLOWUP_TOTAL_STAGES){ finishOnboardingFollowUp(); return; }
+  followUpStage++;
+  updateFollowUpStageUI();
+}
+function applyFollowUpAnswers(){
+  const d = dashboardData;
+  if(!d.weddingProfile) d.weddingProfile = {};
+  if(onboardAnswers.style) d.weddingProfile.styleKeyword = onboardAnswers.style;
+  d.weddingPriorities = [...onboardAnswers.priorities];
+  if(onboardAnswers.approach) d.planningApproach = onboardAnswers.approach;
+  d.venueStatus = onboardAnswers.venue;
+  d.preferredHotelBrand = onboardAnswers.hotel;
+  d.maxTravelDistanceKm = onboardAnswers.distance;
+  d.assistantEnabled = onboardAnswers.assistantEnabled;
+}
+function finishOnboardingFollowUp(){
+  applyFollowUpAnswers();
+  dashboardData.onboardingFollowUpDone = true;
+  persistWeddingRecord();
+  goTo('app');
+  renderRoute('home');
+}
+function dismissFollowUpNudge(){
+  dashboardData.onboardingFollowUpDismissed = true;
+  persistWeddingRecord();
+  if(document.getElementById('view-app').classList.contains('active')) renderRoute('home');
+}
+function goToHomeAfterOnboarding(){
+  goTo('app');
+  renderRoute('home');
+}
+// v1.64.0: the single surfaced next action on the result screen, per New Request #69 cluster A
+// — replacing the generic "explore Inspiration" prompt with one concrete recommendation
+// computed from what's actually known at generation time (the venue-status question is no
+// longer asked in the first pass, so this deliberately doesn't assume an answer to it).
+function recommendedNextAction(){
+  const d = dashboardData;
+  if(!d.weddingDateISO){
+    return {text:"Pick a wedding date — many vendors book up fast once you do, and it unlocks your full planning roadmap.", ctaLabel:'Set your date', ctaRoute:'my-wedding'};
+  }
+  return {text:"Confirm your venue — based on your date, this is usually the most important next decision.", ctaLabel:'Review vendors', ctaRoute:'vendors'};
+}
+
 function runGenerate(){
   document.getElementById('stepsWrap').style.display='none';
   document.querySelector('.onboard-wrap + .step-nav') // no-op safeguard
@@ -5636,6 +5818,11 @@ function renderResult(){
   document.getElementById('res-vendors').innerHTML = d.vendorCategoriesSuggested.map(v=>`<span class="chip-mini">${v}</span>`).join('');
   const introNames = document.getElementById('insp-intro-names');
   if(introNames) introNames.textContent = `${d.partner1} & ${d.partner2}`;
+  const nextAction = recommendedNextAction();
+  document.getElementById('res-next-action').innerHTML = `
+    <div><div class="rna-label">Recommended Next</div><div class="rna-text">${escapeHtml(nextAction.text)}</div></div>
+    <button class="btn btn-outline btn-sm" onclick="goTo('app'); renderRoute('${nextAction.ctaRoute}');">${escapeHtml(nextAction.ctaLabel)} →</button>
+  `;
 }
 
 /* ==================================================================
@@ -5797,7 +5984,7 @@ function renderRoute(key){
     vendorAddFormOpen = null;
     document.getElementById('content').innerHTML = renderVendorsModule();
   } else if(key==='my-wedding'){
-    blueprintTab='roadmap'; planFilterEvent='all'; planFilterRole='all'; planFilterPriority='all'; planFilterStatus='open';
+    blueprintTab='overview'; planFilterEvent='all'; planFilterRole='all'; planFilterPriority='all'; planFilterStatus='open';
     document.getElementById('content').innerHTML = renderMyWeddingModule();
   } else if(key==='inspiration'){
     document.getElementById('content').innerHTML = renderInspirationModule();
@@ -5912,6 +6099,22 @@ function homeAttentionSignals(ctx){
   items.sort((a,b)=>b.sev-a.sev);
   return items.slice(0,4);
 }
+// v1.64.0: the dismissible nudge back to the deferred onboarding questions (style, priorities,
+// planning approach, venue status, travel preferences) — see the "Finish Setting Up" follow-up
+// flow (openOnboardingFollowUp). Hidden once the couple has either finished it or said not now.
+function renderFollowUpNudgeCard(){
+  const d = dashboardData;
+  if(d.onboardingFollowUpDone || d.onboardingFollowUpDismissed) return '';
+  return `
+    <div class="followup-nudge">
+      <div class="fn-text"><b>Help us fine-tune your plan</b> — your style, what matters most, planning approach, and travel guidance for guests. About 2 minutes, totally optional.</div>
+      <div class="fn-actions">
+        <button class="btn btn-solid btn-sm" onclick="openOnboardingFollowUp()">Let's do it →</button>
+        <button type="button" class="btn-ghost" onclick="dismissFollowUpNudge()">Not now</button>
+      </div>
+    </div>
+  `;
+}
 function renderHome(){
   const d = dashboardData;
   const totalPlanned = d.budgetBreakdown.reduce((s,c)=>s+categoryPlanned(c),0);
@@ -5957,6 +6160,7 @@ function renderHome(){
       </div>
     </div>
 
+    ${renderFollowUpNudgeCard()}
     ${topAction ? `
     <div class="home-priority-card">
       <div class="hpc-eyebrow">Your next best move</div>
@@ -6855,26 +7059,43 @@ function renderBlueprintMoodboardStrip(){
    one of six subtabs. Calendar at a Glance (renderCalendarCard(), untouched) is one of them.
    The existing 6-stage PLAN_PHASES is reused as the single phase taxonomy for both the new
    Roadmap timeline and the Checklist tab, rather than inventing a second, parallel one. ---- */
-let blueprintTab = 'roadmap'; // 'roadmap' | 'checklist' | 'milestones' | 'calendar' | 'details' — v1.37.2: 'guides' (Tools & Guides) moved out of Blueprint and into the Guides & Tips module instead, see renderGuidesList()
+let blueprintTab = 'overview'; // v1.64.0: 'overview' (merged Roadmap+Milestones) | 'checklist' | 'calendar' | 'details' — relabeled per Natasha's 28-point review (New Request #69 cluster B): the old 5-tab Roadmap/Wedding Plan/Milestones/Calendar/Wedding Profile row wasn't self-explanatory to a couple, so Roadmap and Milestones (previously equal-billing top-level tabs) are now one "Overview" tab, and the tab LABEL for 'checklist' is "To-Dos" (the page's own heading inside still reads "Your Wedding Plan" — only the tab chip changed). 'roadmap'/'milestones' are kept as legal values of this variable for old/undefined saved state (see normalizeDashboardData-adjacent startup logic below) and simply render inside the merged Overview tab. — v1.37.2: 'guides' (Tools & Guides) moved out of Blueprint and into the Guides & Tips module instead, see renderGuidesList()
 // v1.46.0: Traditions & Culture reads at a glance by default (just what's selected), not as a
 // 12-option laundry list — toggling this reveals the full preset picker to add/remove.
 let traditionsEditMode = false;
-function switchBlueprintTab(tab){ blueprintTab = tab; document.getElementById('content').innerHTML = renderMyWeddingModule(); }
+function switchBlueprintTab(tab){
+  // v1.64.0: 'roadmap' and 'milestones' both collapse onto the merged 'overview' tab now.
+  blueprintTab = (tab==='roadmap' || tab==='milestones') ? 'overview' : tab;
+  document.getElementById('content').innerHTML = renderMyWeddingModule();
+}
 function renderMyWeddingModule(){
+  // v1.64.0: a session resumed from before this merge might still have blueprintTab set to the
+  // old 'roadmap'/'milestones' values (e.g. from in-memory state carried across a re-render) —
+  // normalize here too so the tab row's active state is always consistent.
+  if(blueprintTab==='roadmap' || blueprintTab==='milestones') blueprintTab = 'overview';
   return `
     ${renderBlueprintVisionHero()}
     <div class="seg-control" style="margin:4px 0 22px; flex-wrap:wrap;">
-      <button class="seg-btn ${blueprintTab==='roadmap'?'active':''}" onclick="switchBlueprintTab('roadmap')">Roadmap</button>
-      <button class="seg-btn ${blueprintTab==='checklist'?'active':''}" onclick="switchBlueprintTab('checklist')">Wedding Plan</button>
-      <button class="seg-btn ${blueprintTab==='milestones'?'active':''}" onclick="switchBlueprintTab('milestones')">Milestones</button>
+      <button class="seg-btn ${blueprintTab==='overview'?'active':''}" onclick="switchBlueprintTab('overview')">Overview</button>
+      <button class="seg-btn ${blueprintTab==='checklist'?'active':''}" onclick="switchBlueprintTab('checklist')">To-Dos</button>
       <button class="seg-btn ${blueprintTab==='calendar'?'active':''}" onclick="switchBlueprintTab('calendar')">Calendar</button>
       <button class="seg-btn ${blueprintTab==='details'?'active':''}" onclick="switchBlueprintTab('details')">Wedding Profile</button>
     </div>
-    ${blueprintTab==='roadmap' ? renderBlueprintRoadmapTab()
+    ${blueprintTab==='overview' ? renderBlueprintOverviewTab()
       : blueprintTab==='checklist' ? renderPlanTasksTab()
-      : blueprintTab==='milestones' ? renderBlueprintMilestonesTab()
       : blueprintTab==='calendar' ? renderCalendarCard()
       : renderBlueprintDetailsTab()}
+  `;
+}
+// v1.64.0: the merged Overview tab — Roadmap's content first (Days to Go / phase timeline /
+// Current Phase checklist / Upcoming Tasks), then Milestones' content (the chronological
+// RSVP-deadline-and-milestone list) underneath, inside its own labeled section so neither
+// collapses into looking like one undifferentiated list.
+function renderBlueprintOverviewTab(){
+  return `
+    ${renderBlueprintRoadmapTab()}
+    <div class="card-head" style="margin:26px 0 2px;"><h4 style="margin:0;">Milestones</h4></div>
+    ${renderBlueprintMilestonesTab()}
   `;
 }
 // v1.36.0: kept as a thin compatibility re-render helper, since every existing calendar/task
@@ -6947,6 +7168,13 @@ function renderBlueprintDetailsTab(){
 
     <div class="card">
       <div class="card-head"><h4>Master Aesthetic</h4><span class="d-sub">Your colour story and overall look — the default every event starts from, reused across your Playbook, Website and mood boards</span></div>
+      <div class="field-cell" style="margin-bottom:14px; max-width:260px;">
+        <label>Style</label>
+        <select onchange="updateWeddingProfileField('styleKeyword',this.value)">
+          <option value="" ${!wp.styleKeyword?'selected':''}>Not set yet</option>
+          ${['Modern Romantic','Classic Elegant','Boho Chic','Minimalist','Glam & Bold','Editorial'].map(s=>`<option value="${escapeAttr(s)}" ${wp.styleKeyword===s?'selected':''}>${escapeHtml(s)}</option>`).join('')}
+        </select>
+      </div>
       <div class="field-cell" style="margin-bottom:18px;">
         <label>Overall Aesthetic</label>
         <textarea class="notes-field" style="min-height:64px;" placeholder="Describe the overall look and feel you're going for..." onchange="updateWeddingProfileField('aestheticNotes',this.value)">${escapeHtml(wp.aestheticNotes)}</textarea>
@@ -14091,9 +14319,10 @@ const DEFAULT_GUEST_TIERS = [
   {key:'C', label:'Tier C — Backup List', desc:"A backup list you may not get to — move people up as seats free up."}
 ];
 let guestsModuleTab = 'overview'; // 'overview' | 'list' | 'waitlist' | 'seating' | 'messages' | 'rules'
-let ruleBuilderDraft = null; // {id|null, name, eventId, tags:[], matchMode:'any'|'all'} while a rule is being created/edited
+let ruleBuilderDraft = null; // {id|null, name, eventId, tags:[], matchMode:'any'|'all', saveAsRule} while a group invite is being built
 let ruleBuilderOpen = false;
 let rulePreviewId = null; // id of the Invite Rule currently showing its "who matches" review list
+let guestPreviewOpen = false; // v1.64.0: whether the builder's own live "review N guests" list is expanded
 let guestsGroupBy = 'family';
 let guestsSortBy = null; // null | 'family' | 'first' | 'last'
 let guestsSortDir = 'asc';
@@ -14646,7 +14875,7 @@ function renderGuestsModule(){
           <button class="seg-btn ${guestsModuleTab==='list'?'active':''}" onclick="switchGuestsModuleTab('list')">All Guests</button>
           <button class="seg-btn ${guestsModuleTab==='waitlist'?'active':''}" onclick="switchGuestsModuleTab('waitlist')">Waitlist</button>
           <button class="seg-btn ${guestsModuleTab==='seating'?'active':''}" onclick="switchGuestsModuleTab('seating')">Seating Chart</button>
-          <button class="seg-btn ${guestsModuleTab==='rules'?'active':''}" onclick="switchGuestsModuleTab('rules')" title="Save a reusable, tag-based bulk-invite rule — preview exactly who matches, then apply">Invite Rules</button>
+          <button class="seg-btn ${guestsModuleTab==='rules'?'active':''}" onclick="switchGuestsModuleTab('rules')" title="Pick who to invite by tag — see exactly who matches, then invite the group (optionally save it as a reusable rule)">Invite a Group</button>
         </div>
       </div>
     </div>
@@ -14687,18 +14916,21 @@ function ruleMatchSummary(rule){
   return { matches, total: matches.length, alreadyInvited, newCount: matches.length - alreadyInvited };
 }
 function openNewGuestRuleBuilder(){
-  ruleBuilderDraft = { id: null, name:'', eventId: (dashboardData.events[0]||{}).id || '', tags: [], matchMode: 'any' };
+  // v1.64.0: saveAsRule/showGuestPreview are new — see the reframed "Invite a Group" flow below.
+  ruleBuilderDraft = { id: null, name:'', eventId: (dashboardData.events[0]||{}).id || '', tags: [], matchMode: 'any', saveAsRule:false };
   ruleBuilderOpen = true;
+  guestPreviewOpen = false;
   refreshGuestsBackground();
 }
 function editGuestRule(ruleId){
   const r = (dashboardData.guestInviteRules||[]).find(x=>x.id===ruleId);
   if(!r) return;
-  ruleBuilderDraft = { id:r.id, name:r.name, eventId:r.eventId, tags:[...r.tags], matchMode:r.matchMode||'any' };
+  ruleBuilderDraft = { id:r.id, name:r.name, eventId:r.eventId, tags:[...r.tags], matchMode:r.matchMode||'any', saveAsRule:true };
   ruleBuilderOpen = true;
+  guestPreviewOpen = false;
   refreshGuestsBackground();
 }
-function cancelGuestRuleBuilder(){ ruleBuilderDraft = null; ruleBuilderOpen = false; refreshGuestsBackground(); }
+function cancelGuestRuleBuilder(){ ruleBuilderDraft = null; ruleBuilderOpen = false; guestPreviewOpen = false; refreshGuestsBackground(); }
 function updateRuleDraftField(field, val){ if(!ruleBuilderDraft) return; ruleBuilderDraft[field] = val; refreshGuestsBackground(); }
 function toggleRuleDraftTag(tag){
   if(!ruleBuilderDraft) return;
@@ -14744,22 +14976,65 @@ function applyGuestRule(ruleId){
   const r = (dashboardData.guestInviteRules||[]).find(x=>x.id===ruleId);
   if(!r) return;
   const { matches } = ruleMatchSummary(r);
+  const newlyInvited = [];
   matches.forEach(({h,m})=>{
-    if(!memberIsInvitedToEvent(h, m, r.eventId)) setMemberEventInvited(h.id, m.id, r.eventId, true);
+    if(!memberIsInvitedToEvent(h, m, r.eventId)){ setMemberEventInvited(h.id, m.id, r.eventId, true); newlyInvited.push({hId:h.id, mId:m.id}); }
   });
   r.lastAppliedISO = isoFromDate(new Date());
   refreshGuestsBackground();
+  if(newlyInvited.length){
+    showUndoToast(`Invited ${pluralize(newlyInvited.length,'guest','guests')} via "${r.name}".`, ()=>{
+      newlyInvited.forEach(({hId,mId})=>setMemberEventInvited(hId, mId, r.eventId, false));
+      refreshGuestsBackground();
+    });
+  }
+}
+function toggleGuestPreview(){ guestPreviewOpen = !guestPreviewOpen; refreshGuestsBackground(); }
+// v1.64.0: the direct "Invite a Group" action — reframed per Natasha's 28-point review (New
+// Request #69 cluster B): inviting a group of guests shouldn't require naming and saving a
+// rule first. This applies the invite immediately from the live draft; saving it as a reusable
+// rule for later is now an optional, secondary step (see the "Also save this as a rule" toggle
+// in the builder below), not the primary action.
+function inviteGuestsFromDraft(){
+  const draft = ruleBuilderDraft;
+  if(!draft || !draft.tags.length || !draft.eventId) return;
+  const { matches } = ruleMatchSummary({tags:draft.tags, matchMode:draft.matchMode, eventId:draft.eventId});
+  const newlyInvited = [];
+  matches.forEach(({h,m})=>{
+    if(!memberIsInvitedToEvent(h, m, draft.eventId)){ setMemberEventInvited(h.id, m.id, draft.eventId, true); newlyInvited.push({hId:h.id, mId:m.id}); }
+  });
+  const eventId = draft.eventId;
+  let savedRuleName = null;
+  if(draft.saveAsRule && draft.name.trim()){
+    if(!Array.isArray(dashboardData.guestInviteRules)) dashboardData.guestInviteRules = [];
+    savedRuleName = draft.name.trim();
+    dashboardData.guestInviteRules.push({
+      id: 'rule-'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+      name: savedRuleName, eventId: draft.eventId, tags: [...draft.tags], matchMode: draft.matchMode||'any',
+      createdISO: isoFromDate(new Date()), lastAppliedISO: isoFromDate(new Date())
+    });
+  }
+  ruleBuilderDraft = null; ruleBuilderOpen = false; guestPreviewOpen = false;
+  refreshGuestsBackground();
+  const msg = `Invited ${pluralize(newlyInvited.length,'guest','guests')}${savedRuleName ? ` — saved as "${savedRuleName}"` : ''}.`;
+  showUndoToast(msg, newlyInvited.length ? ()=>{
+    newlyInvited.forEach(({hId,mId})=>setMemberEventInvited(hId, mId, eventId, false));
+    refreshGuestsBackground();
+  } : null);
 }
 function renderGuestRulesTab(){
   const d = dashboardData;
   const rules = d.guestInviteRules||[];
   return `
     <div class="module-header">
-      <div class="mh-copy"><h2 style="margin:0;">Invite Rules</h2><p style="margin-top:4px;">Tag people under a household's Guest Classification or an individual's Attributes, then build a reusable rule that invites everyone matching those tags to an event. Preview exactly who matches before anything is applied — and re-run the same rule later as your list grows.</p></div>
-      ${!ruleBuilderOpen ? `<button class="btn btn-solid btn-sm" onclick="openNewGuestRuleBuilder()">+ New Rule</button>` : ''}
+      <div class="mh-copy"><h2 style="margin:0;">Invite a Group</h2><p style="margin-top:4px;">Who do you want to invite? Pick an event and the tags that describe them — Evera shows you exactly who matches before anything is sent.</p></div>
+      ${!ruleBuilderOpen ? `<button class="btn btn-solid btn-sm" onclick="openNewGuestRuleBuilder()">+ Invite a Group</button>` : ''}
     </div>
     ${ruleBuilderOpen ? renderGuestRuleBuilder() : ''}
-    ${rules.length ? rules.map(r=>renderGuestRuleCard(r)).join('') : (!ruleBuilderOpen ? `<div class="card"><p style="font-size:13px;color:var(--charcoal-faint);margin:0;">No rules yet. A rule might be "everyone tagged VIP or Bride's Side → invite to the Sangeet." Tag your guests first — under a household's Guest Classification, or a specific person's Attributes — then create your first rule.</p></div>` : '')}
+    ${rules.length ? `
+    <div class="card-head" style="margin:26px 0 2px;"><h4 style="margin:0;">Saved Rules</h4><span class="d-sub" style="margin-left:auto;">Re-run any of these anytime as your list grows</span></div>
+    ${rules.map(r=>renderGuestRuleCard(r)).join('')}
+    ` : (!ruleBuilderOpen ? `<div class="card"><p style="font-size:13px;color:var(--charcoal-faint);margin:0;">No saved rules yet. Tag your guests first — under a household's Guest Classification, or a specific person's Attributes — then use "Invite a Group" above; check "Also save this as a rule" if you'll want to run the same invite again later (e.g. "Women &amp; VIPs → Bridal Shower").</p></div>` : '')}
   `;
 }
 function renderGuestRuleBuilder(){
@@ -14771,9 +15046,8 @@ function renderGuestRuleBuilder(){
   const preview = previewable ? ruleMatchSummary({tags:draft.tags, matchMode:draft.matchMode, eventId:draft.eventId}) : null;
   return `
     <div class="card" style="border-color:var(--green-mid);">
-      <div class="card-head"><h4>${isEdit?'Edit Rule':'New Rule'}</h4></div>
+      <div class="card-head"><h4>${isEdit?'Edit Rule':'Who do you want to invite?'}</h4></div>
       <div class="field-grid">
-        <div class="field-cell"><label>Rule Name</label><input type="text" placeholder="e.g. Women &amp; VIPs → Bridal Shower" value="${escapeAttr(draft.name)}" onchange="updateRuleDraftField('name', this.value)"></div>
         <div class="field-cell"><label>Invite To Event</label>
           <select onchange="updateRuleDraftField('eventId', this.value)">
             ${(d.events||[]).map(e=>`<option value="${e.id}" ${draft.eventId===e.id?'selected':''}>${escapeHtml(e.name)}</option>`).join('')}
@@ -14791,9 +15065,24 @@ function renderGuestRuleBuilder(){
           <label style="display:flex; gap:5px; align-items:center; font-size:13px; cursor:pointer;"><input type="radio" name="ruleMatchMode" ${draft.matchMode==='all'?'checked':''} onchange="updateRuleDraftField('matchMode','all')"> Match ALL of these tags</label>
         </div>` : ''}
       </div>
-      ${preview ? `<p class="d-sub" style="margin-top:12px;">${pluralize(preview.total,'person','people')} currently match${preview.total===1?'es':''} these tags — ${preview.newCount} not yet invited to this event.</p>` : ''}
+      ${preview ? `
+      <div style="margin-top:12px; padding:10px 12px; background:var(--green-tint); border-radius:8px;">
+        <p class="d-sub" style="margin:0;"><b>Evera: ${pluralize(preview.total,'person','people')}</b> currently match${preview.total===1?'es':''} these tags — ${preview.newCount} not yet invited to this event.</p>
+        ${preview.total ? `<span class="ch-link" style="cursor:pointer; font-size:12.5px; font-weight:700;" onclick="toggleGuestPreview()">${guestPreviewOpen?'Hide list ↑':`Review ${pluralize(preview.total,'guest','guests')} →`}</span>` : ''}
+        ${guestPreviewOpen && preview.total ? `
+        <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:6px;">
+          ${preview.matches.map(({h,m})=>`<span class="chip-mini">${escapeHtml(`${m.firstName||''} ${m.lastName||''}`.trim()||'(unnamed)')}${memberIsInvitedToEvent(h,m,draft.eventId)?' ✓':''}</span>`).join('')}
+        </div>` : ''}
+      </div>` : `<p class="d-sub" style="margin-top:12px;">Pick an event and at least one tag to see who matches.</p>`}
+      <div style="margin-top:14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <label style="display:flex; gap:6px; align-items:center; font-size:13px; cursor:pointer;"><input type="checkbox" ${draft.saveAsRule?'checked':''} onchange="updateRuleDraftField('saveAsRule', this.checked)" ${isEdit?'disabled':''}> Also save this as a rule, to run again later</label>
+        ${draft.saveAsRule || isEdit ? `<input type="text" placeholder="e.g. Women &amp; VIPs → Bridal Shower" style="flex:1; min-width:180px;" value="${escapeAttr(draft.name)}" onchange="updateRuleDraftField('name', this.value)">` : ''}
+      </div>
       <div style="display:flex; gap:10px; margin-top:14px;">
-        <button class="btn btn-solid btn-sm" onclick="saveGuestRule()" ${!draft.name.trim()||!draft.tags.length||!draft.eventId?'disabled':''}>${isEdit?'Save Rule':'Create Rule'}</button>
+        ${isEdit
+          ? `<button class="btn btn-solid btn-sm" onclick="saveGuestRule()" ${!draft.name.trim()||!draft.tags.length||!draft.eventId?'disabled':''}>Save Rule</button>`
+          : `<button class="btn btn-solid btn-sm" onclick="inviteGuestsFromDraft()" ${!draft.tags.length||!draft.eventId||(draft.saveAsRule&&!draft.name.trim())?'disabled':''}>Invite ${preview?preview.newCount:0} Guest${preview&&preview.newCount===1?'':'s'}</button>`
+        }
         <button class="btn btn-outline btn-sm" onclick="cancelGuestRuleBuilder()">Cancel</button>
       </div>
     </div>
@@ -14834,6 +15123,38 @@ function renderGuestRuleCard(rule){
    real table with a photo thumbnail, date, invited/confirmed/pending/declined counts and a
    response-rate bar, replacing the old compact icon card here), and a click-into-event "Pending
    RSVPs" drawer for sending reminders — built from Natasha's own reference screenshots. */
+// v1.64.0: Guests' "front door" — per Natasha's 28-point review (New Request #69 cluster D),
+// Guests should lead with a simple status summary and a short needs-attention list before
+// exposing tags/tiers/households/rules/RSVP-state machinery, which belongs one level deeper
+// (All Guests, Waitlist, Seating Chart, Invite a Group). Missing addresses and dietary notes
+// reuse real, already-tracked fields; "ready to seat" reuses the existing membersNeedingSeats()
+// logic that already powers the Ready to Seat card further down this same tab.
+function guestsAttentionItems(){
+  const households = dashboardData.guestHouseholds||[];
+  const missingAddress = households.filter(h=>!(h.address && h.address.street && h.address.street.trim()));
+  const dietaryToReview = [];
+  households.forEach(h=>(h.members||[]).forEach(m=>{ if((m.dietaryRestrictions||'').trim()) dietaryToReview.push({h,m}); }));
+  return { missingAddress, dietaryToReview, readyToSeat: membersNeedingSeats() };
+}
+function renderGuestsAttentionCard(){
+  const {missingAddress, dietaryToReview, readyToSeat} = guestsAttentionItems();
+  const rows = [];
+  if(missingAddress.length) rows.push({text:`${pluralize(missingAddress.length,'household','households')} still need${missingAddress.length===1?'s':''} an address`, ctaLabel:'Add addresses', action:"switchGuestsModuleTab('list')"});
+  if(dietaryToReview.length) rows.push({text:`${pluralize(dietaryToReview.length,'guest','guests')} ${dietaryToReview.length===1?'has':'have'} dietary notes to review`, ctaLabel:'Review notes', action:"switchGuestsModuleTab('list')"});
+  if(readyToSeat.length) rows.push({text:`${pluralize(readyToSeat.length,'guest','guests')} confirmed and ready to seat`, ctaLabel:'Seat them', action:"switchGuestsModuleTab('seating')"});
+  if(!rows.length) return '';
+  return `
+    <div class="attention-card">
+      <div class="attention-head">${rows.length} thing${rows.length===1?'':'s'} need${rows.length===1?'s':''} your attention</div>
+      ${rows.map(r=>`
+        <div class="attention-row">
+          <span class="attention-ico neutral">○</span>
+          <span class="attention-text">${escapeHtml(r.text)}</span>
+          <span class="attention-cta" onclick="${r.action}">${escapeHtml(r.ctaLabel)} →</span>
+        </div>`).join('')}
+    </div>
+  `;
+}
 function renderGuestsOverviewTab(){
   const d = dashboardData;
   const stats = guestOverallStats();
@@ -14847,6 +15168,7 @@ function renderGuestsOverviewTab(){
       <div class="mh-copy"><p style="margin-top:0;">Manage your guests and track RSVPs across all events.</p></div>
       <button class="btn btn-solid btn-sm" onclick="quickAddHousehold()">+ Add a Family, Party, or Guest</button>
     </div>
+    ${renderGuestsAttentionCard()}
     <div class="grid-3" style="margin-bottom:20px;">
       <div class="card">
         <div class="d-sub" style="text-transform:uppercase; letter-spacing:0.03em; font-size:11px;">Guests Added</div>
@@ -17466,9 +17788,9 @@ function renderBudgetOverviewTab(){
           <div class="ps-label" style="margin-bottom:4px;">Total Budget</div>
           <input type="text" inputmode="decimal" id="budgetTotalInput" class="budget-total-input" value="${fmtMoneyCents(d.budgetTotal)}" onfocus="this.value=${d.budgetTotal||0}; this.select();" onblur="updateBudgetTotal(this.value)">
         </div>
-        <div class="ps-stat"><div class="ps-num">${fmtMoney(totalPlanned)}</div><div class="ps-label">Allocated</div></div>
-        <div class="ps-stat"><div class="ps-num">${fmtMoney(totalSpent)}</div><div class="ps-label">Committed / Paid</div></div>
-        <div class="ps-stat"><div class="ps-num" style="${(d.budgetTotal-totalPlanned)<0?'color:var(--terracotta);':''}">${unallocatedStat(d.budgetTotal-totalPlanned).display}</div><div class="ps-label">${unallocatedStat(d.budgetTotal-totalPlanned).label}</div></div>
+        <div class="ps-stat"><div class="ps-num">${fmtMoney(totalPlanned)}</div><div class="ps-label">Allocated</div><div class="ps-sublabel">Planned across your wedding</div></div>
+        <div class="ps-stat"><div class="ps-num">${fmtMoney(totalSpent)}</div><div class="ps-label">Committed / Paid</div><div class="ps-sublabel">Promised to vendors, or already paid</div></div>
+        <div class="ps-stat"><div class="ps-num" style="${(d.budgetTotal-totalPlanned)<0?'color:var(--terracotta);':''}">${unallocatedStat(d.budgetTotal-totalPlanned).display}</div><div class="ps-label">${unallocatedStat(d.budgetTotal-totalPlanned).label}</div><div class="ps-sublabel">${(d.budgetTotal-totalPlanned)<0 ? 'Over your total budget' : 'Still available to plan for'}</div></div>
         <div class="ps-stat">
           <div class="ps-num">${fmtMoney(Math.round((d.budgetTotal||0)*(d.budgetContingencyPct||0)/100))}</div>
           <div class="ps-label">Reserve Target (<input type="number" min="0" max="100" value="${d.budgetContingencyPct}" style="width:32px; border:none; border-bottom:1px solid var(--line); background:transparent; font-size:11px; font-weight:700; color:var(--charcoal-faint); text-transform:uppercase; letter-spacing:0.05em; padding:0; font-family:inherit;" onchange="updateBudgetContingencyPct(this.value)">%)</div>
