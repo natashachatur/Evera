@@ -3,7 +3,7 @@
   "description": "Cloud Functions for Evera — real guest email (SendGrid) and SMS (Twilio) sending for the Communications Center",
   "private": true,
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "main": "index.js",
   "scripts": {
