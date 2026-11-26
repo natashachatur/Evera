@@ -155,6 +155,12 @@
   .retailer-row{display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:22px;}
   .retailer-chip{background:#fff; border:1px solid var(--line); border-radius:999px; padding:9px 16px; font-size:12.5px; font-weight:600; color:var(--green-deep); text-decoration:none; display:inline-flex; align-items:center; gap:6px;}
   .retailer-chip:hover{border-color:var(--gold);}
+  /* v1.65.0 — real couple-uploaded reference photos + their own shopping
+     links, shown instead of the stylized illustrations/generic retailer
+     chips above whenever either exists for the event. */
+  .dc-ref-photos{display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-bottom:10px;}
+  .dc-ref-photo{width:120px; height:120px; border-radius:var(--radius-sm); overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.12);}
+  .dc-ref-photo img{width:100%; height:100%; object-fit:cover; display:block;}
 
   /* ---------- album ---------- */
   .album-notice{background:var(--green-deep); color:#fff; padding:12px 20px; border-radius:var(--radius-sm); font-size:13px; text-align:center; margin-bottom:24px;}
@@ -456,6 +462,7 @@ let FAQ_ITEMS = [
 ];
 
 let RSVP_DEADLINE_ISO = '2027-03-01';
+let RSVP_COLLECTION_ENABLED = true; // v1.65.0 — New Request #47
 
 /* RSVP survey questions — mirrors the couple's RSVP Surveys built in Guest Management.
    A survey with eventId:null applies to everyone; otherwise only guests invited to
@@ -542,6 +549,7 @@ function applyLiveWeddingData(data){
   EAT_DRINK = data.eatDrink || [];
   FAQ_ITEMS = data.faqItems || [];
   RSVP_DEADLINE_ISO = data.rsvpDeadlineISO || '';
+  RSVP_COLLECTION_ENABLED = data.rsvpCollectionEnabled !== false;
   SURVEYS = data.surveys || [];
   ALBUM_PHOTOS = data.albumPhotos || [];
   ALBUM_NOTIFICATIONS = data.albumNotifications || [];
@@ -766,19 +774,36 @@ function renderEventDetail(){
         <a class="btn btn-solid" href="${gcalUrl}" target="_blank" rel="noopener">+ Add to Google Calendar</a>
         <a class="btn btn-outline" href="#" onclick="downloadIcs('${e.id}'); return false;">⤓ Download .ics</a>
       </div>
-      ${dc ? `
+      ${dc ? (()=>{
+        // v1.65.0: show the couple's REAL reference photos and real shopping
+        // links when they've added either — falling back to the stylized
+        // illustrations + generic retailer chips only when neither exists.
+        // See New Request #46, and buildWeddingWebsiteExport() on the admin
+        // side for why attirePhotos/customAttireLinks are even present here
+        // at all (they weren't exported before this version).
+        const realPhotos = LIVE_MODE ? (e.attirePhotos||[]) : [];
+        const realLinks = LIVE_MODE ? (e.customAttireLinks||[]) : [];
+        const hasReal = realPhotos.length || realLinks.length;
+        return `
       <div class="dresscode-box">
         <div class="dc-title">${e.dressCodeText ? escapeHtml(e.dressCodeText.split(/[.,—–-]/)[0].trim() || dc.label) : escapeHtml(dc.label)}</div>
         <div class="dc-desc">${escapeHtml(e.dressCodeText || dc.desc)}</div>
         <div class="dc-swatches">${dc.palette.map(c=>`<span class="dc-swatch" style="background:${c};"></span>`).join('')}</div>
+        ${realPhotos.length ? `
+        <div class="dc-ref-photos">
+          ${realPhotos.map(p=>`<div class="dc-ref-photo"><img src="${p}" alt="Reference outfit for ${escapeHtml(e.name)}"></div>`).join('')}
+        </div>` : `
         <div class="dc-figures">
           ${dc.garments.map(g=>`<div class="dc-figure-wrap">${garmentFigureSVG(g, dc.palette)}<div class="dc-figure-cap">${escapeHtml(GARMENT_LABELS[g]||'')}</div></div>`).join('')}
-        </div>
+        </div>`}
         <div class="retailer-row">
-          ${(RETAILERS[dcKey]||[]).map(r=>`<a class="retailer-chip" href="${r.url}" target="_blank" rel="noopener">🛍 ${escapeHtml(r.name)}</a>`).join('')}
+          ${realLinks.length
+            ? realLinks.map(l=>`<a class="retailer-chip" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">🛍 ${escapeHtml(l.name)}</a>`).join('')
+            : (realPhotos.length ? '' : (RETAILERS[dcKey]||[]).map(r=>`<a class="retailer-chip" href="${r.url}" target="_blank" rel="noopener">🛍 ${escapeHtml(r.name)}</a>`).join(''))}
         </div>
-        <div class="dc-note">Stylized illustrations to set the tone, drawn to this event's colour palette — not real photos.</div>
-      </div>` : `<div class="empty-note" style="margin-top:20px;">Dress code not set yet — check back closer to the date.</div>`}
+        ${!hasReal ? `<div class="dc-note">Stylized illustrations to set the tone, drawn to this event's colour palette — not real photos.</div>` : ''}
+      </div>`;
+      })() : `<div class="empty-note" style="margin-top:20px;">Dress code not set yet — check back closer to the date.</div>`}
     </div>
   `;
 }
@@ -885,9 +910,25 @@ let rsvpEventHeadcounts = {}; // {eventId: number}
 const RSVP_CONFIRMATION_LOG = []; // simulated confirmation "emails" — {householdId, sentAt}
 
 function renderRsvp(){
-  document.getElementById('rsvpDeadlineBanner').innerHTML = RSVP_DEADLINE_ISO ? `Please RSVP by <b>${fmtDeadline(RSVP_DEADLINE_ISO)}</b>` : '';
-  renderRsvpSearch();
   document.getElementById('rsvpFormWrap').innerHTML = '';
+  const banner = document.getElementById('rsvpDeadlineBanner');
+  if(!RSVP_COLLECTION_ENABLED){
+    // .rsvp-deadline-banner has its own background/padding regardless of
+    // content, so just clearing its text left an empty solid-green bar —
+    // hide the element outright whenever it has nothing to show.
+    banner.innerHTML = '';
+    banner.style.display = 'none';
+    document.getElementById('rsvpSearchCard').innerHTML = `<div class="empty-note">RSVP collection is currently closed. Please reach out to the couple directly with any questions.</div>`;
+    return;
+  }
+  if(RSVP_DEADLINE_ISO){
+    banner.innerHTML = `Please RSVP by <b>${fmtDeadline(RSVP_DEADLINE_ISO)}</b>`;
+    banner.style.display = '';
+  } else {
+    banner.innerHTML = '';
+    banner.style.display = 'none';
+  }
+  renderRsvpSearch();
 }
 function renderRsvpSearch(){
   document.getElementById('rsvpSearchCard').innerHTML = `
@@ -1035,8 +1076,7 @@ function applyHeroAndChrome(){
   document.getElementById('guestBar').style.display = LIVE_MODE ? 'none' : '';
   document.getElementById('guestEventNote').textContent = '';
 }
-async function init(){
-  await loadLiveWeddingData();
+function renderAll(){
   initGate();
   applyWebsiteTheme();
   applyHeroAndChrome();
@@ -1052,9 +1092,33 @@ async function init(){
   renderTravel();
   renderFaq();
   renderRsvp();
+}
+async function init(){
+  await loadLiveWeddingData();
+  renderAll();
   goTo('home');
   setInterval(renderCountdown, 60000);
 }
+
+/* ==================================================================
+   IN-APP LIVE PREVIEW (v1.65.0 — New Request #49)
+   When this page is opened by the main Evera app's "Preview Website"
+   button (window.open, not a navigation the couple typed), it pings its
+   opener once ready and then waits for the real, current, unsaved
+   dashboardData — not the downloaded wedding-data.json export — applying
+   it the same way loadLiveWeddingData() would, then re-rendering.
+================================================================== */
+window.addEventListener('message', (ev)=>{
+  const msg = ev && ev.data;
+  if(!msg || msg.type!=='EVERA_PREVIEW_DATA') return;
+  applyLiveWeddingData(msg.data);
+  LIVE_MODE = true;
+  renderAll();
+});
+if(window.opener){
+  try{ window.opener.postMessage({type:'EVERA_PREVIEW_READY'}, '*'); }catch(err){}
+}
+
 init();
 </script>
 </body>

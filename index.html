@@ -36,6 +36,41 @@
   svg.icon{width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0;}
   .hidden{display:none !important;}
 
+  /* ---------------- DEPLOY BANNER (v1.65.0) ----------------
+     Discreet top-of-viewport notice shown to a signed-in user when the
+     version actually live on the server differs from the one their tab
+     loaded. See DEPLOY WATCHER in the script for why this only ever shows
+     a binary "a new version is live" state rather than a build/deploy
+     progress bar — there's no real CI pipeline behind Evera to report
+     real stages from, so nothing here is simulated or guessed. */
+  .deploy-banner{
+    position:fixed; top:0; left:0; right:0; z-index:2000;
+    display:none; align-items:center; justify-content:center; gap:14px;
+    min-height:38px; padding:8px 20px; background:var(--green-deep); color:#EFE9DA;
+    font-size:12.5px; font-weight:600; letter-spacing:0.01em; box-shadow:0 2px 14px rgba(43,42,38,0.18);
+  }
+  .deploy-banner.show{display:flex;}
+  .deploy-banner .db-dot{width:7px; height:7px; border-radius:50%; background:var(--champagne); flex-shrink:0; animation:dbPulse 1.6s ease-in-out infinite;}
+  @keyframes dbPulse{0%,100%{opacity:0.4;} 50%{opacity:1;}}
+  .deploy-banner-actions{display:flex; align-items:center; gap:10px; flex-shrink:0;}
+  .deploy-banner button{font-size:12px; font-weight:700; border-radius:999px; border:none; padding:5px 14px; cursor:pointer;}
+  .db-refresh-btn{background:var(--champagne); color:var(--green-deep);}
+  .db-refresh-btn:hover{background:var(--champagne-light);}
+  .db-dismiss-btn{background:transparent; color:#C9C3B2; padding:5px 8px; font-size:15px; line-height:1;}
+  .db-dismiss-btn:hover{color:#EFE9DA;}
+  /* --deploy-banner-h is set from JS to the banner's real measured height
+     (showDeployBanner) rather than guessed here — font rendering/zoom can
+     shift its actual height slightly, and a guessed constant risked a
+     few-pixel overlap with the sticky topbar/sidebar underneath it. */
+  body.has-deploy-banner{padding-top:var(--deploy-banner-h,42px);}
+  body.has-deploy-banner .sidebar,
+  body.has-deploy-banner .topbar{top:var(--deploy-banner-h,42px);}
+  body.has-deploy-banner .sidebar{height:calc(100vh - var(--deploy-banner-h,42px));}
+  @media (max-width:640px){
+    .deploy-banner{flex-direction:column; gap:6px; padding:10px 14px; text-align:center;}
+    .deploy-banner .db-dot{display:none;}
+  }
+
   /* ---------------- VIEW SWITCHING ---------------- */
   .view{display:none; min-height:100vh;}
   .view.active{display:block;}
@@ -1600,6 +1635,15 @@
 </style>
 </head>
 <body>
+<!-- ============ DEPLOY BANNER (v1.65.0) ============ -->
+<div class="deploy-banner" id="deployBanner" role="status" aria-live="polite">
+  <span class="db-dot" aria-hidden="true"></span>
+  <span id="deployBannerText">A new version of Evera is ready.</span>
+  <div class="deploy-banner-actions">
+    <button type="button" class="db-refresh-btn" onclick="location.reload()">Refresh Now</button>
+    <button type="button" class="db-dismiss-btn" onclick="dismissDeployBanner()" aria-label="Dismiss">×</button>
+  </div>
+</div>
 <!-- ============ LANDING ============ -->
 <section id="view-landing" class="view active">
   <div class="landing-motif">
@@ -2203,6 +2247,27 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.66.0', date:'2026-11-26',
+    title:'Website: your own shopping links, a Guided Setup wizard, an in-app live preview, and an RSVP open/closed switch',
+    items:[
+      'Attire & Shopping no longer auto-picks 3 generic retailer links per dress-code category (Nordstrom, ASOS, Etsy, etc.) — you add your own links per event instead ("Shop the Look — your own links"), and only the links you add are ever shown to guests. Add as many as you want, remove any, and a bare domain like "aritzia.com" is auto-completed to a real URL.',
+      'Fixed a real gap found while building the above: reference photos you upload in the Attire & Shopping card were never actually included in the website export, so guests never saw them even though the card has always said that\'s what it\'s for. They\'re now included, and the event detail page shows your real reference photos (and your real shop links) in place of the stylized illustration placeholders whenever you\'ve added either.',
+      'New "RSVP collection is open on the website" toggle on the RSVP Summary card — a second, independent switch from hiding the whole RSVP page. Turn it off to stop new RSVPs (for example, after your deadline, or before you\'re ready to open it) without hiding the page: guests see an honest "RSVP collection is currently closed — please reach out to the couple directly" message instead of the form.',
+      'New "Guided Setup" — a 6-step wizard (Welcome & Story → Your Celebration → Guest Logistics → RSVP → Look & Feel → Review & Publish) for building your website from scratch, in the same visual style as the onboarding wizard. Every field inside it writes straight to the same data the full control panel uses, so nothing needs to be "merged in" later — hop between the wizard and the full panel freely. Ends on a plain-language readiness checklist (no step is required to publish) with Preview and Publish right there.',
+      'New "Preview Website" button opens your real wedding-website.html in a new tab with your current, unsaved changes already on it — no exporting or downloading a JSON file first. (The JSON export still exists for actually publishing the live site, since Evera doesn\'t host one in this prototype — the new button is purely a faster way to check how things look while you work.)'
+    ]
+  },
+  {
+    version:'1.65.0', date:'2026-11-26',
+    title:'A discreet "new version available" banner for anyone signed in',
+    items:[
+      'When a new version of Evera has been pushed to the live site, anyone currently signed in (and already using the app in their browser) now sees a small banner fixed to the very top of the screen — "A new version of Evera (vX.X.X) has been pushed — refresh to get it" — with a one-click Refresh Now button, instead of silently working on stale code until they happen to reload.',
+      'Honest about what this actually is: Evera doesn\'t have a real build/deploy pipeline behind it today (a new version goes live by a plain git push to a static host, with no build or deploy stage a browser tab could observe) — so this deliberately does NOT show a fake "building… 40%… deploying…" progress bar. It checks a small version.json file every 90 seconds (and immediately whenever you switch back to the tab) and shows the banner the moment the live version genuinely differs from the one your tab loaded — a real, binary signal, not a simulated one.',
+      'Scoped to the signed-in planning app only — the guest-facing wedding website doesn\'t have a concept of being "logged in," so it doesn\'t get this banner.',
+      'Dismissible with a small × if you\'d rather keep working and refresh later on your own — it won\'t re-nag you for the rest of that browser tab\'s session, since refreshing (which clears the dismissal) is the whole point anyway.'
+    ]
+  },
   {
     version:'1.64.0', date:'2026-10-30',
     title:'From your 28-point review: a shorter onboarding, a simpler Wedding Blueprint, a reframed Invite flow, and a Guests front door',
@@ -3008,6 +3073,69 @@ const CHANGELOG = [
   }
 ];
 const CURRENT_VERSION = CHANGELOG[0].version;
+
+/* ==================================================================
+   DEPLOY WATCHER (v1.65.0)
+   Evera has no real CI/build pipeline behind it — a new version goes
+   live by a plain `git push` to a static host, with no build/deploy
+   stage signal a client could observe (confirmed directly with
+   Natasha). So this deliberately does NOT show a fabricated progress
+   bar or percentage — the only thing a browser tab can honestly know
+   is "is the version live on the server right now different from the
+   one I loaded?" The moment that's true, show a discreet top banner
+   so anyone signed in and already in the app knows to refresh.
+   `version.json` is a tiny file sitting next to index.html, kept in
+   sync by hand at the same moment CHANGELOG is bumped for a release —
+   there's no build step to generate it automatically in this
+   hand-authored single-file app.
+================================================================== */
+let deployWatcherTimer = null;
+let deployBannerDismissed = false;
+const DEPLOY_CHECK_INTERVAL_MS = 90000; // 90s — frequent enough to notice within a couple minutes, not so frequent it's a real load
+function startDeployWatcher(){
+  if(deployWatcherTimer || !currentUser) return; // only once, and only for a signed-in user
+  checkForNewVersion();
+  deployWatcherTimer = setInterval(checkForNewVersion, DEPLOY_CHECK_INTERVAL_MS);
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden) checkForNewVersion();
+  });
+}
+async function checkForNewVersion(){
+  if(deployBannerDismissed) return;
+  try{
+    const res = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
+    if(!res.ok) return;
+    const data = await res.json();
+    if(data && data.version && data.version !== CURRENT_VERSION){
+      showDeployBanner(data.version);
+    }
+  }catch(err){
+    // Offline, version.json missing, or a network hiccup — fail silent. A
+    // failed *check* is not news; only a confirmed newer version is.
+  }
+}
+function showDeployBanner(newVersion){
+  const banner = document.getElementById('deployBanner');
+  const textEl = document.getElementById('deployBannerText');
+  if(!banner || !textEl) return;
+  textEl.textContent = 'A new version of Evera (v' + newVersion + ') has been pushed — refresh to get it.';
+  banner.classList.add('show');
+  document.body.classList.add('has-deploy-banner');
+  // Measure the banner's real rendered height (it can wrap to two lines on a
+  // narrow screen) rather than guessing a fixed pixel offset for the sticky
+  // topbar/sidebar underneath it — a guessed constant risked a few-pixel
+  // overlap depending on font rendering, zoom, or viewport width.
+  requestAnimationFrame(()=>{
+    document.documentElement.style.setProperty('--deploy-banner-h', banner.offsetHeight + 'px');
+  });
+}
+function dismissDeployBanner(){
+  deployBannerDismissed = true;
+  const banner = document.getElementById('deployBanner');
+  if(banner) banner.classList.remove('show');
+  document.body.classList.remove('has-deploy-banner');
+}
+
 /* What's New used to be a popup (.item-modal, no max-height/scroll of its own) — with 11+
    releases of content it simply ran off the bottom of the screen with no way to see the rest.
    It's now a full page like any other module, reached via the same sidebar link, so it scrolls
@@ -4828,6 +4956,7 @@ function onEveraAuthStateChanged(user){
   if(user && document.getElementById('view-landing').classList.contains('active')){
     routeSignedInUser(user.uid);
   }
+  if(user) startDeployWatcher();
 }
 function updateAccountUI(){
   if(currentRouteKey==='settings'){
@@ -5440,6 +5569,9 @@ function normalizeDashboardData(d){
   if(d.website.customDomain===undefined) d.website.customDomain = '';
   if(d.website.passwordProtected===undefined) d.website.passwordProtected = false;
   if(d.website.sitePassword===undefined) d.website.sitePassword = '';
+  // v1.65.0: a standalone "is RSVP collection open" switch, independent of
+  // hiding the whole RSVP page — see New Request #47.
+  if(d.website.rsvpCollectionEnabled===undefined) d.website.rsvpCollectionEnabled = true;
   if(!d.notificationPrefs) d.notificationPrefs = {emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false};
   if(d.notificationPrefs.paymentReminderLeadDays===undefined) d.notificationPrefs.paymentReminderLeadDays = 30;
   if(!Array.isArray(d.collaborators)) d.collaborators = [];
@@ -5492,6 +5624,10 @@ function normalizeDashboardData(d){
     // section — never a fabricated or scraped photo, same honest-upload convention as
     // coverPhoto/couplePhoto/coupleLogo elsewhere in the app.
     if(!Array.isArray(e.attirePhotos)) e.attirePhotos = [];
+    // v1.65.0: the couple's own shopping links per event — replaces the old
+    // auto-picked ATTIRE_SHOP_LINKS (3 generic retailer links per dress-code
+    // category) with real links only the couple added. See New Request #46.
+    if(!Array.isArray(e.customAttireLinks)) e.customAttireLinks = [];
   });
   if(!Array.isArray(d.eventCategories)) d.eventCategories = ['Pre-Wedding','Wedding Weekend','Post-Wedding','Bachelor Party','Bachelorette Party','Other'];
   // if any event's category isn't in the list yet (e.g. seeded above, or from older data), fold it in
@@ -8974,6 +9110,7 @@ function notifyGuestsNewPhotos(){
   document.getElementById('content').innerHTML = renderWebsiteModule();
 }
 function renderWebsiteModule(){
+  if(websiteGuideOpen) return renderWebsiteGuide();
   const d = dashboardData;
   const w = d.website;
   const stats = guestOverallStats();
@@ -8990,11 +9127,15 @@ function renderWebsiteModule(){
           </select>
         </div>
       </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+      <button class="btn btn-solid btn-sm" style="margin-top:12px;" onclick="openWebsiteGuide()">🪄 Guided Setup</button>
+      <p style="font-size:11.5px;color:var(--charcoal-faint);margin:8px 0 0;">New to building your website? Guided Setup walks through it step by step — hero photo, story, events, travel, RSVP, and look &amp; feel — ending with Publish. Or skip straight to any card below; both work on the exact same data.</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
         <button class="btn ${w.published?'btn-outline':'btn-solid'} btn-sm" onclick="toggleWebsitePublished()">${w.published?'Unpublish':'Publish Website'}</button>
+        <button class="btn btn-outline btn-sm" onclick="previewWebsiteLive()">👁 Preview Website</button>
         <button class="btn btn-outline btn-sm" onclick="downloadWeddingWebsiteExport()">⬇ Export Website Data (JSON)</button>
       </div>
-      <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:10px;">Everything below — Our Story, Wedding Party, Events, Travel, FAQ, Registry, and your real guest list for RSVP search — is pulled live into this export. Save the downloaded file as <code>wedding-data.json</code> next to your <code>wedding-website.html</code> file and the guest site shows your real wedding instead of the sample one, automatically. RSVPs submitted on that page still aren't wired back into Evera yet — that's tracked separately in the backlog alongside real guest communications.</p>
+      <p id="websitePreviewStatus" style="display:none; font-size:11.5px; color:var(--terracotta); margin-top:8px;"></p>
+      <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:10px;">Everything below — Our Story, Wedding Party, Events, Travel, FAQ, Registry, and your real guest list for RSVP search — is pulled live into this export. "Preview Website" opens your real wedding-website.html with your current, unsaved changes included — nothing to download first. Save the downloaded JSON as <code>wedding-data.json</code> next to your <code>wedding-website.html</code> file and the live guest site shows your real wedding the same way, automatically. RSVPs submitted on that page still aren't wired back into Evera yet — that's tracked separately in the backlog alongside real guest communications.</p>
     </div>
 
     <div class="grid-2">
@@ -9002,6 +9143,13 @@ function renderWebsiteModule(){
         <div class="card-head"><h4>RSVP Summary</h4><span class="ch-link" style="cursor:pointer;" onclick="renderRoute('guests')">Manage in Guests →</span></div>
         <div class="rsvp-stats"><span><b>${stats.confirmedHeadcount}</b> confirmed</span><span>${stats.pendingHeadcount} pending</span></div>
         <div class="rsvp-stats" style="margin-top:8px;"><span>${stats.declinedHeadcount} declined</span><span></span></div>
+        <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--line-soft);">
+          <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+            <input type="checkbox" ${w.rsvpCollectionEnabled!==false?'checked':''} onchange="toggleRsvpCollectionEnabled()">
+            RSVP collection is open on the website
+          </label>
+          <p style="font-size:11.5px;color:var(--charcoal-faint);margin:6px 0 0;">Leave this on until you're ready for guests to actually start RSVPing — you can turn it off any time, even after publishing, without hiding the page.</p>
+        </div>
       </div>
       <div class="card">
         <div class="card-head"><h4>Pages Shown to Guests</h4><span class="d-sub">Anything unchecked is hidden entirely, not just locked</span></div>
@@ -9134,7 +9282,7 @@ function renderWebsiteModule(){
 
     <div class="card">
       <div class="card-head"><h4>Attire &amp; Shopping</h4><span class="d-sub">What guests see on each event's dress-code section</span></div>
-      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:0;">Add real reference photos per event (ones you have the rights to use), and guests get a few real retailer links matched to that dress code.</p>
+      <p style="font-size:12px;color:var(--charcoal-faint);margin-top:0;">Add real reference photos per event (ones you have the rights to use), and link to the exact items you want guests to shop — only the links you add are shown, nothing auto-picked.</p>
       ${d.events.filter(e=>e.publicVisibility!==false).map(e=>renderEventAttireCard(e)).join('') || '<p class="d-sub">No events are visible to guests yet — toggle one on in Event Visibility above.</p>'}
     </div>
 
@@ -9247,6 +9395,193 @@ function timeAgoLabel(ts){
 function updateWebsiteField(field,val){ dashboardData.website[field]=val; document.getElementById('content').innerHTML = renderWebsiteModule(); }
 function toggleWebsitePublished(){ dashboardData.website.published = !dashboardData.website.published; document.getElementById('content').innerHTML = renderWebsiteModule(); }
 function toggleWebsiteSection(key){ dashboardData.website.sections[key] = !dashboardData.website.sections[key]; document.getElementById('content').innerHTML = renderWebsiteModule(); }
+// v1.65.0 — New Request #47: a standalone RSVP-collection open/closed switch,
+// independent of hiding the whole RSVP page via websiteSections.rsvp.
+function toggleRsvpCollectionEnabled(){ dashboardData.website.rsvpCollectionEnabled = dashboardData.website.rsvpCollectionEnabled===false ? true : false; document.getElementById('content').innerHTML = renderWebsiteModule(); }
+
+/* ==================================================================
+   IN-APP LIVE PREVIEW (v1.65.0 — New Request #49)
+   wedding-website.html is a fully separate static file with its own
+   complete <html> document, so this opens it as a REAL tab (window.open)
+   rather than an iframe — it runs its own unmodified init/render
+   lifecycle, with only a postMessage listener added (in that file) as the
+   live-data entry point. The opened tab pings back EVERA_PREVIEW_READY
+   once its own init() has run; only then do we post the real data, so we
+   never race its page load.
+================================================================== */
+let websitePreviewWindow = null;
+window.addEventListener('message', (ev)=>{
+  const msg = ev && ev.data;
+  if(!msg || msg.type!=='EVERA_PREVIEW_READY' || !websitePreviewWindow) return;
+  try{ websitePreviewWindow.postMessage({type:'EVERA_PREVIEW_DATA', data: buildWeddingWebsiteExport()}, '*'); }catch(err){}
+});
+function previewWebsiteLive(){
+  const statusEl = document.getElementById('websitePreviewStatus');
+  websitePreviewWindow = window.open('wedding-website.html', 'everaWebsitePreview');
+  if(!websitePreviewWindow){
+    if(statusEl){ statusEl.style.display = ''; statusEl.textContent = 'Your browser blocked the preview pop-up — allow pop-ups for this site and try again.'; }
+    return;
+  }
+  if(statusEl) statusEl.style.display = 'none';
+  // Fallback in case the opened tab was already loaded (e.g. the couple
+  // re-clicked Preview while that tab is still open) and so never re-fires
+  // its own EVERA_PREVIEW_READY ping — the listener above still handles the
+  // normal fresh-tab case, this just also covers a reused tab.
+  setTimeout(()=>{ try{ websitePreviewWindow.postMessage({type:'EVERA_PREVIEW_DATA', data: buildWeddingWebsiteExport()}, '*'); }catch(err){} }, 500);
+}
+
+/* ==================================================================
+   GUIDED SETUP (v1.65.0 — New Request #48)
+   A step-by-step mini-onboarding for the Website module, visually matching
+   the main onboarding wizard. Every field inside writes straight to the
+   exact same dashboardData.website (and related) state the full control
+   panel below already reads and writes — there is deliberately no separate
+   draft state to merge back in. Hop between the wizard and the full panel
+   freely; edits in either show up in both.
+================================================================== */
+let websiteGuideOpen = false;
+let websiteGuideStage = 1;
+const WEBSITE_GUIDE_TOTAL_STAGES = 6;
+const WEBSITE_GUIDE_STAGE_LABELS = ['Welcome & Story','Your Celebration','Guest Logistics','RSVP','Look & Feel','Review & Publish'];
+function openWebsiteGuide(){ websiteGuideOpen = true; websiteGuideStage = 1; document.getElementById('content').innerHTML = renderWebsiteModule(); }
+function closeWebsiteGuide(){ websiteGuideOpen = false; document.getElementById('content').innerHTML = renderWebsiteModule(); }
+function websiteGuideNext(){ if(websiteGuideStage===WEBSITE_GUIDE_TOTAL_STAGES){ closeWebsiteGuide(); return; } websiteGuideStage++; document.getElementById('content').innerHTML = renderWebsiteModule(); }
+function websiteGuidePrev(){ if(websiteGuideStage===1) return; websiteGuideStage--; document.getElementById('content').innerHTML = renderWebsiteModule(); }
+function renderWebsiteGuide(){
+  const d = dashboardData, w = d.website;
+  const stageFns = [null, renderWebsiteGuideStage1, renderWebsiteGuideStage2, renderWebsiteGuideStage3, renderWebsiteGuideStage4, renderWebsiteGuideStage5, renderWebsiteGuideStage6];
+  const body = stageFns[websiteGuideStage](d, w);
+  const pct = Math.round((websiteGuideStage/WEBSITE_GUIDE_TOTAL_STAGES)*100);
+  return `
+    <div class="card">
+      <div class="card-head">
+        <h4>Guided Website Setup</h4>
+        <span class="d-sub">Step ${websiteGuideStage} of ${WEBSITE_GUIDE_TOTAL_STAGES} · ${escapeHtml(WEBSITE_GUIDE_STAGE_LABELS[websiteGuideStage-1])}</span>
+      </div>
+      <div style="height:4px; background:var(--line-soft); border-radius:4px; overflow:hidden; margin:4px 0 20px;">
+        <div style="height:100%; width:${pct}%; background:var(--green); transition:width .25s ease;"></div>
+      </div>
+      ${body}
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px; padding-top:16px; border-top:1px solid var(--line-soft);">
+        <div>${websiteGuideStage>1 ? `<button class="btn btn-outline btn-sm" onclick="websiteGuidePrev()">Back</button>` : ''}</div>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <span class="ch-link" style="cursor:pointer; font-size:12.5px;" onclick="closeWebsiteGuide()">Exit to full control panel</span>
+          <button class="btn btn-solid btn-sm" onclick="websiteGuideNext()">${websiteGuideStage===WEBSITE_GUIDE_TOTAL_STAGES ? 'Done' : 'Continue'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function renderWebsiteGuideStage1(d,w){
+  return `
+    <p style="font-size:13px; color:var(--charcoal-faint); margin-top:0;">Let's get your website ready for guests — this takes about 5 minutes. Start with the photo and story guests see first.</p>
+    <div style="padding-top:14px; border-top:1px solid var(--line-soft);">
+      <h4 style="font-size:15px; margin-bottom:10px;">Hero Photo</h4>
+      <div class="personalize-row">
+        <div class="personalize-slot">
+          <div class="personalize-preview" style="width:160px; height:100px;">${w.heroPhoto ? `<img src="${w.heroPhoto}" alt="Website hero photo">` : `<span class="pp-placeholder">📷</span>`}</div>
+          <div>
+            <label class="btn btn-outline btn-sm" for="heroPhotoInputGuide">${w.heroPhoto?'Change':'Upload'} Photo</label>
+            <input type="file" id="heroPhotoInputGuide" accept="image/*" style="display:none;" onchange="handleHeroPhotoUpload(event)">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding-top:14px; margin-top:14px; border-top:1px solid var(--line-soft);">
+      <h4 style="font-size:15px; margin-bottom:10px;">Our Story</h4>
+      ${OUR_STORY_PROMPTS.slice(0,2).map(p=>`
+        <div class="field-row">
+          <label>${escapeHtml(p.q)}</label>
+          <textarea rows="2" placeholder="Type your answer..." onchange="updateOurStoryPrompt('${p.id}',this.value)">${escapeHtml((w.ourStoryPrompts||{})[p.id]||'')}</textarea>
+        </div>
+      `).join('')}
+      <p style="font-size:11.5px; color:var(--charcoal-faint);">A couple more Our Story prompts, and Milestone Photos, are in the full control panel once you're done here.</p>
+    </div>
+  `;
+}
+function renderWebsiteGuideStage2(d,w){
+  const visibleEvents = d.events.filter(e=>e.publicVisibility!==false);
+  return `
+    <p style="font-size:13px; color:var(--charcoal-faint); margin-top:0;">Which events appear on the public site, and what guests see for dress code — you can refine photos and shopping links later in the full panel.</p>
+    <div style="padding-top:14px; border-top:1px solid var(--line-soft);">
+      <h4 style="font-size:15px; margin-bottom:10px;">Event Visibility</h4>
+      ${d.events.map(e=>`
+        <div class="event-mini-row">
+          <div class="em-name">${escapeHtml(e.name)} <span class="d-sub">${fmtDateLabel(e.dateISO)}</span></div>
+          <input type="checkbox" style="width:16px;height:16px;" ${e.publicVisibility!==false?'checked':''} onchange="toggleEventVisibility('${e.id}')">
+        </div>
+      `).join('')}
+    </div>
+    <div style="padding-top:14px; margin-top:14px; border-top:1px solid var(--line-soft);">
+      <h4 style="font-size:15px; margin-bottom:10px;">Dress Code</h4>
+      ${visibleEvents.length ? visibleEvents.map(e=>`<div class="event-mini-row"><div class="em-name">${escapeHtml(e.name)}</div><div class="d-sub">${e.dressCode?escapeHtml(e.dressCode):'Not set — add from Events'}</div></div>`).join('') : `<p class="d-sub">No events are visible to guests yet — toggle one on above.</p>`}
+    </div>
+  `;
+}
+function renderWebsiteGuideStage3(d,w){
+  return `
+    <p style="font-size:13px; color:var(--charcoal-faint); margin-top:0;">How should guests get to you, and get around once they're there?</p>
+    <div class="field-grid" style="padding-top:14px; border-top:1px solid var(--line-soft);">
+      <div class="field-cell"><label>Shuttle service</label><input type="text" value="${escapeAttr(w.travel.shuttle||'')}" placeholder="e.g. A shuttle will run between the hotel and venue" onchange="updateTravelField('shuttle',this.value)"></div>
+      <div class="field-cell"><label>Flying in</label><input type="text" value="${escapeAttr(w.travel.flying||'')}" placeholder="Nearest airport, tips on arriving/leaving" onchange="updateTravelField('flying',this.value)"></div>
+    </div>
+  `;
+}
+function renderWebsiteGuideStage4(d,w){
+  return `
+    <p style="font-size:13px; color:var(--charcoal-faint); margin-top:0;">When should guests RSVP by, and is the form open right now?</p>
+    <div class="field-grid" style="padding-top:14px; border-top:1px solid var(--line-soft);">
+      <div class="field-cell"><label>RSVP Deadline</label><input type="date" value="${w.rsvpDeadlineISO||''}" onchange="updateWebsiteField('rsvpDeadlineISO',this.value)"></div>
+    </div>
+    <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft);">
+      <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+        <input type="checkbox" ${w.rsvpCollectionEnabled!==false?'checked':''} onchange="toggleRsvpCollectionEnabled()">
+        RSVP collection is open on the website
+      </label>
+      <p style="font-size:11.5px;color:var(--charcoal-faint);margin:6px 0 0;">Leave this on until you're ready for guests to actually start RSVPing — you can turn it off any time, even after publishing.</p>
+    </div>
+  `;
+}
+function renderWebsiteGuideStage5(d,w){
+  return `
+    <p style="font-size:13px; color:var(--charcoal-faint); margin-top:0;">Fonts and spacing — the rest of your Master Aesthetic colour palette carries over automatically.</p>
+    <div class="field-grid" style="padding-top:14px; border-top:1px solid var(--line-soft);">
+      <div class="field-cell"><label>Font Pairing</label>
+        <select onchange="updateWebsiteDesignField('fontPairing',this.value)">
+          ${FONT_PAIRINGS.map(f=>`<option value="${f.id}" ${w.design.fontPairing===f.id?'selected':''}>${escapeHtml(f.label)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-cell"><label>Spacing</label>
+        <select onchange="updateWebsiteDesignField('spacing',this.value)">
+          ${WEBSITE_SPACING_PRESETS.map(s=>`<option value="${s.id}" ${w.design.spacing===s.id?'selected':''}>${escapeHtml(s.label)}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  `;
+}
+function renderWebsiteGuideStage6(d,w){
+  const visibleEvents = d.events.filter(e=>e.publicVisibility!==false);
+  const checks = [
+    {label:'Hero photo added', done: !!w.heroPhoto},
+    {label:'Our Story started', done: Object.values(w.ourStoryPrompts||{}).some(v=>(v||'').trim())},
+    {label:'At least one event visible to guests', done: visibleEvents.length>0},
+    {label:'Dress code set for every visible event', done: visibleEvents.length>0 && visibleEvents.every(e=>(e.dressCode||'').trim())},
+    {label:'Some travel guidance added', done: !!((w.travel.shuttle||'').trim() || (w.travel.flying||'').trim())},
+    {label:'RSVP deadline set', done: !!w.rsvpDeadlineISO}
+  ];
+  const doneCount = checks.filter(c=>c.done).length;
+  return `
+    <p style="font-size:13px; color:var(--charcoal-faint); margin-top:0;">Here's where things stand. Nothing below is required to publish — you can always come back and fill in more later.</p>
+    <div style="padding-top:10px; border-top:1px solid var(--line-soft);">
+      ${checks.map(c=>`<div class="event-mini-row"><div class="em-name">${c.done?'✓':'○'} ${escapeHtml(c.label)}</div></div>`).join('')}
+      <p style="font-size:12px; color:var(--charcoal-faint); margin-top:8px;">${doneCount} of ${checks.length} ready.</p>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+      <button class="btn btn-outline btn-sm" onclick="previewWebsiteLive()">👁 Preview Website</button>
+      <button class="btn btn-solid btn-sm" onclick="toggleWebsitePublished()">${w.published?'Unpublish':'Publish Website'}</button>
+    </div>
+  `;
+}
 function toggleEventVisibility(id){
   const e = dashboardData.events.find(x=>x.id===id);
   if(e) e.publicVisibility = e.publicVisibility===false ? true : false;
@@ -9354,11 +9689,19 @@ function buildWeddingWebsiteExport(){
     websiteDesign: w.design,
     websiteSections: w.sections,
     websiteAccess: {customDomain: w.customDomain||'', passwordProtected: !!w.passwordProtected, sitePassword: w.sitePassword||''},
+    // v1.65.0: a standalone RSVP-collection open/closed switch, independent
+    // of hiding the whole RSVP page — see New Request #47.
+    rsvpCollectionEnabled: w.rsvpCollectionEnabled!==false,
     registryLinks: w.registryLinks||[],
     events: visibleEvents.map(e=>({
       id:e.id, name:e.name, dateISO:e.dateISO||'', dateLabel: fmtDateLabel(e.dateISO),
       startTime:e.startTime||'', endTime:e.endTime||'', location:e.location||'', address:e.location||'',
-      description:e.description||'', dressCodeText:e.dressCode||''
+      description:e.description||'', dressCodeText:e.dressCode||'',
+      // v1.65.0 bugfix: these two were never exported at all before, despite
+      // the Attire & Shopping card's own subtitle claiming "what guests see"
+      // — real reference photos and real shop links never reached the
+      // guest-facing site. See New Request #46.
+      attirePhotos: e.attirePhotos||[], customAttireLinks: (e.customAttireLinks||[]).map(l=>({name:l.name, url:l.url}))
     })),
     weddingParty: (d.weddingParty||[]).map(m=>({
       id:m.id, name:m.name, role:m.role||'', side:m.side||'', bio:m.bio||'', photo:m.photo||null,
@@ -17490,8 +17833,33 @@ function removeAttirePhoto(eventId, idx){
   e.attirePhotos.splice(idx,1);
   document.getElementById('content').innerHTML = renderWebsiteModule();
 }
+// v1.65.0: the couple's OWN shopping links per event, replacing the old
+// attireShopLinksFor() auto-pick (3 generic retailer links guessed from the
+// dress-code text). ATTIRE_SHOP_LINKS/attireShopLinksFor above are left in
+// place rather than deleted — dead code for now, in case that matching
+// logic is ever useful again — but renderEventAttireCard below no longer
+// calls it. See New Request #46.
+function addCustomAttireLink(eventId){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e) return;
+  const nameInput = document.getElementById('attireLinkName-'+eventId);
+  const urlInput = document.getElementById('attireLinkUrl-'+eventId);
+  const name = (nameInput.value||'').trim();
+  let url = (urlInput.value||'').trim();
+  if(!name || !url) return;
+  if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  if(!Array.isArray(e.customAttireLinks)) e.customAttireLinks = [];
+  e.customAttireLinks.push({id:'attlink-'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), name, url});
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
+function removeCustomAttireLink(eventId, linkId){
+  const e = dashboardData.events.find(x=>x.id===eventId);
+  if(!e || !Array.isArray(e.customAttireLinks)) return;
+  e.customAttireLinks = e.customAttireLinks.filter(l=>l.id!==linkId);
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
 function renderEventAttireCard(e){
-  const links = attireShopLinksFor(e.dressCode);
+  const links = e.customAttireLinks||[];
   const photos = e.attirePhotos||[];
   return `
     <div class="website-attire-row" style="padding:14px 0; border-top:1px solid var(--line);">
@@ -17511,13 +17879,18 @@ function renderEventAttireCard(e){
         + Add a reference photo
         <input type="file" accept="image/*" style="position:absolute; inset:0; opacity:0; cursor:pointer;" onchange="handleAttirePhotoUpload('${e.id}', event)">
       </label>
-      ${links.length ? `
-      <div style="margin-top:10px;">
-        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-bottom:6px;">Shop the Look</div>
-        <div style="display:flex; flex-wrap:wrap; gap:7px;">
-          ${links.map(l=>`<a href="${escapeAttr(l.url)}" target="_blank" rel="noopener" class="chip" style="text-decoration:none;">${escapeHtml(l.name)} ↗</a>`).join('')}
+      <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--line);">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint); margin-bottom:6px;">Shop the Look — your own links</div>
+        ${links.length ? `
+        <div style="display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px;">
+          ${links.map(l=>`<span class="chip" style="display:inline-flex; align-items:center; gap:6px;"><a href="${escapeAttr(l.url)}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">${escapeHtml(l.name)} ↗</a><a href="#" class="danger-link" style="text-decoration:none; font-size:11px;" onclick="removeCustomAttireLink('${e.id}','${l.id}'); return false;" title="Remove">✕</a></span>`).join('')}
+        </div>` : `<p class="detail-hint" style="margin:0 0 10px;">No shopping links yet — add the exact item(s) you want guests to see, if any. Nothing is auto-picked.</p>`}
+        <div class="custom-add-row" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+          <input type="text" id="attireLinkName-${e.id}" placeholder="Name (e.g. Aritzia — Bridesmaid Dresses)" style="flex:1; min-width:180px; padding:8px 10px; border:1px solid var(--line); border-radius:var(--radius-sm); font-size:13px;">
+          <input type="text" id="attireLinkUrl-${e.id}" placeholder="Link" style="flex:1; min-width:140px; padding:8px 10px; border:1px solid var(--line); border-radius:var(--radius-sm); font-size:13px;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="addCustomAttireLink('${e.id}')">+ Add</button>
         </div>
-      </div>` : ''}
+      </div>
     </div>
   `;
 }
