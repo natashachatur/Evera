@@ -1447,6 +1447,9 @@
   .dc-stat-label{display:block; color:var(--charcoal-faint); font-size:11px; text-transform:uppercase; letter-spacing:0.3px;}
   .dc-stat-value{display:block; font-weight:600; color:var(--charcoal); margin-top:1px;}
   .dc-notes{font-size:12px; color:var(--charcoal-soft); line-height:1.5; border-top:1px solid var(--line-soft); padding-top:8px; margin-top:2px;}
+  /* v1.68.0 — brief flash when "⚖️ Compare" in My Vendor Team jumps down to this category */
+  .dc-highlight-flash{animation:dcFlash 1.6s ease-out;}
+  @keyframes dcFlash{0%{box-shadow:0 0 0 3px var(--champagne);} 100%{box-shadow:0 0 0 0 transparent;}}
   .insight-note{font-size:12.5px; color:var(--charcoal-soft); background:var(--ivory-deep); border-radius:8px; padding:9px 12px; margin:8px 0 12px; line-height:1.5;}
   .insight-note b{color:var(--green-deep);}
 
@@ -2253,6 +2256,15 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.68.0', date:'2026-11-26',
+    title:'Two quick wins from the 28-point review: a prominent "Compare" action in My Vendor Team, and a plain-language intro to Wedding Playbook',
+    items:[
+      'My Vendor Team now shows a "⚖️ Compare N options →" button right on any category with 2+ shortlisted or still-searching bookings — clicking it jumps straight down to that category\'s side-by-side cards in the existing Decision Centre (built in v1.53.0), with a brief highlight so it\'s obvious what just happened. Decision Centre itself is unchanged — this is purely about making an already-real feature impossible to miss at the moment it actually applies to you, per New Request #69 cluster F.',
+      'Wedding Playbook now opens with a short, plain-language line explaining what it actually is — the Timeline, Photo Shot List, Ceremony Order, Seating Chart, and Run Book, and who each one is really for (your photographer, your officiant, a planner or day-of coordinator). Per New Request #69 cluster G.',
+      'Both are copy/surfacing changes only — no new data, no new flows, nothing simulated or real-sending related. The bigger items from this same review round (Home\'s own "Waiting On"/"Decisions" concepts, a planner Operations View, the Assistant becoming a real natural-language interface) remain open and are not touched here.'
+    ]
+  },
   {
     version:'1.67.0', date:'2026-11-26',
     title:'Communications Center: real audience presets, a hand-pick-people recipient picker, and a review-before-send confirmation',
@@ -10465,13 +10477,26 @@ function renderDecisionCandidateCard(vb, group){
     </div>
   `;
 }
+/* v1.68.0 — a stable anchor id per category so "⚖️ Compare" in My Vendor Team (see
+   renderVendorTeamSection) can jump straight to that category's cards here, instead of the
+   couple having to notice this section exists by scrolling past it. */
+function vendorCategoryAnchorId(cat){
+  return 'decision-cat-' + String(cat).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+}
+function scrollToVendorDecision(category){
+  const el = document.getElementById(vendorCategoryAnchorId(category));
+  if(!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  el.classList.add('dc-highlight-flash');
+  setTimeout(()=> el.classList.remove('dc-highlight-flash'), 1600);
+}
 function renderDecisionCentre(){
   const cats = vendorDecisionCategories();
   return `
     <div class="card">
       <div class="card-head"><h4>Decision Centre</h4><span class="d-sub">Side-by-side, for any category where you're still deciding between options</span></div>
       ${cats.length ? cats.map(({category, candidates})=>`
-        <div class="detail-section" style="margin-top:16px; padding-top:14px;">
+        <div class="detail-section" id="${vendorCategoryAnchorId(category)}" style="margin-top:16px; padding-top:14px;">
           <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(category)}</h4><span class="d-sub">${pluralize(candidates.length,'option','options')}</span></div>
           <div class="decision-compare-row">
             ${candidates.map(vb=>renderDecisionCandidateCard(vb, candidates)).join('')}
@@ -11040,6 +11065,11 @@ function renderVendorTeamSection(){
     const filtered = byCatAll[cat].filter(vendorBookingMatchesTeamFilter);
     if(filtered.length) byCat[cat] = filtered;
   });
+  // v1.68.0 — New Request #69 cluster F: promote the existing Decision Centre into a prominent,
+  // explicit action right where you'd notice you have a real decision to make, instead of only
+  // existing as a separate section you might scroll past without realizing it applies to you.
+  const decisionCountByCat = {};
+  vendorDecisionCategories().forEach(({category, candidates})=>{ decisionCountByCat[category] = candidates.length; });
   return `
     <div class="party-summary-strip">
       <div class="ps-stat"><div class="ps-num">${counts.total}</div><div class="ps-label">Vendor Bookings</div></div>
@@ -11061,7 +11091,7 @@ function renderVendorTeamSection(){
       <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">A category can hold more than one booking — like a separate Hair &amp; Makeup artist for the bridesmaids and mother of the bride, or a different Transportation vendor for a different day. Shortlisted and still-searching vendors show first; anyone you've declined stays listed at the bottom of their category instead of disappearing. Click a row for full details and message history.</p>
       ${Object.keys(byCat).length ? Object.keys(byCat).map(cat=>`
         <div class="detail-section" style="margin-top:16px; padding-top:14px;">
-          <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(cat)}</h4><span class="d-sub">${byCat[cat].length} booking${byCat[cat].length===1?'':'s'}</span></div>
+          <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(cat)}</h4><span class="d-sub">${byCat[cat].length} booking${byCat[cat].length===1?'':'s'}</span>${decisionCountByCat[cat] ? `<button class="btn btn-outline btn-sm" style="margin-left:auto;" onclick="scrollToVendorDecision('${escapeJsAttr(cat)}')">⚖️ Compare ${decisionCountByCat[cat]} options →</button>` : ''}</div>
           <div class="budget-items" style="padding-left:0;">
             <div class="budget-items-head" style="grid-template-columns:1.5fr 1.1fr 0.8fr 0.9fr 0.8fr 0.4fr;"><span>Role / Vendor</span><span>Contact</span><span>Status</span><span>Contract</span><span>Cost</span><span></span></div>
             ${byCat[cat].map(vb=>{
@@ -12436,6 +12466,7 @@ function renderPlaybook(){
         </div>
       </div>
     </div>
+    <p style="font-size:13px;color:var(--charcoal-faint);margin:0 0 16px;">Wedding Playbook is where your day-of logistics live, in one place — the real-time Timeline for the wedding week, the Photo Shot List your photographer will use, Ceremony Order for whoever's officiating, your Seating Chart for quick reference, and a Run Book that pulls it all into one export for a planner or day-of coordinator to carry around.</p>
     ${playbookSection==='timeline' ? renderPlaybookTimelineSection() : playbookSection==='shotlist' ? renderShotListSection() : playbookSection==='ceremony' ? renderCeremonyOrderSection() : playbookSection==='runbook' ? renderRunBookSection() : renderPlaybookSeatingSection()}
   `;
 }
