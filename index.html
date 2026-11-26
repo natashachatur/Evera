@@ -2297,6 +2297,13 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.75.0', date:'2026-11-26',
+    title:'Tab now moves between fields when editing a guest',
+    items:[
+      'Fixed: typing a guest\'s details and pressing Tab to move to the next field could drop you out of the form entirely instead of moving to the next field, reported directly by Natasha. The cause: every field commits by refreshing the whole form so your change shows up everywhere else right away (the family name, RSVP status, etc.) — but that refresh was happening in the middle of the browser\'s own Tab handling and wiping out the very field it was about to focus. Tab (and Shift+Tab to go back) now moves correctly through the Family Members grid and the Address & Contact fields, in order, so you can fill in a family\'s details without reaching for the mouse. Changing a dropdown or checkbox no longer knocks your focus out of the form either, which was happening silently even without Tab.'
+    ]
+  },
+  {
     version:'1.74.0', date:'2026-11-26',
     title:'Fixed the Home banner sizing from the last release',
     items:[
@@ -16533,7 +16540,53 @@ function refreshGuestsBackground(){
 function refreshHouseholdDetail(){
   if(!householdDetailId) return;
   const overlay = document.getElementById('householdOverlay');
-  if(overlay && overlay.classList.contains('open')) overlay.innerHTML = renderHouseholdDetailModal(householdDetailId);
+  if(!overlay || !overlay.classList.contains('open')) return;
+  // v1.75.0: every field here commits via onchange, which calls this to re-render the whole
+  // modal (so the change shows up in the computed name, the RSVP pill, etc. right away). That
+  // full replace used to silently drop focus out of the form on every single edit — change a
+  // dropdown or a checkbox and focus would land nowhere, which is also what broke Tab (see
+  // handleModalFieldTab below). Preserving the active field's identity across the re-render
+  // fixes that at the source; handleModalFieldTab layers Tab-to-next-field on top of it.
+  const active = document.activeElement;
+  const activeKey = active && overlay.contains(active) ? active.getAttribute('data-fkey') : null;
+  const selStart = active && typeof active.selectionStart === 'number' ? active.selectionStart : null;
+  const selEnd = active && typeof active.selectionEnd === 'number' ? active.selectionEnd : null;
+  overlay.innerHTML = renderHouseholdDetailModal(householdDetailId);
+  if(activeKey){
+    const restored = overlay.querySelector(`[data-fkey="${CSS.escape(activeKey)}"]`);
+    if(restored){
+      restored.focus();
+      if(selStart!=null && typeof restored.setSelectionRange==='function'){
+        try{ restored.setSelectionRange(selStart, selEnd); }catch(e){}
+      }
+    }
+  }
+}
+// v1.75.0: Tab/Shift+Tab across the fields in the household detail modal (Family Members grid,
+// Address & Contact grid). Every field here commits on change by fully re-rendering the modal
+// (see refreshHouseholdDetail above) — that re-render happens synchronously in the middle of
+// the browser's own Tab handling, which swaps out the exact element the browser was about to
+// focus next. The native result was Tab appearing to do nothing, or dropping focus out of the
+// form entirely. This takes Tab over manually: find the next field *before* committing the
+// current one (so we're not relying on a DOM node that's about to be destroyed), let the
+// commit/re-render happen, then focus the freshly-rendered field with the same key.
+function handleModalFieldTab(event){
+  if(event.key !== 'Tab') return;
+  const overlay = document.getElementById('householdOverlay');
+  if(!overlay) return;
+  const focusables = Array.from(overlay.querySelectorAll('[data-fkey]')).filter(el => !el.disabled && el.offsetParent !== null);
+  const idx = focusables.indexOf(event.target);
+  if(idx === -1) return;
+  const nextIdx = event.shiftKey ? idx - 1 : idx + 1;
+  if(nextIdx < 0 || nextIdx >= focusables.length) return; // edge of the managed chain — let Tab leave normally
+  const nextKey = focusables[nextIdx].getAttribute('data-fkey');
+  event.preventDefault();
+  event.target.blur(); // commits this field (onchange) and triggers the modal's re-render, synchronously
+  const target = overlay.querySelector(`[data-fkey="${CSS.escape(nextKey)}"]`);
+  if(target){
+    target.focus();
+    if(target.tagName==='INPUT' && target.type==='text' && typeof target.select==='function') target.select();
+  }
 }
 function openHouseholdDetail(householdId){
   householdDetailId = householdId;
@@ -16641,20 +16694,20 @@ function renderHouseholdDetailModal(householdId){
         <div class="budget-items-head" style="grid-template-columns:${cols};"><span>Salutation</span><span>First</span><span>Last</span><span>Child?</span><span>Attending</span>${showMealCol?'<span>Meal</span>':''}<span>Dietary</span><span>Accessibility</span><span></span></div>
         ${(h.members||[]).map(m=>`
           <div class="budget-item-row" style="grid-template-columns:${cols}; align-items:center;">
-            <select class="select-field-sm" onchange="updateMemberField('${h.id}','${m.id}','salutation',this.value)">
+            <select class="select-field-sm" data-fkey="m:${m.id}:salutation" onkeydown="handleModalFieldTab(event)" onchange="updateMemberField('${h.id}','${m.id}','salutation',this.value)">
               ${SALUTATIONS.map(s=>`<option value="${s}" ${m.salutation===s?'selected':''}>${s||'—'}</option>`).join('')}
             </select>
-            <input type="text" class="select-field-sm" value="${escapeAttr(m.firstName)}" onchange="updateMemberField('${h.id}','${m.id}','firstName',this.value)">
-            <input type="text" class="select-field-sm" value="${escapeAttr(m.lastName)}" onchange="updateMemberField('${h.id}','${m.id}','lastName',this.value)">
-            <input type="checkbox" title="Child" ${m.isChild?'checked':''} onchange="updateMemberField('${h.id}','${m.id}','isChild',this.checked)">
-            <input type="checkbox" ${m.attending!==false?'checked':''} onchange="updateMemberField('${h.id}','${m.id}','attending',this.checked)">
+            <input type="text" class="select-field-sm" data-fkey="m:${m.id}:firstName" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(m.firstName)}" onchange="updateMemberField('${h.id}','${m.id}','firstName',this.value)">
+            <input type="text" class="select-field-sm" data-fkey="m:${m.id}:lastName" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(m.lastName)}" onchange="updateMemberField('${h.id}','${m.id}','lastName',this.value)">
+            <input type="checkbox" title="Child" data-fkey="m:${m.id}:isChild" onkeydown="handleModalFieldTab(event)" ${m.isChild?'checked':''} onchange="updateMemberField('${h.id}','${m.id}','isChild',this.checked)">
+            <input type="checkbox" data-fkey="m:${m.id}:attending" onkeydown="handleModalFieldTab(event)" ${m.attending!==false?'checked':''} onchange="updateMemberField('${h.id}','${m.id}','attending',this.checked)">
             ${showMealCol ? `
-            <select class="select-field-sm" onchange="updateMemberMealChoice('${h.id}','${m.id}','${singleMealEventId||''}',this.value)">
+            <select class="select-field-sm" data-fkey="m:${m.id}:meal" onkeydown="handleModalFieldTab(event)" onchange="updateMemberMealChoice('${h.id}','${m.id}','${singleMealEventId||''}',this.value)">
               <option value="" ${!getMemberMealChoice(m,singleMealEventId)?'selected':''}>—</option>
               ${MEAL_OPTIONS.map(mo=>`<option value="${mo}" ${getMemberMealChoice(m,singleMealEventId)===mo?'selected':''}>${mo}</option>`).join('')}
             </select>` : ''}
-            <input type="text" class="select-field-sm" placeholder="e.g. Peanut allergy" value="${escapeAttr(m.dietaryRestrictions)}" onchange="updateMemberField('${h.id}','${m.id}','dietaryRestrictions',this.value)">
-            <input type="text" class="select-field-sm" placeholder="e.g. Wheelchair access" value="${escapeAttr(m.accessibilityNeeds)}" onchange="updateMemberField('${h.id}','${m.id}','accessibilityNeeds',this.value)">
+            <input type="text" class="select-field-sm" placeholder="e.g. Peanut allergy" data-fkey="m:${m.id}:dietaryRestrictions" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(m.dietaryRestrictions)}" onchange="updateMemberField('${h.id}','${m.id}','dietaryRestrictions',this.value)">
+            <input type="text" class="select-field-sm" placeholder="e.g. Wheelchair access" data-fkey="m:${m.id}:accessibilityNeeds" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(m.accessibilityNeeds)}" onchange="updateMemberField('${h.id}','${m.id}','accessibilityNeeds',this.value)">
             <a href="#" class="danger-link" onclick="removeFamilyMember('${h.id}','${m.id}'); return false;">Remove</a>
           </div>
           ${memberNeedsSeatHint(h,m) ? `<div class="detail-hint detail-hint-alert" style="margin:2px 0 8px;">Confirmed and not yet seated — <a href="#" onclick="closeHouseholdDetail(); renderRoute('playbook'); switchPlaybookSection('seating'); return false;">seat ${escapeHtml(memberDisplayName(m))} on the Seating Chart</a>.</div>` : ''}
@@ -16664,15 +16717,15 @@ function renderHouseholdDetailModal(householdId){
       <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="addFamilyMember('${h.id}')">+ Add Family Member</button>
       <div class="detail-section-head" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);"><h4 style="margin:0;">Address &amp; Contact</h4></div>
       <div class="field-grid" style="margin-top:6px;">
-        <div class="field-cell" style="position:relative;"><label>Street Address <span class="field-help-icon" title="Address search powered by OpenStreetMap — free, no API key needed, and not limited to the U.S. Include the city (and country, for addresses outside North America) for the best match. Picking a result fills in City/Province/Postal/Country below too.">?</span></label><input type="text" id="householdAddrInput-${h.id}" placeholder="Search an address…" autocomplete="off" value="${escapeAttr(addr.street)}" oninput="onAddressLookupInput('household','${h.id}', this.value)" onchange="updateHouseholdAddressField('${h.id}','street',this.value)">
+        <div class="field-cell" style="position:relative;"><label>Street Address <span class="field-help-icon" title="Address search powered by OpenStreetMap — free, no API key needed, and not limited to the U.S. Include the city (and country, for addresses outside North America) for the best match. Picking a result fills in City/Province/Postal/Country below too.">?</span></label><input type="text" id="householdAddrInput-${h.id}" data-fkey="addr:${h.id}:street" onkeydown="handleModalFieldTab(event)" placeholder="Search an address…" autocomplete="off" value="${escapeAttr(addr.street)}" oninput="onAddressLookupInput('household','${h.id}', this.value)" onchange="updateHouseholdAddressField('${h.id}','street',this.value)">
           <div class="loc-suggest-dropdown" id="locSuggest-household-${h.id}"></div>
         </div>
-        <div class="field-cell"><label>City</label><input type="text" placeholder="e.g. Toronto" value="${escapeAttr(addr.city)}" onchange="updateHouseholdAddressField('${h.id}','city',this.value)"></div>
-        <div class="field-cell"><label>Province / State</label><input type="text" placeholder="e.g. ON" value="${escapeAttr(addr.region)}" onchange="updateHouseholdAddressField('${h.id}','region',this.value)"></div>
-        <div class="field-cell"><label>Postal / ZIP Code</label><input type="text" placeholder="e.g. M4K 1M2" value="${escapeAttr(addr.postalCode)}" onchange="updateHouseholdAddressField('${h.id}','postalCode',this.value)"></div>
-        <div class="field-cell"><label>Country</label><input type="text" placeholder="e.g. Canada" value="${escapeAttr(addr.country)}" onchange="updateHouseholdAddressField('${h.id}','country',this.value)"></div>
-        <div class="field-cell"><label>Email</label><input type="text" placeholder="Contact email" value="${escapeAttr(h.email)}" onchange="updateHouseholdField('${h.id}','email',this.value)"></div>
-        <div class="field-cell"><label>Phone <span class="field-help-icon" title="Used for real text message sending in Communications Center — include country code for best results, e.g. +1 416 555 0134.">?</span></label><input type="text" placeholder="e.g. +1 416 555 0134" value="${escapeAttr(h.phone)}" onchange="updateHouseholdField('${h.id}','phone',this.value)"></div>
+        <div class="field-cell"><label>City</label><input type="text" placeholder="e.g. Toronto" data-fkey="addr:${h.id}:city" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.city)}" onchange="updateHouseholdAddressField('${h.id}','city',this.value)"></div>
+        <div class="field-cell"><label>Province / State</label><input type="text" placeholder="e.g. ON" data-fkey="addr:${h.id}:region" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.region)}" onchange="updateHouseholdAddressField('${h.id}','region',this.value)"></div>
+        <div class="field-cell"><label>Postal / ZIP Code</label><input type="text" placeholder="e.g. M4K 1M2" data-fkey="addr:${h.id}:postalCode" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.postalCode)}" onchange="updateHouseholdAddressField('${h.id}','postalCode',this.value)"></div>
+        <div class="field-cell"><label>Country</label><input type="text" placeholder="e.g. Canada" data-fkey="addr:${h.id}:country" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.country)}" onchange="updateHouseholdAddressField('${h.id}','country',this.value)"></div>
+        <div class="field-cell"><label>Email</label><input type="text" placeholder="Contact email" data-fkey="hc:${h.id}:email" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(h.email)}" onchange="updateHouseholdField('${h.id}','email',this.value)"></div>
+        <div class="field-cell"><label>Phone <span class="field-help-icon" title="Used for real text message sending in Communications Center — include country code for best results, e.g. +1 416 555 0134.">?</span></label><input type="text" placeholder="e.g. +1 416 555 0134" data-fkey="hc:${h.id}:phone" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(h.phone)}" onchange="updateHouseholdField('${h.id}','phone',this.value)"></div>
       </div>
       <div class="detail-section-head" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);"><h4 style="margin:0;">Tags</h4><span class="d-sub">One tag vocabulary, two scopes — apply a tag to the whole family, or to just one person. Feeds Guests → Invite Rules either way.</span></div>
       <div style="margin-top:10px;">
