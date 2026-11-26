@@ -2163,7 +2163,7 @@
 <div class="feedback-panel" id="feedbackPanel">
   <div class="fp-head">
     <svg class="icon" viewBox="0 0 24 24" style="stroke:var(--champagne);"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/></svg>
-    <div><div class="fp-title">Feedback</div><div class="fp-sub">Request a feature or report a bug</div></div>
+    <div><div class="fp-title">Feedback &amp; Roadmap</div><div class="fp-sub">Browse, upvote, or submit a feature request or bug</div></div>
     <button type="button" class="fp-close" onclick="toggleFeedbackPanel(false)" aria-label="Close">✕</button>
   </div>
   <div class="fp-body" id="feedbackPanelBody"><!-- injected --></div>
@@ -2282,6 +2282,17 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.72.0', date:'2026-11-26',
+    title:'Feedback & Roadmap board — a shared, upvotable board replaces the private feedback form',
+    items:[
+      'Requested directly by Natasha: "Feature Requests & Bug Reports" is now "Feedback & Roadmap," and it\'s no longer a private form only the submitter can see. Every signed-in account — couple or planner — now sees the exact same shared board and can upvote any item on it, so the most-wanted requests naturally rise to the top (the list is sorted by upvotes, then recency).',
+      'Submissions are fully anonymous by design, per Natasha\'s explicit choice — nobody\'s name, email, or account is ever shown next to what they submitted or upvoted, including to the Evera team reviewing the board.',
+      'Status (Submitted / Under Review / Planned / Done) can now only be changed by an Evera admin, enforced server-side by the same `isAdmin()` Firestore rule from the Super Admin Dashboard (v1.71.0) — not just hidden in the UI. Admins can also remove items and post threaded replies under any submission (e.g. "added to our roadmap!"), visible to everyone, so people get an actual response instead of a silent status dropdown.',
+      'Any feedback submitted under the old private-form version migrates automatically and invisibly onto the new shared board the first time each account signs in after this update — nothing anyone submitted before today is lost.',
+      'This fully replaces the old per-account form, per Natasha\'s direction — there is no separate "private" feedback path anymore.'
+    ]
+  },
   {
     version:'1.71.0', date:'2026-11-26',
     title:'Super Admin Dashboard — full view/edit access into any account, plus an activity log',
@@ -4603,6 +4614,34 @@ async function routeSignedInUser(uid){
   goTo('app');
   renderRoute('home');
   applyAssistantVisibility();
+  migrateLegacyFeedbackToBoard(); // v1.72.0 — fire-and-forget, one-time per account
+}
+/* v1.72.0: the old Feature Requests & Bug Reports panel stored submissions inside each
+   couple's own dashboardData.feedbackSubmissions array — private to that one account, with
+   no way to upvote or see anyone else's. That's replaced by the shared feedbackBoard
+   collection. Any submissions made before this version shipped would otherwise just vanish,
+   so on first load after upgrading, this copies them into the shared board once and clears
+   the old local array — guarded by a flag so it only ever runs a single time per account. */
+async function migrateLegacyFeedbackToBoard(){
+  try{
+    const legacy = dashboardData.feedbackSubmissions;
+    if(dashboardData._feedbackMigratedToBoard || !Array.isArray(legacy) || !legacy.length) return;
+    for(const f of legacy){
+      await window.everaFirebase.submitToFeedbackBoard({
+        type: f.type==='bug' ? 'bug' : 'feature',
+        title: f.title || '(untitled)',
+        description: f.description || '',
+        status: FEEDBACK_STATUSES.includes(f.status) ? f.status : 'submitted',
+        submittedAt: f.submittedAt || new Date().toISOString(),
+        submitterUid: currentUser.uid
+      });
+    }
+    dashboardData.feedbackSubmissions = [];
+    dashboardData._feedbackMigratedToBoard = true;
+    persistWeddingRecord();
+  } catch(err){
+    console.error('Failed to migrate legacy feedback submissions to the shared board', err);
+  }
 }
 /* Creates the planners/{uid} record for a brand-new planner signup and lands them on their
    Planner Home. Unlike a couple signup, there's no onboarding wizard — a planner's "wedding"
@@ -17448,9 +17487,23 @@ function renderPartySurveyQuestionsCard(){
     </div>
   `;
 }
+/* ================== v1.72.0 — Feedback & Roadmap board ==================
+   Replaces the old per-account "Feature Requests & Bug Reports" panel (which stored
+   submissions privately inside each couple's own dashboardData). This is now a single
+   shared board backed by the top-level feedbackBoard Firestore collection: every signed-in
+   account sees the same list, can upvote anything on it, and submissions are anonymous —
+   nobody's name is ever shown next to what they submitted or upvoted. Status changes and
+   replies are admin-only, enforced server-side by the isAdmin() Firestore rule, not just
+   hidden in this client's UI. */
 const FEEDBACK_STATUSES = ['submitted','under_review','planned','done'];
 const FEEDBACK_STATUS_LABELS = { submitted:'Submitted', under_review:'Under Review', planned:'Planned', done:'Done' };
 const FEEDBACK_STATUS_PILL_CLASS = { submitted:'pill-neutral', under_review:'pill-warn', planned:'pill-warn', done:'pill-ok' };
+let feedbackBoardCache = [];
+let feedbackBoardLoaded = false;
+let feedbackBoardLoading = false;
+let feedbackBoardFilter = 'all'; // 'all' | 'feature' | 'bug'
+let feedbackRepliesCache = {}; // id -> array of replies, fetched on demand
+let feedbackExpandedId = null; // which item currently has its replies/admin panel open
 function feedbackStatusPill(status){
   return `<span class="pill ${FEEDBACK_STATUS_PILL_CLASS[status] || 'pill-neutral'}">${FEEDBACK_STATUS_LABELS[status] || status}</span>`;
 }
@@ -17460,13 +17513,36 @@ function feedbackTypeLabel(type){
 function toggleFeedbackPanel(force){
   const panel = document.getElementById('feedbackPanel');
   if(!panel) return;
-  if(typeof force === 'boolean') panel.classList.toggle('open', force);
-  else panel.classList.toggle('open');
+  const opening = typeof force === 'boolean' ? force : !panel.classList.contains('open');
+  panel.classList.toggle('open', opening);
+  if(opening) loadFeedbackBoard();
+}
+async function loadFeedbackBoard(){
+  if(feedbackBoardLoading || !window.everaFirebase || !window.everaFirebase.listFeedbackBoard) return;
+  feedbackBoardLoading = true;
+  renderFeedbackPanel();
+  try{
+    feedbackBoardCache = await window.everaFirebase.listFeedbackBoard();
+  } catch(err){
+    console.error('Failed to load the feedback board', err);
+    feedbackBoardCache = [];
+  }
+  feedbackBoardLoaded = true;
+  feedbackBoardLoading = false;
+  renderFeedbackPanel();
+}
+function setFeedbackBoardFilter(type){
+  feedbackBoardFilter = type;
+  renderFeedbackPanel();
 }
 function renderFeedbackPanel(){
   const el = document.getElementById('feedbackPanelBody');
   if(!el) return;
-  const submissions = (dashboardData.feedbackSubmissions||[]).slice().sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt));
+  const uid = currentUser ? currentUser.uid : null;
+  const items = feedbackBoardCache
+    .filter(f => feedbackBoardFilter==='all' || f.type===feedbackBoardFilter)
+    .slice()
+    .sort((a,b)=> (b.upvoterUids||[]).length - (a.upvoterUids||[]).length || new Date(b.submittedAt) - new Date(a.submittedAt));
   el.innerHTML = `
     <div class="field-grid">
       <div class="field-cell">
@@ -17481,48 +17557,132 @@ function renderFeedbackPanel(){
     <div class="field-cell" style="margin-top:12px;"><label>Details</label><textarea class="notes-field notes-field-sm" id="fbDescription" placeholder="What happened, or what would help?"></textarea></div>
     <div style="margin-top:12px;"><button class="btn btn-solid btn-sm" onclick="submitFeedback()">Submit</button></div>
 
-    ${submissions.length ? `
-      <div class="budget-items" style="padding-left:0; margin-top:22px;">
-        <div class="budget-items-head" style="grid-template-columns:1fr 0.9fr 0.3fr;"><span>Submission</span><span>Status</span><span></span></div>
-        ${submissions.map(f=>`
-          <div class="budget-item-row" style="grid-template-columns:1fr 0.9fr 0.3fr; align-items:flex-start;">
-            <div>
-              <div style="font-weight:600; font-size:13px;">${feedbackTypeLabel(f.type)} · ${escapeHtml(f.title)} ${feedbackStatusPill(f.status)}</div>
-              ${f.description ? `<div class="d-sub" style="margin-top:4px;">${escapeHtml(f.description)}</div>` : ''}
-              <div class="d-sub" style="margin-top:4px;">Submitted ${new Date(f.submittedAt).toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'})}</div>
-            </div>
-            <select class="select-field-sm" onchange="updateFeedbackStatus('${f.id}', this.value)">
-              ${FEEDBACK_STATUSES.map(s=>`<option value="${s}" ${f.status===s?'selected':''}>${FEEDBACK_STATUS_LABELS[s]}</option>`).join('')}
-            </select>
-            <a href="#" class="danger-link" onclick="removeFeedbackSubmission('${f.id}'); return false;">✕</a>
-          </div>
-        `).join('')}
-      </div>
-    ` : `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">Nothing submitted yet — every feature request or bug report you send goes here, so you can check back on it.</p>`}
-    <p style="font-size:12px;color:var(--charcoal-faint);margin-top:12px;">In this prototype, status is shown as a plain dropdown you can change yourself for demo purposes — in the real product, the Evera team would update it as they review what's submitted, not the couple.</p>
+    <div class="seg-control" style="margin:20px 0 4px;">
+      <button class="seg-btn ${feedbackBoardFilter==='all'?'active':''}" onclick="setFeedbackBoardFilter('all')">All</button>
+      <button class="seg-btn ${feedbackBoardFilter==='feature'?'active':''}" onclick="setFeedbackBoardFilter('feature')">💡 Features</button>
+      <button class="seg-btn ${feedbackBoardFilter==='bug'?'active':''}" onclick="setFeedbackBoardFilter('bug')">🐛 Bugs</button>
+    </div>
+
+    ${feedbackBoardLoading && !feedbackBoardLoaded ? `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">Loading the board…</p>` : ''}
+    ${!feedbackBoardLoading && feedbackBoardLoaded && !items.length ? `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">Nothing here yet — be the first to submit a feature request or bug report.</p>` : ''}
+    ${items.length ? `<div style="margin-top:14px; display:flex; flex-direction:column; gap:10px;">${items.map(f=>renderFeedbackBoardItem(f, uid)).join('')}</div>` : ''}
+    <p style="font-size:12px;color:var(--charcoal-faint);margin-top:16px;">This is a shared board — everyone signed in sees the same list and can upvote. Submissions are anonymous; only the Evera team can change status or reply.</p>
   `;
 }
-function submitFeedback(){
+function renderFeedbackBoardItem(f, uid){
+  const upvoters = f.upvoterUids || [];
+  const hasUpvoted = !!(uid && upvoters.includes(uid));
+  const expanded = feedbackExpandedId === f.id;
+  const replies = feedbackRepliesCache[f.id] || [];
+  return `
+    <div class="budget-item-row" style="grid-template-columns:44px 1fr; align-items:flex-start; gap:12px;">
+      <button class="btn btn-outline btn-sm" style="flex-direction:column; padding:6px 4px; line-height:1.1; ${hasUpvoted?'background:var(--green-tint); border-color:var(--green); color:var(--green);':''}" onclick="handleFeedbackUpvoteClick('${f.id}')" title="${hasUpvoted?'Remove your upvote':'Upvote this'}">
+        <span style="font-size:13px;">▲</span><span style="font-size:11px; font-weight:700;">${upvoters.length}</span>
+      </button>
+      <div>
+        <div style="font-weight:600; font-size:13px;">${feedbackTypeLabel(f.type)} · ${escapeHtml(f.title)} ${feedbackStatusPill(f.status)}</div>
+        ${f.description ? `<div class="d-sub" style="margin-top:4px;">${escapeHtml(f.description)}</div>` : ''}
+        <div class="d-sub" style="margin-top:4px;">Submitted ${new Date(f.submittedAt).toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'})}</div>
+
+        ${isSuperAdmin ? `
+          <div style="margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <select class="select-field-sm" onchange="adminUpdateFeedbackStatus('${f.id}', this.value)">
+              ${FEEDBACK_STATUSES.map(s=>`<option value="${s}" ${f.status===s?'selected':''}>${FEEDBACK_STATUS_LABELS[s]}</option>`).join('')}
+            </select>
+            <a href="#" class="d-sub" onclick="toggleFeedbackReplies('${f.id}'); return false;">${expanded ? 'Hide replies' : 'Reply / view replies'}${replies.length && !expanded ? ` (${replies.length})` : ''}</a>
+            <a href="#" class="danger-link" onclick="adminDeleteFeedbackItem('${f.id}'); return false;">Remove</a>
+          </div>
+        ` : (replies.length ? `<a href="#" class="d-sub" style="display:inline-block; margin-top:8px;" onclick="toggleFeedbackReplies('${f.id}'); return false;">${expanded ? 'Hide' : `View ${replies.length} ${replies.length===1?'reply':'replies'} from the Evera team`}</a>` : '')}
+
+        ${expanded ? `
+          <div style="margin-top:10px; padding:10px 12px; background:var(--ivory-deep); border-radius:10px;">
+            ${replies.length ? replies.map(r=>`
+              <div style="font-size:12.5px; margin-bottom:8px;">
+                <b style="color:var(--green);">Evera team</b> · <span class="d-sub">${new Date(r.repliedAt).toLocaleDateString('en-US',{month:'short', day:'numeric'})}</span>
+                <div style="margin-top:2px;">${escapeHtml(r.text)}</div>
+              </div>
+            `).join('') : `<div class="d-sub" style="font-size:12.5px;">No replies yet.</div>`}
+            ${isSuperAdmin ? `
+              <div style="display:flex; gap:6px; margin-top:8px;">
+                <input type="text" id="fbReplyInput-${f.id}" placeholder="Post an update…" style="flex:1; padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-size:12.5px;">
+                <button class="btn btn-solid btn-sm" onclick="adminSubmitFeedbackReply('${f.id}')">Post</button>
+              </div>
+            ` : ''}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+async function submitFeedback(){
   const type = document.getElementById('fbType').value;
   const title = document.getElementById('fbTitle').value.trim();
   const description = document.getElementById('fbDescription').value.trim();
-  if(!title) return;
-  dashboardData.feedbackSubmissions = dashboardData.feedbackSubmissions || [];
-  dashboardData.feedbackSubmissions.push({
-    id: 'fb-'+Date.now(), type, title, description,
-    submittedAt: new Date().toISOString(), status: 'submitted'
-  });
+  if(!title || !currentUser || !window.everaFirebase) return;
+  try{
+    await window.everaFirebase.submitToFeedbackBoard({
+      type, title, description,
+      submittedAt: new Date().toISOString(), status: 'submitted',
+      submitterUid: currentUser.uid
+    });
+    document.getElementById('fbTitle').value = '';
+    document.getElementById('fbDescription').value = '';
+    await loadFeedbackBoard();
+  } catch(err){
+    console.error('Failed to submit feedback', err);
+  }
+}
+async function handleFeedbackUpvoteClick(id){
+  if(!currentUser || !window.everaFirebase) return;
+  const item = feedbackBoardCache.find(x=>x.id===id);
+  if(!item) return;
+  const uid = currentUser.uid;
+  const wasUpvoted = (item.upvoterUids||[]).includes(uid);
+  // optimistic local update so the count/highlight responds instantly
+  item.upvoterUids = wasUpvoted ? (item.upvoterUids||[]).filter(u=>u!==uid) : [...(item.upvoterUids||[]), uid];
+  renderFeedbackPanel();
+  try{
+    await window.everaFirebase.toggleFeedbackUpvote(id, uid, wasUpvoted);
+  } catch(err){
+    console.error('Failed to toggle upvote', err);
+    item.upvoterUids = wasUpvoted ? [...(item.upvoterUids||[]), uid] : (item.upvoterUids||[]).filter(u=>u!==uid);
+    renderFeedbackPanel();
+  }
+}
+async function adminUpdateFeedbackStatus(id, status){
+  if(!isSuperAdmin) return;
+  const item = feedbackBoardCache.find(x=>x.id===id);
+  if(item) item.status = status;
+  renderFeedbackPanel();
+  try{ await window.everaFirebase.updateFeedbackBoardStatus(id, status); }
+  catch(err){ console.error('Failed to update feedback status', err); }
+}
+async function adminDeleteFeedbackItem(id){
+  if(!isSuperAdmin) return;
+  if(!confirm('Remove this submission from the board? This can\'t be undone.')) return;
+  feedbackBoardCache = feedbackBoardCache.filter(x=>x.id!==id);
+  renderFeedbackPanel();
+  try{ await window.everaFirebase.deleteFeedbackBoardItem(id); }
+  catch(err){ console.error('Failed to delete feedback item', err); }
+}
+async function toggleFeedbackReplies(id){
+  feedbackExpandedId = feedbackExpandedId === id ? null : id;
+  if(feedbackExpandedId && !feedbackRepliesCache[id]){
+    try{ feedbackRepliesCache[id] = await window.everaFirebase.listFeedbackReplies(id); }
+    catch(err){ console.error('Failed to load replies', err); feedbackRepliesCache[id] = []; }
+  }
   renderFeedbackPanel();
 }
-function updateFeedbackStatus(id, status){
-  const f = (dashboardData.feedbackSubmissions||[]).find(x=>x.id===id);
-  if(!f) return;
-  f.status = status;
-  renderFeedbackPanel();
-}
-function removeFeedbackSubmission(id){
-  dashboardData.feedbackSubmissions = (dashboardData.feedbackSubmissions||[]).filter(x=>x.id!==id);
-  renderFeedbackPanel();
+async function adminSubmitFeedbackReply(id){
+  if(!isSuperAdmin) return;
+  const input = document.getElementById(`fbReplyInput-${id}`);
+  const text = input ? input.value.trim() : '';
+  if(!text) return;
+  try{
+    await window.everaFirebase.addFeedbackReply(id, { text, repliedAt: Date.now(), adminEmail: currentUser.email });
+    feedbackRepliesCache[id] = await window.everaFirebase.listFeedbackReplies(id);
+    renderFeedbackPanel();
+  } catch(err){ console.error('Failed to post reply', err); }
 }
 function applicableSurveysForHousehold(h){
   const invitedIds = householdInvitedEventIds(h);
@@ -21164,7 +21324,8 @@ updateStageUI();
     EmailAuthProvider, reauthenticateWithPopup
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import {
-    getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs, orderBy, limit
+    getFirestore, doc, getDoc, setDoc, deleteDoc, updateDoc, collection, query, where, getDocs, orderBy, limit,
+    arrayUnion, arrayRemove
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   // Public web config for the Evera Firebase project (evera-0824).
@@ -21351,6 +21512,43 @@ updateStageUI();
     async listAdminActivity(){
       const snap = await getDocs(query(collection(db, 'adminActivityLog'), orderBy('atMillis', 'desc'), limit(200)));
       return snap.docs.map(d=>d.data());
+    },
+    /* ================== v1.72.0 — Feedback & Roadmap board ==================
+       "feedbackBoard/{id}" replaces the old per-account dashboardData.feedbackSubmissions
+       array. It's a single shared, top-level collection so every signed-in account (couple
+       or planner) sees the SAME list and can upvote the same items — the whole point is a
+       public board, not a private form. Submissions are anonymous by design: submitterUid
+       is stored for moderation/audit only and is never rendered to other users. Status
+       changes are admin-only (enforced by the isAdmin() Firestore rule, not just hidden in
+       this client's UI). Replies live in a subcollection so they can be read by everyone but
+       written only by an admin. */
+    async submitToFeedbackBoard(entry){
+      const ref = doc(collection(db, 'feedbackBoard'));
+      await setDoc(ref, Object.assign({}, entry, { id: ref.id, upvoterUids: [] }));
+      return ref.id;
+    },
+    async listFeedbackBoard(){
+      const snap = await getDocs(query(collection(db, 'feedbackBoard'), orderBy('submittedAt', 'desc')));
+      return snap.docs.map(d=>d.data());
+    },
+    async toggleFeedbackUpvote(id, uid, isCurrentlyUpvoted){
+      await updateDoc(doc(db, 'feedbackBoard', id), {
+        upvoterUids: isCurrentlyUpvoted ? arrayRemove(uid) : arrayUnion(uid)
+      });
+    },
+    async updateFeedbackBoardStatus(id, status){
+      await updateDoc(doc(db, 'feedbackBoard', id), { status });
+    },
+    async deleteFeedbackBoardItem(id){
+      await deleteDoc(doc(db, 'feedbackBoard', id));
+    },
+    async listFeedbackReplies(id){
+      const snap = await getDocs(query(collection(db, 'feedbackBoard', id, 'replies'), orderBy('repliedAt', 'asc')));
+      return snap.docs.map(d=>d.data());
+    },
+    async addFeedbackReply(id, entry){
+      const ref = doc(collection(db, 'feedbackBoard', id, 'replies'));
+      await setDoc(ref, Object.assign({}, entry, { id: ref.id }));
     }
   };
 
