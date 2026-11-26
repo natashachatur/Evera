@@ -533,7 +533,9 @@
      filled this whole box with the couple's photo. Since v1.73.0 moved the photo into a small
      round avatar instead, that leftover 270px floor just produced a huge, mostly-empty dark
      rectangle (reported directly by Natasha) — the box now sizes to its actual content. */
-  .home-photo-hero{position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:22px; box-shadow:var(--shadow-lg); min-height:148px; display:flex; align-items:flex-end;}
+  /* v1.78.0: raised again alongside the avatar bump below, so the box still has room to vertically
+     center a taller photo instead of letting it press into the padding. */
+  .home-photo-hero{position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:22px; box-shadow:var(--shadow-lg); min-height:184px; display:flex; align-items:flex-end;}
   .home-photo-hero .hph-bg{position:absolute; inset:0; background:var(--green-deep);}
   /* v1.38.0: flattened to a solid colour — matches the earlier pass that flattened the
      Blueprint hero's gradient, so the app's two main hero moments are treated consistently.
@@ -545,8 +547,10 @@
   .home-photo-hero .hph-scrim{position:absolute; inset:0; background:linear-gradient(0deg, rgba(20,24,18,0.80) 0%, rgba(20,24,18,0.38) 55%, rgba(20,24,18,0.06) 100%);}
   /* v1.74.0: 64px read as tiny once the banner shrank to fit its content (also reported
      directly by Natasha) — sized up so the photo reads as a real feature next to the names,
-     not a small icon. */
-  .home-photo-hero .hph-avatar{position:relative; z-index:1; width:88px; height:88px; min-width:88px; border-radius:50%; overflow:hidden; border:3px solid rgba(244,239,227,0.55); box-shadow:0 2px 10px rgba(0,0,0,0.25); flex-shrink:0;}
+     not a small icon.
+     v1.78.0: bumped again per direct follow-up request ("even bigger... so you can see a little
+     bit more detail") — 88px→128px, with the hero's min-height raised to match. */
+  .home-photo-hero .hph-avatar{position:relative; z-index:1; width:128px; height:128px; min-width:128px; border-radius:50%; overflow:hidden; border:3px solid rgba(244,239,227,0.55); box-shadow:0 2px 10px rgba(0,0,0,0.25); flex-shrink:0;}
   .home-photo-hero .hph-avatar img{width:100%; height:100%; object-fit:cover; display:block;}
   .home-photo-hero .hph-heading-row{display:flex; align-items:center; gap:16px; min-width:0;}
   .home-photo-hero .hph-content{position:relative; z-index:1; padding:30px 32px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; width:100%;}
@@ -724,7 +728,11 @@
   .bp-hero{border-radius:var(--radius); box-shadow:var(--shadow-lg); margin-bottom:16px; padding:24px 28px; display:flex; gap:24px; align-items:center; justify-content:space-between; flex-wrap:wrap; position:relative;}
   .bp-hero-copy{flex:1 1 320px; min-width:260px;}
   .bp-hero-eyebrow{font-size:10.5px; text-transform:uppercase; letter-spacing:0.2em; font-weight:700; opacity:0.75;}
-  .bp-hero-names{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-style:italic; font-weight:600; font-size:clamp(22px,2.4vw,30px); line-height:1.12; margin-top:6px;}
+  /* v1.78.0: dropped the italic per direct feedback ("match the font on this card... to the one
+     on the homepage") — Home's own hero name (.home-photo-hero h1) has been a clean upright
+     Cormorant Garamond since v1.39.1 (italic read as "weird" there), so this now matches it
+     exactly instead of being the one place in the app still carrying the italic treatment. */
+  .bp-hero-names{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-weight:600; font-size:clamp(22px,2.4vw,30px); line-height:1.12; margin-top:6px;}
   .bp-hero-meta{font-size:12.5px; margin-top:8px; opacity:0.92; display:flex; flex-wrap:wrap;}
   .bp-hero-meta span{white-space:nowrap;}
   .bp-hero-meta span:not(:last-child)::after{content:'·'; margin:0 10px; opacity:0.6;}
@@ -2297,6 +2305,18 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.77.0', date:'2026-11-26',
+    title:'Resend failed sends, a real fix for the Twilio Email 400 error, and five smaller fixes',
+    items:[
+      'Any Communications Center send that had failures — some recipients bounced, or the whole send failed outright — now gets a "↻ Retry failed" link right in Message History. Retrying only re-targets the people who actually failed (not anyone who already received it), reuses the original subject and body, and logs the retry as its own new entry rather than overwriting the original, so your history stays an honest record of what actually happened.',
+      'Fixed: following the v1.76.0 switch to the Twilio Email API, a real test send got past login but then failed with "Invalid value provided for field \'content\'." Twilio\'s Email API turns out to require an HTML version of the message alongside the plain text, not text alone — sends now include both, so this should be clear to actually land in an inbox now.',
+      'Fixed: there was no way anywhere in the app to rename an event after creating it — reported directly by Natasha. The event name is now an editable field right at the top of its detail page, the same inline-editing style already used for household and budget-item names elsewhere.',
+      'Home: the couple photo is bigger again — 128px, up from 88px — per direct follow-up feedback asking to see a bit more detail in it.',
+      'Wedding Blueprint: the "Natasha & Matteo" heading on the Blueprint hero card is no longer italic — it now matches the upright serif treatment Home\'s own greeting has used since v1.39.1, so the app\'s two biggest headlines read consistently again.',
+      'Guests: the City/Province/Postal Code/Country/Email/Phone fields on a household\'s Address & Contact section now carry proper browser autofill hints, so picking a saved address from your browser\'s own autofill (not Evera\'s OpenStreetMap search, which already worked) correctly fills in the related fields together instead of just the one you clicked into. Street Address keeps its existing behavior so it doesn\'t fight with the OpenStreetMap suggestion dropdown.'
+    ]
+  },
+  {
     version:'1.76.0', date:'2026-11-26',
     title:'Real email sending now uses the right Twilio product',
     items:[
@@ -3441,6 +3461,7 @@ let commsSpecificSelection = []; // household ids chosen via the hand-pick picke
 let commsSendChannel = 'email'; // 'email' | 'sms' | 'both' — v1.73.0, now that sending is real, channel is a real choice
 let commsSending = false; // true while a real send is in flight, to disable the Confirm button and avoid double-sends
 let commsSendResult = null; // { ok, emailResult?, smsResult?, error? } — set once a real send completes, shown in place of the Review & Send form until dismissed
+let commsRetryingId = null; // v1.77.0: guestMessageLog id currently being retried from Message History — separate from commsSending/commsSendResult (the compose-flow state) since a retry is triggered from History, not the compose form, and its result panel only renders while commsPreviewOpen is true. The new log entry a retry creates is the visible confirmation instead — see retryFailedSend.
 let partyAddDraft = null; // v1.45.0: "+ Add Wedding Party Member" modal draft — null when closed. {mode:'existing'|'new', lockGuest:bool, householdId, memberId, firstName, lastName, email}
 
 /* Blank "get to know you" survey every wedding-party member (except Parents) gets when added —
@@ -16727,12 +16748,12 @@ function renderHouseholdDetailModal(householdId){
         <div class="field-cell" style="position:relative;"><label>Street Address <span class="field-help-icon" title="Address search powered by OpenStreetMap — free, no API key needed, and not limited to the U.S. Include the city (and country, for addresses outside North America) for the best match. Picking a result fills in City/Province/Postal/Country below too.">?</span></label><input type="text" id="householdAddrInput-${h.id}" data-fkey="addr:${h.id}:street" onkeydown="handleModalFieldTab(event)" placeholder="Search an address…" autocomplete="off" value="${escapeAttr(addr.street)}" oninput="onAddressLookupInput('household','${h.id}', this.value)" onchange="updateHouseholdAddressField('${h.id}','street',this.value)">
           <div class="loc-suggest-dropdown" id="locSuggest-household-${h.id}"></div>
         </div>
-        <div class="field-cell"><label>City</label><input type="text" placeholder="e.g. Toronto" data-fkey="addr:${h.id}:city" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.city)}" onchange="updateHouseholdAddressField('${h.id}','city',this.value)"></div>
-        <div class="field-cell"><label>Province / State</label><input type="text" placeholder="e.g. ON" data-fkey="addr:${h.id}:region" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.region)}" onchange="updateHouseholdAddressField('${h.id}','region',this.value)"></div>
-        <div class="field-cell"><label>Postal / ZIP Code</label><input type="text" placeholder="e.g. M4K 1M2" data-fkey="addr:${h.id}:postalCode" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.postalCode)}" onchange="updateHouseholdAddressField('${h.id}','postalCode',this.value)"></div>
-        <div class="field-cell"><label>Country</label><input type="text" placeholder="e.g. Canada" data-fkey="addr:${h.id}:country" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.country)}" onchange="updateHouseholdAddressField('${h.id}','country',this.value)"></div>
-        <div class="field-cell"><label>Email</label><input type="text" placeholder="Contact email" data-fkey="hc:${h.id}:email" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(h.email)}" onchange="updateHouseholdField('${h.id}','email',this.value)"></div>
-        <div class="field-cell"><label>Phone <span class="field-help-icon" title="Used for real text message sending in Communications Center — include country code for best results, e.g. +1 416 555 0134.">?</span></label><input type="text" placeholder="e.g. +1 416 555 0134" data-fkey="hc:${h.id}:phone" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(h.phone)}" onchange="updateHouseholdField('${h.id}','phone',this.value)"></div>
+        <div class="field-cell"><label>City</label><input type="text" placeholder="e.g. Toronto" autocomplete="address-level2" data-fkey="addr:${h.id}:city" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.city)}" onchange="updateHouseholdAddressField('${h.id}','city',this.value)"></div>
+        <div class="field-cell"><label>Province / State</label><input type="text" placeholder="e.g. ON" autocomplete="address-level1" data-fkey="addr:${h.id}:region" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.region)}" onchange="updateHouseholdAddressField('${h.id}','region',this.value)"></div>
+        <div class="field-cell"><label>Postal / ZIP Code</label><input type="text" placeholder="e.g. M4K 1M2" autocomplete="postal-code" data-fkey="addr:${h.id}:postalCode" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.postalCode)}" onchange="updateHouseholdAddressField('${h.id}','postalCode',this.value)"></div>
+        <div class="field-cell"><label>Country</label><input type="text" placeholder="e.g. Canada" autocomplete="country-name" data-fkey="addr:${h.id}:country" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(addr.country)}" onchange="updateHouseholdAddressField('${h.id}','country',this.value)"></div>
+        <div class="field-cell"><label>Email</label><input type="text" placeholder="Contact email" autocomplete="email" data-fkey="hc:${h.id}:email" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(h.email)}" onchange="updateHouseholdField('${h.id}','email',this.value)"></div>
+        <div class="field-cell"><label>Phone <span class="field-help-icon" title="Used for real text message sending in Communications Center — include country code for best results, e.g. +1 416 555 0134.">?</span></label><input type="text" placeholder="e.g. +1 416 555 0134" autocomplete="tel" data-fkey="hc:${h.id}:phone" onkeydown="handleModalFieldTab(event)" value="${escapeAttr(h.phone)}" onchange="updateHouseholdField('${h.id}','phone',this.value)"></div>
       </div>
       <div class="detail-section-head" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);"><h4 style="margin:0;">Tags</h4><span class="d-sub">One tag vocabulary, two scopes — apply a tag to the whole family, or to just one person. Feeds Guests → Invite Rules either way.</span></div>
       <div style="margin-top:10px;">
@@ -17399,7 +17420,11 @@ async function confirmSendGuestMessage(){
 
   const logEntry = {
     id:'gmsg-'+Date.now().toString(36), sentAt:new Date().toISOString(),
-    recipientLabel:label, recipientCount:count, subject, body, channel
+    recipientLabel:label, recipientCount:count, subject, body, channel,
+    // v1.77.0: kept so a failed send can be retried later (retryFailedSend below) without the
+    // couple having to re-pick the same audience — a retry needs the exact contacts that were
+    // actually targeted, not just the recomputed-live audience (which could have changed since).
+    contacts
   };
 
   try{
@@ -17420,6 +17445,68 @@ async function confirmSendGuestMessage(){
   persistWeddingRecord();
 
   commsSending = false;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+}
+/* v1.77.0 — "give me the option to attempt a resend" for anything that failed in the
+   Communications Center, per Natasha's direct request. A log entry is retryable when either the
+   whole call errored (logEntry.sendError — e.g. the functions weren't deployed yet, so NOBODY was
+   reached) or a channel's result reports failed > 0 (some recipients were reached, some weren't).
+   Retrying only re-targets the people/channels that actually failed — never the ones who already
+   got it — and always creates a NEW log entry (retryOfId points back to the original) so Message
+   History keeps an honest record of both the original attempt and the retry, rather than quietly
+   rewriting what happened. */
+function guestMessageLogIsRetryable(g){
+  if(!g || g.contacts===undefined) return false; // pre-v1.77.0 entries have no stored contacts to retry with
+  if(g.sendError) return true;
+  if(g.emailResult && g.emailResult.failed>0) return true;
+  if(g.smsResult && g.smsResult.failed>0) return true;
+  return false;
+}
+async function retryFailedSend(logId){
+  if(commsRetryingId) return;
+  const g = (dashboardData.guestMessageLog||[]).find(x=>x.id===logId);
+  if(!g || !guestMessageLogIsRetryable(g)) return;
+
+  // Whole call failed last time -> nobody was reached, so retry everyone on the original channel(s).
+  // Otherwise, retry only the specific contacts each channel's result actually reported as failed.
+  const failedEmails = (g.emailResult && g.emailResult.failures || []).map(f=>f.email);
+  const failedPhones = (g.smsResult && g.smsResult.failures || []).map(f=>f.phone);
+  const retryEmail = g.sendError ? (g.channel==='email'||g.channel==='both') : failedEmails.length>0;
+  const retrySms = g.sendError ? (g.channel==='sms'||g.channel==='both') : failedPhones.length>0;
+  const emailContacts = g.sendError ? g.contacts : g.contacts.filter(c=>failedEmails.includes(c.email));
+  const smsContacts = g.sendError ? g.contacts : g.contacts.filter(c=>failedPhones.includes(c.phone));
+  const retryContacts = retryEmail && retrySms
+    ? [...new Map([...emailContacts, ...smsContacts].map(c=>[c.email+'|'+c.phone, c])).values()]
+    : (retryEmail ? emailContacts : smsContacts);
+
+  if(!retryContacts.length) return;
+
+  commsRetryingId = logId;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+
+  const retryEntry = {
+    id:'gmsg-'+Date.now().toString(36), sentAt:new Date().toISOString(),
+    recipientLabel:`Resend — failed recipients from "${g.recipientLabel}" (${new Date(g.sentAt).toLocaleDateString()})`,
+    recipientCount:retryContacts.length, subject:g.subject, body:g.body,
+    channel: retryEmail && retrySms ? 'both' : (retryEmail ? 'email' : 'sms'),
+    contacts: retryContacts, retryOfId: g.id
+  };
+
+  try{
+    let emailResult = null, smsResult = null;
+    if(retryEmail) emailResult = await window.everaFirebase.sendGuestEmail(emailContacts, g.subject, g.body);
+    if(retrySms) smsResult = await window.everaFirebase.sendGuestSms(smsContacts, g.body);
+    retryEntry.emailResult = emailResult;
+    retryEntry.smsResult = smsResult;
+  } catch(err){
+    console.error('Resend of failed guest messages failed', err);
+    retryEntry.sendError = (err && err.message) || 'Unknown error — the send functions may not be deployed yet.';
+  }
+
+  dashboardData.guestMessageLog.push(retryEntry);
+  persistWeddingRecord();
+
+  commsRetryingId = null;
   document.getElementById('content').innerHTML = renderMessagesModule();
 }
 /* Resets the compose form back to a clean slate after the couple has seen the send result —
@@ -17565,7 +17652,7 @@ function renderMessageHistoryCard(){
     } else {
       sub = `${pluralize(g.recipientCount,'person','people')}`; // pre-v1.73.0 simulated sends — no real result to show
     }
-    log.push({at:g.sentAt, icon:'✉️', label:g.recipientLabel, sub, preview:(g.subject?`${g.subject} — `:'')+g.body});
+    log.push({at:g.sentAt, icon:'✉️', label:g.recipientLabel, sub, preview:(g.subject?`${g.subject} — `:'')+g.body, id:g.id, canRetry:guestMessageLogIsRetryable(g), retrying:commsRetryingId===g.id});
   });
   (d.events||[]).forEach(e=>{
     (e.inviteSentLog||[]).forEach(x=> log.push({at:x.sentAt, icon:'📨', label:`${e.name} — Invites`, sub:'Invite send', preview:`Invitation to ${e.name}, sent to everyone invited.`}));
@@ -17584,7 +17671,7 @@ function renderMessageHistoryCard(){
         ${log.map(x=>`
           <div class="budget-item-row" style="grid-template-columns:0.3fr 1.5fr 1.7fr 0.9fr; align-items:center;">
             <span>${x.icon}</span>
-            <span class="readonly-cell">${escapeHtml(x.label)}<br><span class="d-sub">${escapeHtml(x.sub)}</span></span>
+            <span class="readonly-cell">${escapeHtml(x.label)}<br><span class="d-sub">${escapeHtml(x.sub)}</span>${x.canRetry ? `<br><button type="button" class="ch-link" style="background:none;border:none;padding:0;cursor:pointer;font-size:11.5px;font-weight:700;" ${x.retrying?'disabled':''} onclick="retryFailedSend('${x.id}')">${x.retrying ? 'Retrying…' : '↻ Retry failed'}</button>` : ''}</span>
             <span class="d-sub">${escapeHtml((x.preview||'').slice(0,90))}${(x.preview||'').length>90?'…':''}</span>
             <span class="d-sub">${new Date(x.at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}</span>
           </div>
@@ -18718,7 +18805,7 @@ function renderEventDetail(id){
     <button class="back-link" onclick="backToEventsList()" style="background:none;border:none;cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>Back to Events</button>
     <div class="member-detail-head" style="margin-bottom:18px;">
       <div class="pm-avatar" style="background:var(--green-tint);"><svg class="icon" viewBox="0 0 24 24" style="width:22px;height:22px; color:var(--green-deep);">${ICONS.events}</svg></div>
-      <div><h2>${e.name}</h2><div class="mdh-role">${e.date}${eventTimeRangeLabel(e) ? ' · '+eventTimeRangeLabel(e) : ''}</div><div class="mdh-side">${e.location||'No location set yet'}</div></div>
+      <div style="flex:1 1 260px; min-width:200px;"><input type="text" class="budget-detail-title" style="font-size:28px; margin-top:0;" value="${escapeAttr(e.name)}" onchange="renameEvent('${e.id}',this.value)" aria-label="Event name"><div class="mdh-role">${e.date}${eventTimeRangeLabel(e) ? ' · '+eventTimeRangeLabel(e) : ''}</div><div class="mdh-side">${e.location||'No location set yet'}</div></div>
       <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
         ${statusPill(e.status)}
         <button class="btn btn-outline btn-sm" onclick="toggleEventStatus('${e.id}')">${e.status==='booked' ? 'Mark as Planning' : 'Mark as Booked'}</button>
@@ -18749,6 +18836,18 @@ function toggleEventStatus(id){
 function shortDateLabel(iso){
   if(!iso) return 'Date TBD';
   return new Date(iso+'T12:00:00').toLocaleDateString('en-US',{weekday:'short', month:'short', day:'numeric'});
+}
+// v1.78.0: there was previously no way to rename an event anywhere in the app — the header was
+// static text and the Details tab had no name field at all (confirmed directly, this was a real
+// gap, not an oversight in testing). Kept as its own function rather than a plain
+// onchange="updateEventField(...)" so a blank name (which would break every event list/label that
+// assumes one) just redraws the field back to its current name instead of silently saving "".
+function renameEvent(id, value){
+  const e = dashboardData.events.find(x=>x.id===id);
+  if(!e) return;
+  const trimmed = (value||'').trim();
+  if(!trimmed){ document.getElementById('content').innerHTML = renderEventDetail(id); return; }
+  updateEventField(id, 'name', trimmed);
 }
 function updateEventField(id, field, value){
   const e = dashboardData.events.find(x=>x.id===id);
