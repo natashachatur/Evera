@@ -1,11 +1,23 @@
 /* ================== Evera Cloud Functions — real guest sending ==================
    v1.73.0. Two callable functions back the Communications Center's "Confirm & Send" button:
-   sendGuestEmail (via SendGrid) and sendGuestSms (via Twilio). Both are Firebase Functions v2
-   "onCall" functions — the client SDK handles auth-token attachment and CORS automatically, so
-   there's no separate HTTP/CORS setup needed. Secrets (API keys) are never hardcoded here; they're
+   sendGuestEmail and sendGuestSms (via Twilio SMS). Both are Firebase Functions v2 "onCall"
+   functions — the client SDK handles auth-token attachment and CORS automatically, so there's
+   no separate HTTP/CORS setup needed. Secrets (API keys) are never hardcoded here; they're
    injected at runtime from Firebase Secret Manager via defineSecret, set once with
    `firebase functions:secrets:set <NAME>` (see the project README / chat instructions for the
    exact commands) and never pasted into this file or any chat.
+
+   v1.76.0: sendGuestEmail was rewritten to call Twilio's newer native Email API
+   (comms.twilio.com/v1/Emails) instead of the classic, separately-owned SendGrid REST API
+   (api.sendgrid.com/v3/mail/send) via the @sendgrid/mail library. These are two genuinely
+   different products with different endpoints, different auth (Basic auth with a Twilio API
+   Key SID/Secret pair here, vs. a single Bearer token for classic SendGrid) and different
+   request bodies — discovered the hard way when a key created through the unified Twilio
+   Console's permission-grid UI (the only key-creation screen reachable from an account created
+   via Google SSO, which has no classic standalone SendGrid login) returned "Unauthorized" against
+   the classic SendGrid endpoint. The account's Domain Authentication (set up earlier under
+   Communications → Email → Domains) is for this same native product, so that setup carries over
+   unchanged — only the sending code needed to change.
 
    Both functions require the caller to be signed in (request.auth), matching every other write
    path in this app — there is no public, unauthenticated send route. Neither function trusts the
@@ -28,14 +40,22 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
-const SENDGRID_API_KEY = defineSecret('SENDGRID_API_KEY');
+// v1.76.0: the Twilio Email API authenticates with a Twilio API Key SID/Secret pair via HTTP
+// Basic auth — a different credential shape than classic SendGrid's single Bearer-token key, so
+// this is two secrets rather than one. Create the key under Twilio Console → Communications →
+// Email → API key & creds → API keys & auth tokens, with "Create" checked under the
+// Comms → Emails → emails permission.
+const TWILIO_EMAIL_API_KEY_SID = defineSecret('TWILIO_EMAIL_API_KEY_SID');
+const TWILIO_EMAIL_API_KEY_SECRET = defineSecret('TWILIO_EMAIL_API_KEY_SECRET');
 const TWILIO_ACCOUNT_SID = defineSecret('TWILIO_ACCOUNT_SID');
 const TWILIO_AUTH_TOKEN = defineSecret('TWILIO_AUTH_TOKEN');
 const TWILIO_PHONE_NUMBER = defineSecret('TWILIO_PHONE_NUMBER');
 
-// The verified SendGrid sender — a subdomain of evera-planning.ca, authenticated separately in the
-// SendGrid dashboard (Settings → Sender Authentication → Authenticate Your Domain). Using a
-// subdomain rather than the bare root domain keeps the main domain's own DNS untouched.
+const TWILIO_EMAIL_API_URL = 'https://comms.twilio.com/v1/Emails';
+
+// The verified sender — a subdomain of evera-planning.ca, authenticated separately in the Twilio
+// Console (Communications → Email → Domains). Using a subdomain rather than the bare root domain
+// keeps the main domain's own DNS untouched.
 const FROM_EMAIL = 'hello@mail.evera-planning.ca';
 const FROM_NAME = 'Evera';
 
@@ -65,16 +85,16 @@ function validateSendRequest(data) {
   return { recipients, body: body.trim() };
 }
 
-/** Sends one email per recipient with a valid-looking address via the given SendGrid client
- * (dependency-injected so tests can pass a mock instead of the real @sendgrid/mail module).
- * Returns { sent, skipped, failed, failures }. */
-async function sendEmailBatch(sgMail, recipients, subject, body) {
+/** Sends one email per recipient with a valid-looking address via the given email client
+ * (dependency-injected — the real one is makeTwilioEmailClient below; tests pass a mock with
+ * the same { send(msg) } shape instead). Returns { sent, skipped, failed, failures }. */
+async function sendEmailBatch(emailClient, recipients, subject, body) {
   const validRecipients = recipients.filter(r => r && typeof r.email === 'string' && /\S+@\S+\.\S+/.test(r.email));
   if (!validRecipients.length) {
     return { sent: 0, skipped: recipients.length, failed: 0, failures: [] };
   }
 
-  const settled = await Promise.allSettled(validRecipients.map(r => sgMail.send({
+  const settled = await Promise.allSettled(validRecipients.map(r => emailClient.send({
     to: r.email,
     from: { email: FROM_EMAIL, name: FROM_NAME },
     subject,
@@ -113,16 +133,44 @@ async function sendSmsBatch(twilioClient, fromNumber, recipients, body) {
   return { sent, skipped: recipients.length - validRecipients.length, failed: failures.length, failures };
 }
 
-exports.sendGuestEmail = onCall({ secrets: [SENDGRID_API_KEY], region: 'us-central1' }, async (request) => {
+/** Builds the real email-sending client that sendEmailBatch calls .send() on — a thin wrapper
+ * around the Twilio Email API (comms.twilio.com/v1/Emails), kept to the exact same { send(msg) }
+ * shape the classic @sendgrid/mail client had so sendEmailBatch (and its tests, which mock this
+ * same interface) didn't need to change — only what's behind this interface did. */
+function makeTwilioEmailClient(apiKeySid, apiKeySecret) {
+  return {
+    async send({ to, from, subject, text }) {
+      const auth = Buffer.from(`${apiKeySid}:${apiKeySecret}`).toString('base64');
+      const resp = await fetch(TWILIO_EMAIL_API_URL, {
+        method: 'POST',
+        headers: { 'Authorization': `Basic ${auth}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: { address: from.email, name: from.name },
+          to: [{ address: to }],
+          content: { subject, text },
+        }),
+      });
+      if (!resp.ok) {
+        const errBody = await resp.text().catch(() => '');
+        throw new Error(`Twilio Email API ${resp.status}${resp.status===401?' (Unauthorized — check the API key and that it has Create access on Comms > Emails)':''}: ${errBody || resp.statusText}`);
+      }
+      return resp.json().catch(() => ({}));
+    }
+  };
+}
+
+exports.sendGuestEmail = onCall({
+  secrets: [TWILIO_EMAIL_API_KEY_SID, TWILIO_EMAIL_API_KEY_SECRET],
+  region: 'us-central1'
+}, async (request) => {
   requireSignedIn(request);
   const { recipients, body } = validateSendRequest(request.data);
   const subject = (request.data && request.data.subject && String(request.data.subject).trim())
     || 'A message from your wedding';
 
-  const sgMail = require('@sendgrid/mail');
-  sgMail.setApiKey(SENDGRID_API_KEY.value());
+  const emailClient = makeTwilioEmailClient(TWILIO_EMAIL_API_KEY_SID.value(), TWILIO_EMAIL_API_KEY_SECRET.value());
 
-  const result = await sendEmailBatch(sgMail, recipients, subject, body);
+  const result = await sendEmailBatch(emailClient, recipients, subject, body);
   if (result.failures.length) logger.warn('sendGuestEmail: some sends failed', { failures: result.failures });
   return result;
 });
@@ -146,4 +194,4 @@ exports.sendGuestSms = onCall({
 // Exported for functions/test/send.test.js only — Firebase's deploy step only picks up exports
 // that are actual CloudFunction objects (the onCall-wrapped exports above), so these plain
 // functions are simply ignored at deploy time, not shipped as extra endpoints.
-exports._internal = { validateSendRequest, sendEmailBatch, sendSmsBatch, MAX_RECIPIENTS_PER_CALL };
+exports._internal = { validateSendRequest, sendEmailBatch, sendSmsBatch, makeTwilioEmailClient, MAX_RECIPIENTS_PER_CALL, TWILIO_EMAIL_API_URL };

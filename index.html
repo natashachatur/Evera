@@ -2297,6 +2297,13 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.76.0', date:'2026-11-26',
+    title:'Real email sending now uses the right Twilio product',
+    items:[
+      'Fixed: a real test send reported "Unauthorized" and failed to deliver. The cause — the Communications Center\'s email sending was built against the classic, separately-owned SendGrid API, but Twilio has since split email into its own distinct product with a different address and a different kind of key, and that\'s the one actually available on this account. The sending Cloud Function now talks to the correct one. Nothing changes for how you compose or send from the Communications Center — this was entirely behind the scenes — but the manual setup steps for activating real sending have changed slightly; see the updated setup notes.'
+    ]
+  },
+  {
     version:'1.75.0', date:'2026-11-26',
     title:'Tab now moves between fields when editing a guest',
     items:[
@@ -17439,7 +17446,7 @@ function renderSendResultSummary(){
       ${r.ok ? `
         ${channelResult(r.emailResult, 'emailed')}
         ${channelResult(r.smsResult, 'texted')}
-      ` : `<p style="font-size:14px;color:var(--charcoal-soft);">${escapeHtml(r.error)}</p><p class="d-sub">If this is the first real send, make sure the Cloud Functions have been deployed and the Twilio/SendGrid secrets are set — see the project setup notes.</p>`}
+      ` : `<p style="font-size:14px;color:var(--charcoal-soft);">${escapeHtml(r.error)}</p><p class="d-sub">If this is the first real send, make sure the Cloud Functions have been deployed and the Twilio Email/SMS secrets are set — see the project setup notes.</p>`}
       <div style="margin-top:14px;"><button type="button" class="btn btn-solid btn-sm" onclick="finishCommsSendFlow()">Done</button></div>
     </div>
   `;
@@ -21565,8 +21572,9 @@ updateStageUI();
     getFirestore, doc, getDoc, setDoc, deleteDoc, updateDoc, collection, query, where, getDocs, orderBy, limit,
     arrayUnion, arrayRemove
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-  // v1.73.0 — real Communications Center sending (Twilio SMS + SendGrid email), via two Cloud
-  // Functions (sendGuestEmail/sendGuestSms, deployed from functions/index.js). httpsCallable
+  // v1.73.0 — real Communications Center sending (Twilio SMS + email via the Twilio Email API,
+  // see functions/index.js v1.76.0 notes), via two Cloud Functions (sendGuestEmail/sendGuestSms,
+  // deployed from functions/index.js). httpsCallable
   // automatically attaches the signed-in user's ID token and handles CORS — no separate fetch/CORS
   // setup needed, same convenience as every other Firebase SDK call in this file.
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";

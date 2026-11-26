@@ -3,7 +3,7 @@
  * Uses the dependency-injected sendEmailBatch/sendSmsBatch/validateSendRequest exported as
  * exports._internal specifically so this is possible — see the comment in index.js. */
 const assert = require('assert');
-const { validateSendRequest, sendEmailBatch, sendSmsBatch, MAX_RECIPIENTS_PER_CALL } = require('../index.js')._internal;
+const { validateSendRequest, sendEmailBatch, sendSmsBatch, makeTwilioEmailClient, MAX_RECIPIENTS_PER_CALL, TWILIO_EMAIL_API_URL } = require('../index.js')._internal;
 
 let passed = 0, failed = 0;
 function check(label, fn) {
@@ -120,6 +120,64 @@ async function checkAsync(label, fn) {
     assert.strictEqual(result.sent, 1);
     assert.strictEqual(result.failed, 1);
     assert.strictEqual(result.failures[0].phone, '+10000000000');
+  });
+
+  // --- makeTwilioEmailClient (v1.76.0 — Twilio Email API, replaces classic @sendgrid/mail) ---
+  await checkAsync('makeTwilioEmailClient posts to the Twilio Email API with Basic auth and the right body shape', async () => {
+    const calls = [];
+    const realFetch = global.fetch;
+    global.fetch = async (url, opts) => {
+      calls.push({ url, opts });
+      return { ok: true, status: 202, json: async () => ({ operationId: 'op_123' }) };
+    };
+    try {
+      const client = makeTwilioEmailClient('SKtestsid', 'testsecret');
+      await client.send({ to: 'alice@example.com', from: { email: 'hello@mail.evera-planning.ca', name: 'Evera' }, subject: 'Hi', text: 'Body text' });
+      assert.strictEqual(calls.length, 1);
+      assert.strictEqual(calls[0].url, TWILIO_EMAIL_API_URL);
+      assert.strictEqual(calls[0].opts.method, 'POST');
+      const expectedAuth = 'Basic ' + Buffer.from('SKtestsid:testsecret').toString('base64');
+      assert.strictEqual(calls[0].opts.headers['Authorization'], expectedAuth);
+      const body = JSON.parse(calls[0].opts.body);
+      assert.strictEqual(body.from.address, 'hello@mail.evera-planning.ca');
+      assert.strictEqual(body.to[0].address, 'alice@example.com');
+      assert.strictEqual(body.content.subject, 'Hi');
+      assert.strictEqual(body.content.text, 'Body text');
+    } finally {
+      global.fetch = realFetch;
+    }
+  });
+
+  await checkAsync('makeTwilioEmailClient throws a clear, specific error on a 401 (this is literally the bug that caused this rewrite)', async () => {
+    const realFetch = global.fetch;
+    global.fetch = async () => ({ ok: false, status: 401, statusText: 'Unauthorized', text: async () => '{"message":"Authentication Error"}' });
+    try {
+      const client = makeTwilioEmailClient('SKbad', 'bad');
+      await assert.rejects(
+        () => client.send({ to: 'a@b.com', from: { email: 'hello@mail.evera-planning.ca', name: 'Evera' }, subject: 'S', text: 'B' }),
+        /401.*Unauthorized.*Comms > Emails/s
+      );
+    } finally {
+      global.fetch = realFetch;
+    }
+  });
+
+  await checkAsync('makeTwilioEmailClient propagates a per-recipient failure through sendEmailBatch (integration of the two)', async () => {
+    const realFetch = global.fetch;
+    global.fetch = async (url, opts) => {
+      const body = JSON.parse(opts.body);
+      if (body.to[0].address === 'fails@example.com') return { ok: false, status: 400, statusText: 'Bad Request', text: async () => 'invalid recipient' };
+      return { ok: true, status: 202, json: async () => ({}) };
+    };
+    try {
+      const client = makeTwilioEmailClient('SKtestsid', 'testsecret');
+      const result = await sendEmailBatch(client, [{ email: 'ok@example.com' }, { email: 'fails@example.com' }], 'Subj', 'Body');
+      assert.strictEqual(result.sent, 1);
+      assert.strictEqual(result.failed, 1);
+      assert.strictEqual(result.failures[0].email, 'fails@example.com');
+    } finally {
+      global.fetch = realFetch;
+    }
   });
 
   console.log(`\n${passed} passed, ${failed} failed`);
