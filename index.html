@@ -168,6 +168,11 @@
   .planner-invite-banner{background:var(--amber-tint); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
   .planner-empty{text-align:center; padding:50px 20px; color:var(--charcoal-faint);}
   .viewing-as-planner-pill{display:inline-flex; align-items:center; gap:8px; background:var(--green-tint); color:var(--green); font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:999px; cursor:pointer; margin-top:4px;}
+  .viewing-as-admin-pill{background:var(--terracotta-tint); color:var(--terracotta);}
+  .admin-table{border:1px solid var(--line); border-radius:var(--radius-sm); overflow:hidden; background:#fff;}
+  .admin-table-row{display:grid; grid-template-columns:2fr 1.3fr 1.3fr 1fr; gap:10px; padding:12px 16px; align-items:center; border-bottom:1px solid var(--line); font-size:13px;}
+  .admin-table-row:last-child{border-bottom:none;}
+  .admin-table-head{background:var(--ivory-deep); font-size:11px; text-transform:uppercase; letter-spacing:0.04em; font-weight:700; color:var(--charcoal-faint);}
   .auth-error{background:var(--terracotta-tint); color:var(--terracotta); border-radius:var(--radius-sm); padding:11px 14px; font-size:13px; margin-bottom:18px; display:none;}
   .auth-error.show{display:block;}
   .auth-success{background:var(--green-tint); color:var(--green-deep); border-radius:var(--radius-sm); padding:11px 14px; font-size:13px; margin-bottom:18px; display:none;}
@@ -2040,9 +2045,28 @@
 <section id="view-planner-home" class="view">
   <div class="planner-home-top">
     <div class="landing-brand"><span>Evera</span></div>
-    <button class="btn btn-outline btn-sm" onclick="handleSignOut()">Sign Out</button>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-outline btn-sm" id="plannerHomeAdminBtn" onclick="openAdminDashboard()" style="display:none;">Super Admin</button>
+      <button class="btn btn-outline btn-sm" onclick="handleSignOut()">Sign Out</button>
+    </div>
   </div>
   <div class="planner-home-wrap" id="plannerHomeBody"><!-- injected by renderPlannerHome() --></div>
+</section>
+
+<!-- ============ SUPER ADMIN DASHBOARD (v1.71.0) — full view/edit access into
+     any account, for support and oversight, plus an activity log. Only shown
+     to a uid with a matching admins/{uid} Firestore document — see
+     checkSuperAdminStatus() and the Firestore rules given alongside this
+     release. ============ -->
+<section id="view-admin-dashboard" class="view">
+  <div class="planner-home-top">
+    <div class="landing-brand"><span>Evera</span></div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-outline btn-sm" onclick="exitAdminViewToOwnAccount()">My Own Wedding</button>
+      <button class="btn btn-outline btn-sm" onclick="handleSignOut()">Sign Out</button>
+    </div>
+  </div>
+  <div class="planner-home-wrap" id="adminDashboardBody"><!-- injected by renderAdminDashboard() --></div>
 </section>
 
 <!-- ============ APP SHELL ============ -->
@@ -2071,6 +2095,7 @@
         <button class="icon-btn" id="tbNotifBell" onclick="toggleNotificationsPanel()" title="Notifications" aria-label="Notifications"><svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
         <button class="icon-btn" onclick="toggleFeedbackPanel()" title="Feature requests &amp; bug reports" aria-label="Feature requests and bug reports"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/></svg></button>
         <button class="icon-btn" id="tbAssistantBtn" onclick="toggleAssistant()" title="Evera Assistant" aria-label="Evera Assistant" style="display:none;"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.2 5.6L20 10l-5.8 2.4L12 18l-2.2-5.6L4 10l5.8-2.4L12 2z"/></svg></button>
+        <button class="icon-btn" id="tbAdminBtn" onclick="openAdminDashboard()" title="Super Admin Dashboard" aria-label="Super Admin Dashboard" style="display:none;"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg></button>
         <div class="sb-avatar" style="background:var(--champagne-light); width:38px; height:38px; font-size:12px; cursor:pointer;" id="tbAvatar" onclick="renderRoute('settings')" title="Settings" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){renderRoute('settings');}">P&amp;J</div>
       </div>
     </div>
@@ -2089,6 +2114,7 @@
 <div class="item-overlay" id="eventAddOverlay" onclick="if(event.target===this) closeEventAddModal();"><!-- injected --></div>
 <div class="item-overlay" id="addTaskOverlay" onclick="if(event.target===this) closeAddTaskModal();"><!-- injected --></div>
 <div class="item-overlay" id="partyMemberAddOverlay" onclick="if(event.target===this) closePartyMemberAddModal();"><!-- injected --></div>
+<div class="item-overlay" id="partyEventModalOverlay" onclick="if(event.target===this) closePartyEventAddModal();"><!-- injected --></div>
 <div class="item-overlay" id="budgetCategoryDeleteOverlay" onclick="if(event.target===this) closeBudgetCategoryDelete();"><!-- injected --></div>
 <div class="item-overlay" id="collaboratorPermissionsOverlay" onclick="if(event.target===this) closeCollaboratorPermissions();"><!-- injected --></div>
 <div class="item-overlay" id="collaboratorNotificationsOverlay" onclick="if(event.target===this) closeCollaboratorNotifications();"><!-- injected --></div>
@@ -2256,6 +2282,27 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.71.0', date:'2026-11-26',
+    title:'Super Admin Dashboard — full view/edit access into any account, plus an activity log',
+    items:[
+      'New Super Admin capability, requested directly by Natasha for customer support and oversight: a small shield icon now appears in the topbar (and on Planner Home) for any account that\'s been granted admin access, opening a Super Admin Dashboard that lists every signed-up couple and planner account, searchable by name, email, or account ID.',
+      '"View As" on any couple account loads their real wedding data with full edit access — the exact same app a couple sees, with a "Viewing as Super Admin · Exit" pill always visible so it\'s never ambiguous whose data is on screen. A "My Own Wedding" button is always one click away to return to your own account. Planner accounts show up in the dashboard too (name, email, linked-couple count) but "View As" for a planner account is deliberately view-only in this version — a planner\'s own data is mostly just their couple list, not a wedding to edit, so building a full "view as a planner" mode didn\'t carry its weight yet.',
+      'Every "View As" is recorded in a new Activity Log tab right in the dashboard — who accessed which account and when — on by default, not something Natasha has to remember to check for later. This wasn\'t explicitly asked for, but access to every user\'s private data is a meaningfully bigger capability than anything else in this app, and an audit trail is the kind of thing you want from day one, not after the fact.',
+      'Gated server-side, not just hidden in the UI: a uid only gets admin capability if a matching document exists in a new `admins` Firestore collection, and that collection can only ever be written from the Firebase Console directly — never from the app itself — so there\'s no path for any user to self-grant admin access. See the Firestore security-rules block given alongside this release for the exact server-side enforcement, and for how to actually grant yourself (or a future support teammate) admin access.',
+      'Scoped deliberately to real couple-account data for now — editing a planner\'s own account as admin, and any bulk/account-management actions beyond viewing, are left for a later pass if they turn out to be needed.'
+    ]
+  },
+  {
+    version:'1.70.0', date:'2026-11-26',
+    title:'Wedding Party Hub becomes a real planning hub — Wedding Party Events (add/edit/delete) and editable attire & travel',
+    items:[
+      'The "Bach & Bachelorette" tab is now "Wedding Party Events" and is a real, fully editable feature instead of hardcoded sample data — this was the single biggest gap in the Hub: there was previously no way to add, edit, or delete a party, its itinerary, attendees, budget, or status anywhere in the app. You can now add a celebration with a Type (Bach & Bachelorette, Bridal/Wedding Shower, Engagement Party, or Other), side, date, location, organizer, budget per person, status (Planning/Confirmed/Done), who from your wedding party is attending, a structured itinerary (add/remove rows), and notes — and edit or delete any of it later from the same card.',
+      'Each wedding party member\'s Attire & Lookbook and Travel & Accommodation sections were also 100% read-only before this — outfit, designer, hair/makeup/shoes (and their status), and travel/hotel had no edit UI anywhere, so once a member was added there was no way to actually record any of this. All of it is now editable directly on the member\'s own page.',
+      'Per New Request #29 ("Wedding Party Hub as a real planning hub for the party\'s own events") — generalized beyond just bach/bachelorette, since a bridal shower or engagement party is just as real a thing the wedding party might organize. New Requests #28 (name-change downstream tasks) and #30 (Team Bride/Team Groom access scoping) remain explicitly out of scope — #28 still needs a real checklist of what those tasks are, and #30 needs real per-person login/access enforcement that doesn\'t exist anywhere in the app yet (the same prerequisite New Request #70/planner-vs-couple login ran into).',
+      'Existing accounts\' old bachParties data migrates automatically the next time they load — nothing is lost, every legacy party is backfilled with a Type of "Bach & Bachelorette" (what it always was) and safe defaults for the new fields.'
+    ]
+  },
   {
     version:'1.69.0', date:'2026-11-26',
     title:'More creative Wedding Hashtag suggestions',
@@ -3206,8 +3253,19 @@ function renderChangelogPage(){
    STATE
 ================================================================== */
 let dashboardData = null;
-let partyView = 'hub';       // 'hub' | 'timeline' | 'lookbook' | 'bach' | 'detail'
+let partyView = 'hub';       // 'hub' | 'timeline' | 'lookbook' | 'parties' | 'detail'
 let selectedMemberId = null;
+let partyEventDraft = null;  // v1.70.0: draft for the Add/Edit Wedding Party Event (bach/shower/engagement/other) modal
+const PARTY_EVENT_TYPES = [
+  {key:'bach', label:'Bach & Bachelorette'},
+  {key:'shower', label:'Bridal / Wedding Shower'},
+  {key:'engagement', label:'Engagement Party'},
+  {key:'other', label:'Other Celebration'}
+];
+function partyEventTypeLabel(key){
+  const t = PARTY_EVENT_TYPES.find(x=>x.key===key);
+  return t ? t.label : 'Celebration';
+}
 let keyPeopleAddOpen = null; // v1.37.4: 'partner1'|'partner2'|null — which side's "+ Add a new person" inline form is open in the Wedding Party Hub's Key People card
 let playbookRole = 'couple'; // 'couple' | 'coordinator' | 'vendor' | 'weddingparty'
 let playbookVendorCategory = null;
@@ -3720,11 +3778,11 @@ function defaultDashboardData(){
         hair:'Soft waves, half-up', hairStatus:'pending', makeup:'Classic glam', makeupStatus:'pending', shoes:'Champagne Block Heels', shoesStatus:'confirmed',
         travel:'Flying in Apr 22', hotel:'The Camden Toronto', notes:'Speaking at the Rehearsal Dinner.', survey:null}
     ],
-    bachParties:[
-      {id:'bachelorette', label:"Natasha's Bachelorette", side:"Natasha's side", dateISO:'2027-02-13', date:'Feb 13, 2027', location:'Prince Edward County, ON', organizer:'Amber Chatur', organizerId:'amber', attendees:['amber','safa','dina','melissa'], status:'planning', budgetPerPerson:'$450/person',
+    partyEvents:[
+      {id:'bachelorette', type:'bach', label:"Natasha's Bachelorette", side:"Natasha's side", dateISO:'2027-02-13', date:'Feb 13, 2027', location:'Prince Edward County, ON', organizer:'Amber Chatur', organizerId:'amber', attendees:['amber','safa','dina','melissa'], status:'planning', budgetPerPerson:'$450/person',
         itinerary:[{time:'Sat 11:00 AM', title:'Check-in at the vineyard villa'},{time:'Sat 2:00 PM', title:'Private wine tasting & charcuterie'},{time:'Sat 7:00 PM', title:'Dinner in town + games night'},{time:'Sun 10:00 AM', title:'Brunch & farewell'}],
         notes:'Amber is handling invites and the group chat directly — Evera is just tracking logistics here so the couple stays in the loop without being looped into planning.'},
-      {id:'bachelor', label:"Matteo's Bachelor Party", side:"Matteo's side", dateISO:'2027-03-06', date:'Mar 6, 2027', location:'Muskoka, ON', organizer:'Michael Mannarino', organizerId:'michael', attendees:['michael','arsum','joe','joey'], status:'planning', budgetPerPerson:'$500/person',
+      {id:'bachelor', type:'bach', label:"Matteo's Bachelor Party", side:"Matteo's side", dateISO:'2027-03-06', date:'Mar 6, 2027', location:'Muskoka, ON', organizer:'Michael Mannarino', organizerId:'michael', attendees:['michael','arsum','joe','joey'], status:'planning', budgetPerPerson:'$500/person',
         itinerary:[{time:'Sat 1:00 PM', title:'Cabin check-in'},{time:'Sat 3:00 PM', title:'Lake activities & golf'},{time:'Sat 8:00 PM', title:'Steakhouse dinner in town'},{time:'Sun 11:00 AM', title:'Checkout & drive home'}],
         notes:'Michael is organizing — hotel and cabin already booked. Nothing needed from the couple.'}
     ],
@@ -4287,7 +4345,7 @@ function buildFromOnboarding(a){
       {title:'Finalize guest list', sub:'Guests', date:'~4 months out', dateISO:isoFromDate(addMonths(weddingDate,-4)), amount:'—'}
     ] : [{title:'Add your wedding date', sub:'Unlocks your full timeline', date:'Whenever ready', dateISO:null, amount:'—'}],
     roadmap, vendorCategoriesSuggested:vendorCats, tasksCount,
-    weddingParty:[], bachParties:[], broadcasts:[], unavailability:[], vendorBookings:[],
+    weddingParty:[], partyEvents:[], broadcasts:[], unavailability:[], vendorBookings:[],
     keyRoles:[], vendorDirectory:[], delegateRoles:[], emergencyKit:{}, feedbackSubmissions:[],
     musicSelections:{}, ceremonyReadings:{}, decorPlans:{}, eventMenus:{}, flatLayLists:{}, hairMakeupSchedules:{},
     playbookTimeline: evNames.map((name,i)=>({id:'auto'+i, eventId:null, vendorIds:[], day: hasDate ? 'See your Events workspace for exact timing' : 'Date TBD', time:'—', title:name, tags:['coordinator','weddingparty'], location:'TBD', notes:''})),
@@ -4524,6 +4582,7 @@ async function handleAuthSubmit(event){
    — see setUpNewPlannerAccount), so checking for it first is a reliable, honest way to tell
    the two account types apart without needing a separate backend lookup table. */
 async function routeSignedInUser(uid){
+  checkSuperAdminStatus(uid); // v1.71.0 — fire-and-forget; not on the critical path to landing the user
   let plannerData = null;
   try{
     if(window.everaFirebase.loadPlannerRecord) plannerData = await window.everaFirebase.loadPlannerRecord(uid);
@@ -4813,6 +4872,187 @@ async function declineIncomingCoupleInvite(inviteId){
   try{ await window.everaFirebase.updateInvite(inviteId, {status:'declined'}); }catch(err){ console.error(err); }
   plannerIncomingInvites = plannerIncomingInvites.filter(i=>i.id!==inviteId);
   renderPlannerHome();
+}
+/* ==================================================================
+   SUPER ADMIN DASHBOARD (v1.71.0) — Natasha's own request: full view
+   and edit access into any signed-up account (couple or planner), for
+   customer support and oversight, plus a lightweight activity log of
+   who accessed what account and when.
+
+   Deliberately gated SERVER-SIDE, not just hidden in this client's UI:
+   a uid only gets this capability if a matching document exists in a
+   new `admins/{uid}` Firestore collection, and that collection can
+   ONLY ever be written from the Firebase Console (or the Admin SDK) —
+   never from this app's own code — so there's no path for any user to
+   grant themselves admin access, even if this client-side check were
+   tampered with. isSuperAdmin below only controls what the UI *offers*;
+   the real enforcement is the Firestore rules given alongside this
+   release, which gate actual document reads/writes the same way.
+
+   activeViewedWeddingUid (already used by the planner couple-switcher
+   from v1.63.0) is reused here too — persistWeddingRecord() already
+   saves to activeViewedWeddingUid when it's set, falling back to the
+   signed-in user's own uid otherwise, so "View As" needs no change
+   there. isAdminViewingAccount only distinguishes the SIDEBAR PILL and
+   the "exit" destination (back to the Admin Dashboard) from the
+   planner case (back to Planner Home).
+================================================================== */
+let isSuperAdmin = false;
+let isAdminViewingAccount = false;
+let adminViewedAccountMeta = null; // {uid, name, type:'couple'|'planner'}
+let allAccountsCache = { couples:[], planners:[] };
+let adminActivityCache = [];
+async function checkSuperAdminStatus(uid){
+  try{
+    isSuperAdmin = !!(window.everaFirebase.checkIsSuperAdmin && await window.everaFirebase.checkIsSuperAdmin(uid));
+  } catch(err){ console.error('Failed to check Super Admin status', err); isSuperAdmin = false; }
+  applyAdminVisibility();
+}
+function applyAdminVisibility(){
+  ['tbAdminBtn','plannerHomeAdminBtn'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = isSuperAdmin ? '' : 'none';
+  });
+}
+async function openAdminDashboard(){
+  goTo('admin-dashboard');
+  const body = document.getElementById('adminDashboardBody');
+  if(body) body.innerHTML = '<div class="planner-empty">Loading accounts…</div>';
+  try{
+    const [couples, planners, activity] = await Promise.all([
+      window.everaFirebase.listAllWeddings ? window.everaFirebase.listAllWeddings() : [],
+      window.everaFirebase.listAllPlanners ? window.everaFirebase.listAllPlanners() : [],
+      window.everaFirebase.listAdminActivity ? window.everaFirebase.listAdminActivity() : []
+    ]);
+    allAccountsCache = { couples: couples||[], planners: planners||[] };
+    adminActivityCache = activity || [];
+  } catch(err){
+    console.error('Failed to load accounts for Super Admin Dashboard', err);
+    allAccountsCache = { couples:[], planners:[] };
+    adminActivityCache = [];
+  }
+  renderAdminDashboard();
+}
+let adminDashboardSearch = '';
+let adminDashboardTab = 'couples'; // 'couples' | 'planners' | 'activity'
+function setAdminDashboardTab(tab){
+  adminDashboardTab = tab;
+  renderAdminDashboard();
+}
+function updateAdminDashboardSearch(val){
+  adminDashboardSearch = (val||'').toLowerCase();
+  renderAdminDashboard();
+}
+function renderAdminDashboard(){
+  const body = document.getElementById('adminDashboardBody');
+  if(!body) return;
+  const q = adminDashboardSearch;
+  const couples = (allAccountsCache.couples||[]).filter(c=>{
+    const hay = `${c.partner1||''} ${c.partner2||''} ${c.uid||''}`.toLowerCase();
+    return !q || hay.includes(q);
+  });
+  const planners = (allAccountsCache.planners||[]).filter(p=>{
+    const hay = `${p.name||''} ${p.email||''} ${p.uid||''}`.toLowerCase();
+    return !q || hay.includes(q);
+  });
+  body.innerHTML = `
+    <h1 style="margin-bottom:4px;">Super Admin Dashboard</h1>
+    <p class="d-sub" style="margin-bottom:0;">Full view and edit access into any signed-up account. Every "View As" is recorded in the Activity Log below.</p>
+    <div style="margin:18px 0;">
+      <input type="text" placeholder="Search by name, email, or account ID…" value="${escapeAttr(adminDashboardSearch)}" oninput="updateAdminDashboardSearch(this.value)" style="width:100%; max-width:380px; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:13px;">
+    </div>
+    <div class="seg-control" style="margin-bottom:16px;">
+      <button class="seg-btn ${adminDashboardTab==='couples'?'active':''}" onclick="setAdminDashboardTab('couples')">Couples (${(allAccountsCache.couples||[]).length})</button>
+      <button class="seg-btn ${adminDashboardTab==='planners'?'active':''}" onclick="setAdminDashboardTab('planners')">Planners (${(allAccountsCache.planners||[]).length})</button>
+      <button class="seg-btn ${adminDashboardTab==='activity'?'active':''}" onclick="setAdminDashboardTab('activity')">Activity Log (${adminActivityCache.length})</button>
+    </div>
+    ${adminDashboardTab==='couples' ? renderAdminCouplesTable(couples) : ''}
+    ${adminDashboardTab==='planners' ? renderAdminPlannersTable(planners) : ''}
+    ${adminDashboardTab==='activity' ? renderAdminActivityTable() : ''}
+  `;
+}
+function renderAdminCouplesTable(couples){
+  if(!couples.length) return `<div class="planner-empty">No couple accounts found.</div>`;
+  return `
+    <div class="admin-table">
+      <div class="admin-table-row admin-table-head"><div>Couple</div><div>Wedding Date</div><div>Last Updated</div><div></div></div>
+      ${couples.map(c=>`
+        <div class="admin-table-row">
+          <div><b>${escapeHtml((c.partner1||'—')+' & '+(c.partner2||'—'))}</b><div class="d-sub" style="font-size:11px;">${escapeHtml(c.uid)}</div></div>
+          <div>${c.weddingDateISO ? escapeHtml(fmtShortDateLabel(c.weddingDateISO)) : '—'}</div>
+          <div>${c.updatedAt ? escapeHtml(new Date(c.updatedAt).toLocaleString()) : '—'}</div>
+          <div><button class="btn btn-outline btn-sm" onclick="openAccountAsAdmin('${c.uid}','couple')">View As →</button></div>
+        </div>`).join('')}
+    </div>
+  `;
+}
+function renderAdminPlannersTable(planners){
+  if(!planners.length) return `<div class="planner-empty">No planner accounts found.</div>`;
+  return `
+    <div class="admin-table">
+      <div class="admin-table-row admin-table-head"><div>Planner</div><div>Email</div><div>Linked Couples</div><div></div></div>
+      ${planners.map(p=>`
+        <div class="admin-table-row">
+          <div><b>${escapeHtml(p.name||'—')}</b><div class="d-sub" style="font-size:11px;">${escapeHtml(p.uid)}</div></div>
+          <div>${escapeHtml(p.email||'—')}</div>
+          <div>${(p.linkedCouples||[]).length}</div>
+          <div class="d-sub" style="font-size:12px;">View-only for now</div>
+        </div>`).join('')}
+    </div>
+  `;
+}
+function renderAdminActivityTable(){
+  if(!adminActivityCache.length) return `<div class="planner-empty">No admin activity recorded yet.</div>`;
+  return `
+    <div class="admin-table">
+      <div class="admin-table-row admin-table-head"><div>When</div><div>Admin</div><div>Account Viewed</div><div>Action</div></div>
+      ${adminActivityCache.map(a=>`
+        <div class="admin-table-row">
+          <div>${a.atMillis ? escapeHtml(new Date(a.atMillis).toLocaleString()) : '—'}</div>
+          <div>${escapeHtml(a.adminEmail||a.adminUid||'—')}</div>
+          <div>${escapeHtml(a.targetName||a.targetUid||'—')}</div>
+          <div>${escapeHtml(a.action||'—')}</div>
+        </div>`).join('')}
+    </div>
+  `;
+}
+async function openAccountAsAdmin(uid, type){
+  if(type==='planner') return; // view-only in this version — see renderAdminPlannersTable
+  isAdminViewingAccount = true;
+  activeViewedWeddingUid = uid;
+  const meta = (allAccountsCache.couples||[]).find(c=>c.uid===uid);
+  adminViewedAccountMeta = { uid, name: meta ? `${meta.partner1||''} & ${meta.partner2||''}` : uid, type:'couple' };
+  dashboardData = normalizeDashboardData(defaultDashboardData());
+  const found = await loadAndApplyWeddingRecord(uid);
+  if(!found) dashboardData = normalizeDashboardData(emptyAccountDashboardData());
+  try{
+    if(window.everaFirebase.logAdminActivity){
+      await window.everaFirebase.logAdminActivity({
+        adminUid: currentUser.uid, adminEmail: currentUser.email,
+        targetUid: uid, targetName: adminViewedAccountMeta.name, targetType:'couple',
+        action: 'view_as', atMillis: Date.now()
+      });
+    }
+  } catch(err){ console.error('Failed to record admin activity', err); }
+  goTo('app');
+  renderRoute('home');
+  applyAssistantVisibility();
+}
+function exitAdminView(){
+  isAdminViewingAccount = false;
+  activeViewedWeddingUid = null;
+  adminViewedAccountMeta = null;
+  openAdminDashboard();
+}
+async function exitAdminViewToOwnAccount(){
+  isAdminViewingAccount = false;
+  activeViewedWeddingUid = null;
+  adminViewedAccountMeta = null;
+  dashboardData = normalizeDashboardData(defaultDashboardData());
+  await loadAndApplyWeddingRecord(currentUser.uid);
+  goTo('app');
+  renderRoute('home');
+  applyAssistantVisibility();
 }
 async function handleGoogleAuth(){
   hideAuthError();
@@ -5540,7 +5780,28 @@ function normalizeDashboardData(d){
       m.tasks = [];
     }
   });
-  if(!Array.isArray(d.bachParties)) d.bachParties = [];
+  // v1.70.0: Bach & Bachelorette generalized into "Wedding Party Events" (any party-organized
+  // celebration — bach/bachelorette, bridal shower, engagement party, or other). The old
+  // bachParties field is migrated into the new partyEvents field once, then dropped, so an
+  // already-saved account's data isn't lost; every item is backfilled with a type (legacy
+  // records predate the Type field and were always bach/bachelorette), a stable id, and safe
+  // defaults for the fields the new Add/Edit modal expects to always exist.
+  if(!Array.isArray(d.partyEvents)){
+    d.partyEvents = Array.isArray(d.bachParties) ? d.bachParties : [];
+  }
+  delete d.bachParties;
+  d.partyEvents.forEach(p=>{
+    if(!p.type) p.type = 'bach';
+    if(!p.id) p.id = 'pe-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    if(!Array.isArray(p.attendees)) p.attendees = [];
+    if(!Array.isArray(p.itinerary)) p.itinerary = [];
+    if(!p.status) p.status = 'planning';
+    if(p.side===undefined) p.side = '';
+    if(p.location===undefined) p.location = '';
+    if(p.organizer===undefined) p.organizer = '';
+    if(p.budgetPerPerson===undefined) p.budgetPerPerson = '';
+    if(p.notes===undefined) p.notes = '';
+  });
   if(!Array.isArray(d.customCalendarEvents)) d.customCalendarEvents = [];
   d.customCalendarEvents.forEach(c=>{ if(c.notes===undefined) c.notes = ''; if(c.category===undefined) c.category = 'other'; });
   if(!Array.isArray(d.moodBoards)) d.moodBoards = [];
@@ -6093,7 +6354,9 @@ function updateChrome(){
   // way back to their own couple-switcher — never leave them wondering whose data they're in.
   const typeLabel = document.getElementById('sbAccountTypeLabel');
   if(typeLabel){
-    if(currentAccountType==='planner' && activeViewedWeddingUid){
+    if(isAdminViewingAccount && activeViewedWeddingUid){
+      typeLabel.innerHTML = `<span class="viewing-as-planner-pill viewing-as-admin-pill" onclick="exitAdminView()" title="Back to Super Admin Dashboard">Viewing as Super Admin · Exit</span>`;
+    } else if(currentAccountType==='planner' && activeViewedWeddingUid){
       typeLabel.innerHTML = `<span class="viewing-as-planner-pill" onclick="switchToPlannerHome()" title="Back to your couples">Viewing as Planner · Switch couple</span>`;
     } else {
       typeLabel.textContent = 'Couple Account';
@@ -6193,7 +6456,8 @@ function renderRoute(key){
 function statusPill(status){
   const map = {
     booked:['pill-ok','Booked'], planning:['pill-neutral','Planning'], shortlisted:['pill-warn','Shortlisted'],
-    searching:['pill-warn','Searching'], progress:['pill-warn','In Progress'], declined:['pill-neutral','Declined']
+    searching:['pill-warn','Searching'], progress:['pill-warn','In Progress'], declined:['pill-neutral','Declined'],
+    confirmed:['pill-ok','Confirmed'], done:['pill-neutral','Done'] // v1.70.0: added for Wedding Party Events status
   };
   const [cls,label] = map[status] || ['pill-neutral', status];
   return `<span class="pill ${cls}">${label}</span>`;
@@ -11417,12 +11681,14 @@ function renderWeddingParty(){
           <button class="seg-btn ${partyView==='hub'?'active':''}" onclick="switchPartyTab('hub')">Hub</button>
           <button class="seg-btn ${partyView==='timeline'?'active':''}" onclick="switchPartyTab('timeline')">Timeline</button>
           <button class="seg-btn ${partyView==='lookbook'?'active':''}" onclick="switchPartyTab('lookbook')">Lookbook</button>
-          <button class="seg-btn ${partyView==='bach'?'active':''}" onclick="switchPartyTab('bach')">Bach &amp; Bachelorette</button>
+          <button class="seg-btn ${partyView==='parties'?'active':''}" onclick="switchPartyTab('parties')">Wedding Party Events</button>
         </div>
       </div>
-      <button class="btn btn-solid btn-sm" onclick="openPartyMemberAddModal()">+ Add Member</button>
+      ${partyView==='parties'
+        ? `<button class="btn btn-solid btn-sm" onclick="openPartyEventAddModal()">+ Add Celebration</button>`
+        : `<button class="btn btn-solid btn-sm" onclick="openPartyMemberAddModal()">+ Add Member</button>`}
     </div>
-    ${partyView==='lookbook' ? renderLookbookTab() : partyView==='timeline' ? renderPartyTimelineTab() : partyView==='bach' ? renderBachTab() : renderPartyHubTab()}
+    ${partyView==='lookbook' ? renderLookbookTab() : partyView==='timeline' ? renderPartyTimelineTab() : partyView==='parties' ? renderPartyEventsTab() : renderPartyHubTab()}
   `;
 }
 
@@ -11655,7 +11921,7 @@ function renderPartyHubTab(){
 function getUpcomingMilestones(){
   const d = dashboardData;
   const milestones = [];
-  (d.bachParties||[]).forEach(b=>{ if(b.dateISO) milestones.push({dateISO:b.dateISO, label:b.label, sub:b.location}); });
+  (d.partyEvents||[]).forEach(b=>{ if(b.dateISO) milestones.push({dateISO:b.dateISO, label:b.label, sub:b.location}); });
   if(d.weddingDateISO) milestones.push({dateISO:d.weddingDateISO, label:'Wedding Weekend Begins', sub:d.location});
   const now = new Date();
   return milestones
@@ -11766,24 +12032,35 @@ function renderPartyMemberDetail(id){
     <div class="grid-2">
       <div class="card">
         <div class="card-head"><h4>Attire &amp; Lookbook</h4><span class="ch-link" style="cursor:pointer;" onclick="switchPartyTab('lookbook')">View in Lookbook →</span></div>
-        <div style="display:flex; gap:16px; align-items:center; margin-bottom:14px;">
+        <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:4px;">
           <div style="width:56px;height:56px;border-radius:12px;background:${m.swatch}; flex-shrink:0;"></div>
-          <div>
-            <div style="font-weight:700; font-size:14.5px;">${escapeHtml(m.outfit)}</div>
-            <div style="font-size:12.5px; color:var(--charcoal-faint); margin-top:2px;">${escapeHtml(m.designer)}</div>
-            <div style="margin-top:8px;">${attirePill(m.attireStatus)}</div>
+          <div class="field-grid" style="flex:1;">
+            <div class="field-cell"><label>Outfit</label><input type="text" value="${escapeAttr(m.outfit)}" placeholder="e.g. Sage Green Chiffon Gown" onchange="updatePartyMemberField('${m.id}','outfit',this.value)"></div>
+            <div class="field-cell"><label>Designer / Brand</label><input type="text" value="${escapeAttr(m.designer)}" placeholder="e.g. Birdy Grey" onchange="updatePartyMemberField('${m.id}','designer',this.value)"></div>
+            <div class="field-cell"><label>Attire Status</label>
+              <select onchange="updatePartyMemberField('${m.id}','attireStatus',this.value)">
+                <option value="pending" ${m.attireStatus==='pending'?'selected':''}>Measurements Needed</option>
+                <option value="ordered" ${m.attireStatus==='ordered'?'selected':''}>Ordered</option>
+                <option value="confirmed" ${m.attireStatus==='confirmed'?'selected':''}>Confirmed</option>
+              </select>
+            </div>
           </div>
         </div>
-        <div class="lb-attire-lines" style="margin:0;">
-          <div class="lb-attire-line"><span class="lb-attire-label">Hair</span><span class="lb-attire-text">${escapeHtml(m.hair||'—')}</span>${attireMiniPill(m.hairStatus)}</div>
-          <div class="lb-attire-line"><span class="lb-attire-label">Makeup</span><span class="lb-attire-text">${escapeHtml(m.makeup||'—')}</span>${attireMiniPill(m.makeupStatus)}</div>
-          <div class="lb-attire-line"><span class="lb-attire-label">Shoes</span><span class="lb-attire-text">${escapeHtml(m.shoes||'—')}</span>${attireMiniPill(m.shoesStatus)}</div>
+        <div class="field-grid" style="margin-top:6px;">
+          <div class="field-cell"><label>Hair</label><input type="text" value="${escapeAttr(m.hair)}" placeholder="e.g. Soft waves, half-up" onchange="updatePartyMemberField('${m.id}','hair',this.value)"></div>
+          <div class="field-cell"><label>Hair Status</label>${attireMiniStatusSelect(m.id,'hairStatus',m.hairStatus)}</div>
+          <div class="field-cell"><label>Makeup</label><input type="text" value="${escapeAttr(m.makeup)}" placeholder="e.g. Classic glam" onchange="updatePartyMemberField('${m.id}','makeup',this.value)"></div>
+          <div class="field-cell"><label>Makeup Status</label>${attireMiniStatusSelect(m.id,'makeupStatus',m.makeupStatus)}</div>
+          <div class="field-cell"><label>Shoes</label><input type="text" value="${escapeAttr(m.shoes)}" placeholder="e.g. Champagne Block Heels" onchange="updatePartyMemberField('${m.id}','shoes',this.value)"></div>
+          <div class="field-cell"><label>Shoes Status</label>${attireMiniStatusSelect(m.id,'shoesStatus',m.shoesStatus)}</div>
         </div>
       </div>
       <div class="card">
         <div class="card-head"><h4>Travel &amp; Accommodation</h4></div>
-        <div class="itinerary-row"><div class="it-day">Travel</div><div>${escapeHtml(m.travel)}</div></div>
-        <div class="itinerary-row"><div class="it-day">Hotel</div><div>${escapeHtml(m.hotel)}</div></div>
+        <div class="field-grid">
+          <div class="field-cell"><label>Travel</label><input type="text" value="${escapeAttr(m.travel)}" placeholder="e.g. Flying in Fri, driving back Sun" onchange="updatePartyMemberField('${m.id}','travel',this.value)"></div>
+          <div class="field-cell"><label>Hotel</label><input type="text" value="${escapeAttr(m.hotel)}" placeholder="e.g. The Camden Toronto" onchange="updatePartyMemberField('${m.id}','hotel',this.value)"></div>
+        </div>
       </div>
     </div>
 
@@ -11804,13 +12081,26 @@ function renderPartyMemberDetail(id){
       <textarea class="notes-field" placeholder="A short, fun blurb your guests will enjoy..." onchange="updateMemberBio('${m.id}',this.value)">${escapeHtml(m.bio||'')}</textarea>
     </div>
     ${renderSurveyResponsesCard(m)}
-    ${renderMemberBachNote(m)}
+    ${renderMemberPartyNote(m)}
     <div style="margin-top:8px;"><a href="#" class="danger-link" onclick="removeWeddingPartyMember('${m.id}'); return false;">Remove from Wedding Party</a>${linked ? ` <span class="d-sub">— their Guest List entry stays, so RSVP/seating aren't affected.</span>` : ''}</div>
   `;
 }
 function updateMemberBio(id, val){
   const m = dashboardData.weddingParty.find(x=>x.id===id);
   if(m) m.bio = val;
+}
+// v1.70.0: Attire & Lookbook and Travel & Accommodation were purely read-only display before
+// this — outfit, designer, hair/makeup/shoes (+ their status), and travel/hotel had no edit UI
+// anywhere, so a couple genuinely could not record this once a member's hub was created. One
+// generic setter backs all of them, same lightweight pattern as updateMemberBio above.
+function updatePartyMemberField(id, field, value){
+  const m = dashboardData.weddingParty.find(x=>x.id===id);
+  if(!m) return;
+  m[field] = value;
+}
+function attireMiniStatusSelect(id, field, value){
+  const opts = [['pending','Pending'],['ordered','Ordered'],['confirmed','Confirmed'],['not-needed','N/A']];
+  return `<select onchange="updatePartyMemberField('${id}','${field}',this.value)">${opts.map(([v,l])=>`<option value="${v}" ${value===v?'selected':''}>${l}</option>`).join('')}</select>`;
 }
 function linkPartyMemberToGuest(partyId, key){
   const m = dashboardData.weddingParty.find(x=>x.id===partyId);
@@ -11908,16 +12198,16 @@ function renderSurveyResponsesCard(m){
     </div>
   `;
 }
-function renderMemberBachNote(m){
+function renderMemberPartyNote(m){
   const d = dashboardData;
-  const bach = (d.bachParties||[]).find(b=>(b.attendees||[]).includes(m.id));
+  const bach = (d.partyEvents||[]).find(b=>(b.attendees||[]).includes(m.id));
   if(!bach) return '';
   return `
     <div class="card">
-      <div class="card-head"><h4>${bach.label}</h4><span class="ch-link" style="cursor:pointer;" onclick="switchPartyTab('bach')">View in Bach &amp; Bachelorette →</span></div>
-      <div class="itinerary-row"><div class="it-day">Date</div><div>${bach.date}</div></div>
-      <div class="itinerary-row"><div class="it-day">Location</div><div>${bach.location}</div></div>
-      <div class="itinerary-row"><div class="it-day">Organizer</div><div>${bach.organizer}</div></div>
+      <div class="card-head"><h4>${escapeHtml(bach.label)}</h4><span class="ch-link" style="cursor:pointer;" onclick="switchPartyTab('parties')">View in Wedding Party Events →</span></div>
+      <div class="itinerary-row"><div class="it-day">Date</div><div>${escapeHtml(bach.date)}</div></div>
+      <div class="itinerary-row"><div class="it-day">Location</div><div>${escapeHtml(bach.location)}</div></div>
+      <div class="itinerary-row"><div class="it-day">Organizer</div><div>${escapeHtml(bach.organizer)}</div></div>
     </div>
   `;
 }
@@ -12023,33 +12313,242 @@ function renderLookbookCard(m){
     </div>`;
 }
 
-/* ---- bach & bachelorette ---- */
-function renderBachTab(){
+/* ---- wedding party events (bach/bachelorette, shower, engagement, other) — v1.70.0: real
+   add/edit/delete, generalized beyond just Bach & Bachelorette, per New Request #29. Previously
+   this whole tab was 100% hardcoded sample data with no way to add, edit or delete anything. ---- */
+function fmtShortDateLabel(iso){
+  if(!iso) return '';
+  return new Date(iso+'T12:00:00').toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'});
+}
+function suggestPartyEventLabel(type, side){
   const d = dashboardData;
-  const parties = d.bachParties || [];
+  const sideName = (side && side!=='Both') ? side.replace("'s side", '') : '';
+  if(type==='bach') return sideName ? `${sideName}'s Bach & Bachelorette` : 'Bach & Bachelorette';
+  if(type==='shower') return sideName ? `${sideName}'s Bridal Shower` : 'Bridal Shower';
+  if(type==='engagement') return 'Engagement Party';
+  return '';
+}
+function renderPartyEventsTab(){
+  const d = dashboardData;
+  const parties = d.partyEvents || [];
   if(!parties.length){
-    return `<div class="empty-state"><svg class="icon" viewBox="0 0 24 24">${ICONS.party}</svg><h4>No bach or bachelorette party planned yet</h4><p>Once someone in your wedding party starts planning a bachelor or bachelorette celebration, add it here so the couple can see the date, location and who's going — without being looped into the planning itself.</p></div>`;
+    return `
+      <div class="empty-state">
+        <svg class="icon" viewBox="0 0 24 24">${ICONS.party}</svg>
+        <h4>No celebrations planned yet</h4>
+        <p>Once someone in your wedding party starts planning a bach/bachelorette, a shower, an engagement party — anything they're organizing for you — add it here so you can see the date, location and who's going, without being looped into the planning itself.</p>
+        <button class="btn btn-solid btn-sm" style="margin-top:20px;" onclick="openPartyEventAddModal()">+ Add a Celebration</button>
+      </div>`;
   }
   return parties.map(b=>{
     const attendees = (b.attendees||[]).map(id=>d.weddingParty.find(m=>m.id===id)).filter(Boolean);
     return `
     <div class="card bach-card">
       <div class="bach-header">
-        <div><div class="eyebrow">${b.side}</div><h3>${b.label}</h3><div class="bach-meta">${b.date} · ${b.location}</div></div>
-        ${statusPill(b.status)}
+        <div><div class="eyebrow">${escapeHtml(partyEventTypeLabel(b.type))}${b.side?` · ${escapeHtml(b.side)}`:''}</div><h3>${escapeHtml(b.label)}</h3><div class="bach-meta">${escapeHtml(b.date||fmtShortDateLabel(b.dateISO))}${b.location?` · ${escapeHtml(b.location)}`:''}</div></div>
+        <div style="display:flex; align-items:center; gap:8px;">${statusPill(b.status)}<button class="btn btn-outline btn-sm" onclick="openPartyEventAddModal('${b.id}')">Edit</button></div>
       </div>
-      <div class="bach-organizer">Organized by <b>${b.organizer}</b>${b.budgetPerPerson?` · ~${b.budgetPerPerson}`:''}</div>
-      ${attendees.length?`<div class="bach-attendees">${attendees.map(m=>`<span class="attendee-chip"><span class="ac-dot" style="background:${m.swatch};"></span>${m.name}</span>`).join('')}</div>`:''}
-      ${b.itinerary&&b.itinerary.length? `<div class="bach-itinerary">${b.itinerary.map(it=>`<div class="itinerary-row"><div class="it-day">${it.time}</div><div>${it.title}</div></div>`).join('')}</div>`:''}
-      ${b.notes?`<p style="font-size:13px; color:var(--charcoal-soft); margin-top:14px; line-height:1.65;">${b.notes}</p>`:''}
+      ${b.organizer?`<div class="bach-organizer">Organized by <b>${escapeHtml(b.organizer)}</b>${b.budgetPerPerson?` · ~${escapeHtml(b.budgetPerPerson)}`:''}</div>`:''}
+      ${attendees.length?`<div class="bach-attendees">${attendees.map(m=>`<span class="attendee-chip"><span class="ac-dot" style="background:${m.swatch};"></span>${escapeHtml(effectivePartyName(m))}</span>`).join('')}</div>`:''}
+      ${b.itinerary&&b.itinerary.length? `<div class="bach-itinerary">${b.itinerary.map(it=>`<div class="itinerary-row"><div class="it-day">${escapeHtml(it.time)}</div><div>${escapeHtml(it.title)}</div></div>`).join('')}</div>`:''}
+      ${b.notes?`<p style="font-size:13px; color:var(--charcoal-soft); margin-top:14px; line-height:1.65;">${escapeHtml(b.notes)}</p>`:''}
     </div>`;
   }).join('');
+}
+function openPartyEventAddModal(editId){
+  const d = dashboardData;
+  if(editId){
+    const p = d.partyEvents.find(x=>x.id===editId);
+    if(!p) return;
+    partyEventDraft = {
+      editId, type:p.type||'bach', label:p.label||'', side:p.side||'', dateISO:p.dateISO||'',
+      location:p.location||'', organizer:p.organizer||'', budgetPerPerson:p.budgetPerPerson||'',
+      status:p.status||'planning', attendees:(p.attendees||[]).slice(), itinerary:(p.itinerary||[]).map(it=>({...it})),
+      notes:p.notes||'', _labelTouched:true
+    };
+  } else {
+    partyEventDraft = {
+      editId:null, type:'bach', label:suggestPartyEventLabel('bach',''), side:'', dateISO:'', location:'', organizer:'',
+      budgetPerPerson:'', status:'planning', attendees:[], itinerary:[], notes:'', _labelTouched:false
+    };
+  }
+  document.getElementById('partyEventModalOverlay').innerHTML = renderPartyEventAddModal();
+  document.getElementById('partyEventModalOverlay').classList.add('open');
+}
+function closePartyEventAddModal(){
+  partyEventDraft = null;
+  document.getElementById('partyEventModalOverlay').classList.remove('open');
+}
+function setPartyEventType(val){
+  if(!partyEventDraft) return;
+  partyEventDraft.type = val;
+  maybeAutoLabelPartyEvent();
+}
+function setPartyEventSide(val){
+  if(!partyEventDraft) return;
+  partyEventDraft.side = val;
+  maybeAutoLabelPartyEvent();
+}
+function maybeAutoLabelPartyEvent(){
+  if(!partyEventDraft || partyEventDraft._labelTouched) return;
+  const suggested = suggestPartyEventLabel(partyEventDraft.type, partyEventDraft.side);
+  partyEventDraft.label = suggested;
+  const el = document.getElementById('peLabel');
+  if(el) el.value = suggested;
+}
+// Reads every field's live DOM value back into the draft. Needed before any action (like adding
+// an itinerary row) that re-renders the whole modal — otherwise anything typed into the other
+// fields, which normally is only read at final submit, would be silently wiped by the re-render.
+function syncPartyEventDraftFromDOM(){
+  if(!partyEventDraft) return;
+  const g = id => document.getElementById(id);
+  if(g('peLabel')) partyEventDraft.label = g('peLabel').value;
+  if(g('peDate')) partyEventDraft.dateISO = g('peDate').value;
+  if(g('peLocation')) partyEventDraft.location = g('peLocation').value;
+  if(g('peOrganizer')) partyEventDraft.organizer = g('peOrganizer').value;
+  if(g('peBudget')) partyEventDraft.budgetPerPerson = g('peBudget').value;
+  if(g('peStatus')) partyEventDraft.status = g('peStatus').value;
+  if(g('peNotes')) partyEventDraft.notes = g('peNotes').value;
+  partyEventDraft.attendees = Array.from(document.querySelectorAll('.peAttendee:checked')).map(el=>el.value);
+}
+function addPartyEventItineraryRow(){
+  if(!partyEventDraft) return;
+  const timeEl = document.getElementById('peItinTime');
+  const titleEl = document.getElementById('peItinTitle');
+  const time = (timeEl.value||'').trim();
+  const title = (titleEl.value||'').trim();
+  if(!title){ titleEl.focus(); return; }
+  syncPartyEventDraftFromDOM();
+  partyEventDraft.itinerary.push({time: time||'TBD', title});
+  document.getElementById('partyEventModalOverlay').innerHTML = renderPartyEventAddModal();
+}
+function removePartyEventItineraryRow(idx){
+  if(!partyEventDraft) return;
+  syncPartyEventDraftFromDOM();
+  partyEventDraft.itinerary.splice(idx,1);
+  document.getElementById('partyEventModalOverlay').innerHTML = renderPartyEventAddModal();
+}
+function renderPartyEventAddModal(){
+  if(!partyEventDraft) return '';
+  const d = dashboardData;
+  const draft = partyEventDraft;
+  return `
+    <div class="item-modal item-modal-lg">
+      <button class="im-close" onclick="closePartyEventAddModal()">✕</button>
+      <div class="eyebrow">${draft.editId ? 'Edit' : 'New'} Wedding Party Event</div>
+      <h3 style="margin-top:4px;">${draft.editId ? 'Edit Celebration' : 'Plan a Celebration'}</h3>
+      <p class="detail-hint" style="margin-top:-4px;">Track your wedding party's own celebrations here — who's organizing, when, and who's going — without you having to run the planning yourself.</p>
+
+      <div class="field-grid" style="margin-top:14px;">
+        <div class="field-cell"><label>Type</label>
+          <select onchange="setPartyEventType(this.value)">
+            ${PARTY_EVENT_TYPES.map(t=>`<option value="${t.key}" ${draft.type===t.key?'selected':''}>${escapeHtml(t.label)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-cell"><label>Side</label>
+          <select onchange="setPartyEventSide(this.value)">
+            <option value="">— Select —</option>
+            <option value="${escapeAttr(d.partner1+"'s side")}" ${draft.side===d.partner1+"'s side"?'selected':''}>${escapeHtml(d.partner1)}'s side</option>
+            <option value="${escapeAttr(d.partner2+"'s side")}" ${draft.side===d.partner2+"'s side"?'selected':''}>${escapeHtml(d.partner2)}'s side</option>
+            <option value="Both" ${draft.side==='Both'?'selected':''}>Both</option>
+          </select>
+        </div>
+        <div class="field-cell" style="grid-column:1 / -1;"><label>Label</label>
+          <input type="text" id="peLabel" value="${escapeAttr(draft.label)}" placeholder="e.g. Natasha's Bachelorette" oninput="partyEventDraft._labelTouched=true;">
+        </div>
+        <div class="field-cell"><label>Date</label><input type="date" id="peDate" value="${escapeAttr(draft.dateISO)}"></div>
+        <div class="field-cell"><label>Location</label><input type="text" id="peLocation" value="${escapeAttr(draft.location)}" placeholder="e.g. Prince Edward County, ON"></div>
+        <div class="field-cell"><label>Organizer</label><input type="text" id="peOrganizer" value="${escapeAttr(draft.organizer)}" placeholder="Who's planning it?"></div>
+        <div class="field-cell"><label>Budget per person <span class="d-sub" style="font-weight:400;">(optional)</span></label><input type="text" id="peBudget" value="${escapeAttr(draft.budgetPerPerson)}" placeholder="e.g. $450/person"></div>
+        <div class="field-cell"><label>Status</label>
+          <select id="peStatus">
+            <option value="planning" ${draft.status==='planning'?'selected':''}>Planning</option>
+            <option value="confirmed" ${draft.status==='confirmed'?'selected':''}>Confirmed</option>
+            <option value="done" ${draft.status==='done'?'selected':''}>Done</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="chip-grid" style="margin-top:14px; gap:4px;">
+        <span class="pp-label" style="width:100%;">Who's attending?</span>
+        ${d.weddingParty.length ? d.weddingParty.map(m=>`<label style="display:inline-flex; align-items:center; gap:5px; font-size:12.5px; background:var(--ivory-deep); padding:5px 10px; border-radius:999px;"><input type="checkbox" class="peAttendee" value="${m.id}" ${draft.attendees.includes(m.id)?'checked':''}> ${escapeHtml(effectivePartyName(m))}</label>`).join('') : `<p class="detail-hint">Add wedding party members first to track who's attending.</p>`}
+      </div>
+
+      <div class="detail-section" style="margin-top:14px;">
+        <div class="detail-section-head"><h4 style="margin:0;">Itinerary</h4></div>
+        ${draft.itinerary.length ? `
+        <div class="attire-vote-options">
+          ${draft.itinerary.map((it,idx)=>`
+            <div class="attire-vote-option">
+              <div class="avo-main" style="flex-direction:column; align-items:flex-start; gap:2px;">
+                <b style="font-size:12.5px;">${escapeHtml(it.time)}</b><span style="font-size:13px;">${escapeHtml(it.title)}</span>
+              </div>
+              <a href="#" class="danger-link" onclick="removePartyEventItineraryRow(${idx}); return false;">✕</a>
+            </div>`).join('')}
+        </div>` : `<p class="detail-hint" style="margin-top:0;">No itinerary yet — add a row below to get started.</p>`}
+        <div class="custom-add-row" style="margin-top:10px;">
+          <input type="text" id="peItinTime" placeholder="e.g. Sat 2:00 PM" style="max-width:140px;">
+          <input type="text" id="peItinTitle" placeholder="e.g. Private wine tasting">
+          <button class="btn btn-outline btn-sm" onclick="addPartyEventItineraryRow()">+ Add</button>
+        </div>
+      </div>
+
+      <div class="field-cell" style="margin-top:14px;"><label>Notes</label><textarea class="notes-field" id="peNotes" placeholder="Anything the couple should know, without being looped into planning">${escapeHtml(draft.notes)}</textarea></div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px;">
+        ${draft.editId ? `<a href="#" class="danger-link" onclick="removePartyEventFromModal('${draft.editId}'); return false;">Delete this celebration</a>` : '<span></span>'}
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-outline btn-sm" onclick="closePartyEventAddModal()">Cancel</button>
+          <button class="btn btn-solid btn-sm" onclick="submitPartyEventAddModal()">${draft.editId?'Save Changes':'+ Add Celebration'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function submitPartyEventAddModal(){
+  const draft = partyEventDraft;
+  if(!draft) return;
+  syncPartyEventDraftFromDOM();
+  const label = (draft.label||'').trim();
+  if(!label){ const el=document.getElementById('peLabel'); if(el) el.focus(); return; }
+  if(!draft.dateISO){ const el=document.getElementById('peDate'); if(el) el.focus(); return; }
+  const payload = {
+    type: draft.type, label, side: draft.side||'', dateISO: draft.dateISO, date: fmtShortDateLabel(draft.dateISO),
+    location: (draft.location||'').trim(), organizer: (draft.organizer||'').trim(),
+    budgetPerPerson: (draft.budgetPerPerson||'').trim(), status: draft.status||'planning',
+    attendees: draft.attendees.slice(), itinerary: draft.itinerary.map(it=>({...it})),
+    notes: (draft.notes||'').trim()
+  };
+  if(draft.editId){
+    const p = dashboardData.partyEvents.find(x=>x.id===draft.editId);
+    if(p) Object.assign(p, payload);
+  } else {
+    payload.id = 'pe-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    dashboardData.partyEvents.push(payload);
+  }
+  closePartyEventAddModal();
+  if(currentRouteKey==='wedding-party') document.getElementById('content').innerHTML = renderWeddingParty();
+}
+function removePartyEvent(id){
+  const idx = dashboardData.partyEvents.findIndex(x=>x.id===id);
+  if(idx===-1) return;
+  const removed = dashboardData.partyEvents[idx];
+  dashboardData.partyEvents.splice(idx,1);
+  if(currentRouteKey==='wedding-party') document.getElementById('content').innerHTML = renderWeddingParty();
+  showUndoToast(`${removed.label} removed.`, () => {
+    dashboardData.partyEvents.splice(idx, 0, removed);
+    reRenderCurrent();
+  });
+}
+function removePartyEventFromModal(id){
+  closePartyEventAddModal();
+  removePartyEvent(id);
 }
 
 /* ---- wedding party specialty timeline ---- */
 function getWeddingPartyTimelineItems(){
   const d = dashboardData;
-  const bachItems = (d.bachParties||[]).flatMap(b => (b.itinerary||[]).map((it,idx)=>({
+  const bachItems = (d.partyEvents||[]).flatMap(b => (b.itinerary||[]).map((it,idx)=>({
     id:`bach-${b.id}-${idx}`, day:`${b.label} · ${b.date}`, time:it.time, title:it.title,
     tags:['weddingparty'], location:b.location, notes:b.notes||''
   })));
@@ -12432,7 +12931,7 @@ function renderPortalPreview(id){
   const nextTasks = tasksForPartyMember(m).filter(t=>!t.done).slice(0,3);
   const upcoming = getUpcomingMilestones()[0];
   const myBroadcasts = (d.broadcasts||[]).filter(b=>b.audience==='All' || b.audience===m.side).slice(0,3);
-  const myBach = (d.bachParties||[]).find(b=>(b.attendees||[]).includes(m.id));
+  const myBach = (d.partyEvents||[]).find(b=>(b.attendees||[]).includes(m.id));
   return `
     <div class="portal-frame">
       <div class="portal-banner">
@@ -19681,7 +20180,7 @@ function getCalendarItems(){
     if(!t.dueDateISO || t.done) return;
     items.push({dateISO:t.dueDateISO, endISO:t.dueDateISO, type:'task', id:t.id, title:t.title, sub:taskEventLabel(t), amount:null});
   });
-  (d.bachParties||[]).forEach(b=>{
+  (d.partyEvents||[]).forEach(b=>{
     if(!b.dateISO) return;
     items.push({dateISO:b.dateISO, endISO:b.dateISO, type:'bach', id:b.id, title:b.label, sub:b.location||'', amount:null});
   });
@@ -20067,12 +20566,12 @@ function renderCalendarItemDetail(type, id){
     `;
   }
   if(type==='bach'){
-    const b = d.bachParties.find(x=>x.id===id);
+    const b = d.partyEvents.find(x=>x.id===id);
     if(!b) return '';
     return `
       <div class="item-modal item-modal-lg">
         <button class="im-close" onclick="closeCalendarItemDetail()">✕</button>
-        <div class="eyebrow">Bach &amp; Bachelorette</div>
+        <div class="eyebrow">${escapeHtml(partyEventTypeLabel(b.type))}</div>
         <h3 style="margin-top:6px;">${escapeHtml(b.label)}</h3>
         <div class="d-sub" style="margin-top:4px;">${fmtCalDate(b.dateISO)}</div>
         <div class="field-grid" style="margin-top:18px;">
@@ -20083,7 +20582,7 @@ function renderCalendarItemDetail(type, id){
         </div>
         ${(b.itinerary||[]).length ? `<div class="detail-section" style="margin-top:18px;"><div class="detail-section-head"><h4 style="margin:0;">Itinerary</h4></div>${b.itinerary.map(it=>`<div class="opp-row"><b>${escapeHtml(it.time)}</b> — ${escapeHtml(it.title)}</div>`).join('')}</div>` : ''}
         ${b.notes ? `<div class="detail-section"><div class="detail-section-head"><h4 style="margin:0;">Notes</h4></div><p style="font-size:13.5px; color:var(--charcoal-soft); line-height:1.6;">${escapeHtml(b.notes)}</p></div>` : ''}
-        <div style="margin-top:20px;"><a href="#" class="ch-link" onclick="closeCalendarItemDetail(); renderRoute('wedding-party'); switchPartyTab('bach'); return false;">View in Wedding Party Hub →</a></div>
+        <div style="margin-top:20px;"><a href="#" class="ch-link" onclick="closeCalendarItemDetail(); renderRoute('wedding-party'); switchPartyTab('parties'); return false;">View in Wedding Party Hub →</a></div>
       </div>
     `;
   }
@@ -20665,7 +21164,7 @@ updateStageUI();
     EmailAuthProvider, reauthenticateWithPopup
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import {
-    getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs
+    getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs, orderBy, limit
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   // Public web config for the Evera Firebase project (evera-0824).
@@ -20815,6 +21314,43 @@ updateStageUI();
       await setDoc(doc(db, 'emailDirectory', email.toLowerCase()), { uid:newUid, accountType:'couple', email: email.toLowerCase(), name:'' }, { merge: true });
       await signOut(secondaryAuth);
       return newUid;
+    },
+    /* ================== v1.71.0 — Super Admin ==================
+       "admins/{uid}" holds one document per admin-capable account — its mere
+       existence IS the grant; this app never writes to it, only reads the
+       signed-in user's own doc to check. Granting admin access is therefore
+       always a manual step in the Firebase Console (or via the Admin SDK),
+       never something any client code can do — see the Firestore rules
+       block given alongside this release, which denies all writes to this
+       collection from any client. "adminActivityLog" is an append-only
+       record of every "View As" — created here, never updated or deleted
+       by the app, and only readable by a signed-in admin (again enforced by
+       the Firestore rules, not just this client code). */
+    async checkIsSuperAdmin(uid){
+      try{
+        const snap = await getDoc(doc(db, 'admins', uid));
+        return snap.exists();
+      } catch(err){
+        // A non-admin's read is expected to be denied by the security rules —
+        // that's not an error, it's the normal "you're not an admin" case.
+        return false;
+      }
+    },
+    async listAllWeddings(){
+      const snap = await getDocs(collection(db, 'weddings'));
+      return snap.docs.map(d=>Object.assign({ uid: d.id }, d.data()));
+    },
+    async listAllPlanners(){
+      const snap = await getDocs(collection(db, 'planners'));
+      return snap.docs.map(d=>Object.assign({ uid: d.id }, d.data()));
+    },
+    async logAdminActivity(entry){
+      const ref = doc(collection(db, 'adminActivityLog'));
+      await setDoc(ref, Object.assign({}, entry, { id: ref.id }));
+    },
+    async listAdminActivity(){
+      const snap = await getDocs(query(collection(db, 'adminActivityLog'), orderBy('atMillis', 'desc'), limit(200)));
+      return snap.docs.map(d=>d.data());
     }
   };
 
