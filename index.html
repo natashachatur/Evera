@@ -270,6 +270,12 @@
   .event-group:last-child{margin-bottom:0;}
   .event-group-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--charcoal-faint); margin-bottom:10px;}
   .custom-add-row{display:flex; gap:10px;}
+  /* v1.67.0 — Communications Center hand-pick-people picker */
+  .comms-picker-panel{margin-top:8px; border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px; background:var(--ivory-deep);}
+  .comms-picker-panel input[type="text"]{width:100%;}
+  .comms-picker-list{max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:2px;}
+  .comms-picker-row{display:flex; align-items:center; gap:10px; padding:6px 4px; border-bottom:1px dashed var(--line);}
+  .comms-picker-row:last-child{border-bottom:none;}
   .custom-add-row input{flex:1; padding:12px 16px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--paper); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:14px; color:var(--charcoal);}
   .custom-chip{display:inline-flex; align-items:center; gap:6px; background:var(--green-tint); border:1px solid var(--green); color:var(--green); border-radius:999px; padding:9px 8px 9px 16px; font-size:13px; font-weight:600;}
   .custom-chip button{background:none; border:none; color:var(--green); font-size:17px; line-height:1; cursor:pointer; padding:0 2px;}
@@ -2248,6 +2254,18 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.67.0', date:'2026-11-26',
+    title:'Communications Center: real audience presets, a hand-pick-people recipient picker, and a review-before-send confirmation',
+    items:[
+      'The Guest Messages tab is now "Communications Center" — same tab, a name that actually matches what it does and what you asked to work on next.',
+      '"Send To" now has real audience presets beyond Everyone/an event/a tag: By RSVP status (Confirmed / Pending / Declined), By guest tier, and your whole Wedding Party — each with a live, accurate recipient count computed from your real guest data, same as the existing presets.',
+      'A new "👥 Choose People" option lets you hand-pick specific households by name (with a search box and an RSVP-status pill on each row) instead of only using a preset — for the one-off message that doesn\'t fit a category.',
+      'Clicking Send no longer sends immediately — it opens a "Review & Send" step showing exactly how many people this reaches, an expandable "Review recipients →" list of their real names, and the message itself, with a "← Edit Message" way back and a "✅ Confirm & Send (simulated)" to actually log it. Still simulated — no real email or text goes out yet; this is the UI groundwork ahead of wiring up a real Twilio/email-provider backend (Tier 1 #3), which stays paused until those accounts are set up.',
+      'Fixed in passing, found while building this: switching "Send To" used to silently wipe out whatever subject/message you\'d already typed. The compose fields are now bound to real draft state that survives switching audiences, so you can change your mind about who it\'s going to without losing your words.',
+      'Scope note: this release is Guest-side only — Vendor communications stay exactly as they were (a read-only history pulled from each vendor\'s own Communication History in Vendors). A real Vendor-side bulk send would be a separate, later piece of work, not folded in here.'
+    ]
+  },
+  {
     version:'1.66.0', date:'2026-11-26',
     title:'Website: your own shopping links, a Guided Setup wizard, an in-app live preview, and an RSVP open/closed switch',
     items:[
@@ -3274,8 +3292,18 @@ let planCollapsedPhases = {}; // phase key -> collapsed boolean, lazily defaulte
 let calendarAddFormOpen = false; // toggles the "+ Add an Event" inline form on Calendar at a Glance
 let unavailAddFormOpen = false; // toggles the "+ Add Unavailability" inline form on Calendar at a Glance
 let messagesFilter = 'all'; // 'all' | 'threads' | 'vendor' | 'guest' — Messages module view
-let guestMessageComposeType = 'all'; // v1.46.0: 'all' | 'event' | 'tag' — who a new Guest Message in the Compose card goes to
-let guestMessageComposeTarget = ''; // the specific eventId or tag, when composeType isn't 'all'
+let guestMessageComposeType = 'all'; // v1.67.0: 'all' | 'event' | 'tag' | 'status' | 'tier' | 'weddingParty' | 'specific' — who a new Communications Center message goes to
+let guestMessageComposeTarget = ''; // the specific eventId / tag / rsvp status / tier key, when composeType needs one
+// v1.67.0 — Communications Center: audience presets, a hand-pick-people recipient picker, and a
+// review-before-send confirmation step, on top of the v1.46.0 compose flow above. Still simulated/logged,
+// not real delivery — see Tier 1 #3 in the backlog for the real-sending prerequisite.
+let commsDraftSubject = ''; // persists across audience-type switches so composing a message never loses your text
+let commsDraftBody = '';
+let commsPreviewOpen = false; // true once "Review & Send" has been clicked, showing the confirm panel instead of the form
+let commsRecipientListOpen = false; // whether the "Review recipients" names list is expanded inside the confirm panel
+let commsPickerOpen = false; // whether the "hand-pick specific people" household checklist is expanded
+let commsPickerSearch = ''; // filter text inside the hand-pick picker
+let commsSpecificSelection = []; // household ids chosen via the hand-pick picker, when composeType==='specific'
 let partyAddDraft = null; // v1.45.0: "+ Add Wedding Party Member" modal draft — null when closed. {mode:'existing'|'new', lockGuest:bool, householdId, memberId, firstName, lastName, email}
 
 /* Blank "get to know you" survey every wedding-party member (except Parents) gets when added —
@@ -8924,10 +8952,10 @@ function renderMessagesModule(){
           <button class="seg-btn ${messagesFilter==='all'?'active':''}" onclick="switchMessagesFilter('all')">All</button>
           <button class="seg-btn ${messagesFilter==='threads'?'active':''}" onclick="switchMessagesFilter('threads')">Wedding Party &amp; Family</button>
           <button class="seg-btn ${messagesFilter==='vendor'?'active':''}" onclick="switchMessagesFilter('vendor')">Vendors</button>
-          <button class="seg-btn ${messagesFilter==='guest'?'active':''}" onclick="switchMessagesFilter('guest')">Guest Messages</button>
+          <button class="seg-btn ${messagesFilter==='guest'?'active':''}" onclick="switchMessagesFilter('guest')">Communications Center</button>
         </div>
       </div>
-      ${messagesFilter==='guest' ? `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Everything guests receive from you, in one place — compose a message to a specific group, see when each event's invites went out, build the RSVP message and questions guests get alongside it, and review a full history of everything sent with previews.</p>` : `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Vendor messages are pulled straight from each vendor's communication history in Vendors — nothing is duplicated here.</p>`}
+      ${messagesFilter==='guest' ? `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Everything guests receive from you, in one place — pick a real audience (or hand-pick specific people), preview exactly who it reaches before anything goes out, see when each event's invites went out, build the RSVP message and questions guests get alongside it, and review a full history of everything sent with previews.</p>` : `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Vendor messages are pulled straight from each vendor's communication history in Vendors — nothing is duplicated here.</p>`}
       ${messagesFilter==='guest' ? renderGuestMessagesTab() : ''}
       ${messagesFilter!=='vendor' && messagesFilter!=='guest' ? renderThreadsSection() : ''}
       ${messagesFilter!=='threads' && messagesFilter!=='guest' ? renderVendorMessagesSection(vendorMsgs) : ''}
@@ -16458,6 +16486,17 @@ function renderGuestMessagesTab(){
    send being implicit in an Invite/Survey action elsewhere. Recipient count is computed live
    from the actual guest list (same matching logic as Invite Rules / quick-invite-by-tag), so
    what you see before sending is the real number of people, not an estimate. */
+function commsHouseholdsForStatus(status){
+  return (dashboardData.guestHouseholds||[]).filter(h=>(h.rsvpStatus||'pending')===status);
+}
+function commsTierLabel(key){
+  const t = (dashboardData.guestTiers||[]).find(x=>x.key===key);
+  return t ? t.label : key;
+}
+/* v1.67.0 — Communications Center: every audience preset the compose card can target, plus
+   'specific' for the hand-pick picker (guestMessageComposeTarget holds commsSpecificSelection
+   indirectly in that case — see guestMessageRecipientNames/Count below, which read the array directly
+   rather than through target, since a picker selection is a list, not a single value). */
 function guestMessageRecipientCount(type, target){
   const d = dashboardData;
   if(type==='event'){
@@ -16469,6 +16508,18 @@ function guestMessageRecipientCount(type, target){
     (d.guestHouseholds||[]).forEach(h=> (h.members||[]).forEach(m=>{ if(memberEffectiveTags(h,m).includes(target)) n++; }));
     return n;
   }
+  if(type==='status'){
+    return commsHouseholdsForStatus(target).reduce((s,h)=>s+(h.members||[]).length,0);
+  }
+  if(type==='tier'){
+    return (d.guestHouseholds||[]).filter(h=>h.tier===target).reduce((s,h)=>s+(h.members||[]).length,0);
+  }
+  if(type==='weddingParty'){
+    return (d.weddingParty||[]).length;
+  }
+  if(type==='specific'){
+    return (d.guestHouseholds||[]).filter(h=>commsSpecificSelection.includes(h.id)).reduce((s,h)=>s+(h.members||[]).length,0);
+  }
   return guestOverallStats().totalIndividuals;
 }
 function guestMessageRecipientLabel(type, target){
@@ -16478,30 +16529,175 @@ function guestMessageRecipientLabel(type, target){
     return e ? `Everyone invited to ${e.name}` : 'Everyone invited to an event';
   }
   if(type==='tag') return `Everyone tagged "${target}"`;
+  if(type==='status'){
+    const names = {confirmed:'Confirmed (Attending)', pending:'Pending (haven\'t responded yet)', declined:'Declined'};
+    return `Everyone marked ${names[target]||target}`;
+  }
+  if(type==='tier') return `Everyone in ${commsTierLabel(target)}`;
+  if(type==='weddingParty') return 'Your whole Wedding Party';
+  if(type==='specific'){
+    const n = commsSpecificSelection.length;
+    return `${pluralize(n,'hand-picked household','hand-picked households')} you chose below`;
+  }
   return 'Everyone on your guest list';
+}
+/* The real names behind the count — what "Review recipients" actually shows, so the preview is a
+   genuine list of who receives this, not just a number. */
+function guestMessageRecipientNames(type, target){
+  const d = dashboardData;
+  const namesFromHouseholds = (households) => {
+    const out = [];
+    households.forEach(h=> (h.members||[]).forEach(m=> out.push(`${(m.firstName||'')} ${(m.lastName||'')}`.trim() || h.label)));
+    return out;
+  };
+  if(type==='event'){
+    const e = (d.events||[]).find(x=>x.id===target);
+    if(!e) return [];
+    return namesFromHouseholds((d.guestHouseholds||[]).filter(h=> memberIsInvitedToEvent ? (h.members||[]).some(m=>memberIsInvitedToEvent(h,m,e.id)) : (h.invitedEvents||[]).includes(e.id)));
+  }
+  if(type==='tag'){
+    const out = [];
+    (d.guestHouseholds||[]).forEach(h=> (h.members||[]).forEach(m=>{ if(memberEffectiveTags(h,m).includes(target)) out.push(`${(m.firstName||'')} ${(m.lastName||'')}`.trim() || h.label); }));
+    return out;
+  }
+  if(type==='status') return namesFromHouseholds(commsHouseholdsForStatus(target));
+  if(type==='tier') return namesFromHouseholds((d.guestHouseholds||[]).filter(h=>h.tier===target));
+  if(type==='weddingParty') return (d.weddingParty||[]).map(m=>`${m.name} — ${m.role||'Wedding Party'}`);
+  if(type==='specific') return namesFromHouseholds((d.guestHouseholds||[]).filter(h=>commsSpecificSelection.includes(h.id)));
+  return namesFromHouseholds(d.guestHouseholds||[]);
 }
 function updateGuestMessageComposeType(val){
   guestMessageComposeType = val;
   guestMessageComposeTarget = '';
+  commsPickerOpen = false;
+  commsRecipientListOpen = false;
   document.getElementById('content').innerHTML = renderMessagesModule();
 }
 function updateGuestMessageComposeTarget(val){
   guestMessageComposeTarget = val;
   document.getElementById('content').innerHTML = renderMessagesModule();
 }
-function renderGuestMessageComposeCard(){
-  const d = dashboardData;
-  const count = guestMessageRecipientCount(guestMessageComposeType, guestMessageComposeTarget);
-  const canSend = guestMessageComposeType==='all' || !!guestMessageComposeTarget;
+function toggleCommsPicker(){
+  commsPickerOpen = !commsPickerOpen;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+}
+function updateCommsPickerSearch(val){
+  commsPickerSearch = val;
+  const list = document.getElementById('commsPickerList');
+  if(list) list.innerHTML = renderCommsPickerRows();
+  const countEl = document.getElementById('commsPickerCount');
+  if(countEl) countEl.textContent = commsSpecificSelection.length ? `${pluralize(commsSpecificSelection.length,'household','households')} selected` : 'No households selected yet';
+}
+function toggleCommsHousehold(householdId){
+  const i = commsSpecificSelection.indexOf(householdId);
+  if(i===-1) commsSpecificSelection.push(householdId); else commsSpecificSelection.splice(i,1);
+  document.getElementById('content').innerHTML = renderMessagesModule();
+}
+function renderCommsPickerRows(){
+  const q = (commsPickerSearch||'').trim().toLowerCase();
+  const households = (dashboardData.guestHouseholds||[]).filter(h=> !q || h.label.toLowerCase().includes(q));
+  if(!households.length) return `<p class="d-sub" style="padding:8px 0;">No households match "${escapeHtml(commsPickerSearch)}".</p>`;
+  const statusPill = {confirmed:'pill-ok', pending:'pill-warn', declined:'pill-alert'};
+  return households.map(h=>`
+    <label class="comms-picker-row">
+      <input type="checkbox" ${commsSpecificSelection.includes(h.id)?'checked':''} onchange="toggleCommsHousehold('${h.id}')">
+      <span class="readonly-cell" style="flex:1;">${escapeHtml(h.label)} <span class="d-sub">(${pluralize((h.members||[]).length,'person','people')})</span></span>
+      <span class="pill ${statusPill[h.rsvpStatus]||'pill-warn'}" style="text-transform:capitalize;">${escapeHtml(h.rsvpStatus||'pending')}</span>
+    </label>
+  `).join('');
+}
+function renderCommsPicker(){
+  return `
+    <div class="field-cell" style="margin-top:10px;">
+      <button type="button" class="btn btn-outline btn-sm" onclick="toggleCommsPicker()">${commsPickerOpen ? 'Hide list' : '👥 Choose People'}</button>
+      <span class="d-sub" id="commsPickerCount" style="margin-left:8px;">${commsSpecificSelection.length ? `${pluralize(commsSpecificSelection.length,'household','households')} selected` : 'No households selected yet'}</span>
+      ${commsPickerOpen ? `
+      <div class="comms-picker-panel">
+        <input type="text" placeholder="Search households by name..." value="${escapeAttr(commsPickerSearch)}" oninput="updateCommsPickerSearch(this.value)" style="margin-bottom:8px;">
+        <div class="comms-picker-list" id="commsPickerList">${renderCommsPickerRows()}</div>
+      </div>` : ''}
+    </div>
+  `;
+}
+function openCommsPreview(){
+  const bodyEl = document.getElementById('guestMsgBody');
+  const subjectEl = document.getElementById('guestMsgSubject');
+  commsDraftBody = (bodyEl && bodyEl.value || '').trim();
+  commsDraftSubject = (subjectEl && subjectEl.value || '').trim();
+  if(!commsDraftBody) return;
+  const type = guestMessageComposeType;
+  if(type==='specific' ? !commsSpecificSelection.length : (type!=='all' && type!=='weddingParty' && !guestMessageComposeTarget)) return;
+  commsPreviewOpen = true;
+  commsRecipientListOpen = false;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+}
+function closeCommsPreview(){
+  commsPreviewOpen = false;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+}
+function toggleCommsRecipientList(){
+  commsRecipientListOpen = !commsRecipientListOpen;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+}
+function confirmSendGuestMessage(){
+  const type = guestMessageComposeType;
+  const target = guestMessageComposeTarget;
+  const count = guestMessageRecipientCount(type, target);
+  const label = guestMessageRecipientLabel(type, target);
+  if(!Array.isArray(dashboardData.guestMessageLog)) dashboardData.guestMessageLog = [];
+  dashboardData.guestMessageLog.push({
+    id:'gmsg-'+Date.now().toString(36), sentAt:new Date().toISOString(),
+    recipientLabel:label, recipientCount:count, subject:commsDraftSubject, body:commsDraftBody
+  });
+  guestMessageComposeType = 'all'; guestMessageComposeTarget = '';
+  commsDraftSubject = ''; commsDraftBody = '';
+  commsSpecificSelection = []; commsPickerOpen = false; commsPickerSearch = '';
+  commsPreviewOpen = false; commsRecipientListOpen = false;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+}
+function renderCommsConfirmPanel(){
+  const type = guestMessageComposeType, target = guestMessageComposeTarget;
+  const count = guestMessageRecipientCount(type, target);
+  const label = guestMessageRecipientLabel(type, target);
+  const names = guestMessageRecipientNames(type, target);
   return `
     <div class="card">
-      <div class="card-head"><h4>Compose a Message</h4><span class="d-sub">Pick exactly who this goes to, then send — it's logged in Message History below with a full preview</span></div>
+      <div class="card-head"><h4>Review &amp; Send</h4><span class="d-sub">Nothing goes out until you confirm — this is simulated, no real email or text is sent yet</span></div>
+      <p style="font-size:14px;margin:0 0 4px;">This message will reach <strong>${pluralize(count,'person','people')}</strong> — ${escapeHtml(label)}.</p>
+      <button type="button" class="btn btn-outline btn-sm" onclick="toggleCommsRecipientList()">${commsRecipientListOpen ? 'Hide recipients' : 'Review recipients →'}</button>
+      ${commsRecipientListOpen ? `
+      <div class="comms-picker-list" style="margin-top:8px;">
+        ${names.length ? names.map(n=>`<div class="d-sub" style="padding:3px 0;">${escapeHtml(n)}</div>`).join('') : '<p class="d-sub">No one matches this audience yet.</p>'}
+      </div>` : ''}
+      <div class="detail-section" style="margin-top:14px;background:var(--ivory-deep);padding:12px;border-radius:var(--radius-sm);">
+        ${commsDraftSubject ? `<div style="font-weight:700;font-size:13px;margin-bottom:4px;">${escapeHtml(commsDraftSubject)}</div>` : ''}
+        <div style="font-size:13px;white-space:pre-wrap;">${escapeHtml(commsDraftBody)}</div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="closeCommsPreview()">← Edit Message</button>
+        <button type="button" class="btn btn-solid btn-sm" onclick="confirmSendGuestMessage()">✅ Confirm &amp; Send (simulated)</button>
+      </div>
+    </div>
+  `;
+}
+function renderGuestMessageComposeCard(){
+  if(commsPreviewOpen) return renderCommsConfirmPanel();
+  const d = dashboardData;
+  const count = guestMessageRecipientCount(guestMessageComposeType, guestMessageComposeTarget);
+  const canSend = guestMessageComposeType==='all' || guestMessageComposeType==='weddingParty' || (guestMessageComposeType==='specific' ? commsSpecificSelection.length>0 : !!guestMessageComposeTarget);
+  return `
+    <div class="card">
+      <div class="card-head"><h4>Communications Center</h4><span class="d-sub">Pick a real audience or hand-pick people, preview exactly who it reaches, then send — it's logged in Message History below with a full preview</span></div>
       <div class="field-grid">
         <div class="field-cell"><label>Send To</label>
           <select onchange="updateGuestMessageComposeType(this.value)">
             <option value="all" ${guestMessageComposeType==='all'?'selected':''}>Everyone on your guest list</option>
             <option value="event" ${guestMessageComposeType==='event'?'selected':''}>Everyone invited to an event</option>
             <option value="tag" ${guestMessageComposeType==='tag'?'selected':''}>Guests tagged with...</option>
+            <option value="status" ${guestMessageComposeType==='status'?'selected':''}>By RSVP status...</option>
+            <option value="tier" ${guestMessageComposeType==='tier'?'selected':''}>By guest tier...</option>
+            <option value="weddingParty" ${guestMessageComposeType==='weddingParty'?'selected':''}>Your Wedding Party</option>
+            <option value="specific" ${guestMessageComposeType==='specific'?'selected':''}>Hand-pick specific people...</option>
           </select>
         </div>
         ${guestMessageComposeType==='event' ? `
@@ -16518,29 +16714,30 @@ function renderGuestMessageComposeCard(){
             ${(d.guestCategories||[]).map(c=>`<option value="${escapeAttr(c)}" ${guestMessageComposeTarget===c?'selected':''}>${escapeHtml(c)}</option>`).join('')}
           </select>
         </div>` : ''}
+        ${guestMessageComposeType==='status' ? `
+        <div class="field-cell"><label>RSVP Status</label>
+          <select onchange="updateGuestMessageComposeTarget(this.value)">
+            <option value="">Choose a status...</option>
+            <option value="confirmed" ${guestMessageComposeTarget==='confirmed'?'selected':''}>Confirmed (Attending)</option>
+            <option value="pending" ${guestMessageComposeTarget==='pending'?'selected':''}>Pending</option>
+            <option value="declined" ${guestMessageComposeTarget==='declined'?'selected':''}>Declined</option>
+          </select>
+        </div>` : ''}
+        ${guestMessageComposeType==='tier' ? `
+        <div class="field-cell"><label>Guest Tier</label>
+          <select onchange="updateGuestMessageComposeTarget(this.value)">
+            <option value="">Choose a tier...</option>
+            ${(d.guestTiers||[]).map(t=>`<option value="${escapeAttr(t.key)}" ${guestMessageComposeTarget===t.key?'selected':''}>${escapeHtml(t.label)}</option>`).join('')}
+          </select>
+        </div>` : ''}
       </div>
+      ${guestMessageComposeType==='specific' ? renderCommsPicker() : ''}
       <p class="d-sub" style="margin-top:8px;">${canSend ? `${pluralize(count,'person','people')} will receive this — ${escapeHtml(guestMessageRecipientLabel(guestMessageComposeType, guestMessageComposeTarget))}.` : 'Choose a target above to see how many people this reaches.'}</p>
-      <div class="field-cell" style="margin-top:4px;"><label>Subject (optional)</label><input type="text" id="guestMsgSubject" placeholder="e.g. A quick update about parking"></div>
-      <div class="field-cell" style="margin-top:10px;"><label>Message</label><textarea class="notes-field" id="guestMsgBody" placeholder="What would you like to tell them?"></textarea></div>
-      <div style="margin-top:12px;"><button class="btn btn-solid btn-sm" ${canSend?'':'disabled'} onclick="sendGuestMessage()">📨 Send</button></div>
+      <div class="field-cell" style="margin-top:4px;"><label>Subject (optional)</label><input type="text" id="guestMsgSubject" placeholder="e.g. A quick update about parking" value="${escapeAttr(commsDraftSubject)}" oninput="commsDraftSubject=this.value"></div>
+      <div class="field-cell" style="margin-top:10px;"><label>Message</label><textarea class="notes-field" id="guestMsgBody" placeholder="What would you like to tell them?" oninput="commsDraftBody=this.value">${escapeHtml(commsDraftBody)}</textarea></div>
+      <div style="margin-top:12px;"><button class="btn btn-solid btn-sm" ${canSend?'':'disabled'} onclick="openCommsPreview()">Review &amp; Send →</button></div>
     </div>
   `;
-}
-function sendGuestMessage(){
-  const bodyEl = document.getElementById('guestMsgBody');
-  const subjectEl = document.getElementById('guestMsgSubject');
-  const body = (bodyEl && bodyEl.value || '').trim();
-  if(!body) return;
-  if(guestMessageComposeType!=='all' && !guestMessageComposeTarget) return;
-  const count = guestMessageRecipientCount(guestMessageComposeType, guestMessageComposeTarget);
-  const label = guestMessageRecipientLabel(guestMessageComposeType, guestMessageComposeTarget);
-  if(!Array.isArray(dashboardData.guestMessageLog)) dashboardData.guestMessageLog = [];
-  dashboardData.guestMessageLog.push({
-    id:'gmsg-'+Date.now().toString(36), sentAt:new Date().toISOString(),
-    recipientLabel:label, recipientCount:count, subject:(subjectEl&&subjectEl.value||'').trim(), body
-  });
-  guestMessageComposeType = 'all'; guestMessageComposeTarget = '';
-  document.getElementById('content').innerHTML = renderMessagesModule();
 }
 /* Unified history — every guest-facing send collapsed into one timeline with a real preview of
    what went out, not just a label. Combines composed Guest Messages, event invite sends, and
