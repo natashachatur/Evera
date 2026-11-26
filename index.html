@@ -530,11 +530,18 @@
 
   /* ---- v1.35.0: photo-forward Home hero ---- */
   .home-photo-hero{position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:22px; box-shadow:var(--shadow-lg); min-height:270px; display:flex; align-items:flex-end;}
-  .home-photo-hero .hph-bg{position:absolute; inset:0; background-size:cover; background-position:center;}
+  .home-photo-hero .hph-bg{position:absolute; inset:0; background:var(--green-deep);}
   /* v1.38.0: flattened to a solid colour — matches the earlier pass that flattened the
-     Blueprint hero's gradient, so the app's two main hero moments are treated consistently. */
-  .home-photo-hero:not(.has-photo) .hph-bg{background:var(--green-deep);}
+     Blueprint hero's gradient, so the app's two main hero moments are treated consistently.
+     v1.73.0: the couple photo no longer lives here at all (see .hph-avatar below) — a full-bleed
+     banner stretched across this whole width cropped portrait photos badly (cutting off faces) and,
+     as an uncompressed data URL stored directly on the wedding record, could exceed Firestore's
+     per-document size limit and silently fail to save. A small round avatar fixes both: a much
+     smaller, predictable crop, and the image is compressed before it's ever stored. */
   .home-photo-hero .hph-scrim{position:absolute; inset:0; background:linear-gradient(0deg, rgba(20,24,18,0.80) 0%, rgba(20,24,18,0.38) 55%, rgba(20,24,18,0.06) 100%);}
+  .home-photo-hero .hph-avatar{position:relative; z-index:1; width:64px; height:64px; min-width:64px; border-radius:50%; overflow:hidden; border:2.5px solid rgba(244,239,227,0.55); box-shadow:0 2px 10px rgba(0,0,0,0.25); flex-shrink:0;}
+  .home-photo-hero .hph-avatar img{width:100%; height:100%; object-fit:cover; display:block;}
+  .home-photo-hero .hph-heading-row{display:flex; align-items:center; gap:16px; min-width:0;}
   .home-photo-hero .hph-content{position:relative; z-index:1; padding:30px 32px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; width:100%;}
   /* v1.39.1: reverted the v1.38.0 italic treatment here per direct feedback — it read as
      "weird" on the greeting specifically, so this stays a clean upright serif. */
@@ -2093,7 +2100,7 @@
         <button class="icon-btn" id="tbSearchBtn" onclick="toggleSearchPanel()" title="Search" aria-label="Search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
         <button class="quickadd-btn" id="tbQuickAdd" onclick="toggleQuickAddPanel()" title="Quick Add" aria-label="Quick Add"><svg class="icon" viewBox="0 0 24 24" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></button>
         <button class="icon-btn" id="tbNotifBell" onclick="toggleNotificationsPanel()" title="Notifications" aria-label="Notifications"><svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
-        <button class="icon-btn" onclick="toggleFeedbackPanel()" title="Feature requests &amp; bug reports" aria-label="Feature requests and bug reports"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/></svg></button>
+        <button class="icon-btn" onclick="toggleFeedbackPanel()" title="Feedback &amp; Roadmap" aria-label="Feedback and Roadmap"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><path d="M12 7.5v4"/><path d="M12 14.8h.01"/></svg></button>
         <button class="icon-btn" id="tbAssistantBtn" onclick="toggleAssistant()" title="Evera Assistant" aria-label="Evera Assistant" style="display:none;"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.2 5.6L20 10l-5.8 2.4L12 18l-2.2-5.6L4 10l5.8-2.4L12 2z"/></svg></button>
         <button class="icon-btn" id="tbAdminBtn" onclick="openAdminDashboard()" title="Super Admin Dashboard" aria-label="Super Admin Dashboard" style="display:none;"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg></button>
         <div class="sb-avatar" style="background:var(--champagne-light); width:38px; height:38px; font-size:12px; cursor:pointer;" id="tbAvatar" onclick="renderRoute('settings')" title="Settings" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){renderRoute('settings');}">P&amp;J</div>
@@ -2282,6 +2289,16 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.73.0', date:'2026-11-26',
+    title:'Real guest email & text sending, a fixed couple-photo upload, and a Feedback board fix',
+    items:[
+      'Communications Center can now actually send — "Send to guests" was simulated before this (it logged what would have gone out, but nothing was delivered). It now sends real email via SendGrid and real text messages via Twilio, through two new Cloud Functions. A new channel picker lets you send by Email, Text, or Both, and each household got a Phone field (next to Email) on its detail view so there\'s somewhere for a text to go — every existing household starts with it blank, since Evera never collected this before. The send result now shows real counts (sent/skipped/failed) instead of a flat "sent to N people," and a failed send shows an honest error with the attempt still logged, instead of silently vanishing.',
+      'Fixed: uploading a photo of the couple could fail to save with a generic "Couldn\'t save — check your connection" message, reported directly by Natasha. The real cause — a normal phone photo, stored uncompressed, routinely blew past Firestore\'s 1MB-per-document limit for the entire wedding record, not just the photo. Photos are now automatically compressed client-side before they\'re ever stored, the same approach already used for Documents (v1.62.0), with real headroom left under that limit.',
+      'Also per Natasha\'s report — the couple photo on Home no longer stretches across the full banner, which cropped portrait photos awkwardly (cutting off faces). It\'s now a small round photo next to your names, matching the same circular treatment already used in Settings → Personalize, the sidebar, and the topbar avatar — smaller surface area, and a far more forgiving crop.',
+      'Fixed: the Post button on a Feedback & Roadmap reply could appear to do nothing. A failed reply (e.g. a connection hiccup) was previously only logged to the browser console with zero visible change — indistinguishable from a broken button. Posting now shows a "Posting…" state, a failure shows a visible error message and re-enables the button, and your typed reply is never lost if a send fails.'
+    ]
+  },
   {
     version:'1.72.0', date:'2026-11-26',
     title:'Feedback & Roadmap board — a shared, upvotable board replaces the private feedback form',
@@ -3393,6 +3410,9 @@ let commsRecipientListOpen = false; // whether the "Review recipients" names lis
 let commsPickerOpen = false; // whether the "hand-pick specific people" household checklist is expanded
 let commsPickerSearch = ''; // filter text inside the hand-pick picker
 let commsSpecificSelection = []; // household ids chosen via the hand-pick picker, when composeType==='specific'
+let commsSendChannel = 'email'; // 'email' | 'sms' | 'both' — v1.73.0, now that sending is real, channel is a real choice
+let commsSending = false; // true while a real send is in flight, to disable the Confirm button and avoid double-sends
+let commsSendResult = null; // { ok, emailResult?, smsResult?, error? } — set once a real send completes, shown in place of the Review & Send form until dismissed
 let partyAddDraft = null; // v1.45.0: "+ Add Wedding Party Member" modal draft — null when closed. {mode:'existing'|'new', lockGuest:bool, householdId, memberId, firstName, lastName, email}
 
 /* Blank "get to know you" survey every wedding-party member (except Parents) gets when added —
@@ -5591,6 +5611,10 @@ function normalizeDashboardData(d){
     if(h.tier===undefined || !d.guestTiers.some(t=>t.key===h.tier)) h.tier = d.guestTiers[0].key;
     if(h.rsvpStatus===undefined) h.rsvpStatus = 'pending';
     if(h.email===undefined) h.email = '';
+    // v1.73.0: a household phone number, same pattern as email — needed so the real Twilio SMS
+    // backend has somewhere to send a text. Honestly blank for every pre-existing household,
+    // since Evera never collected this before now; nothing is guessed or auto-filled.
+    if(h.phone===undefined) h.phone = '';
     if(!h.address || typeof h.address === 'string'){ const legacy = typeof h.address === 'string' ? h.address : ''; h.address = {street:legacy, city:'', region:'', postalCode:'', country:''}; }
     if(h.address.street===undefined) h.address.street = '';
     if(h.address.city===undefined) h.address.city = '';
@@ -6343,16 +6367,35 @@ function refreshPersonalizeHost(){
   if(currentRouteKey==='home') document.getElementById('content').innerHTML = renderHome();
   else if(currentRouteKey==='settings') document.getElementById('content').innerHTML = renderSettingsModule();
 }
-function handleCouplePhotoUpload(evt){
+/* v1.73.0 bugfix: this used to store the raw, uncompressed FileReader result directly — a normal
+   phone photo (often several MB) base64-encodes to something even bigger, which blows straight
+   through Firestore's 1MiB-per-document cap and makes the ENTIRE wedding record fail to save, not
+   just the photo — surfacing as the generic "Couldn't save — check your connection" banner with no
+   indication the photo was the cause. Now reuses the same shrinkImageToDataUrl helper the Documents
+   feature (v1.62.0) already built for exactly this problem, capped well under the Firestore limit
+   so the photo can never again take the whole record down with it. */
+async function handleCouplePhotoUpload(evt){
   const file = evt.target.files && evt.target.files[0];
   if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    dashboardData.couplePhoto = e.target.result;
-    refreshPersonalizeHost();
-    updateChrome();
-  };
-  reader.readAsDataURL(file);
+  const btn = evt.target.closest('.hph-photo-btn');
+  const originalLabel = btn ? btn.firstChild.textContent : null;
+  if(btn) btn.firstChild.textContent = 'Processing…';
+  // v1.73.0: tightened from 700000 — that cap is on the DECODED image bytes, but what actually
+  // counts against the wedding record's 1MiB Firestore limit is the base64 TEXT we store, which
+  // runs ~4/3 larger (700KB decoded -> ~933KB of stored text on its own, leaving almost nothing for
+  // the rest of the record once a wedding has real guest/budget/vendor data). 400000 decoded bytes
+  // (~533KB stored) leaves comfortable headroom, confirmed against a worst-case high-entropy photo
+  // that resists compression far more than a normal phone photo.
+  const shrunk = await shrinkImageToDataUrl(file, 400000);
+  if(!shrunk){
+    if(btn && originalLabel!==null) btn.firstChild.textContent = originalLabel;
+    alert("Couldn't process that image — try a different photo (JPEG or PNG work best).");
+    return;
+  }
+  dashboardData.couplePhoto = shrunk;
+  refreshPersonalizeHost();
+  updateChrome();
+  persistWeddingRecord();
 }
 function removeCouplePhoto(){
   dashboardData.couplePhoto = null;
@@ -6627,19 +6670,22 @@ function renderHome(){
   const attentionItems = homeAttentionSignals({d, topAction, nextUp, overdueTasks, dueSoonTotal, isOverBudget, totalSpent, days, paymentLeadDays});
 
   return `
-    <div class="home-photo-hero ${d.couplePhoto ? 'has-photo' : ''}">
-      <div class="hph-bg" style="${d.couplePhoto ? `background-image:url('${escapeAttr(d.couplePhoto)}');` : ''}"></div>
+    <div class="home-photo-hero">
+      <div class="hph-bg"></div>
       <div class="hph-scrim"></div>
       ${d.coupleLogo ? `<div class="hph-logo"><img src="${escapeAttr(d.coupleLogo)}" alt="Wedding logo"></div>` : ''}
       <div class="hph-content">
-        <div>
-          <h1>${homeGreeting()}, ${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} ♥</h1>
-          ${days!==null ? `<div class="hph-days">${days} day${days===1?'':'s'} until your wedding</div>` : ''}
-          <div class="hph-meta">${d.weddingDateLabel ? escapeHtml(d.weddingDateLabel) : 'Date to be decided'}${d.location ? ' · '+escapeHtml(d.location) : ''}</div>
+        <div class="hph-heading-row">
+          ${d.couplePhoto ? `<div class="hph-avatar"><img src="${escapeAttr(d.couplePhoto)}" alt="${escapeAttr(d.partner1)} and ${escapeAttr(d.partner2)}"></div>` : ''}
+          <div style="min-width:0;">
+            <h1>${homeGreeting()}, ${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} ♥</h1>
+            ${days!==null ? `<div class="hph-days">${days} day${days===1?'':'s'} until your wedding</div>` : ''}
+            <div class="hph-meta">${d.weddingDateLabel ? escapeHtml(d.weddingDateLabel) : 'Date to be decided'}${d.location ? ' · '+escapeHtml(d.location) : ''}</div>
+          </div>
         </div>
         <div class="hph-actions">
           <button class="home-ask-btn" onclick="toggleAssistant()"><svg viewBox="0 0 24 24">${ICONS.assistant}</svg> Ask Evera</button>
-          <label class="hph-photo-btn" onclick="event.stopPropagation();">
+          <label class="hph-photo-btn" onclick="event.stopPropagation();" title="A small round photo next to your names — close-up, square-ish photos work best.">
             ${d.couplePhoto ? 'Change photo' : '+ Add a photo'}
             <input type="file" accept="image/*" style="position:absolute; inset:0; opacity:0; cursor:pointer;" onchange="handleCouplePhotoUpload(event)">
           </label>
@@ -16612,6 +16658,7 @@ function renderHouseholdDetailModal(householdId){
         <div class="field-cell"><label>Postal / ZIP Code</label><input type="text" placeholder="e.g. M4K 1M2" value="${escapeAttr(addr.postalCode)}" onchange="updateHouseholdAddressField('${h.id}','postalCode',this.value)"></div>
         <div class="field-cell"><label>Country</label><input type="text" placeholder="e.g. Canada" value="${escapeAttr(addr.country)}" onchange="updateHouseholdAddressField('${h.id}','country',this.value)"></div>
         <div class="field-cell"><label>Email</label><input type="text" placeholder="Contact email" value="${escapeAttr(h.email)}" onchange="updateHouseholdField('${h.id}','email',this.value)"></div>
+        <div class="field-cell"><label>Phone <span class="field-help-icon" title="Used for real text message sending in Communications Center — include country code for best results, e.g. +1 416 555 0134.">?</span></label><input type="text" placeholder="e.g. +1 416 555 0134" value="${escapeAttr(h.phone)}" onchange="updateHouseholdField('${h.id}','phone',this.value)"></div>
       </div>
       <div class="detail-section-head" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);"><h4 style="margin:0;">Tags</h4><span class="d-sub">One tag vocabulary, two scopes — apply a tag to the whole family, or to just one person. Feeds Guests → Invite Rules either way.</span></div>
       <div style="margin-top:10px;">
@@ -17160,6 +17207,27 @@ function guestMessageRecipientNames(type, target){
   if(type==='specific') return namesFromHouseholds((d.guestHouseholds||[]).filter(h=>commsSpecificSelection.includes(h.id)));
   return namesFromHouseholds(d.guestHouseholds||[]);
 }
+/* v1.73.0 — the real contact points behind an audience, for actual sending. Names above are
+   per-member (for a readable preview); email/phone live on the household as a whole (or directly
+   on a Wedding Party member), so this returns one row per real recipient — { label, email, phone }
+   — deduplicated by household/member, which is what the Cloud Functions calls below iterate over. */
+function guestMessageRecipientContacts(type, target){
+  const d = dashboardData;
+  const fromHouseholds = (households) => households.map(h=>({ label: h.label, email: h.email||'', phone: h.phone||'' }));
+  if(type==='event'){
+    const e = (d.events||[]).find(x=>x.id===target);
+    if(!e) return [];
+    return fromHouseholds((d.guestHouseholds||[]).filter(h=> memberIsInvitedToEvent ? (h.members||[]).some(m=>memberIsInvitedToEvent(h,m,e.id)) : (h.invitedEvents||[]).includes(e.id)));
+  }
+  if(type==='tag'){
+    return fromHouseholds((d.guestHouseholds||[]).filter(h=> (h.members||[]).some(m=>memberEffectiveTags(h,m).includes(target))));
+  }
+  if(type==='status') return fromHouseholds(commsHouseholdsForStatus(target));
+  if(type==='tier') return fromHouseholds((d.guestHouseholds||[]).filter(h=>h.tier===target));
+  if(type==='weddingParty') return (d.weddingParty||[]).map(m=>({ label: `${m.name} — ${m.role||'Wedding Party'}`, email: m.email||'', phone: m.phone||'' }));
+  if(type==='specific') return fromHouseholds((d.guestHouseholds||[]).filter(h=>commsSpecificSelection.includes(h.id)));
+  return fromHouseholds(d.guestHouseholds||[]);
+}
 function updateGuestMessageComposeType(val){
   guestMessageComposeType = val;
   guestMessageComposeTarget = '';
@@ -17169,6 +17237,10 @@ function updateGuestMessageComposeType(val){
 }
 function updateGuestMessageComposeTarget(val){
   guestMessageComposeTarget = val;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+}
+function updateCommsSendChannel(val){
+  commsSendChannel = val;
   document.getElementById('content').innerHTML = renderMessagesModule();
 }
 function toggleCommsPicker(){
@@ -17233,30 +17305,88 @@ function toggleCommsRecipientList(){
   commsRecipientListOpen = !commsRecipientListOpen;
   document.getElementById('content').innerHTML = renderMessagesModule();
 }
-function confirmSendGuestMessage(){
-  const type = guestMessageComposeType;
-  const target = guestMessageComposeTarget;
+/* v1.73.0 — real sending. Calls the live Cloud Functions (sendGuestEmail/sendGuestSms) via
+   everaFirebase, through whichever channel(s) were picked (commsSendChannel). Every recipient here
+   is a real { label, email, phone } contact from guestMessageRecipientContacts() — the Cloud
+   Function itself skips anyone missing the field a channel needs and reports that honestly rather
+   than pretending it reached them. Logged to guestMessageLog with the real sent/skipped/failed
+   counts, not a flat "sent" boolean, so Message History below tells the truth about what happened. */
+async function confirmSendGuestMessage(){
+  if(commsSending) return;
+  const type = guestMessageComposeType, target = guestMessageComposeTarget;
   const count = guestMessageRecipientCount(type, target);
   const label = guestMessageRecipientLabel(type, target);
-  if(!Array.isArray(dashboardData.guestMessageLog)) dashboardData.guestMessageLog = [];
-  dashboardData.guestMessageLog.push({
+  const subject = commsDraftSubject, body = commsDraftBody, channel = commsSendChannel;
+  const contacts = guestMessageRecipientContacts(type, target);
+
+  commsSending = true;
+  commsSendResult = null;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+
+  const logEntry = {
     id:'gmsg-'+Date.now().toString(36), sentAt:new Date().toISOString(),
-    recipientLabel:label, recipientCount:count, subject:commsDraftSubject, body:commsDraftBody
-  });
+    recipientLabel:label, recipientCount:count, subject, body, channel
+  };
+
+  try{
+    let emailResult = null, smsResult = null;
+    if(channel==='email' || channel==='both') emailResult = await window.everaFirebase.sendGuestEmail(contacts, subject, body);
+    if(channel==='sms' || channel==='both') smsResult = await window.everaFirebase.sendGuestSms(contacts, body);
+    logEntry.emailResult = emailResult;
+    logEntry.smsResult = smsResult;
+    commsSendResult = { ok:true, emailResult, smsResult };
+  } catch(err){
+    console.error('Real guest send failed', err);
+    logEntry.sendError = (err && err.message) || 'Unknown error — the send functions may not be deployed yet.';
+    commsSendResult = { ok:false, error: logEntry.sendError };
+  }
+
+  if(!Array.isArray(dashboardData.guestMessageLog)) dashboardData.guestMessageLog = [];
+  dashboardData.guestMessageLog.push(logEntry);
+  persistWeddingRecord();
+
+  commsSending = false;
+  document.getElementById('content').innerHTML = renderMessagesModule();
+}
+/* Resets the compose form back to a clean slate after the couple has seen the send result —
+   separate from confirmSendGuestMessage itself so the result screen stays up until they
+   dismiss it, rather than snapping back to the empty form the instant the send finishes. */
+function finishCommsSendFlow(){
+  commsSendResult = null;
   guestMessageComposeType = 'all'; guestMessageComposeTarget = '';
-  commsDraftSubject = ''; commsDraftBody = '';
+  commsDraftSubject = ''; commsDraftBody = ''; commsSendChannel = 'email';
   commsSpecificSelection = []; commsPickerOpen = false; commsPickerSearch = '';
   commsPreviewOpen = false; commsRecipientListOpen = false;
   document.getElementById('content').innerHTML = renderMessagesModule();
 }
+function renderSendResultSummary(){
+  const r = commsSendResult;
+  const channelResult = (res, verb) => !res ? '' : `
+    <div style="margin-top:8px;">
+      <strong>${res.sent}</strong> ${verb} successfully${res.skipped ? `, <strong>${res.skipped}</strong> skipped (missing contact info)` : ''}${res.failed ? `, <strong>${res.failed}</strong> failed` : ''}.
+      ${res.failures && res.failures.length ? `<div class="d-sub" style="margin-top:4px;">${res.failures.slice(0,5).map(f=>escapeHtml(f.email||f.phone||'')+': '+escapeHtml(f.error)).join('<br>')}</div>` : ''}
+    </div>`;
+  return `
+    <div class="card">
+      <div class="card-head"><h4>${r.ok ? '✅ Sent' : '⚠️ Send failed'}</h4></div>
+      ${r.ok ? `
+        ${channelResult(r.emailResult, 'emailed')}
+        ${channelResult(r.smsResult, 'texted')}
+      ` : `<p style="font-size:14px;color:var(--charcoal-soft);">${escapeHtml(r.error)}</p><p class="d-sub">If this is the first real send, make sure the Cloud Functions have been deployed and the Twilio/SendGrid secrets are set — see the project setup notes.</p>`}
+      <div style="margin-top:14px;"><button type="button" class="btn btn-solid btn-sm" onclick="finishCommsSendFlow()">Done</button></div>
+    </div>
+  `;
+}
 function renderCommsConfirmPanel(){
+  if(commsSendResult) return renderSendResultSummary();
   const type = guestMessageComposeType, target = guestMessageComposeTarget;
   const count = guestMessageRecipientCount(type, target);
   const label = guestMessageRecipientLabel(type, target);
   const names = guestMessageRecipientNames(type, target);
+  const channelLabel = {email:'email', sms:'text', both:'email and text'}[commsSendChannel];
   return `
     <div class="card">
-      <div class="card-head"><h4>Review &amp; Send</h4><span class="d-sub">Nothing goes out until you confirm — this is simulated, no real email or text is sent yet</span></div>
+      <div class="card-head"><h4>Review &amp; Send</h4><span class="d-sub">This sends a real ${channelLabel} message the moment you confirm</span></div>
       <p style="font-size:14px;margin:0 0 4px;">This message will reach <strong>${pluralize(count,'person','people')}</strong> — ${escapeHtml(label)}.</p>
       <button type="button" class="btn btn-outline btn-sm" onclick="toggleCommsRecipientList()">${commsRecipientListOpen ? 'Hide recipients' : 'Review recipients →'}</button>
       ${commsRecipientListOpen ? `
@@ -17268,8 +17398,8 @@ function renderCommsConfirmPanel(){
         <div style="font-size:13px;white-space:pre-wrap;">${escapeHtml(commsDraftBody)}</div>
       </div>
       <div style="margin-top:14px;display:flex;gap:10px;">
-        <button type="button" class="btn btn-outline btn-sm" onclick="closeCommsPreview()">← Edit Message</button>
-        <button type="button" class="btn btn-solid btn-sm" onclick="confirmSendGuestMessage()">✅ Confirm &amp; Send (simulated)</button>
+        <button type="button" class="btn btn-outline btn-sm" ${commsSending?'disabled':''} onclick="closeCommsPreview()">← Edit Message</button>
+        <button type="button" class="btn btn-solid btn-sm" ${commsSending?'disabled':''} onclick="confirmSendGuestMessage()">${commsSending ? 'Sending…' : '✅ Confirm & Send'}</button>
       </div>
     </div>
   `;
@@ -17327,7 +17457,15 @@ function renderGuestMessageComposeCard(){
       </div>
       ${guestMessageComposeType==='specific' ? renderCommsPicker() : ''}
       <p class="d-sub" style="margin-top:8px;">${canSend ? `${pluralize(count,'person','people')} will receive this — ${escapeHtml(guestMessageRecipientLabel(guestMessageComposeType, guestMessageComposeTarget))}.` : 'Choose a target above to see how many people this reaches.'}</p>
-      <div class="field-cell" style="margin-top:4px;"><label>Subject (optional)</label><input type="text" id="guestMsgSubject" placeholder="e.g. A quick update about parking" value="${escapeAttr(commsDraftSubject)}" oninput="commsDraftSubject=this.value"></div>
+      <div class="field-cell" style="margin-top:10px;"><label>Send via</label>
+        <div class="seg-control">
+          <button type="button" class="seg-btn ${commsSendChannel==='email'?'active':''}" onclick="updateCommsSendChannel('email')">📧 Email</button>
+          <button type="button" class="seg-btn ${commsSendChannel==='sms'?'active':''}" onclick="updateCommsSendChannel('sms')">💬 Text</button>
+          <button type="button" class="seg-btn ${commsSendChannel==='both'?'active':''}" onclick="updateCommsSendChannel('both')">Both</button>
+        </div>
+        <p class="d-sub" style="margin-top:4px;">Real delivery now — only reaches people who have an email and/or phone number on file for the channel(s) you pick. Anyone missing it is skipped and shown in the result.</p>
+      </div>
+      <div class="field-cell" style="margin-top:4px;"><label>Subject ${commsSendChannel==='sms'?'(email only — ignored for text)':'(optional)'}</label><input type="text" id="guestMsgSubject" placeholder="e.g. A quick update about parking" value="${escapeAttr(commsDraftSubject)}" oninput="commsDraftSubject=this.value"></div>
       <div class="field-cell" style="margin-top:10px;"><label>Message</label><textarea class="notes-field" id="guestMsgBody" placeholder="What would you like to tell them?" oninput="commsDraftBody=this.value">${escapeHtml(commsDraftBody)}</textarea></div>
       <div style="margin-top:12px;"><button class="btn btn-solid btn-sm" ${canSend?'':'disabled'} onclick="openCommsPreview()">Review &amp; Send →</button></div>
     </div>
@@ -17339,7 +17477,22 @@ function renderGuestMessageComposeCard(){
 function renderMessageHistoryCard(){
   const d = dashboardData;
   let log = [];
-  (d.guestMessageLog||[]).forEach(g=> log.push({at:g.sentAt, icon:'✉️', label:g.recipientLabel, sub:`${pluralize(g.recipientCount,'person','people')}`, preview:(g.subject?`${g.subject} — `:'')+g.body}));
+  (d.guestMessageLog||[]).forEach(g=>{
+    // v1.73.0: real sends carry emailResult/smsResult (or sendError) instead of just a target
+    // count — show what actually happened, not just who was targeted.
+    let sub;
+    if(g.sendError){
+      sub = `⚠️ Send failed: ${g.sendError}`;
+    } else if(g.emailResult || g.smsResult){
+      const parts = [];
+      if(g.emailResult) parts.push(`${g.emailResult.sent} emailed${g.emailResult.skipped?`, ${g.emailResult.skipped} skipped`:''}${g.emailResult.failed?`, ${g.emailResult.failed} failed`:''}`);
+      if(g.smsResult) parts.push(`${g.smsResult.sent} texted${g.smsResult.skipped?`, ${g.smsResult.skipped} skipped`:''}${g.smsResult.failed?`, ${g.smsResult.failed} failed`:''}`);
+      sub = parts.join(' · ');
+    } else {
+      sub = `${pluralize(g.recipientCount,'person','people')}`; // pre-v1.73.0 simulated sends — no real result to show
+    }
+    log.push({at:g.sentAt, icon:'✉️', label:g.recipientLabel, sub, preview:(g.subject?`${g.subject} — `:'')+g.body});
+  });
   (d.events||[]).forEach(e=>{
     (e.inviteSentLog||[]).forEach(x=> log.push({at:x.sentAt, icon:'📨', label:`${e.name} — Invites`, sub:'Invite send', preview:`Invitation to ${e.name}, sent to everyone invited.`}));
   });
@@ -17504,6 +17657,9 @@ let feedbackBoardLoading = false;
 let feedbackBoardFilter = 'all'; // 'all' | 'feature' | 'bug'
 let feedbackRepliesCache = {}; // id -> array of replies, fetched on demand
 let feedbackExpandedId = null; // which item currently has its replies/admin panel open
+let feedbackReplyPosting = false; // true while an admin reply is in flight — disables the composer
+let feedbackReplyError = null; // user-facing message if the last reply attempt failed; null when clear
+let feedbackReplyDraft = {}; // id -> in-progress reply text, kept in JS state so a re-render (e.g. to show "Posting…") doesn't wipe what the admin typed
 function feedbackStatusPill(status){
   return `<span class="pill ${FEEDBACK_STATUS_PILL_CLASS[status] || 'pill-neutral'}">${FEEDBACK_STATUS_LABELS[status] || status}</span>`;
 }
@@ -17604,9 +17760,10 @@ function renderFeedbackBoardItem(f, uid){
             `).join('') : `<div class="d-sub" style="font-size:12.5px;">No replies yet.</div>`}
             ${isSuperAdmin ? `
               <div style="display:flex; gap:6px; margin-top:8px;">
-                <input type="text" id="fbReplyInput-${f.id}" placeholder="Post an update…" style="flex:1; padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-size:12.5px;">
-                <button class="btn btn-solid btn-sm" onclick="adminSubmitFeedbackReply('${f.id}')">Post</button>
+                <input type="text" id="fbReplyInput-${f.id}" placeholder="Post an update…" value="${escapeAttr(feedbackReplyDraft[f.id]||'')}" ${feedbackReplyPosting?'disabled':''} style="flex:1; padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-size:12.5px;" oninput="feedbackReplyDraft['${f.id}']=this.value;" onkeydown="if(event.key==='Enter'){adminSubmitFeedbackReply('${f.id}');}">
+                <button class="btn btn-solid btn-sm" ${feedbackReplyPosting?'disabled':''} onclick="adminSubmitFeedbackReply('${f.id}')">${feedbackReplyPosting?'Posting…':'Post'}</button>
               </div>
+              ${feedbackReplyError ? `<div style="font-size:11.5px; color:var(--terracotta); margin-top:6px;">⚠ ${escapeHtml(feedbackReplyError)} — try again.</div>` : ''}
             ` : ''}
           </div>
         ` : ''}
@@ -17674,15 +17831,29 @@ async function toggleFeedbackReplies(id){
   renderFeedbackPanel();
 }
 async function adminSubmitFeedbackReply(id){
-  if(!isSuperAdmin) return;
+  if(!isSuperAdmin || feedbackReplyPosting) return;
   const input = document.getElementById(`fbReplyInput-${id}`);
-  const text = input ? input.value.trim() : '';
+  const text = input ? input.value.trim() : (feedbackReplyDraft[id] || '').trim();
   if(!text) return;
+  feedbackReplyPosting = true;
+  feedbackReplyError = null;
+  renderFeedbackPanel();
   try{
     await window.everaFirebase.addFeedbackReply(id, { text, repliedAt: Date.now(), adminEmail: currentUser.email });
     feedbackRepliesCache[id] = await window.everaFirebase.listFeedbackReplies(id);
+    delete feedbackReplyDraft[id]; // sent successfully — clear the saved draft so the box is empty next render
+    feedbackReplyPosting = false;
     renderFeedbackPanel();
-  } catch(err){ console.error('Failed to post reply', err); }
+  } catch(err){
+    // v1.73.0 fix: previously this just logged to the console with no visible change at all —
+    // from Natasha's side that looks exactly like "I can't hit the Post button," since clicking it
+    // did nothing she could see. Now a failure always shows a message and re-enables the composer,
+    // and her typed text survives (it lives in feedbackReplyDraft, not just the input's DOM value).
+    console.error('Failed to post reply', err);
+    feedbackReplyPosting = false;
+    feedbackReplyError = "Couldn't post your reply — check your connection and try again";
+    renderFeedbackPanel();
+  }
 }
 function applicableSurveysForHousehold(h){
   const invitedIds = householdInvitedEventIds(h);
@@ -21327,6 +21498,11 @@ updateStageUI();
     getFirestore, doc, getDoc, setDoc, deleteDoc, updateDoc, collection, query, where, getDocs, orderBy, limit,
     arrayUnion, arrayRemove
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  // v1.73.0 — real Communications Center sending (Twilio SMS + SendGrid email), via two Cloud
+  // Functions (sendGuestEmail/sendGuestSms, deployed from functions/index.js). httpsCallable
+  // automatically attaches the signed-in user's ID token and handles CORS — no separate fetch/CORS
+  // setup needed, same convenience as every other Firebase SDK call in this file.
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";
 
   // Public web config for the Evera Firebase project (evera-0824).
   // Firebase web config values are not secret — access is controlled by
@@ -21344,6 +21520,7 @@ updateStageUI();
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const functionsClient = getFunctions(app, 'us-central1'); // matches the region set on the Cloud Functions themselves
 
   // v1.63.0: a second, isolated Firebase App instance, used ONLY when a signed-in planner
   // creates a brand-new couple account on their behalf (see createCoupleAccountAsPlanner).
@@ -21549,6 +21726,22 @@ updateStageUI();
     async addFeedbackReply(id, entry){
       const ref = doc(collection(db, 'feedbackBoard', id, 'replies'));
       await setDoc(ref, Object.assign({}, entry, { id: ref.id }));
+    },
+    /* ================== v1.73.0 — real guest sending ==================
+       Thin wrappers around the two Cloud Functions in functions/index.js. Each takes the exact
+       { label, email, phone } contact rows from guestMessageRecipientContacts() — the Cloud
+       Function itself does the actual email/phone validity filtering, so this layer doesn't
+       duplicate that logic, it just passes everything through and returns the real per-recipient
+       result ({ sent, skipped, failed, failures }) for the UI to report honestly. */
+    async sendGuestEmail(recipients, subject, body){
+      const call = httpsCallable(functionsClient, 'sendGuestEmail');
+      const res = await call({ recipients, subject, body });
+      return res.data;
+    },
+    async sendGuestSms(recipients, body){
+      const call = httpsCallable(functionsClient, 'sendGuestSms');
+      const res = await call({ recipients, body });
+      return res.data;
     }
   };
 
