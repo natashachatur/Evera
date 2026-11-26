@@ -2257,6 +2257,14 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.69.0', date:'2026-11-26',
+    title:'More creative Wedding Hashtag suggestions',
+    items:[
+      'The ✨ Suggest button on Wedding Hashtag (My Wedding → Wedding Profile) no longer just mechanically concatenates both names with the year. It now leads with a name-mashup portmanteau (the classic "Brangelina"-style move real couples reach for, e.g. Natasha + Matteo → #NataTeo2027 and #MatAsha), plus playful phrase-based options (…TieTheKnot, …SaidIDo, …GotHitched, …Weds…), alongside the classic #NamesAndYear and #TheLastnames options for anyone who\'d rather keep it simple. Up to 8 suggestions now show instead of 6.',
+      'Purely a generation-logic change to an existing feature (v1.9.0) — no new fields, no change to how a chosen suggestion gets applied.'
+    ]
+  },
+  {
     version:'1.68.0', date:'2026-11-26',
     title:'Two quick wins from the 28-point review: a prominent "Compare" action in My Vendor Team, and a plain-language intro to Wedding Playbook',
     items:[
@@ -6994,12 +7002,30 @@ function generateHashtagSuggestions(){
   const F1 = clean(d.partner1First||d.partner1), L1 = clean(d.partner1Last);
   const F2 = clean(d.partner2First||d.partner2), L2 = clean(d.partner2Last);
   const year = d.weddingDateISO ? d.weddingDateISO.slice(0,4) : '';
+  const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1).toLowerCase() : '';
+  // v1.69.0: a name-mashup portmanteau — the classic "Brangelina" move real couples reach for —
+  // plus a few playful phrase-based patterns, so the list isn't just mechanical Name+Name+Year
+  // concatenations. Both halves of each name are sampled, mid-point in, so short or long names
+  // both produce something pronounceable rather than an awkward 1-2 letter fragment.
+  const portmanteau = (a, b) => {
+    if(!a || !b || a.length<3 || b.length<3) return '';
+    const head = a.slice(0, Math.ceil(a.length/2));
+    const tail = b.slice(Math.floor(b.length/2));
+    const combo = cap(head) + cap(tail);
+    if(combo.length<5 || combo.toLowerCase()===a.toLowerCase() || combo.toLowerCase()===b.toLowerCase()) return '';
+    return combo;
+  };
   const cands = [];
   if(F1 && F2){
+    const m1 = portmanteau(F1,F2), m2 = portmanteau(F2,F1);
+    if(m1) cands.push(`#${m1}${year}`);
+    if(m2 && m2.toLowerCase()!==m1.toLowerCase()) cands.push(`#${m2}`);
     cands.push(`#${F1}And${F2}${year}`);
-    cands.push(`#${F1}${F2}${year}`);
+    cands.push(`#${F1}And${F2}TieTheKnot`);
+    cands.push(`#${F1}And${F2}SaidIDo`);
+    cands.push(`#${F1}And${F2}GotHitched`);
     cands.push(`#${F1}Weds${F2}`);
-    cands.push(`#${F2}And${F1}${year}`);
+    cands.push(`#${F1}${F2}IDo`);
   }
   const pluralize = s => /[sxz]$|[cs]h$/i.test(s) ? s+'es' : s+'s';
   if(L1 && L2 && L1.toLowerCase()===L2.toLowerCase()){
@@ -7007,8 +7033,7 @@ function generateHashtagSuggestions(){
   } else if(L1 || L2){
     cands.push(`#The${L1}${L2}${year}`);
   }
-  if(F1 && F2) cands.push(`#${F1}${F2}IDo`);
-  return [...new Set(cands)].filter(s=>s.length>2).slice(0,6);
+  return [...new Set(cands)].filter(s=>s.length>4).slice(0,8);
 }
 function toggleHashtagSuggestions(){
   const box = document.getElementById('hashtagSuggestBox');
