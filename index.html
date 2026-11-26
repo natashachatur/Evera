@@ -529,7 +529,11 @@
   .vision-note{font-size:13px; color:var(--charcoal-soft); line-height:1.55; font-style:italic;}
 
   /* ---- v1.35.0: photo-forward Home hero ---- */
-  .home-photo-hero{position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:22px; box-shadow:var(--shadow-lg); min-height:270px; display:flex; align-items:flex-end;}
+  /* v1.74.0: min-height was 270px, sized for the old full-bleed photo banner (v1.35.0) that
+     filled this whole box with the couple's photo. Since v1.73.0 moved the photo into a small
+     round avatar instead, that leftover 270px floor just produced a huge, mostly-empty dark
+     rectangle (reported directly by Natasha) — the box now sizes to its actual content. */
+  .home-photo-hero{position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:22px; box-shadow:var(--shadow-lg); min-height:148px; display:flex; align-items:flex-end;}
   .home-photo-hero .hph-bg{position:absolute; inset:0; background:var(--green-deep);}
   /* v1.38.0: flattened to a solid colour — matches the earlier pass that flattened the
      Blueprint hero's gradient, so the app's two main hero moments are treated consistently.
@@ -539,7 +543,10 @@
      per-document size limit and silently fail to save. A small round avatar fixes both: a much
      smaller, predictable crop, and the image is compressed before it's ever stored. */
   .home-photo-hero .hph-scrim{position:absolute; inset:0; background:linear-gradient(0deg, rgba(20,24,18,0.80) 0%, rgba(20,24,18,0.38) 55%, rgba(20,24,18,0.06) 100%);}
-  .home-photo-hero .hph-avatar{position:relative; z-index:1; width:64px; height:64px; min-width:64px; border-radius:50%; overflow:hidden; border:2.5px solid rgba(244,239,227,0.55); box-shadow:0 2px 10px rgba(0,0,0,0.25); flex-shrink:0;}
+  /* v1.74.0: 64px read as tiny once the banner shrank to fit its content (also reported
+     directly by Natasha) — sized up so the photo reads as a real feature next to the names,
+     not a small icon. */
+  .home-photo-hero .hph-avatar{position:relative; z-index:1; width:88px; height:88px; min-width:88px; border-radius:50%; overflow:hidden; border:3px solid rgba(244,239,227,0.55); box-shadow:0 2px 10px rgba(0,0,0,0.25); flex-shrink:0;}
   .home-photo-hero .hph-avatar img{width:100%; height:100%; object-fit:cover; display:block;}
   .home-photo-hero .hph-heading-row{display:flex; align-items:center; gap:16px; min-width:0;}
   .home-photo-hero .hph-content{position:relative; z-index:1; padding:30px 32px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; width:100%;}
@@ -2289,6 +2296,13 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.74.0', date:'2026-11-26',
+    title:'Fixed the Home banner sizing from the last release',
+    items:[
+      'Fixed: right after v1.73.0 shipped the smaller, round couple photo on Home, the dark banner behind it stayed sized for the old full-bleed photo it used to hold — leaving a big, mostly empty block above your names. Reported directly by Natasha. The banner now sizes to fit its actual content, and the photo itself is bigger (88px, up from 64px) so it reads as a real feature next to your names rather than a small icon.'
+    ]
+  },
   {
     version:'1.73.0', date:'2026-11-26',
     title:'Real guest email & text sending, a fixed couple-photo upload, and a Feedback board fix',
