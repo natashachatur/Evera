@@ -1676,7 +1676,7 @@
   <span class="db-dot" aria-hidden="true"></span>
   <span id="deployBannerText">A new version of Evera is ready.</span>
   <div class="deploy-banner-actions">
-    <button type="button" class="db-refresh-btn" onclick="location.reload()">Refresh Now</button>
+    <button type="button" class="db-refresh-btn" id="deployRefreshBtn" onclick="flushPendingSaveThenReload()">Refresh Now</button>
     <button type="button" class="db-dismiss-btn" onclick="dismissDeployBanner()" aria-label="Dismiss">×</button>
   </div>
 </div>
@@ -2098,7 +2098,7 @@
     <div class="sb-brand" style="cursor:pointer;" onclick="renderRoute('home'); toggleSidebar(false);"><span>Evera</span></div>
     <div class="sb-nav" id="sbNav"><!-- injected --></div>
     <div class="sb-foot">
-      <div class="sb-couple"><div class="sb-avatar" id="sbAvatar">P&amp;J</div><div><div style="font-weight:700; color:#EFE9DA;" id="sbCoupleName">Natasha &amp; Matteo</div><div id="sbAccountTypeLabel">Couple Account</div></div><span id="sbLogoChip" class="sb-logo-chip"></span></div>
+      <div class="sb-couple" style="cursor:pointer;" title="Open Wedding Profile" onclick="renderRoute('my-wedding'); switchBlueprintTab('details'); toggleSidebar(false);"><div class="sb-avatar" id="sbAvatar">P&amp;J</div><div><div style="font-weight:700; color:#EFE9DA;" id="sbCoupleName">Natasha &amp; Matteo</div><div id="sbAccountTypeLabel">Couple Account</div></div><span id="sbLogoChip" class="sb-logo-chip"></span></div>
       <button type="button" onclick="renderRoute('changelog')" style="width:100%; margin-top:12px; background:none; border:1px solid rgba(239,233,218,0.18); color:rgba(239,233,218,0.75); font-size:12px; padding:7px 10px; border-radius:8px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:6px; justify-content:space-between;"><span>🆕 What's New</span><span id="sbVersionTag" style="opacity:0.7;"></span></button>
     </div>
   </nav>
@@ -2305,6 +2305,24 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.83.0', date:'2026-11-27',
+    title:'Live website publishing, per-person RSVP, configurable guest search, and Tab-to-next-field everywhere',
+    items:[
+      'Publishing the wedding website is now real: hitting Publish makes your real wedding content available live, straight from your account — no more manual export/import step, and wedding-website.html now reads your current, saved data directly. A website opened via a real guest link (wedding-website.html?u=...) before you\'ve published, or for an account that was never saved, now shows an honest "this wedding website isn\'t published yet — check back soon" message instead of placeholder sample content.',
+      'RSVP is now per-person, not per-household, per direct request: each person in a party gets their own attending/declining choice for each event (instead of one household-wide choice plus a headcount), and their own meal preference and dietary restrictions/allergies (instead of one shared field for the whole party). The confirmation screen now names exactly who\'s attending each event.',
+      'The RSVP search box is now configurable in Website → RSVP Search Settings: choose whether guests search by name, by email, or both, and whether a match needs to be exact or just similar — per direct request.',
+      'Tab now moves to the next field across the whole app, not just the Guests household editor (which already had this fixed in v1.75.0) — per direct request. Many forms commit a field\'s value by fully re-rendering the page section it\'s in, which used to make Tab silently do nothing or drop focus out of the form entirely; Tab now reliably lands on the next field after that re-render happens.'
+    ]
+  },
+  {
+    version:'1.82.1', date:'2026-11-27',
+    title:'Fixed a real data-loss bug, and the sidebar couple card now opens Wedding Profile',
+    items:[
+      'Fixed a serious bug Natasha reported directly: real edits (partner names, wedding date, venue, hashtag, colour palette) were being lost, and it happened right after a new version was pushed. Root cause — the "new version available" banner\'s Refresh Now button reloaded the page immediately with no regard for whether the last edit had actually finished autosaving yet (autosave has always run on a short debounce). Clicking Refresh Now shortly after typing could discard that not-yet-saved edit and reload the older saved version underneath it, which looked exactly like the update itself had overwritten the data — it hadn\'t; the edit just never reached Firestore. Refresh Now now waits for any pending or in-flight save to actually finish (and won\'t reload at all if that save fails, so nothing is silently lost), and a matching safeguard now warns before closing the tab or navigating away with a save still in flight.',
+      'The "Natasha & Matteo · Couple Account" card at the bottom of the sidebar is now clickable — it opens Wedding Blueprint → Wedding Profile directly, per direct request. Still works correctly for a planner or Super Admin viewing a couple\'s account — clicking the "Viewing as..." exit pill inside it still just exits, without also navigating.'
+    ]
+  },
   {
     version:'1.82.0', date:'2026-11-27',
     title:'Removed the "Ask Evera" button from Home',
@@ -5419,7 +5437,29 @@ function getWeddingRecordPayload(){
   // snapshot regardless of what shape dashboardData has grown into.
   return JSON.parse(JSON.stringify(Object.assign({}, dashboardData, { updatedAt: Date.now() })));
 }
+// v1.83.0 — Live Firestore publishing (New Request #85): every successful save of the wedding
+// master record also mirrors the guest-safe subset (via buildWeddingWebsiteExport(), which already
+// decides what's safe to show a guest) into publicWeddingSites/{uid} — see the savePublicWeddingSite
+// comment above for why that's a separate document. This keeps the published site always in sync
+// with the couple's latest saved changes, with no separate manual "export" step. The second write
+// is deliberately best-effort and non-fatal: a missing/misconfigured security rule on
+// publicWeddingSites, or any other failure here, must never make the main autosave — the one
+// Natasha actually depends on to not lose her edits — look like it failed too.
+async function finishWeddingSave(targetUid){
+  await window.everaFirebase.saveWeddingRecord(targetUid, getWeddingRecordPayload());
+  try{
+    await window.everaFirebase.savePublicWeddingSite(targetUid, buildWeddingWebsiteExport());
+  } catch(err){
+    console.warn('Could not sync the public wedding site (this does not affect your saved data)', err);
+  }
+}
 let weddingSaveTimer = null;
+// v1.82.1: two extra pieces of state, beyond the timer id itself, needed to answer "is there an
+// edit right now that hasn't actually reached Firestore yet" — see flushPendingSaveThenReload()
+// below for why this matters. weddingSavePending covers the debounce window (timer scheduled but
+// not yet fired); weddingSaveInFlight covers the gap after it fires but before the write resolves.
+let weddingSavePending = false;
+let weddingSaveInFlight = null;
 function persistWeddingRecord(){
   // v1.63.0 bugfix: cancel any previously-scheduled save FIRST, unconditionally — even on a
   // call that's about to no-op below. Otherwise a save queued while viewing one account's data
@@ -5435,16 +5475,123 @@ function persistWeddingRecord(){
   if(currentAccountType==='planner' && !activeViewedWeddingUid) return;
   const targetUid = activeViewedWeddingUid || currentUser.uid;
   setSaveStatus('saving');
-  weddingSaveTimer = setTimeout(async ()=>{
-    try{
-      await window.everaFirebase.saveWeddingRecord(targetUid, getWeddingRecordPayload());
-      setSaveStatus('saved');
-    } catch(err){
-      console.error('Failed to save wedding record', err);
-      setSaveStatus('error');
-    }
+  weddingSavePending = true;
+  weddingSaveTimer = setTimeout(()=>{
+    weddingSaveTimer = null;
+    weddingSaveInFlight = (async ()=>{
+      try{
+        await finishWeddingSave(targetUid);
+        setSaveStatus('saved');
+      } catch(err){
+        console.error('Failed to save wedding record', err);
+        setSaveStatus('error');
+      } finally {
+        weddingSavePending = false;
+        weddingSaveInFlight = null;
+      }
+    })();
   }, 600);
 }
+/* v1.82.1: Natasha's direct report — real edits (Partner 1/Partner 2 names, wedding date, venue,
+   hashtag, and the wedding colour palette) were lost, and she traced it to right after a new
+   version was pushed: "once a new version was pushed out, it was all overwritten." Root-caused by
+   reading the deploy banner's Refresh Now button, which called a bare location.reload() — if she
+   edited a field and then clicked Refresh Now before the 600ms autosave debounce had actually
+   written it to Firestore, the edit was discarded and the reload pulled the OLDER saved record
+   back in, which looks exactly like "the update overwrote my changes" even though no update code
+   ever touched her data. This button now flushes any pending/in-flight save FIRST and waits for
+   Firestore to actually confirm the write before reloading, so Refresh Now can never again throw
+   away an edit that just hadn't saved yet. A matching beforeunload guard below covers the same
+   risk for closing the tab or navigating away, not just this button. */
+async function flushPendingSaveThenReload(){
+  const btn = document.getElementById('deployRefreshBtn');
+  if(!weddingSavePending && !weddingSaveInFlight){
+    performReload();
+    return;
+  }
+  if(btn){ btn.disabled = true; btn.textContent = 'Saving your changes…'; }
+  try{
+    if(weddingSaveTimer){
+      clearTimeout(weddingSaveTimer);
+      weddingSaveTimer = null;
+      if(currentUser && window.everaFirebase && !(currentAccountType==='planner' && !activeViewedWeddingUid)){
+        const targetUid = activeViewedWeddingUid || currentUser.uid;
+        weddingSaveInFlight = finishWeddingSave(targetUid);
+      }
+      weddingSavePending = false;
+    }
+    if(weddingSaveInFlight) await weddingSaveInFlight;
+    weddingSaveInFlight = null;
+  } catch(err){
+    console.error('Failed to save before refreshing for a new version', err);
+    weddingSaveInFlight = null;
+    if(btn){ btn.disabled = false; btn.textContent = 'Refresh Now'; }
+    alert("Your last change couldn't be saved — check your connection, then try Refresh Now again once it's saved, so it isn't lost.");
+    return;
+  }
+  performReload();
+}
+// Thin wrapper so a test can stub the actual navigation without fighting the browser over
+// reassigning window.location itself.
+function performReload(){ location.reload(); }
+// v1.82.1: the same data-loss risk applies to closing the tab or navigating away mid-edit, not
+// just the deploy banner's Refresh Now button — this is the general safety net Natasha's own
+// principle calls for ("we're saving and maintaining as much of what they've done"). Browsers
+// ignore a custom message here, but setting returnValue is what actually triggers the native
+// "leave site? changes may not be saved" confirmation prompt.
+window.__everaBeforeUnloadHandler = function(e){
+  if(weddingSavePending || weddingSaveInFlight){
+    e.preventDefault();
+    e.returnValue = '';
+  }
+};
+window.addEventListener('beforeunload', window.__everaBeforeUnloadHandler);
+/* v1.83.0 — site-wide Tab-to-next-field (direct request): "Anywhere on the site, when I hit Tab,
+   I want to be able to... go to the next field." Generalizes the v1.75.0 Guests household-modal
+   fix (data-fkey + handleModalFieldTab/refreshHouseholdDetail, left untouched — see those functions
+   below) to every other form in the app. The root cause is the same everywhere: a field commits its
+   value via onchange by fully replacing its container's innerHTML (so the edit shows up immediately
+   elsewhere — a computed total, a pill, a preview) — that destroys the exact DOM node the browser
+   was about to move focus to, so native Tab silently did nothing or dropped focus out of the form.
+   Hand-annotating every field across the app with a unique data-fkey (the household modal's own
+   approach) isn't practical at this scale, so this is instead a single, global, delegated Tab
+   handler — POSITIONAL rather than identity-based: before committing the current field, it finds
+   that field's index among the focusable fields in its nearest stable container (every container
+   used this way across the app — #content and every modal/drawer overlay — is itself never
+   replaced, only its children are, so the container reference stays valid across the re-render),
+   lets the commit/re-render happen, then focuses whatever field now sits at that same index. That's
+   not always provably the literal "same" field (e.g. a checkbox that conditionally reveals an
+   earlier field can shift what's at a given index), but it's right the large majority of the time
+   and never worse than the previous behaviour of focus silently vanishing. The household modal
+   keeps its own more precise, identity-based handling and is explicitly skipped here. */
+function tabManagedContainer(el){
+  return el.closest('[id$="Overlay"], #content, #printArea');
+}
+function focusableFormFields(root){
+  return Array.from(root.querySelectorAll('input, select, textarea'))
+    .filter(el => !el.disabled && el.offsetParent !== null && el.tabIndex !== -1);
+}
+document.addEventListener('keydown', function(event){
+  if(event.key !== 'Tab') return;
+  const el = event.target;
+  if(!el || !['INPUT','SELECT','TEXTAREA'].includes(el.tagName)) return;
+  if(el.closest('#householdOverlay')) return; // already handled, more precisely, by handleModalFieldTab
+  const container = tabManagedContainer(el);
+  if(!container) return; // outside any managed container (e.g. the sign-in screen) — native Tab already works there
+  const focusables = focusableFormFields(container);
+  const idx = focusables.indexOf(el);
+  if(idx === -1) return;
+  const nextIdx = event.shiftKey ? idx - 1 : idx + 1;
+  if(nextIdx < 0 || nextIdx >= focusables.length) return; // edge of the managed field set — let Tab leave normally
+  event.preventDefault();
+  el.blur(); // commits this field (onchange) and may re-render the container's contents, synchronously
+  const refreshed = focusableFormFields(container);
+  const target = refreshed[nextIdx];
+  if(target){
+    target.focus();
+    if(target.tagName==='INPUT' && ['text','number','email','tel','search','url'].includes(target.type) && typeof target.select==='function') target.select();
+  }
+});
 function setSaveStatus(status){
   const el = document.getElementById('globalSaveStatus');
   if(!el) return;
@@ -6037,6 +6184,14 @@ function normalizeDashboardData(d){
   // v1.65.0: a standalone "is RSVP collection open" switch, independent of
   // hiding the whole RSVP page — see New Request #47.
   if(d.website.rsvpCollectionEnabled===undefined) d.website.rsvpCollectionEnabled = true;
+  // v1.83.0 — configurable RSVP guest search (New Request #83): "give the couple the option to
+  // have guests either search by first name and last name, or by email, or either/or... exact
+  // match, or similar is sufficient." Both search fields default on and matching defaults to
+  // "similar" (substring) — this is exactly the guest site's existing, unconfigurable behaviour,
+  // so an account that never visits this setting sees no change.
+  if(d.website.rsvpSearchByName===undefined) d.website.rsvpSearchByName = true;
+  if(d.website.rsvpSearchByEmail===undefined) d.website.rsvpSearchByEmail = true;
+  if(d.website.rsvpSearchMatch===undefined) d.website.rsvpSearchMatch = 'contains';
   if(!d.notificationPrefs) d.notificationPrefs = {emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false};
   if(d.notificationPrefs.paymentReminderLeadDays===undefined) d.notificationPrefs.paymentReminderLeadDays = 30;
   if(!Array.isArray(d.collaborators)) d.collaborators = [];
@@ -6530,9 +6685,9 @@ function updateChrome(){
   const typeLabel = document.getElementById('sbAccountTypeLabel');
   if(typeLabel){
     if(isAdminViewingAccount && activeViewedWeddingUid){
-      typeLabel.innerHTML = `<span class="viewing-as-planner-pill viewing-as-admin-pill" onclick="exitAdminView()" title="Back to Super Admin Dashboard">Viewing as Super Admin · Exit</span>`;
+      typeLabel.innerHTML = `<span class="viewing-as-planner-pill viewing-as-admin-pill" onclick="event.stopPropagation(); exitAdminView()" title="Back to Super Admin Dashboard">Viewing as Super Admin · Exit</span>`;
     } else if(currentAccountType==='planner' && activeViewedWeddingUid){
-      typeLabel.innerHTML = `<span class="viewing-as-planner-pill" onclick="switchToPlannerHome()" title="Back to your couples">Viewing as Planner · Switch couple</span>`;
+      typeLabel.innerHTML = `<span class="viewing-as-planner-pill" onclick="event.stopPropagation(); switchToPlannerHome()" title="Back to your couples">Viewing as Planner · Switch couple</span>`;
     } else {
       typeLabel.textContent = 'Couple Account';
     }
@@ -9664,6 +9819,31 @@ function renderWebsiteModule(){
       </div>
     </div>
 
+    <!-- v1.83.0 — configurable RSVP guest search (New Request #83): "give the couple the option
+         to have guests either search by first name and last name, or by email, or either/or...
+         exact match, or similar is sufficient." -->
+    <div class="card">
+      <div class="card-head"><h4>RSVP Search Settings</h4><span class="d-sub">How guests find their invitation on the RSVP page</span></div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+          <input type="checkbox" ${w.rsvpSearchByName!==false?'checked':''} onchange="toggleRsvpSearchField('rsvpSearchByName')">
+          Search by first &amp; last name
+        </label>
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+          <input type="checkbox" ${!!w.rsvpSearchByEmail?'checked':''} onchange="toggleRsvpSearchField('rsvpSearchByEmail')">
+          Search by email
+        </label>
+      </div>
+      ${(!w.rsvpSearchByName && !w.rsvpSearchByEmail) ? `<p style="font-size:11.5px;color:var(--terracotta);margin:8px 0 0;">⚠️ Turn at least one of these on, or guests won't be able to find their invitation.</p>` : ''}
+      <div class="field-row" style="margin-top:12px;"><label>Match Type</label>
+        <select onchange="updateWebsiteField('rsvpSearchMatch', this.value)">
+          <option value="contains" ${(w.rsvpSearchMatch||'contains')==='contains'?'selected':''}>Similar is fine (e.g. "And" finds "Anderson")</option>
+          <option value="exact" ${w.rsvpSearchMatch==='exact'?'selected':''}>Exact match only</option>
+        </select>
+      </div>
+      <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:8px;">"Similar is fine" is more forgiving of typos and nicknames; "Exact match only" is stricter, which can help avoid mix-ups between guests with similar names.</p>
+    </div>
+
     <div class="card">
       <div class="card-head"><h4>Home Page Photo</h4><span class="d-sub">The hero image guests see first when they open your website</span></div>
       <div class="personalize-row">
@@ -9902,6 +10082,8 @@ function toggleWebsiteSection(key){ dashboardData.website.sections[key] = !dashb
 // v1.65.0 — New Request #47: a standalone RSVP-collection open/closed switch,
 // independent of hiding the whole RSVP page via websiteSections.rsvp.
 function toggleRsvpCollectionEnabled(){ dashboardData.website.rsvpCollectionEnabled = dashboardData.website.rsvpCollectionEnabled===false ? true : false; document.getElementById('content').innerHTML = renderWebsiteModule(); }
+// v1.83.0 — configurable RSVP guest search (New Request #83).
+function toggleRsvpSearchField(field){ dashboardData.website[field] = !dashboardData.website[field]; document.getElementById('content').innerHTML = renderWebsiteModule(); }
 
 /* ==================================================================
    IN-APP LIVE PREVIEW (v1.65.0 — New Request #49)
@@ -10181,6 +10363,13 @@ function buildWeddingWebsiteExport(){
   }
   return {
     exportedAt: Date.now(),
+    // v1.83.0: the Publish/Unpublish toggle (w.published, set via toggleWebsitePublished()) was
+    // previously tracked only inside the main app's own dashboardData — the guest-facing site had
+    // no way to know whether the couple had actually hit "Publish" yet. Now that the guest site can
+    // read this export live from Firestore (publicWeddingSites/{uid}), it needs this flag so it can
+    // show an honest "not published yet" state instead of sample/placeholder content when a couple's
+    // real account exists but they haven't published. See New Request #85.
+    published: !!w.published,
     couple: {
       partner1: d.partner1First || d.partner1 || '',
       partner2: d.partner2First || d.partner2 || '',
@@ -10198,6 +10387,10 @@ function buildWeddingWebsiteExport(){
     websiteDesign: w.design,
     websiteSections: w.sections,
     websiteAccess: {customDomain: w.customDomain||'', passwordProtected: !!w.passwordProtected, sitePassword: w.sitePassword||''},
+    // v1.83.0 — configurable RSVP guest search (New Request #83). See RSVP Search Settings
+    // in the Website module, and searchRsvpHousehold() in wedding-website.html for how a guest's
+    // search actually applies these.
+    rsvpSearch: { byName: w.rsvpSearchByName!==false, byEmail: !!w.rsvpSearchByEmail, match: w.rsvpSearchMatch||'contains' },
     // v1.65.0: a standalone RSVP-collection open/closed switch, independent
     // of hiding the whole RSVP page — see New Request #47.
     rsvpCollectionEnabled: w.rsvpCollectionEnabled!==false,
@@ -21939,6 +22132,22 @@ updateStageUI();
     },
     async saveWeddingRecord(uid, data){
       await setDoc(doc(db, 'weddings', uid), data, { merge: true });
+    },
+    // v1.83.0 — Live Firestore publishing (New Request #85). "publicWeddingSites/{uid}" is a
+    // SEPARATE, deliberately narrow document from "weddings/{uid}": the master record above holds
+    // everything in the couple's account, much of it private (budget, vendor contacts, guest
+    // contact info, internal notes), and was never meant to be world-readable. This second
+    // document holds only what buildWeddingWebsiteExport() already decides is safe to show a guest,
+    // and the Firestore security rules (set in the Firebase console, see the project backlog doc
+    // for the exact rule text) make ONLY this collection public-readable with no sign-in required —
+    // "weddings/{uid}" itself stays locked to the owner/planner/admin, same as always. Write access
+    // mirrors the owner/planner/admin pattern already used for "weddings/{uid}".
+    async savePublicWeddingSite(uid, data){
+      await setDoc(doc(db, 'publicWeddingSites', uid), data);
+    },
+    async loadPublicWeddingSite(uid){
+      const snap = await getDoc(doc(db, 'publicWeddingSites', uid));
+      return snap.exists() ? snap.data() : null;
     },
     /* ================== v1.63.0 — Planner accounts ==================
        "planners/{uid}" holds one document per planner account — name, email, photo, and the

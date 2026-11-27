@@ -63,6 +63,14 @@
   .rsvp-mini-radio button.selected-no{background:#A8493A; border-color:#A8493A; color:#fff;}
   .rsvp-headcount{margin-top:10px; display:flex; align-items:center; gap:8px; font-size:12.5px;}
   .rsvp-headcount input{width:64px; padding:6px 8px; border:1px solid var(--line); border-radius:6px;}
+  /* v1.83.0 — per-person RSVP (New Requests #81/#82): each household member gets their own
+     attending toggle per event, instead of one household-wide choice plus a headcount number. */
+  .rsvp-member-list{margin-top:10px; display:flex; flex-direction:column; gap:8px;}
+  .rsvp-member-row{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; padding-top:8px; border-top:1px dashed var(--line);}
+  .rsvp-member-row:first-child{padding-top:0; border-top:none;}
+  .rsvp-member-row .rmr-name{font-size:13px; font-weight:600;}
+  .rsvp-meal-block{border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; margin-top:10px;}
+  .rsvp-meal-block .rmb-name{font-weight:700; font-size:13.5px; margin-bottom:10px;}
   .rsvp-confirm-list{text-align:left; max-width:420px; margin:18px auto 0; font-size:13.5px;}
   .rsvp-confirm-list li{margin-bottom:6px;}
   .directions-link{font-size:12px; font-weight:700; color:var(--green); text-decoration:none; margin-left:8px;}
@@ -229,6 +237,17 @@
     <input type="text" id="gatePasscodeInput" placeholder="Passcode" onkeydown="if(event.key==='Enter'){checkGatePasscode();}">
     <div class="gate-error" id="gateError">That passcode isn't right — please try again.</div>
     <button class="btn btn-solid" style="width:100%; justify-content:center;" onclick="checkGatePasscode()">Enter Site</button>
+  </div>
+</div>
+
+<!-- v1.83.0 — Live Firestore publishing (New Request #85). Shown instead of the site itself when
+     this page is opened with a real ?u=<uid> link (not the local sample/demo) and the matching
+     couple either hasn't hit Publish yet or doesn't have a live site document at all — an honest
+     "not yet" rather than silently showing sample/placeholder content under a real guest link. -->
+<div class="gate-screen" id="notPublishedScreen" style="display:none;">
+  <div class="gate-box">
+    <h2>This wedding website isn't published yet</h2>
+    <p>The couple is still putting the finishing touches on their site — please check back closer to the big day!</p>
   </div>
 </div>
 
@@ -476,6 +495,11 @@ let FAQ_ITEMS = [
 
 let RSVP_DEADLINE_ISO = '2027-03-01';
 let RSVP_COLLECTION_ENABLED = true; // v1.65.0 — New Request #47
+// v1.83.0 — configurable RSVP guest search (New Request #83): "give the couple the option to have
+// guests either search by first name and last name, or by email, or either/or... exact match, or
+// similar is sufficient." Both default on with "similar" matching, which is this page's original,
+// unconfigurable search behaviour — see searchRsvpHousehold() below for where these actually apply.
+let RSVP_SEARCH = { byName: true, byEmail: true, match: 'contains' };
 
 /* RSVP survey questions — mirrors the couple's RSVP Surveys built in Guest Management.
    A survey with eventId:null applies to everyone; otherwise only guests invited to
@@ -519,9 +543,47 @@ let HOUSEHOLDS = [
    real content. If the fetch fails for any reason (file missing, opened
    straight from disk, offline), everything above is left exactly as-is —
    this page always renders something, never a blank/broken page.
+
+   v1.83.0 — Live Firestore publishing (New Request #85): a real guest link now looks like
+   wedding-website.html?u=<uid>. When that param is present, this page waits briefly for the
+   Firebase module script below (loaded async, since ES modules run deferred) to announce
+   itself via the 'everaPublicSiteReady' event, then fetches that couple's live, always-current
+   data straight from Firestore — no more manual JSON export/import step. The static
+   wedding-data.json fetch below is kept exactly as it was, as the fallback for every link WITHOUT
+   a ?u= param, so this file's documented standalone demo/template behaviour is unchanged.
 ================================================================== */
 let LIVE_MODE = false;
+let NOT_PUBLISHED = false;
+function waitForPublicSiteBridge(timeoutMs){
+  return new Promise(resolve=>{
+    if(window.everaPublicSite){ resolve(true); return; }
+    let done = false;
+    const finish = (ok)=>{ if(done) return; done = true; resolve(ok); };
+    window.addEventListener('everaPublicSiteReady', ()=>finish(true), {once:true});
+    setTimeout(()=>finish(!!window.everaPublicSite), timeoutMs);
+  });
+}
 async function loadLiveWeddingData(){
+  const liveUid = new URLSearchParams(location.search).get('u');
+  if(liveUid){
+    try{
+      await waitForPublicSiteBridge(4000);
+      const data = window.everaPublicSite ? await window.everaPublicSite.fetch(liveUid) : null;
+      if(data && data.published){
+        applyLiveWeddingData(data);
+        LIVE_MODE = true;
+        return true;
+      }
+      // Either there's no live site document yet (brand-new account, never saved) or the couple
+      // has one but hasn't hit Publish — either way, a real guest link deserves an honest
+      // "not published yet" message, never the sample/demo wedding below standing in for it.
+      NOT_PUBLISHED = true;
+      return false;
+    } catch(err){
+      NOT_PUBLISHED = true; // e.g. offline, or a Firestore rule issue — still better shown honestly
+      return false;
+    }
+  }
   try{
     const res = await fetch('wedding-data.json', {cache:'no-store'});
     if(!res.ok) return false;
@@ -564,6 +626,11 @@ function applyLiveWeddingData(data){
   FAQ_ITEMS = data.faqItems || [];
   RSVP_DEADLINE_ISO = data.rsvpDeadlineISO || '';
   RSVP_COLLECTION_ENABLED = data.rsvpCollectionEnabled !== false;
+  RSVP_SEARCH = Object.assign({}, RSVP_SEARCH, data.rsvpSearch||{});
+  // Fail-safe: if both search methods somehow end up off (e.g. a stale export from before this
+  // setting existed, or a data-entry mistake), fall back to both on rather than locking every
+  // guest out of finding their own invitation.
+  if(!RSVP_SEARCH.byName && !RSVP_SEARCH.byEmail) RSVP_SEARCH = Object.assign({}, RSVP_SEARCH, {byName:true, byEmail:true});
   SURVEYS = data.surveys || [];
   ALBUM_PHOTOS = data.albumPhotos || [];
   ALBUM_NOTIFICATIONS = data.albumNotifications || [];
@@ -931,8 +998,15 @@ function fmtDeadline(iso){
   return d.toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 }
 let rsvpHousehold = null;
-let rsvpEventChoices = {}; // {eventId: 'yes'|'no'}
-let rsvpEventHeadcounts = {}; // {eventId: number}
+// v1.83.0 — per-person RSVP (New Requests #81/#82), replacing the old household-wide
+// rsvpEventChoices+rsvpEventHeadcounts pair. Natasha's direct feedback: "Each person should also
+// be able to isolate their RSVP to indicate whether or not they're attending," and "Each person
+// should be able to identify their dietary restrictions as well as their meal selection" — a
+// family of four is no longer "3 of 4 attending," it's which three, by name, each with their own
+// meal and dietary info.
+let rsvpMemberEventChoices = {}; // {memberId: {eventId: 'yes'|'no'}}
+let rsvpMemberMeals = {}; // {memberId: mealString}
+let rsvpMemberDietary = {}; // {memberId: dietaryString}
 const RSVP_CONFIRMATION_LOG = []; // simulated confirmation "emails" — {householdId, sentAt}
 
 function renderRsvp(){
@@ -956,21 +1030,39 @@ function renderRsvp(){
   }
   renderRsvpSearch();
 }
+// v1.83.0 — configurable RSVP guest search (New Request #83): the label/placeholder reflect
+// whichever search method(s) the couple has actually turned on in RSVP Search Settings.
+function rsvpSearchLabel(){
+  if(RSVP_SEARCH.byName && RSVP_SEARCH.byEmail) return 'First Name, Last Name, or Email';
+  if(RSVP_SEARCH.byEmail) return 'Email';
+  return 'First Name or Last Name';
+}
+function rsvpSearchPlaceholder(){
+  if(RSVP_SEARCH.byName && RSVP_SEARCH.byEmail) return 'e.g. Anand, Priya, or your email';
+  if(RSVP_SEARCH.byEmail) return 'e.g. you@example.com';
+  return 'e.g. Anand or Priya';
+}
 function renderRsvpSearch(){
   document.getElementById('rsvpSearchCard').innerHTML = `
-    <div class="field-row"><label>First Name, Last Name, or Email</label><input type="text" id="rsvpSearchInput" placeholder="e.g. Anand, Priya, or your email" onkeydown="if(event.key==='Enter'){searchRsvpHousehold();}"></div>
+    <div class="field-row"><label>${rsvpSearchLabel()}</label><input type="text" id="rsvpSearchInput" placeholder="${rsvpSearchPlaceholder()}" onkeydown="if(event.key==='Enter'){searchRsvpHousehold();}"></div>
     <button class="btn btn-solid" onclick="searchRsvpHousehold()">Find My Invitation</button>
     <div class="rsvp-search-results" id="rsvpSearchResults"></div>
   `;
 }
 // v1.78.0: guests can now also search by email, not just first/last name — per direct request.
+// v1.83.0: which field(s) are searched, and whether a match must be exact or just similar, are now
+// configurable by the couple (RSVP_SEARCH) rather than hardcoded — see New Request #83.
 function searchRsvpHousehold(){
   const q = (document.getElementById('rsvpSearchInput').value||'').trim().toLowerCase();
   const resultsBox = document.getElementById('rsvpSearchResults');
   if(!q){ resultsBox.innerHTML = ''; return; }
+  const fieldMatches = (val) => {
+    const v = (val||'').toLowerCase();
+    return RSVP_SEARCH.match==='exact' ? v===q : v.includes(q);
+  };
   const matches = HOUSEHOLDS.filter(h =>
-    h.members.some(m => m.firstName.toLowerCase().includes(q) || m.lastName.toLowerCase().includes(q))
-    || (h.email && h.email.toLowerCase().includes(q))
+    (RSVP_SEARCH.byName && h.members.some(m => fieldMatches(m.firstName) || fieldMatches(m.lastName)))
+    || (RSVP_SEARCH.byEmail && h.email && fieldMatches(h.email))
   );
   if(!matches.length){
     resultsBox.innerHTML = `<div class="empty-note">We couldn't find an invitation under that name — please double-check the spelling, or reach out to the couple directly.</div>`;
@@ -986,9 +1078,10 @@ function searchRsvpHousehold(){
 function selectRsvpHousehold(id){
   rsvpHousehold = HOUSEHOLDS.find(h=>h.id===id);
   if(!rsvpHousehold) return;
-  rsvpEventChoices = {};
-  rsvpEventHeadcounts = {};
-  rsvpHousehold.invitedEventIds.forEach(eid => { rsvpEventHeadcounts[eid] = rsvpHousehold.members.length; });
+  rsvpMemberEventChoices = {};
+  rsvpMemberMeals = {};
+  rsvpMemberDietary = {};
+  rsvpHousehold.members.forEach(m => { rsvpMemberEventChoices[m.id] = {}; });
   renderRsvpHouseholdForm();
 }
 function applicableSurveys(invitedIds){
@@ -1002,32 +1095,51 @@ function renderSurveyQuestionsHtml(invitedIds){
     ${s.questions.map(q=>`<div class="field-row"><label>${escapeHtml(q.label)}</label><input type="text" id="surveyq-${s.id}-${q.id}" placeholder="Optional"></div>`).join('')}
   `).join('');
 }
+function memberAttendingAnyEvent(h, memberId){
+  return h.invitedEventIds.some(eid => rsvpMemberEventChoices[memberId] && rsvpMemberEventChoices[memberId][eid]==='yes');
+}
 function renderRsvpHouseholdForm(){
   const h = rsvpHousehold;
   const invitedEvents = EVENTS.filter(e=>h.invitedEventIds.includes(e.id));
+  const mealOptions = ['Herb-Roasted Chicken', 'Braised Short Rib', 'Wild Mushroom Risotto (Vegetarian)', 'Vegan Plate'];
+  const attendingMembers = h.members.filter(m=>memberAttendingAnyEvent(h, m.id));
   document.getElementById('rsvpFormWrap').innerHTML = `
     <div class="card">
       <p style="font-size:12.5px; color:var(--charcoal-faint);">Not you? <a href="#" onclick="rsvpHousehold=null; renderRsvpSearch(); document.getElementById('rsvpFormWrap').innerHTML=''; return false;" style="font-weight:700; color:var(--green);">Search again</a></p>
       <div class="field-row"><label>Your Party</label><div style="font-size:14.5px; font-weight:600;">${escapeHtml(h.members.map(m=>m.firstName+' '+m.lastName).join(', '))}</div></div>
-      <div class="field-row"><label>Which events will you be joining?</label></div>
+      <div class="field-row"><label>Which events will each person be joining?</label></div>
       ${invitedEvents.map(e=>`
         <div class="rsvp-event-row">
           <div class="rer-top">
             <div><div class="rer-name">${escapeHtml(e.name)}</div><div class="rer-date">${escapeHtml(e.dateLabel)}</div></div>
-            <div class="rsvp-mini-radio">
-              <button class="${rsvpEventChoices[e.id]==='yes'?'selected-yes':''}" onclick="setRsvpEventChoice('${e.id}','yes')">🎉 Joyfully Accept</button>
-              <button class="${rsvpEventChoices[e.id]==='no'?'selected-no':''}" onclick="setRsvpEventChoice('${e.id}','no')">😢 Decline</button>
-            </div>
           </div>
-          ${rsvpEventChoices[e.id]==='yes' && h.members.length>1 ? `
-            <div class="rsvp-headcount">How many from your party? <input type="number" min="1" max="${h.members.length}" value="${rsvpEventHeadcounts[e.id]||h.members.length}" onchange="rsvpEventHeadcounts['${e.id}']=Math.max(1,Math.min(${h.members.length},parseInt(this.value)||${h.members.length}))"></div>
-          ` : ''}
+          <div class="rsvp-member-list">
+            ${h.members.map(m=>`
+              <div class="rsvp-member-row">
+                <span class="rmr-name">${escapeHtml(m.firstName)} ${escapeHtml(m.lastName)}</span>
+                <div class="rsvp-mini-radio">
+                  <button class="${rsvpMemberEventChoices[m.id][e.id]==='yes'?'selected-yes':''}" onclick="setRsvpMemberEventChoice('${m.id}','${e.id}','yes')">🎉 Accept</button>
+                  <button class="${rsvpMemberEventChoices[m.id][e.id]==='no'?'selected-no':''}" onclick="setRsvpMemberEventChoice('${m.id}','${e.id}','no')">😢 Decline</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       `).join('')}
-      <div class="field-row" style="margin-top:14px;"><label>Meal Preference</label>
-        <select id="rsvpMeal"><option>Herb-Roasted Chicken</option><option>Braised Short Rib</option><option>Wild Mushroom Risotto (Vegetarian)</option><option>Vegan Plate</option></select>
-      </div>
-      <div class="field-row"><label>Dietary Restrictions or Allergies</label><input type="text" id="rsvpDietary" placeholder="Optional"></div>
+      ${attendingMembers.length ? `
+        <div class="field-row" style="margin-top:14px;"><label>Meal Preference &amp; Dietary Restrictions</label></div>
+        ${attendingMembers.map(m=>`
+          <div class="rsvp-meal-block">
+            <div class="rmb-name">${escapeHtml(m.firstName)} ${escapeHtml(m.lastName)}</div>
+            <div class="field-row"><label>Meal Preference</label>
+              <select id="rsvpMeal-${m.id}" onchange="rsvpMemberMeals['${m.id}']=this.value">
+                ${mealOptions.map(opt=>`<option ${((rsvpMemberMeals[m.id]||mealOptions[0])===opt)?'selected':''}>${opt}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field-row"><label>Dietary Restrictions or Allergies</label><input type="text" id="rsvpDietary-${m.id}" value="${escapeHtml(rsvpMemberDietary[m.id]||'')}" oninput="rsvpMemberDietary['${m.id}']=this.value" placeholder="Optional"></div>
+          </div>
+        `).join('')}
+      ` : ''}
       ${renderSurveyQuestionsHtml(h.invitedEventIds)}
       <div class="field-row"><label>Note to the Couple</label><textarea id="rsvpNote" rows="3" placeholder="Optional"></textarea></div>
       <button class="btn btn-solid" style="width:100%; justify-content:center;" onclick="submitHouseholdRsvp()">Submit RSVP</button>
@@ -1035,32 +1147,41 @@ function renderRsvpHouseholdForm(){
     </div>
   `;
 }
-function setRsvpEventChoice(eventId, val){
-  rsvpEventChoices[eventId] = val;
+function setRsvpMemberEventChoice(memberId, eventId, val){
+  if(!rsvpMemberEventChoices[memberId]) rsvpMemberEventChoices[memberId] = {};
+  rsvpMemberEventChoices[memberId][eventId] = val;
   renderRsvpHouseholdForm();
 }
 function submitHouseholdRsvp(){
   const h = rsvpHousehold;
   if(!h) return;
-  const missing = h.invitedEventIds.filter(eid => !rsvpEventChoices[eid]);
-  if(missing.length){ alert("Please let us know whether you'll be attending each event before submitting."); return; }
-  const attendingIds = h.invitedEventIds.filter(eid => rsvpEventChoices[eid]==='yes');
-  const decliningIds = h.invitedEventIds.filter(eid => rsvpEventChoices[eid]==='no');
+  const missing = [];
+  h.invitedEventIds.forEach(eid=>{
+    h.members.forEach(m=>{
+      if(!rsvpMemberEventChoices[m.id] || !rsvpMemberEventChoices[m.id][eid]) missing.push({memberId:m.id, eid});
+    });
+  });
+  if(missing.length){ alert("Please let us know whether each person in your party will be attending each event before submitting."); return; }
   RSVP_CONFIRMATION_LOG.push({householdId:h.id, sentAt: Date.now()});
-  const attendingEvents = EVENTS.filter(e=>attendingIds.includes(e.id));
-  const decliningEvents = EVENTS.filter(e=>decliningIds.includes(e.id));
+  const eventsWithAttendance = EVENTS.filter(e=>h.invitedEventIds.includes(e.id)).map(e=>({
+    event: e,
+    attendingMembers: h.members.filter(m=>rsvpMemberEventChoices[m.id] && rsvpMemberEventChoices[m.id][e.id]==='yes')
+  }));
+  const attendingAnyEvents = eventsWithAttendance.filter(x=>x.attendingMembers.length>0);
+  const decliningFullyEvents = eventsWithAttendance.filter(x=>x.attendingMembers.length===0);
+  const attendingIds = attendingAnyEvents.map(x=>x.event.id);
   document.getElementById('rsvpFormWrap').innerHTML = `
     <div class="card rsvp-confirm">
-      <div class="big-check">${attendingIds.length ? '🎉' : '💌'}</div>
+      <div class="big-check">${attendingAnyEvents.length ? '🎉' : '💌'}</div>
       <h3>Thank you, ${escapeHtml(h.members[0].firstName)}!</h3>
       <p style="color:var(--charcoal-faint); margin-top:8px;">A confirmation has been sent to your party summarizing your RSVP.</p>
-      ${attendingEvents.length ? `
-        <div class="rsvp-confirm-list"><b>You're attending:</b><ul>${attendingEvents.map(e=>`<li>${escapeHtml(e.name)} — ${escapeHtml(e.dateLabel)}</li>`).join('')}</ul></div>
+      ${attendingAnyEvents.length ? `
+        <div class="rsvp-confirm-list"><b>You're attending:</b><ul>${attendingAnyEvents.map(x=>`<li>${escapeHtml(x.event.name)} — ${escapeHtml(x.event.dateLabel)} (${escapeHtml(x.attendingMembers.map(m=>m.firstName).join(', '))})</li>`).join('')}</ul></div>
         <div class="cal-buttons" style="margin-top:18px;">
-          <a class="btn btn-outline" href="#" onclick="downloadCombinedIcs(${JSON.stringify(attendingIds)}); return false;">⤓ Download Calendar (${attendingEvents.length} event${attendingEvents.length===1?'':'s'})</a>
+          <a class="btn btn-outline" href="#" onclick="downloadCombinedIcs(${JSON.stringify(attendingIds)}); return false;">⤓ Download Calendar (${attendingIds.length} event${attendingIds.length===1?'':'s'})</a>
         </div>
       ` : ''}
-      ${decliningEvents.length ? `<div class="rsvp-confirm-list"><b>You've declined:</b><ul>${decliningEvents.map(e=>`<li>${escapeHtml(e.name)}</li>`).join('')}</ul></div>` : ''}
+      ${decliningFullyEvents.length ? `<div class="rsvp-confirm-list"><b>You've declined:</b><ul>${decliningFullyEvents.map(x=>`<li>${escapeHtml(x.event.name)}</li>`).join('')}</ul></div>` : ''}
       ${WEBSITE_SECTIONS.registry ? `<p style="margin-top:20px; font-size:13px;">🎁 Want to give a gift? Visit our <a href="#" onclick="goTo('registry'); return false;" style="font-weight:700; color:var(--green);">Registry</a>.</p>` : ''}
       <p style="font-size:11px; color:var(--charcoal-faint); margin-top:18px; font-style:italic;">A confirmation email has been simulated for this prototype — real email delivery isn't wired up yet.</p>
     </div>
@@ -1123,8 +1244,18 @@ function renderAll(){
   renderFaq();
   renderRsvp();
 }
+function showNotPublishedScreen(){
+  document.querySelector('.topnav').style.display = 'none';
+  document.getElementById('guestBar').style.display = 'none';
+  document.querySelector('.wrap').style.display = 'none';
+  document.getElementById('notPublishedScreen').style.display = 'flex';
+}
 async function init(){
   await loadLiveWeddingData();
+  if(NOT_PUBLISHED){
+    showNotPublishedScreen();
+    return;
+  }
   renderAll();
   goTo('home');
   setInterval(renderCountdown, 60000);
@@ -1150,6 +1281,41 @@ if(window.opener){
 }
 
 init();
+</script>
+
+<!-- ============ FIREBASE (v1.83.0 — Live Firestore publishing, New Request #85) ============
+     Module scripts load/execute asynchronously relative to the classic script block above (which
+     has already called init() by the time this runs), so this bridges over to it via
+     window.everaPublicSite plus a one-time 'everaPublicSiteReady' event rather than a shared
+     variable — see waitForPublicSiteBridge() above for the consumer side. Same Firebase project
+     and public web config as the main Evera app (index.html) — these values are not secret, access
+     is controlled by Firestore security rules, not by hiding this object. This file reads ONLY the
+     public "publicWeddingSites/{uid}" collection — never "weddings/{uid}" itself, which stays
+     locked to the owner/planner/admin. -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAgO4Y5oIVN1Vo9m323tT82-7aap5pYdUE",
+    authDomain: "evera-0824.firebaseapp.com",
+    projectId: "evera-0824",
+    storageBucket: "evera-0824.firebasestorage.app",
+    messagingSenderId: "408629664438",
+    appId: "1:408629664438:web:98bf8d639a37a16dd22417",
+    measurementId: "G-CM20TKNHG0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.everaPublicSite = {
+    async fetch(uid){
+      const snap = await getDoc(doc(db, 'publicWeddingSites', uid));
+      return snap.exists() ? snap.data() : null;
+    }
+  };
+  window.dispatchEvent(new Event('everaPublicSiteReady'));
 </script>
 </body>
 </html>
