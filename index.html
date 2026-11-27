@@ -520,12 +520,17 @@
   /* Deliberately a different hue from the hero above (champagne, not green) so the two dark
      blocks read as distinct levels — "greeting" vs. "action" — rather than one long panel.
      Deep green text on champagne clears AA contrast (~4.7:1) and echoes the brand palette. */
-  .home-priority-card{background:var(--champagne-dark); color:var(--green-deep); border-radius:var(--radius); padding:28px 30px; margin-bottom:18px; box-shadow:var(--shadow-lg); position:relative;}
-  .hpc-eyebrow{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green-deep); opacity:0.72;}
-  .hpc-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-style:italic; font-weight:600; font-size:26px; margin-top:8px; text-wrap:balance; color:var(--green-deep);}
-  .hpc-detail{font-size:13.5px; margin-top:8px; max-width:560px; line-height:1.55; opacity:0.85;}
-  .hpc-due{display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; background:rgba(35,46,39,0.1); border:1px solid rgba(35,46,39,0.25); border-radius:999px; padding:4px 11px; margin-top:12px; color:var(--green-deep);}
-  .hpc-cta{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--green-deep); margin-top:14px; cursor:pointer; border-bottom:1.5px solid var(--green-deep); padding-bottom:2px; width:fit-content;}
+  /* v1.86.3: thinned at Natasha's direct request — this card was reading the same height as
+     the greeting hero above it, which the comment above once called for (matching Level-1
+     weight) but which in practice just made Home feel front-loaded. Padding/type/spacing all
+     scaled down together; the card keeps its own distinct champagne hue and still reads as a
+     single decisive recommendation, just a shorter one. */
+  .home-priority-card{background:var(--champagne-dark); color:var(--green-deep); border-radius:var(--radius); padding:16px 22px; margin-bottom:18px; box-shadow:var(--shadow-lg); position:relative;}
+  .hpc-eyebrow{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--green-deep); opacity:0.72;}
+  .hpc-title{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-style:italic; font-weight:600; font-size:20px; margin-top:5px; text-wrap:balance; color:var(--green-deep);}
+  .hpc-detail{font-size:13px; margin-top:5px; max-width:560px; line-height:1.45; opacity:0.85;}
+  .hpc-due{display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; background:rgba(35,46,39,0.1); border:1px solid rgba(35,46,39,0.25); border-radius:999px; padding:3px 10px; margin-top:9px; color:var(--green-deep);}
+  .hpc-cta{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:var(--green-deep); margin-top:10px; cursor:pointer; border-bottom:1.5px solid var(--green-deep); padding-bottom:2px; width:fit-content;}
   .home-priority-empty{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:20px 26px; margin-bottom:18px; box-shadow:var(--shadow); font-size:14px; color:var(--charcoal-soft);}
   .attention-card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:14px 22px 6px; margin-bottom:22px; box-shadow:var(--shadow);}
   .attention-head{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--champagne-dark); margin-bottom:2px;}
@@ -2408,6 +2413,20 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.86.3', date:'2026-11-27',
+    title:'Home\'s "Your Next Best Move" banner is thinner',
+    items:[
+      'Natasha\'s direct feedback: this banner was reading the same height as the greeting banner right above it on Home. Padding and type sized down across the whole card (eyebrow, title, detail text, due-by pill, and the call-to-action link) so it reads as a shorter, lighter-weight recommendation rather than a second full-size hero. No change to what it says or does.'
+    ]
+  },
+  {
+    version:'1.86.2', date:'2026-11-27',
+    title:'Greeting banners now show first names only',
+    items:[
+      'Natasha\'s direct request after seeing the Home banner read "Good morning, Matteo Cesario & Natasha Chatur": greeting-style banners and similar display text (the Home hero, the Wedding Blueprint header, the sidebar, picker labels, contact chips, print/export headers) now show just first names — "Matteo & Natasha." Left untouched on purpose: places where a name-based string is actually matched against already-saved data (Wedding Party side assignments, the broadcast audience picker), the Super Admin account lookup and Full Family Contact List (both genuinely need full names), the Name Change Checklist, and the guest-facing wedding website itself.'
+    ]
+  },
   {
     version:'1.86.1', date:'2026-11-27',
     title:'Fixed a real data-loss bug: an old tab could silently overwrite newer changes',
@@ -5010,7 +5029,7 @@ async function refreshPlannerHomeData(){
     try{
       const data = await window.everaFirebase.loadWeddingRecord(c.weddingUid);
       if(data && Array.isArray(data.activePlannerUids) && data.activePlannerUids.includes(currentUser.uid)){
-        plannerHomeCoupleCache[c.weddingUid] = { partner1:data.partner1, partner2:data.partner2, couplePhoto:data.couplePhoto||null, accessRevoked:false };
+        plannerHomeCoupleCache[c.weddingUid] = { partner1:data.partner1, partner2:data.partner2, partner1First:data.partner1First, partner2First:data.partner2First, couplePhoto:data.couplePhoto||null, accessRevoked:false };
       } else {
         plannerHomeCoupleCache[c.weddingUid] = { accessRevoked:true };
       }
@@ -5060,7 +5079,7 @@ function renderPlannerHome(){
             <div class="planner-couple-name">${escapeHtml(c.coupleDisplayName||'Unknown couple')}</div>
             <div class="planner-couple-status is-pending">Access not yet available</div>
           </div>`;
-        const displayName = (live.partner1 && live.partner2) ? `${live.partner1} & ${live.partner2}` : (c.coupleDisplayName || 'Couple');
+        const displayName = (live.partner1 && live.partner2) ? `${live.partner1First || live.partner1} & ${live.partner2First || live.partner2}` : (c.coupleDisplayName || 'Couple');
         return `
           <div class="planner-couple-card" onclick="openCoupleAsPlanner('${c.weddingUid}')">
             <div class="planner-couple-avatar">${live.couplePhoto ? `<img src="${escapeAttr(live.couplePhoto)}" alt="">` : escapeHtml(initials(live.partner1, live.partner2))}</div>
@@ -6797,7 +6816,7 @@ function runGenerate(){
 
 function renderResult(){
   const d = dashboardData;
-  document.getElementById('res-title').textContent = `We've built your wedding, ${d.partner1} & ${d.partner2}!`;
+  document.getElementById('res-title').textContent = `We've built your wedding, ${partnerFirst('partner1')} & ${partnerFirst('partner2')}!`;
   document.getElementById('res-wedding-detail').innerHTML = `${d.weddingDateLabel}<br>${d.location} · ${d.guestCount} guests`;
   document.getElementById('res-events').innerHTML = d.events.map(e=>`<span class="chip-mini">${e.name}</span>`).join('');
   document.getElementById('res-budget-total').textContent = fmtMoney(d.budgetTotal);
@@ -6805,7 +6824,7 @@ function renderResult(){
   document.getElementById('res-roadmap').innerHTML = d.roadmap.map(r=>`<div class="mr-item"><div class="mr-dot"></div><div><div class="mr-label">${r.label}</div><div class="mr-date">${r.date}</div></div></div>`).join('');
   document.getElementById('res-vendors').innerHTML = d.vendorCategoriesSuggested.map(v=>`<span class="chip-mini">${v}</span>`).join('');
   const introNames = document.getElementById('insp-intro-names');
-  if(introNames) introNames.textContent = `${d.partner1} & ${d.partner2}`;
+  if(introNames) introNames.textContent = `${partnerFirst('partner1')} & ${partnerFirst('partner2')}`;
   const nextAction = recommendedNextAction();
   document.getElementById('res-next-action').innerHTML = `
     <div><div class="rna-label">Recommended Next</div><div class="rna-text">${escapeHtml(nextAction.text)}</div></div>
@@ -6901,7 +6920,7 @@ function removeCoupleLogo(){
 
 function updateChrome(){
   const d = dashboardData;
-  document.getElementById('sbCoupleName').textContent = `${d.partner1} & ${d.partner2}`;
+  document.getElementById('sbCoupleName').textContent = `${partnerFirst('partner1')} & ${partnerFirst('partner2')}`;
   const sbAv = document.getElementById('sbAvatar'), tbAv = document.getElementById('tbAvatar');
   if(d.couplePhoto){
     sbAv.innerHTML = `<img src="${d.couplePhoto}" alt="">`;
@@ -7155,9 +7174,9 @@ function renderHome(){
       ${d.coupleLogo ? `<div class="hph-logo"><img src="${escapeAttr(d.coupleLogo)}" alt="Wedding logo"></div>` : ''}
       <div class="hph-content">
         <div class="hph-heading-row">
-          ${d.couplePhoto ? `<div class="hph-avatar"><img src="${escapeAttr(d.couplePhoto)}" alt="${escapeAttr(d.partner1)} and ${escapeAttr(d.partner2)}"></div>` : ''}
+          ${d.couplePhoto ? `<div class="hph-avatar"><img src="${escapeAttr(d.couplePhoto)}" alt="${escapeAttr(partnerFirst('partner1'))} and ${escapeAttr(partnerFirst('partner2'))}"></div>` : ''}
           <div style="min-width:0;">
-            <h1>${homeGreeting()}, ${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} ♥</h1>
+            <h1>${homeGreeting()}, ${escapeHtml(partnerFirst('partner1'))} &amp; ${escapeHtml(partnerFirst('partner2'))} ♥</h1>
             ${days!==null ? `<div class="hph-days">${days} day${days===1?'':'s'} until your wedding</div>` : ''}
             <div class="hph-meta">${d.weddingDateLabel ? escapeHtml(d.weddingDateLabel) : 'Date to be decided'}${d.location ? ' · '+escapeHtml(d.location) : ''}</div>
           </div>
@@ -7823,6 +7842,18 @@ function fullPartnerName(key){
   const d = dashboardData;
   return `${d[key+'First']||''} ${d[key+'Last']||''}`.trim() || (key==='partner1'?'Partner 1':'Partner 2');
 }
+// v1.86.2 — Natasha's direct request: greeting-style banners and similar display text should
+// show just the couple's first names ("Matteo & Natasha"), not their full legal names
+// ("Matteo Cesario & Natasha Chatur"). This is deliberately separate from d.partner1/d.partner2
+// (the full "First Last" combo, via fullPartnerName above) — that combined field is still the
+// right one anywhere a name is used as a stored/matching value (guest "side" tags, broadcast
+// audience filters, wedding-party side assignments) rather than pure display text, since
+// switching THOSE to first-only would silently stop matching already-saved data tagged under
+// the full-name version. Only call this where the result is shown to someone, never stored.
+function partnerFirst(key){
+  const d = dashboardData;
+  return d[key+'First'] || d[key] || (key==='partner1'?'Partner 1':'Partner 2');
+}
 function generateHashtagSuggestions(){
   const d = dashboardData;
   const clean = s => (s||'').trim().replace(/[^a-zA-Z]/g,'');
@@ -8043,7 +8074,7 @@ function renderBlueprintVisionHero(){
     <div class="bp-hero" style="background:${escapeAttr(c1)}; color:${textColor};">
       <div class="bp-hero-copy">
         <div class="bp-hero-eyebrow">Your Wedding Blueprint</div>
-        <div class="bp-hero-names">${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)}</div>
+        <div class="bp-hero-names">${escapeHtml(partnerFirst('partner1'))} &amp; ${escapeHtml(partnerFirst('partner2'))}</div>
         <div class="bp-hero-meta">
           <span>${d.weddingDateLabel ? escapeHtml(d.weddingDateLabel) : 'Date to be decided'}</span>
           <span>${d.location ? escapeHtml(d.location) : 'Location to be decided'}</span>
@@ -9778,7 +9809,7 @@ async function printGeneratedMoodBoard(eventId){
   const notesSections = sections.filter(s=>s.notes);
   document.getElementById('printArea').innerHTML = `
     <div class="print-header">
-      <h1>${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)}</h1>
+      <h1>${escapeHtml(partnerFirst('partner1'))} &amp; ${escapeHtml(partnerFirst('partner2'))}</h1>
       <h2>${escapeHtml(event.name)} — Mood Board</h2>
       <p>${event.dateISO?fmtDateLabel(event.dateISO):'Date to be decided'}</p>
     </div>
@@ -11113,7 +11144,7 @@ async function sendPlannerInviteFromSettings(){
   const email = (emailEl.value||'').trim();
   if(!email){ showAccountMsg('plannerInviteSettingsMsg', "Enter the planner's email.", true); return; }
   try{
-    await window.everaFirebase.createInvite({ fromUid:currentUser.uid, fromRole:'couple', fromCoupleName:`${dashboardData.partner1} & ${dashboardData.partner2}`, toEmail: email.toLowerCase() });
+    await window.everaFirebase.createInvite({ fromUid:currentUser.uid, fromRole:'couple', fromCoupleName:`${partnerFirst('partner1')} & ${partnerFirst('partner2')}`, toEmail: email.toLowerCase() });
     emailEl.value='';
     showAccountMsg('plannerInviteSettingsMsg', `Invite sent — ${email} will see it the next time they sign in.`, false);
     await refreshSettingsPlannerInvites();
@@ -13700,12 +13731,12 @@ function renderPortalPreview(id){
       </div>
       <div class="portal-body">
         <div class="portal-greeting">Hi ${m.name.split(' ')[0]} 👋</div>
-        <div class="portal-sub">Here's what's next for you in ${d.partner1} &amp; ${d.partner2}'s wedding.</div>
+        <div class="portal-sub">Here's what's next for you in ${escapeHtml(partnerFirst('partner1'))} &amp; ${escapeHtml(partnerFirst('partner2'))}'s wedding.</div>
         ${upcoming?`<div class="portal-card" style="background:var(--green-tint); border-color:var(--champagne-light);"><div class="pc-title">Reminder: ${upcoming.label} is coming up</div><div class="pc-sub">${upcoming.sub?upcoming.sub+' · ':''}${fmtDateLabel(upcoming.dateISO)}</div></div>`:''}
 
         ${renderMemberSurveyBlock(m)}
 
-        ${myBroadcasts.length?`<h4>Messages from the Couple</h4>${myBroadcasts.map(b=>`<div class="portal-card"><div class="pc-title">${escapeHtml(b.message)}</div><div class="pc-sub">${d.partner1} &amp; ${d.partner2} · ${b.date}</div></div>`).join('')}`:''}
+        ${myBroadcasts.length?`<h4>Messages from the Couple</h4>${myBroadcasts.map(b=>`<div class="portal-card"><div class="pc-title">${escapeHtml(b.message)}</div><div class="pc-sub">${escapeHtml(partnerFirst('partner1'))} &amp; ${escapeHtml(partnerFirst('partner2'))} · ${b.date}</div></div>`).join('')}`:''}
 
         <h4>Your Events</h4>
         ${m.events.map(e=>`<div class="portal-card"><div class="pc-title">${e}</div></div>`).join('')}
@@ -13723,7 +13754,7 @@ function renderPortalPreview(id){
 
         <h4>Message the Couple</h4>
         <div class="ap-input-row" style="border-top:none; padding:0;">
-          <input type="text" placeholder="Message ${d.partner1} & ${d.partner2}…" disabled>
+          <input type="text" placeholder="Message ${partnerFirst('partner1')} & ${partnerFirst('partner2')}…" disabled>
           <button disabled><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px; stroke:#fff;"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
         </div>
       </div>
@@ -14494,7 +14525,7 @@ function renderShotListSection(){
     const unassigned = list.map((s,si)=>({s,si})).filter(r=>!r.s.photographerId);
     body = groups.map(g=>`
         <div class="detail-section" style="margin-top:20px; padding-top:16px;">
-          <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(g.photog.label)}</h4><span class="d-sub">${g.rows.length} shots · covers ${g.photog.side==='partner1'?escapeHtml(d.partner1)+"'s side":g.photog.side==='partner2'?escapeHtml(d.partner2)+"'s side":'both sides'}</span></div>
+          <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(g.photog.label)}</h4><span class="d-sub">${g.rows.length} shots · covers ${g.photog.side==='partner1'?escapeHtml(partnerFirst('partner1'))+"'s side":g.photog.side==='partner2'?escapeHtml(partnerFirst('partner2'))+"'s side":'both sides'}</span></div>
           ${g.rows.length ? `<div class="budget-items" style="padding-left:0;">${groupHeader}${g.rows.map(r=>shotRowHtml(r.s,r.si)).join('')}</div>` : `<p style="font-size:12.5px;color:var(--charcoal-faint);">No shots assigned yet.</p>`}
         </div>`).join('') + `
         <div class="detail-section" style="margin-top:20px; padding-top:16px;">
@@ -14891,7 +14922,7 @@ function ceremonyFamilyOptions(){
   // altar lineup isn't limited to just the couple and the formal Wedding Party.
   const d = dashboardData;
   const out = [];
-  [['partner1',d.partner1],['partner2',d.partner2]].forEach(([pk,partnerName])=>{
+  [['partner1',partnerFirst('partner1')],['partner2',partnerFirst('partner2')]].forEach(([pk,partnerName])=>{
     familyHouseholdsForSide(pk).forEach(h=>{
       (h.members||[]).forEach(m=>{
         if(m.relationship) out.push({id:'fam-'+m.id, name:`${familyMemberFullName(m)} (${m.relationship} — ${partnerName}'s side)`});
@@ -14902,12 +14933,12 @@ function ceremonyFamilyOptions(){
 }
 function ceremonyPeopleOptions(){
   const d = dashboardData;
-  return [{id:'partner1', name:`${d.partner1} (Partner 1)`}, {id:'partner2', name:`${d.partner2} (Partner 2)`}, ...d.weddingParty.map(m=>({id:m.id, name:`${m.name} (${m.role})`})), ...ceremonyFamilyOptions()];
+  return [{id:'partner1', name:`${partnerFirst('partner1')} (Partner 1)`}, {id:'partner2', name:`${partnerFirst('partner2')} (Partner 2)`}, ...d.weddingParty.map(m=>({id:m.id, name:`${m.name} (${m.role})`})), ...ceremonyFamilyOptions()];
 }
 function resolvePersonName(id){
   const d = dashboardData;
-  if(id==='partner1') return d.partner1;
-  if(id==='partner2') return d.partner2;
+  if(id==='partner1') return partnerFirst('partner1');
+  if(id==='partner2') return partnerFirst('partner2');
   if(typeof id==='string' && id.indexOf('fam-')===0){
     const memberId = id.slice(4);
     for(const h of (d.guestHouseholds||[])){
@@ -15789,7 +15820,7 @@ function renderPrintFloorPlan(){
   const unassigned = seatable.filter(r=>!memberSeatInfo(r.m, chart.id));
   return `
     <div class="print-header">
-      <h1>${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)}</h1>
+      <h1>${escapeHtml(partnerFirst('partner1'))} &amp; ${escapeHtml(partnerFirst('partner2'))}</h1>
       <h2>${escapeHtml(chart.label)}</h2>
       <p>${rs.shape==='square'?'Square':'Rectangular'} room · ${rs.width}ft × ${rs.depth}ft · ${tables.length} table${tables.length===1?'':'s'} · ${seatable.length-unassigned.length} seated guest${(seatable.length-unassigned.length)===1?'':'s'}</p>
     </div>
@@ -19000,7 +19031,7 @@ function exportMailingList(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `Evera-Mailing-List-${d.partner1}-${d.partner2}.csv`.replace(/\s+/g,'-');
+  a.download = `Evera-Mailing-List-${partnerFirst('partner1')}-${partnerFirst('partner2')}.csv`.replace(/\s+/g,'-');
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -19085,7 +19116,7 @@ function renderPlaybookExportDocument(model){
     <div class="pb-export-header">
       <div class="pb-export-brand">Evera</div>
       <div class="pb-export-title">The Playbook</div>
-      <div class="pb-export-sub">${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} · ${escapeHtml(d.weddingDateLabel||'')}</div>
+      <div class="pb-export-sub">${escapeHtml(partnerFirst('partner1'))} &amp; ${escapeHtml(partnerFirst('partner2'))} · ${escapeHtml(d.weddingDateLabel||'')}</div>
       <div class="pb-export-role-chip">${escapeHtml(model.roleLabel)}</div>
     </div>
     <div class="pb-export-section-title">Day-by-Day Timeline</div>
@@ -19133,7 +19164,7 @@ function renderPlaybookExportDocument(model){
 
       <div class="pb-export-section-title">Ceremony Order</div>
       ${model.ceremonyOrder && (model.ceremonyOrder.processional||[]).length ? `<div style="margin-bottom:8px;"><b style="font-size:12px;">Processional</b>${model.ceremonyOrder.processional.map(en=>`<div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(en.roleText)}: ${escapeHtml(en.personIds.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div>`).join('')}</div>` : ''}
-      ${model.ceremonyOrder && ((model.ceremonyOrder.altarLineup.groomSide||[]).length || (model.ceremonyOrder.altarLineup.brideSide||[]).length) ? `<div style="margin-bottom:8px;"><b style="font-size:12px;">Altar Lineup</b><div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(d.partner2)}'s side: ${escapeHtml(model.ceremonyOrder.altarLineup.groomSide.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div><div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(d.partner1)}'s side: ${escapeHtml(model.ceremonyOrder.altarLineup.brideSide.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div></div>` : ''}
+      ${model.ceremonyOrder && ((model.ceremonyOrder.altarLineup.groomSide||[]).length || (model.ceremonyOrder.altarLineup.brideSide||[]).length) ? `<div style="margin-bottom:8px;"><b style="font-size:12px;">Altar Lineup</b><div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(partnerFirst('partner2'))}'s side: ${escapeHtml(model.ceremonyOrder.altarLineup.groomSide.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div><div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(partnerFirst('partner1'))}'s side: ${escapeHtml(model.ceremonyOrder.altarLineup.brideSide.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div></div>` : ''}
       ${model.ceremonyOrder && (model.ceremonyOrder.recessional||[]).length ? `<div style="margin-bottom:8px;"><b style="font-size:12px;">Recessional</b>${model.ceremonyOrder.recessional.map(en=>`<div style="font-size:12px;color:var(--charcoal-soft);">${escapeHtml(en.roleText)}: ${escapeHtml(en.personIds.map(pid=>resolvePersonName(pid)).join(', ')||'—')}</div>`).join('')}</div>` : ''}
       ${(!model.ceremonyOrder || (!(model.ceremonyOrder.processional||[]).length && !(model.ceremonyOrder.recessional||[]).length && !(model.ceremonyOrder.altarLineup.groomSide||[]).length && !(model.ceremonyOrder.altarLineup.brideSide||[]).length)) ? '<p class="d-sub">No ceremony order set yet.</p>' : ''}
 
@@ -20531,7 +20562,7 @@ function renderBudgetExportDocument(){
     <div class="pb-export-header">
       <div class="pb-export-brand">Evera</div>
       <div class="pb-export-title">Wedding Budget</div>
-      <div class="pb-export-sub">${escapeHtml(d.partner1)} &amp; ${escapeHtml(d.partner2)} · ${escapeHtml(d.weddingDateLabel||'')}</div>
+      <div class="pb-export-sub">${escapeHtml(partnerFirst('partner1'))} &amp; ${escapeHtml(partnerFirst('partner2'))} · ${escapeHtml(d.weddingDateLabel||'')}</div>
     </div>
     <div class="pb-export-contact-grid" style="margin-top:10px;">
       <div class="pb-export-contact-row"><span>Total Budget</span><span>${fmtMoney(d.budgetTotal||0)}</span></div>
