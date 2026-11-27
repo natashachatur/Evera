@@ -2306,6 +2306,13 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.84.1', date:'2026-11-27',
+    title:'A real alternate when your wedding website link is already taken',
+    items:[
+      'Natasha\'s direct follow-up to the new shareable website link: "If there\'s a couple that has the same names, and there\'s already a slug that\'s active with those names, make sure that there\'s some sort of unique identifier associated." Two couples could never actually end up sharing a link — the underlying Firestore rule already prevented that — but a couple who hit that collision just saw a dead-end "already taken" message with no real way forward. Now, hitting that collision automatically looks up a real, genuinely-available alternative (first trying both partners\' last names added in, then a short number) and fills it straight into the field for you, so there\'s always a next step.'
+    ]
+  },
+  {
     version:'1.84.0', date:'2026-11-27',
     title:'A real, shareable wedding website link',
     items:[
@@ -9798,6 +9805,46 @@ function suggestWebsiteSlug(){
   const p2 = normalizeWebsiteSlug(d.partner2First || d.partner2 || '');
   return [p1,p2].filter(Boolean).join('-') || 'our-wedding';
 }
+// v1.84.1 — Natasha's direct follow-up: "If there's a couple that has the same names, and
+// there's already a slug that's active with those names, make sure there's some sort of
+// unique identifier associated." The Firestore security rule already makes it impossible for
+// two couples to ever actually hold the same slug at once (claiming is a create-vs-update race
+// the rule resolves in favour of whoever claimed it first), but until now a couple who hit that
+// collision just saw a dead-end "already taken" error with no real path forward. This generates
+// real candidate alternates, in order of how good they are: first adding both partners' last
+// names (distinguishes a same-first-names couple from a different same-first-names couple the
+// large majority of the time), then a short numeric suffix, then — in the essentially-never
+// case even that's exhausted — a short random suffix, so there's always something left to offer.
+function websiteSlugCandidates(){
+  const d = dashboardData;
+  const p1First = normalizeWebsiteSlug(d.partner1First || d.partner1 || '');
+  const p2First = normalizeWebsiteSlug(d.partner2First || d.partner2 || '');
+  const p1Last = normalizeWebsiteSlug(d.partner1Last || '');
+  const p2Last = normalizeWebsiteSlug(d.partner2Last || '');
+  const base = [p1First, p2First].filter(Boolean).join('-') || 'our-wedding';
+  const candidates = [];
+  if(p1Last || p2Last){
+    candidates.push([p1First, p1Last, p2First, p2Last].filter(Boolean).join('-'));
+  }
+  for(let n=2; n<=9; n++) candidates.push(base + '-' + n);
+  candidates.push(base + '-' + Math.random().toString(36).slice(2,6));
+  return candidates.filter(c => c && c !== base);
+}
+// Checks real candidates (via the public websiteSlugs lookup) one at a time until an unclaimed
+// one turns up, or one already claimed by this same account (so re-claiming your own current
+// slug never looks "taken"). Returns null only in the near-impossible case every candidate,
+// including the random-suffix one, somehow collides.
+async function findAvailableWebsiteSlug(excludeUid){
+  for(const candidate of websiteSlugCandidates()){
+    try{
+      const owner = await window.everaFirebase.checkSlugOwner(candidate);
+      if(!owner || owner === excludeUid) return candidate;
+    } catch(err){
+      console.warn('Could not check whether a suggested website link is available', err);
+    }
+  }
+  return null;
+}
 function publicWebsiteLinkFor(slug){
   // Relative to wherever this app itself is actually hosted — never hardcodes a domain, so this
   // keeps working correctly if Natasha's custom domain or hosting setup ever changes.
@@ -9849,7 +9896,21 @@ async function saveWebsiteSlug(){
   } catch(err){
     console.error('Failed to claim website link', err);
     const taken = err && (err.code === 'permission-denied' || /permission/i.test(err.message||''));
-    showStatus('var(--terracotta)', taken ? "That link is already taken — please try a different one." : "Couldn't save that link — check your connection and try again.");
+    if(!taken){
+      showStatus('var(--terracotta)', "Couldn't save that link — check your connection and try again.");
+      return;
+    }
+    // v1.84.1: don't leave Natasha staring at a dead end just because another couple already
+    // holds this exact slug (most likely to happen when two couples share the same first
+    // names) — look up a real, actually-available alternative and offer it right here.
+    showStatus('var(--charcoal-faint)', 'That link is already taken — finding you another option…');
+    const alt = await findAvailableWebsiteSlug(targetUid);
+    if(alt){
+      input.value = alt;
+      showStatus('var(--terracotta)', `"${slug}" is already taken by another couple — try "${alt}" instead (already filled in above), or type your own and hit Save Link again.`);
+    } else {
+      showStatus('var(--terracotta)', "That link is already taken — please try a different one.");
+    }
   }
 }
 function copyWebsiteLink(){
@@ -22271,6 +22332,14 @@ updateStageUI();
     },
     async releaseWebsiteSlug(slug){
       await deleteDoc(doc(db, 'websiteSlugs', slug));
+    },
+    // v1.84.1 — read-only lookup used to find a real, available alternate link when a couple's
+    // first choice (or the auto-suggested default) collides with another couple's already-claimed
+    // slug — see findAvailableWebsiteSlug() below. Public read, same as lookupSlug on the
+    // guest-facing site, so this never needs the couple to be signed in as anyone in particular.
+    async checkSlugOwner(slug){
+      const snap = await getDoc(doc(db, 'websiteSlugs', slug));
+      return snap.exists() ? (snap.data().uid || null) : null;
     },
     /* ================== v1.63.0 — Planner accounts ==================
        "planners/{uid}" holds one document per planner account — name, email, photo, and the
