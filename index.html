@@ -2306,6 +2306,13 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.84.0', date:'2026-11-27',
+    title:'A real, shareable wedding website link',
+    items:[
+      'The guest-facing website now has an actual link you can put on an invitation. Website now has a "Your Wedding Website Link" field — pick a short, memorable link (your first names work well; auto-suggested for you), hit Save Link, and your real link (e.g. wedding-website.html?w=natasha-matteo) is right there to copy. Opening it loads your real, current, published content directly — no sign-in, nothing to download. Picking an already-claimed link is caught cleanly, with a clear "already taken" message, and a link that doesn\'t resolve to anything (a typo, or a stale/removed link) shows an honest "we couldn\'t find a wedding website at this link" message, distinct from "not published yet."'
+    ]
+  },
+  {
     version:'1.83.0', date:'2026-11-27',
     title:'Live website publishing, per-person RSVP, configurable guest search, and Tab-to-next-field everywhere',
     items:[
@@ -6192,6 +6199,10 @@ function normalizeDashboardData(d){
   if(d.website.rsvpSearchByName===undefined) d.website.rsvpSearchByName = true;
   if(d.website.rsvpSearchByEmail===undefined) d.website.rsvpSearchByEmail = true;
   if(d.website.rsvpSearchMatch===undefined) d.website.rsvpSearchMatch = 'contains';
+  // v1.84.0 — a real, shareable guest link (New Request: "needs an externally-facing link that
+  // can be leveraged"). Empty by default — nothing is claimed in websiteSlugs/{uid} until the
+  // couple actually hits Save Link, so a fresh/test account never silently reserves a slug.
+  if(d.website.websiteSlug===undefined) d.website.websiteSlug = '';
   if(!d.notificationPrefs) d.notificationPrefs = {emailDigest:true, taskReminders:true, rsvpAlerts:true, vendorMessageAlerts:false};
   if(d.notificationPrefs.paymentReminderLeadDays===undefined) d.notificationPrefs.paymentReminderLeadDays = 30;
   if(!Array.isArray(d.collaborators)) d.collaborators = [];
@@ -9768,6 +9779,101 @@ function notifyGuestsNewPhotos(){
   dashboardData.website.albumNotifications.push({sentAt: Date.now(), photoCount: dashboardData.website.albumPhotos.length});
   document.getElementById('content').innerHTML = renderWebsiteModule();
 }
+/* v1.84.0 — a real, shareable guest link (follow-up to v1.83.0's live Firestore publishing).
+   Natasha, after confirming the new ?u=<uid> live link actually loaded: "we need to make sure
+   that it actually has a link that can be externally facing for guests and that can be
+   leveraged" — the raw Firebase account ID in that URL works, but isn't something anyone would
+   put on an invitation. Asked how to solve this and she chose a friendly custom slug: a short,
+   editable link (e.g. evera-planning.ca/wedding-website.html?w=natasha-matteo) that resolves to
+   the account's uid via a new, separate public "websiteSlugs/{slug} -> {uid}" Firestore lookup —
+   kept separate from publicWeddingSites/{uid} since a slug is a one-to-one RESERVATION (first
+   come, first served, enforced by the Firestore security rules below treating a claim on an
+   already-owned slug as an update, not a create) rather than wedding content. */
+function normalizeWebsiteSlug(raw){
+  return (raw||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,50);
+}
+function suggestWebsiteSlug(){
+  const d = dashboardData;
+  const p1 = normalizeWebsiteSlug(d.partner1First || d.partner1 || '');
+  const p2 = normalizeWebsiteSlug(d.partner2First || d.partner2 || '');
+  return [p1,p2].filter(Boolean).join('-') || 'our-wedding';
+}
+function publicWebsiteLinkFor(slug){
+  // Relative to wherever this app itself is actually hosted — never hardcodes a domain, so this
+  // keeps working correctly if Natasha's custom domain or hosting setup ever changes.
+  return new URL('wedding-website.html', location.href).toString() + '?w=' + encodeURIComponent(slug);
+}
+function renderWebsiteLinkBlock(w){
+  const currentSlug = w.websiteSlug || '';
+  return `
+    <div class="field-row" style="margin-top:14px;">
+      <label>Your Wedding Website Link</label>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <span style="font-size:12.5px; color:var(--charcoal-faint); white-space:nowrap;">.../wedding-website.html?w=</span>
+        <input type="text" id="websiteSlugInput" value="${escapeAttr(currentSlug || suggestWebsiteSlug())}" placeholder="natasha-matteo" style="flex:1; min-width:140px;">
+        <button class="btn btn-solid btn-sm" onclick="saveWebsiteSlug()">Save Link</button>
+      </div>
+      <p id="websiteSlugStatus" style="display:none; font-size:11.5px; margin-top:6px;"></p>
+      ${currentSlug ? `
+        <div style="margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <code id="websiteFullLink" style="font-size:12.5px; background:var(--cream); padding:6px 10px; border-radius:6px; word-break:break-all;">${escapeHtml(publicWebsiteLinkFor(currentSlug))}</code>
+          <button class="btn btn-outline btn-sm" onclick="copyWebsiteLink()">⧉ Copy Link</button>
+        </div>
+        <p style="font-size:11px;color:var(--charcoal-faint);margin-top:6px;">${w.published ? "This is the real link to share with guests — it always shows your current published content, with no file for them to download." : "Share this once you’ve hit Publish above — until then, anyone who opens it sees a “not published yet” message, not an error."}</p>
+      ` : `<p style="font-size:11px;color:var(--charcoal-faint);margin-top:6px;">Pick a short, memorable link — your first names work well — and hit Save Link to claim it. You can change it later.</p>`}
+    </div>
+  `;
+}
+async function saveWebsiteSlug(){
+  const input = document.getElementById('websiteSlugInput');
+  const statusEl = document.getElementById('websiteSlugStatus');
+  if(!input || !statusEl) return;
+  const slug = normalizeWebsiteSlug(input.value);
+  const showStatus = (color, text) => { statusEl.style.display=''; statusEl.style.color = color; statusEl.textContent = text; };
+  if(slug.length < 3){ showStatus('var(--terracotta)', 'Please enter at least 3 letters or numbers for your link.'); return; }
+  if(!currentUser || !window.everaFirebase){ showStatus('var(--terracotta)', "You need to be signed in to claim a website link."); return; }
+  if(currentAccountType==='planner' && !activeViewedWeddingUid){ showStatus('var(--terracotta)', "Open a couple's account first — a website link belongs to their account, not yours."); return; }
+  const targetUid = activeViewedWeddingUid || currentUser.uid;
+  const previousSlug = dashboardData.website.websiteSlug;
+  if(slug === previousSlug){ showStatus('var(--charcoal-faint)', "That's already your current link."); return; }
+  showStatus('var(--charcoal-faint)', 'Saving…');
+  try{
+    await window.everaFirebase.claimWebsiteSlug(slug, targetUid);
+    if(previousSlug && previousSlug !== slug){
+      // Best-effort: freeing the old slug isn't essential (it just stays reserved, unused,
+      // otherwise), so a failure here must never block the new slug from being saved.
+      try{ await window.everaFirebase.releaseWebsiteSlug(previousSlug); } catch(err){ console.warn('Could not release the old website link (harmless)', err); }
+    }
+    dashboardData.website.websiteSlug = slug;
+    document.getElementById('content').innerHTML = websiteGuideOpen ? renderWebsiteGuide() : renderWebsiteModule();
+  } catch(err){
+    console.error('Failed to claim website link', err);
+    const taken = err && (err.code === 'permission-denied' || /permission/i.test(err.message||''));
+    showStatus('var(--terracotta)', taken ? "That link is already taken — please try a different one." : "Couldn't save that link — check your connection and try again.");
+  }
+}
+function copyWebsiteLink(){
+  const el = document.getElementById('websiteFullLink');
+  if(!el) return;
+  const text = el.textContent;
+  const flash = () => {
+    const statusEl = document.getElementById('websiteSlugStatus');
+    if(!statusEl) return;
+    statusEl.style.display=''; statusEl.style.color = 'var(--green)'; statusEl.textContent = 'Link copied!';
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(flash).catch(()=>fallbackCopyWebsiteLink(text, flash));
+  } else {
+    fallbackCopyWebsiteLink(text, flash);
+  }
+}
+function fallbackCopyWebsiteLink(text, onDone){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); onDone(); } catch(err){ console.warn('Copy fallback failed', err); }
+  document.body.removeChild(ta);
+}
 function renderWebsiteModule(){
   if(websiteGuideOpen) return renderWebsiteGuide();
   const d = dashboardData;
@@ -9776,7 +9882,7 @@ function renderWebsiteModule(){
   return `
     <div class="card">
       <div class="card-head"><h4>Website</h4><span class="d-sub">Generated from your Evera data — not a separate document to maintain</span></div>
-      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">This is the control panel behind your guest-facing wedding website. Evera doesn't stand up a live public site in this prototype — this is where you'd manage its content and settings.</p>
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">This is the control panel behind your guest-facing wedding website. Hit Publish, set a link below, and it's live — guests can open it directly, with no sign-in and nothing to download first.</p>
       <div class="room-setup-row">
         <div class="field-mini"><label>Status</label><span class="pill ${w.published?'pill-ok':'pill-warn'}" style="margin-top:4px;">${w.published?'Published':'Draft'}</span></div>
         <div class="field-mini"><label>Language</label>
@@ -9794,7 +9900,8 @@ function renderWebsiteModule(){
         <button class="btn btn-outline btn-sm" onclick="downloadWeddingWebsiteExport()">⬇ Export Website Data (JSON)</button>
       </div>
       <p id="websitePreviewStatus" style="display:none; font-size:11.5px; color:var(--terracotta); margin-top:8px;"></p>
-      <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:10px;">Everything below — Our Story, Wedding Party, Events, Travel, FAQ, Registry, and your real guest list for RSVP search — is pulled live into this export. "Preview Website" opens your real wedding-website.html with your current, unsaved changes included — nothing to download first. Save the downloaded JSON as <code>wedding-data.json</code> next to your <code>wedding-website.html</code> file and the live guest site shows your real wedding the same way, automatically. RSVPs submitted on that page still aren't wired back into Evera yet — that's tracked separately in the backlog alongside real guest communications.</p>
+      ${renderWebsiteLinkBlock(w)}
+      <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:10px;">"Preview Website" opens your real wedding-website.html with your current, unsaved changes included. Once you've set a link above and hit Publish, that same real, current data is what the link serves live, automatically — no download/upload step needed. "Export Website Data (JSON)" is a manual backup/fallback option only. RSVPs submitted on the live site still aren't wired back into Evera yet — that's tracked separately in the backlog alongside real guest communications.</p>
     </div>
 
     <div class="grid-2">
@@ -10266,6 +10373,7 @@ function renderWebsiteGuideStage6(d,w){
       <button class="btn btn-outline btn-sm" onclick="previewWebsiteLive()">👁 Preview Website</button>
       <button class="btn btn-solid btn-sm" onclick="toggleWebsitePublished()">${w.published?'Unpublish':'Publish Website'}</button>
     </div>
+    ${renderWebsiteLinkBlock(w)}
   `;
 }
 function toggleEventVisibility(id){
@@ -22148,6 +22256,21 @@ updateStageUI();
     async loadPublicWeddingSite(uid){
       const snap = await getDoc(doc(db, 'publicWeddingSites', uid));
       return snap.exists() ? snap.data() : null;
+    },
+    // v1.84.0 — a real, shareable guest link. "websiteSlugs/{slug}" is a separate collection from
+    // publicWeddingSites — a slug is a one-to-one reservation (first claimed, first served), not
+    // wedding content, and that's exactly what the Firestore security rules enforce: claiming an
+    // unclaimed slug is a Firestore "create" (allowed for any signed-in account/their planner/
+    // admin), but a write to an ALREADY-claimed slug by anyone else is a Firestore "update" against
+    // an existing document whose own uid field won't match theirs — denied. So two people racing to
+    // claim the same slug at the same moment can't both win; the loser gets a clean permission
+    // error here (surfaced in saveWebsiteSlug() as "that link is already taken"), never a silently
+    // overwritten reservation. See the project backlog doc for the exact rule text.
+    async claimWebsiteSlug(slug, uid){
+      await setDoc(doc(db, 'websiteSlugs', slug), { uid, updatedAt: Date.now() });
+    },
+    async releaseWebsiteSlug(slug){
+      await deleteDoc(doc(db, 'websiteSlugs', slug));
     },
     /* ================== v1.63.0 — Planner accounts ==================
        "planners/{uid}" holds one document per planner account — name, email, photo, and the

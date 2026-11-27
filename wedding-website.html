@@ -554,6 +554,10 @@ let HOUSEHOLDS = [
 ================================================================== */
 let LIVE_MODE = false;
 let NOT_PUBLISHED = false;
+// v1.84.0 — a real, shareable guest link: set when a ?w=<slug> link doesn't resolve to any
+// account at all (typo'd/stale link), as distinct from NOT_PUBLISHED (a real account that just
+// hasn't hit Publish yet) — see showNotPublishedScreen() below for the different messaging.
+let LINK_NOT_FOUND = false;
 function waitForPublicSiteBridge(timeoutMs){
   return new Promise(resolve=>{
     if(window.everaPublicSite){ resolve(true); return; }
@@ -563,11 +567,31 @@ function waitForPublicSiteBridge(timeoutMs){
     setTimeout(()=>finish(!!window.everaPublicSite), timeoutMs);
   });
 }
+// v1.84.0: resolves either a direct ?u=<uid> link (kept working for anything already using it,
+// e.g. the in-app Preview's own use of this same loader) or the new, friendly ?w=<slug> link —
+// a slug is looked up via websiteSlugs/{slug} to find the uid it was claimed for.
+async function resolveLiveUid(){
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('w');
+  if(slug){
+    if(!window.everaPublicSite) return null;
+    const uid = await window.everaPublicSite.lookupSlug(slug);
+    if(!uid) LINK_NOT_FOUND = true;
+    return uid;
+  }
+  return params.get('u') || null;
+}
 async function loadLiveWeddingData(){
-  const liveUid = new URLSearchParams(location.search).get('u');
-  if(liveUid){
+  const params = new URLSearchParams(location.search);
+  const wantsLive = !!(params.get('w') || params.get('u'));
+  if(wantsLive){
     try{
       await waitForPublicSiteBridge(4000);
+      const liveUid = await resolveLiveUid();
+      if(!liveUid){
+        NOT_PUBLISHED = true; // covers both "slug not found" (LINK_NOT_FOUND also set) and "bridge never loaded"
+        return false;
+      }
       const data = window.everaPublicSite ? await window.everaPublicSite.fetch(liveUid) : null;
       if(data && data.published){
         applyLiveWeddingData(data);
@@ -1248,7 +1272,14 @@ function showNotPublishedScreen(){
   document.querySelector('.topnav').style.display = 'none';
   document.getElementById('guestBar').style.display = 'none';
   document.querySelector('.wrap').style.display = 'none';
-  document.getElementById('notPublishedScreen').style.display = 'flex';
+  const screen = document.getElementById('notPublishedScreen');
+  // v1.84.0: a ?w=<slug> link that doesn't resolve to any account (typo'd/stale link) gets its
+  // own honest message, distinct from "this is a real account that just hasn't published yet".
+  if(LINK_NOT_FOUND){
+    screen.querySelector('h2').textContent = "We couldn't find a wedding website at this link";
+    screen.querySelector('p').textContent = "Please double-check the link you were given, or reach out to the couple directly.";
+  }
+  screen.style.display = 'flex';
 }
 async function init(){
   await loadLiveWeddingData();
@@ -1313,6 +1344,13 @@ init();
     async fetch(uid){
       const snap = await getDoc(doc(db, 'publicWeddingSites', uid));
       return snap.exists() ? snap.data() : null;
+    },
+    // v1.84.0 — a real, shareable guest link: ?w=<slug> resolves here to the owning account's uid
+    // via "websiteSlugs/{slug}", a separate public collection from publicWeddingSites (see the
+    // comment above claimWebsiteSlug() in index.html for why it's kept separate).
+    async lookupSlug(slug){
+      const snap = await getDoc(doc(db, 'websiteSlugs', slug));
+      return snap.exists() ? (snap.data().uid || null) : null;
     }
   };
   window.dispatchEvent(new Event('everaPublicSiteReady'));
