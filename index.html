@@ -2306,6 +2306,20 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.80.0', date:'2026-11-27',
+    title:'Every guest email and text now signs off with the couple\'s names',
+    items:[
+      'Communications Center: every real email and text message sent to guests now automatically ends with a signature of the couple\'s own names ("— Natasha & Matteo"), per direct request — no need to type it yourself each time. The Review & Send preview shows exactly what\'s going out, signature included, before you confirm.'
+    ]
+  },
+  {
+    version:'1.79.0', date:'2026-11-27',
+    title:'Better diagnostics for the SMS send error',
+    items:[
+      'Fixed: a real test text message kept failing with "accountSid must start with AC" even after the Account SID was double- and triple-checked in the Twilio Console and reset. The Cloud Function\'s error message now shows the actual SID prefix/length it\'s using at the moment of failure (never the Auth Token — that part stays private), so a mismatch between what\'s configured and what the deployed function is actually using is visible directly in the error, instead of needing another round of manual checks in a terminal.'
+    ]
+  },
+  {
     version:'1.78.0', date:'2026-11-26',
     title:'Real SMS sending fixed, Communications Center polish, and your profile photo finally reaching the website',
     items:[
@@ -17303,6 +17317,25 @@ function guestMessageRecipientLabel(type, target){
 function guestMessageHandPickedHouseholdNames(){
   return (dashboardData.guestHouseholds||[]).filter(h=>commsSpecificSelection.includes(h.id)).map(h=>h.label);
 }
+// v1.80.0: "for all emails and texts, they should be signed off with a signature of the couple's
+// names" — Natasha's direct request. Every real guest send (email or text) now automatically ends
+// with "— Natasha & Matteo" (the couple's own names, same fields used everywhere else in the app),
+// so guests always see who it's from without the couple needing to type it themselves each time.
+// Applied once here, in the body actually sent/logged — not per-channel — so the signature is
+// identical on email and SMS, and a later Retry reuses the already-signed body unchanged.
+function guestMessageSignatureLine(){
+  const p1 = (dashboardData.partner1||'').trim(), p2 = (dashboardData.partner2||'').trim();
+  if(p1 && p2) return `— ${p1} & ${p2}`;
+  if(p1) return `— ${p1}`;
+  if(p2) return `— ${p2}`;
+  return '';
+}
+function guestMessageBodyWithSignature(body){
+  const trimmed = (body||'').trim();
+  const sig = guestMessageSignatureLine();
+  if(!sig) return trimmed;
+  return `${trimmed}\n\n${sig}`;
+}
 // v1.78.0: fixed per direct feedback — the "To" field used to just say "1 hand-picked household you
 // chose below" no matter who was actually picked. Now lists the real household/family names, with a
 // "…" when there are too many to read comfortably on one line (the full list is still shown via a
@@ -17446,7 +17479,10 @@ async function confirmSendGuestMessage(){
   const type = guestMessageComposeType, target = guestMessageComposeTarget;
   const count = guestMessageRecipientCount(type, target);
   const label = guestMessageRecipientLabel(type, target);
-  const subject = commsDraftSubject, body = commsDraftBody, channel = commsSendChannel;
+  // v1.80.0: the signature is baked into `body` here, once, before it's either sent or logged —
+  // so Message History's "what was included" view and any later Retry both show/reuse the exact
+  // signed text that actually went out, rather than re-deriving it each time.
+  const subject = commsDraftSubject, body = guestMessageBodyWithSignature(commsDraftBody), channel = commsSendChannel;
   const contacts = guestMessageRecipientContacts(type, target);
 
   commsSending = true;
@@ -17594,7 +17630,8 @@ function renderCommsConfirmPanel(){
       </div>` : ''}
       <div class="detail-section" style="margin-top:14px;background:var(--ivory-deep);padding:12px;border-radius:var(--radius-sm);">
         ${commsDraftSubject ? `<div style="font-weight:700;font-size:13px;margin-bottom:4px;">${escapeHtml(commsDraftSubject)}</div>` : ''}
-        <div style="font-size:13px;white-space:pre-wrap;">${escapeHtml(commsDraftBody)}</div>
+        <div style="font-size:13px;white-space:pre-wrap;">${escapeHtml(guestMessageBodyWithSignature(commsDraftBody))}</div>
+        <div class="d-sub" style="margin-top:6px;font-style:italic;">Your signature is added automatically — no need to type it yourself.</div>
       </div>
       <div style="margin-top:14px;display:flex;gap:10px;">
         <button type="button" class="btn btn-outline btn-sm" ${commsSending?'disabled':''} onclick="closeCommsPreview()">← Edit Message</button>
