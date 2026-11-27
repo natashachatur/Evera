@@ -114,6 +114,26 @@
   .home-card h4{font-size:17px;}
   .home-card p{font-size:12.5px; color:var(--charcoal-faint); margin-top:6px; line-height:1.5;}
 
+  /* ---------- v1.87.0 layout/template choices (New Request #84) ----------
+     Default (no class, or .layout-classic) = the centered hero + even 3-col grid above, untouched.
+     Each variant only touches the hero and home grid — every other page keeps the same structure,
+     just themed by font/spacing/colour as before. */
+  body.layout-photo-forward .hero{padding:0 0 calc(50px*var(--space-unit));}
+  .hero-photo-banner{width:100%; max-height:440px; overflow:hidden; margin-bottom:calc(34px*var(--space-unit));}
+  .hero-photo-banner img{width:100%; height:100%; max-height:440px; object-fit:cover; display:block;}
+  body.layout-photo-forward .hero-text{padding:0 20px;}
+
+  body.layout-editorial .hero{display:grid; grid-template-columns:1.15fr 0.85fr; align-items:center; gap:clamp(24px,4vw,48px); text-align:left; max-width:1080px; margin:0 auto;}
+  body.layout-editorial .hero-text{grid-column:1;}
+  body.layout-editorial .hero .hashtag{display:block;}
+  body.layout-editorial .hero-photo{grid-column:2; grid-row:1; width:100%; height:340px; border-radius:var(--radius); margin:0;}
+  body.layout-editorial .hero-photo img{width:100%; height:100%; object-fit:cover;}
+  body.layout-editorial .home-grid{grid-template-columns:1fr 1fr;}
+  @media (max-width:760px){
+    body.layout-editorial .hero{grid-template-columns:1fr; text-align:center;}
+    body.layout-editorial .hero-photo{height:260px;}
+  }
+
   /* ---------- generic section chrome ---------- */
   .section-head{text-align:center; margin-bottom:calc(36px*var(--space-unit));}
   .section-head .eyebrow{font-size:11.5px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); font-weight:700;}
@@ -268,12 +288,14 @@
   <!-- HOME -->
   <div class="view active" id="view-home">
     <div class="hero" id="heroSection">
-      <div class="eyebrow">We're getting married</div>
-      <h1 id="heroH1">Natasha <span class="amp">&amp;</span> Matteo</h1>
-      <div class="datestr" id="heroDatestr">Sunday, April 25, 2027</div>
-      <div class="place" id="heroPlace">King City &amp; Toronto, Ontario</div>
-      <div class="hashtag" id="heroHashtag">#NatashaAndMatteo2027</div>
-      <div class="countdown" id="countdown"></div>
+      <div class="hero-text" id="heroText">
+        <div class="eyebrow">We're getting married</div>
+        <h1 id="heroH1">Natasha <span class="amp">&amp;</span> Matteo</h1>
+        <div class="datestr" id="heroDatestr">Sunday, April 25, 2027</div>
+        <div class="place" id="heroPlace">King City &amp; Toronto, Ontario</div>
+        <div class="hashtag" id="heroHashtag">#NatashaAndMatteo2027</div>
+        <div class="countdown" id="countdown"></div>
+      </div>
     </div>
     <div class="home-grid" id="homeGrid"></div>
   </div>
@@ -359,6 +381,12 @@ let COUPLE_LOGO = null;
    graphic above and never the couple's actual photo, so a guest never saw it even when one
    existed. Null when the couple hasn't uploaded one yet. */
 let COUPLE_PHOTO = null;
+
+/* v1.87.0: mirrors dashboardData.website.heroPhoto — the photo uploaded specifically for the
+   website's hero (Website module → Home Page Photo), distinct from the couple's general Home
+   dashboard photo above. Takes priority over COUPLE_PHOTO for the hero when set; null falls back
+   to COUPLE_PHOTO, then to the plain text-only hero. */
+let HERO_PHOTO = null;
 
 /* Mirrors dashboardData.weddingProfile.colorPalette (the Master Colour Palette) —
    drives the whole site's colour theme unless the couple sets a website-only palette below. */
@@ -554,6 +582,9 @@ let HOUSEHOLDS = [
 ================================================================== */
 let LIVE_MODE = false;
 let NOT_PUBLISHED = false;
+// v1.87.0 — the real account this page is showing, kept around (only ever set in LIVE_MODE) so a
+// real RSVP submission has somewhere real to write back to — see submitHouseholdRsvp().
+let LIVE_UID = null;
 // v1.84.0 — a real, shareable guest link: set when a ?w=<slug> link doesn't resolve to any
 // account at all (typo'd/stale link), as distinct from NOT_PUBLISHED (a real account that just
 // hasn't hit Publish yet) — see showNotPublishedScreen() below for the different messaging.
@@ -596,6 +627,7 @@ async function loadLiveWeddingData(){
       if(data && data.published){
         applyLiveWeddingData(data);
         LIVE_MODE = true;
+        LIVE_UID = liveUid;
         return true;
       }
       // Either there's no live site document yet (brand-new account, never saved) or the couple
@@ -635,9 +667,17 @@ function applyLiveWeddingData(data){
   COUPLE = Object.assign({}, COUPLE, data.couple||{});
   COUPLE_LOGO = data.coupleLogo || null;
   COUPLE_PHOTO = data.couplePhoto || null;
+  // v1.87.0 bugfix: the dedicated "Home Page Photo" upload in the Website module's own Design
+  // tab (dashboardData.website.heroPhoto) was built with a preview in the admin control panel but
+  // was never actually included in this export, so it could never reach the real guest site —
+  // guests only ever saw the couple's general Home dashboard photo (couplePhoto) instead, or
+  // nothing. Wired through here so the photo a couple specifically uploads for their website is
+  // the one guests actually see; couplePhoto remains the fallback for sites that predate this.
+  HERO_PHOTO = data.heroPhoto || null;
   if(data.masterPalette && data.masterPalette.length) MASTER_PALETTE = data.masterPalette;
   WEBSITE_DESIGN = Object.assign({}, WEBSITE_DESIGN, data.websiteDesign||{});
   WEBSITE_SECTIONS = Object.assign({}, WEBSITE_SECTIONS, data.websiteSections||{});
+  if(Array.isArray(data.websiteSectionOrder) && data.websiteSectionOrder.length) WEBSITE_SECTION_ORDER = data.websiteSectionOrder;
   WEBSITE_ACCESS = Object.assign({}, WEBSITE_ACCESS, data.websiteAccess||{});
   REGISTRY_LINKS = data.registryLinks || [];
   EVENTS = data.events || [];
@@ -681,8 +721,18 @@ const NAV_ITEMS = [
   {key:'faq', label:'FAQ', sectionKey:'faq'},
   {key:'rsvp', label:'RSVP', sectionKey:null}
 ];
+const NAV_ITEMS_BY_KEY = Object.fromEntries(NAV_ITEMS.map(n=>[n.key,n]));
+// v1.87.0 — New Request #84 (section reordering): maps a website.sections key (as the couple's
+// own Evera account stores it) to the matching nav key above — the two use different vocabularies
+// (e.g. 'ourStory' vs 'story') so WEBSITE_SECTION_ORDER (which mirrors dashboardData.website.
+// sectionOrder) needs this to know which nav item each order entry refers to.
+const SECTION_KEY_TO_NAV_KEY = {ourStory:'story', weddingParty:'party', schedule:'events', album:'album', registry:'registry', travel:'travel', faq:'faq'};
+/* Mirrors dashboardData.website.sectionOrder — Home and RSVP are always first/last and aren't
+   part of this list. Falls back to this default order for any account that predates reordering. */
+let WEBSITE_SECTION_ORDER = ['ourStory','weddingParty','schedule','album','registry','travel','faq'];
 function visibleNavItems(){
-  return NAV_ITEMS.filter(n => !n.sectionKey || WEBSITE_SECTIONS[n.sectionKey]!==false);
+  const orderedKeys = ['home', ...WEBSITE_SECTION_ORDER.map(sk=>SECTION_KEY_TO_NAV_KEY[sk]).filter(Boolean), 'rsvp'];
+  return orderedKeys.map(k=>NAV_ITEMS_BY_KEY[k]).filter(n=>n && (!n.sectionKey || WEBSITE_SECTIONS[n.sectionKey]!==false));
 }
 let currentGuestId = GUESTS[0].id;
 let currentEventTab = null;
@@ -721,26 +771,42 @@ function applyWebsiteTheme(){
   if(COUPLE_LOGO){
     brandLink.innerHTML = `<img class="brand-logo" src="${COUPLE_LOGO}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
   }
+  // v1.87.0 — New Request #84 (website design options): a real layout/template choice, applied as
+  // a class on <body> so CSS alone can rearrange the hero and home page per layout — see
+  // WEBSITE_LAYOUTS in index.html for what each one means. Re-applied idempotently (clears any
+  // previous layout-* class and any photo element it inserted) so switching layouts live, or
+  // re-running this in a test, doesn't leave stale elements from the previous layout behind.
+  const layout = WEBSITE_DESIGN.layout || 'classic';
+  document.body.className = document.body.className.replace(/\blayout-\S+/g, '').trim();
+  document.body.classList.add('layout-'+layout);
   const heroSection = document.getElementById('heroSection');
+  heroSection.querySelectorAll('.hero-photo, .hero-photo-banner, .hero-logo').forEach(el=>el.remove());
+  // v1.87.0 bugfix: prefer the website's own dedicated hero photo (HERO_PHOTO) when the couple
+  // uploaded one, falling back to their general Home dashboard photo (COUPLE_PHOTO) — see the note
+  // above HERO_PHOTO's declaration for why this fallback order matters.
+  const photoSrc = HERO_PHOTO || COUPLE_PHOTO;
   // v1.78.0: the couple's actual photo takes the prominent hero spot when one exists — it's a
   // real part of their profile by the time they're previewing, same as it already is on their
   // Home dashboard inside Evera. The uploaded logo graphic (a separate, optional thing) still
   // shows as its own small image above the names only when there's no couple photo to lead with.
-  if(COUPLE_PHOTO){
-    let existingPhoto = heroSection.querySelector('.hero-photo');
-    if(!existingPhoto){
-      const wrap = document.createElement('div');
-      wrap.className = 'hero-photo';
-      wrap.innerHTML = `<img src="${COUPLE_PHOTO}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
-      heroSection.insertBefore(wrap, heroSection.firstChild);
-    }
+  if(photoSrc && layout==='photo-forward'){
+    // Photo-Forward: the photo leads the whole page as a full-width banner, not a small avatar.
+    const banner = document.createElement('div');
+    banner.className = 'hero-photo-banner';
+    banner.innerHTML = `<img src="${photoSrc}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
+    heroSection.insertBefore(banner, heroSection.firstChild);
+  } else if(photoSrc){
+    // Classic and Editorial Split both use the smaller photo treatment — Editorial's own grid
+    // (see .layout-editorial .hero-photo in the stylesheet) repositions it beside the text instead
+    // of stacking it above, without needing a different element here.
+    const wrap = document.createElement('div');
+    wrap.className = 'hero-photo';
+    wrap.innerHTML = `<img src="${photoSrc}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
+    heroSection.insertBefore(wrap, heroSection.firstChild);
   } else if(COUPLE_LOGO){
-    const existing = heroSection.querySelector('.hero-logo');
-    if(!existing){
-      const img = document.createElement('img');
-      img.className = 'hero-logo'; img.src = COUPLE_LOGO; img.alt = 'Wedding logo';
-      heroSection.insertBefore(img, heroSection.firstChild);
-    }
+    const img = document.createElement('img');
+    img.className = 'hero-logo'; img.src = COUPLE_LOGO; img.alt = 'Wedding logo';
+    heroSection.insertBefore(img, heroSection.firstChild);
   }
 }
 function shadeColor(hex, percent){
@@ -1176,7 +1242,11 @@ function setRsvpMemberEventChoice(memberId, eventId, val){
   rsvpMemberEventChoices[memberId][eventId] = val;
   renderRsvpHouseholdForm();
 }
-function submitHouseholdRsvp(){
+// v1.87.0 — New Request #78: a real submission now writes back into the couple's own Evera guest
+// data (via the submitGuestRsvp Cloud Function), instead of only ever existing on this page. Only
+// attempted in LIVE_MODE, against a real account (LIVE_UID) — the standalone demo/template, with
+// no real account behind it, keeps its original purely-local confirmation screen unchanged.
+async function submitHouseholdRsvp(){
   const h = rsvpHousehold;
   if(!h) return;
   const missing = [];
@@ -1186,6 +1256,36 @@ function submitHouseholdRsvp(){
     });
   });
   if(missing.length){ alert("Please let us know whether each person in your party will be attending each event before submitting."); return; }
+
+  if(LIVE_MODE && LIVE_UID){
+    const submitBtn = document.querySelector('#rsvpFormWrap .btn-solid');
+    if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'Submitting…'; }
+    try{
+      const memberResponses = {};
+      h.members.forEach(m=>{
+        memberResponses[m.id] = {
+          events: Object.assign({}, rsvpMemberEventChoices[m.id]),
+          mealChoice: rsvpMemberMeals[m.id] || '',
+          dietaryRestrictions: rsvpMemberDietary[m.id] || ''
+        };
+      });
+      const surveyResponses = {};
+      applicableSurveys(h.invitedEventIds).forEach(s=>{
+        surveyResponses[s.id] = {};
+        s.questions.forEach(q=>{
+          const el = document.getElementById(`surveyq-${s.id}-${q.id}`);
+          if(el) surveyResponses[s.id][q.id] = el.value || '';
+        });
+      });
+      const note = (document.getElementById('rsvpNote') || {}).value || '';
+      await window.everaPublicSite.submitRsvp({ uid: LIVE_UID, householdId: h.id, memberResponses, note, surveyResponses });
+    } catch(err){
+      if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = 'Submit RSVP'; }
+      alert("Something went wrong submitting your RSVP — please check your connection and try again. If this keeps happening, please reach out to the couple directly.");
+      return;
+    }
+  }
+
   RSVP_CONFIRMATION_LOG.push({householdId:h.id, sentAt: Date.now()});
   const eventsWithAttendance = EVENTS.filter(e=>h.invitedEventIds.includes(e.id)).map(e=>({
     event: e,
@@ -1198,7 +1298,7 @@ function submitHouseholdRsvp(){
     <div class="card rsvp-confirm">
       <div class="big-check">${attendingAnyEvents.length ? '🎉' : '💌'}</div>
       <h3>Thank you, ${escapeHtml(h.members[0].firstName)}!</h3>
-      <p style="color:var(--charcoal-faint); margin-top:8px;">A confirmation has been sent to your party summarizing your RSVP.</p>
+      <p style="color:var(--charcoal-faint); margin-top:8px;">${LIVE_MODE && LIVE_UID ? "Your RSVP has been recorded." : "A confirmation has been sent to your party summarizing your RSVP."}</p>
       ${attendingAnyEvents.length ? `
         <div class="rsvp-confirm-list"><b>You're attending:</b><ul>${attendingAnyEvents.map(x=>`<li>${escapeHtml(x.event.name)} — ${escapeHtml(x.event.dateLabel)} (${escapeHtml(x.attendingMembers.map(m=>m.firstName).join(', '))})</li>`).join('')}</ul></div>
         <div class="cal-buttons" style="margin-top:18px;">
@@ -1207,7 +1307,7 @@ function submitHouseholdRsvp(){
       ` : ''}
       ${decliningFullyEvents.length ? `<div class="rsvp-confirm-list"><b>You've declined:</b><ul>${decliningFullyEvents.map(x=>`<li>${escapeHtml(x.event.name)}</li>`).join('')}</ul></div>` : ''}
       ${WEBSITE_SECTIONS.registry ? `<p style="margin-top:20px; font-size:13px;">🎁 Want to give a gift? Visit our <a href="#" onclick="goTo('registry'); return false;" style="font-weight:700; color:var(--green);">Registry</a>.</p>` : ''}
-      <p style="font-size:11px; color:var(--charcoal-faint); margin-top:18px; font-style:italic;">A confirmation email has been simulated for this prototype — real email delivery isn't wired up yet.</p>
+      ${LIVE_MODE && LIVE_UID ? '' : `<p style="font-size:11px; color:var(--charcoal-faint); margin-top:18px; font-style:italic;">A confirmation email has been simulated for this prototype — real email delivery isn't wired up yet.</p>`}
     </div>
   `;
 }
@@ -1326,6 +1426,7 @@ init();
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAgO4Y5oIVN1Vo9m323tT82-7aap5pYdUE",
@@ -1339,6 +1440,7 @@ init();
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const functions = getFunctions(app, 'us-central1');
 
   window.everaPublicSite = {
     async fetch(uid){
@@ -1351,6 +1453,16 @@ init();
     async lookupSlug(slug){
       const snap = await getDoc(doc(db, 'websiteSlugs', slug));
       return snap.exists() ? (snap.data().uid || null) : null;
+    },
+    // v1.87.0 — New Request #78: a guest's RSVP now writes back into the couple's real guest data
+    // instead of only existing on this page. Calls the submitGuestRsvp Cloud Function (the one
+    // deliberately public, unauthenticated function in this app — see its own comment in
+    // functions/index.js for why that's safe) rather than writing to Firestore directly, so no
+    // guest ever needs — or gets — write access to Firestore itself.
+    async submitRsvp(payload){
+      const call = httpsCallable(functions, 'submitGuestRsvp');
+      const result = await call(payload);
+      return result.data;
     }
   };
   window.dispatchEvent(new Event('everaPublicSiteReady'));

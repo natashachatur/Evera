@@ -543,6 +543,34 @@
   .attention-cta{flex-shrink:0; font-size:12px; font-weight:700; color:var(--green); cursor:pointer; white-space:nowrap;}
   .home-section-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--charcoal-faint); margin:4px 2px 10px;}
 
+  /* ---- v1.87.0 — Decisions: open questions the couple needs to settle (How many entree
+     options? Who reads at the ceremony?), tracked separately from Tasks since a decision
+     isn't a single doer's action item — it's a choice waiting to be made. ---- */
+  .decisions-card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:16px 22px 18px; margin-bottom:22px; box-shadow:var(--shadow);}
+  .decision-row{display:flex; align-items:center; gap:12px; padding:11px 0; border-top:1px solid var(--line-soft);}
+  .decision-row:first-of-type{border-top:none;}
+  .decision-row-decided{opacity:0.62;}
+  .decision-main{flex:1; min-width:0;}
+  .decision-title{font-size:13.5px; font-weight:600; color:var(--charcoal);}
+  .decision-row-decided .decision-title{text-decoration:line-through; font-weight:500;}
+  .decision-meta{display:flex; align-items:center; gap:6px; margin-top:4px; flex-wrap:wrap;}
+  .decision-chip{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; background:var(--green-tint); border-radius:999px; padding:2px 9px; color:var(--green-deep);}
+  .decision-chip-faint{background:transparent; border:1px solid var(--line-soft); color:var(--charcoal-faint); text-transform:none; letter-spacing:0; font-weight:600;}
+  .decision-chip-warn{background:var(--terracotta-tint); color:var(--terracotta);}
+  .decision-actions{display:flex; align-items:center; gap:14px; flex-shrink:0;}
+  .decision-actions span{font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap;}
+  .decision-mark-done{color:var(--green);}
+  .decision-remove{color:var(--charcoal-faint);}
+  .decision-empty-note{font-size:13px; color:var(--charcoal-faint); padding:8px 0 4px;}
+  .decision-add-row{display:flex; gap:8px; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid var(--line-soft); flex-wrap:wrap;}
+  .decision-add-row input{border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13px; font-family:inherit; background:var(--paper); color:var(--charcoal);}
+  .decision-add-title{flex:1; min-width:140px;}
+  .decision-add-options{width:76px;}
+  .decision-add-due{width:150px;}
+  .decision-decided-toggle{font-size:12px; font-weight:600; color:var(--charcoal-faint); cursor:pointer; margin-top:10px; display:inline-block;}
+  .decision-decided-toggle:hover{color:var(--charcoal-soft);}
+  .decision-reopen{font-size:11.5px; font-weight:700; color:var(--green); cursor:pointer; flex-shrink:0;}
+
   /* ---- Wedding Health strip ---- */
   .health-strip{display:grid; grid-template-columns:repeat(4,1fr); gap:0; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:22px; overflow:hidden;}
   .hs-row{padding:16px 18px; border-left:1px solid var(--line-soft); cursor:pointer;}
@@ -669,6 +697,14 @@
   .epc-progress-track{height:3px; border-radius:2px; background:rgba(255,255,255,0.3); margin-top:9px; overflow:hidden;}
   .epc-progress-fill{height:100%; background:var(--champagne-light);}
   .epc-progress-label{font-size:10px; color:#EFE9DA; opacity:0.88; margin-top:5px;}
+  /* v1.87.0 — cluster C: Home-only "what's pressing for this event" status line, shown above the
+     existing progress bar rather than replacing it. Neutral dot by default; a warm amber dot when
+     the event is within 30 days and something's still open, echoing the "🔴 overdue" framing from
+     the product review without resorting to a literal emoji glyph (keeps it legible at this size). */
+  .epc-nextstep{font-size:10.5px; font-weight:700; color:#EFE9DA; margin-top:7px; display:flex; align-items:center; gap:6px;}
+  .epc-nextstep-dot{width:6px; height:6px; border-radius:50%; background:#EFE9DA; flex-shrink:0;}
+  .epc-nextstep-warn{color:#FFD9BE;}
+  .epc-nextstep-warn .epc-nextstep-dot{background:#FF9F6B;}
   .epc-photo-btn{position:absolute; top:9px; right:9px; z-index:2; background:rgba(20,24,18,0.55); color:#fff; border:1px solid rgba(255,255,255,0.4); border-radius:999px; font-size:10px; font-weight:700; padding:4px 9px; cursor:pointer;}
   .epc-photo-btn:hover{background:rgba(20,24,18,0.75);}
   .epc-photo-input{position:absolute; inset:0; opacity:0; cursor:pointer; z-index:3;}
@@ -853,6 +889,21 @@
   .event-mini-row:first-child{border-top:none;}
   .event-mini-row .em-name{font-weight:600; font-size:14px;}
   .event-mini-row .em-date{font-size:11.5px; color:var(--charcoal-faint); margin-top:2px;}
+  /* v1.87.0 — section reordering (New Request #84) */
+  .website-section-row{gap:10px;}
+  .website-section-row .em-name{flex:1;}
+  .website-section-reorder{display:flex; flex-direction:column; gap:1px; flex-shrink:0;}
+  .wsr-btn{font-size:9px; line-height:1; color:var(--charcoal-soft); cursor:pointer; padding:2px 4px;}
+  .wsr-btn:hover{color:var(--green);}
+  .wsr-btn.wsr-disabled{color:var(--line); cursor:default; pointer-events:none;}
+  /* v1.87.0 — curated website style presets (New Request #84) */
+  .style-preset-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px;}
+  .style-preset-card{border:1.5px solid var(--line); border-radius:var(--radius-sm); padding:12px 14px; cursor:pointer; transition:border-color .15s, box-shadow .15s;}
+  .style-preset-card:hover{border-color:var(--champagne);}
+  .style-preset-card.style-preset-active{border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset;}
+  .spc-name{font-size:13px; font-weight:700; color:var(--charcoal);}
+  .spc-desc{font-size:11.5px; color:var(--charcoal-faint); margin-top:4px; line-height:1.4;}
+  .spc-check{font-size:11px; font-weight:700; color:var(--green); margin-top:8px;}
 
   .rsvp-bar-track{height:10px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin-top:14px;}
   .rsvp-bar-fill{height:100%; background:linear-gradient(90deg,var(--champagne),var(--green)); border-radius:99px;}
@@ -1086,6 +1137,10 @@
   .gl-sortable{cursor:pointer; user-select:none;}
   .gl-sortable:hover{color:var(--green-deep);}
   .tier-explain{font-size:11.5px; color:var(--charcoal-faint); margin-top:6px; line-height:1.5;}
+  /* v1.87.0 — New Request #78: a guest's free-text RSVP note, written back by submitGuestRsvp. */
+  .rsvp-guest-note{background:var(--ivory-deep); border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px;}
+  .rsvp-guest-note-label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--charcoal-faint);}
+  .rsvp-guest-note-text{font-size:13px; color:var(--charcoal); margin-top:4px; line-height:1.5;}
   .tier-explain strong{color:var(--charcoal-soft);}
   .attach-input{flex:0 0 190px; padding:6px 9px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12px; color:var(--charcoal);}
   @media (max-width:900px){ .budget-item-row2 > input.select-field-sm, .budget-item-row2 > select.select-field-sm, .attach-select, .attach-input{flex:1 1 100%;} }
@@ -2413,6 +2468,18 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.87.0', date:'2026-11-27',
+    title:'RSVP write-back, a smarter Home, and real website design options',
+    items:[
+      'RSVPs guests submit on your live wedding website now write straight into your real Evera guest data — attendance, meal choices, dietary restrictions, and a free-text note all land in the same Guests module you already use, with the same household matching as your RSVP search settings today. A second submission from the same household overwrites the first automatically. No Firestore security rules changes were needed for this — the Cloud Function handles it safely on the server side.',
+      'Home now shows a live, always-current "what deserves your attention" recommendation (pick a date, confirm a venue) in the same "Your Next Best Move" card, stepping aside once your own saved next actions are more pressing.',
+      'Each event photo card on Home now shows a single-line "what\'s pressing" status for that celebration, flagged urgent when the event is within 30 days and something\'s still open.',
+      '"Decisions" is now its own tracked concept on Home — open questions like your photographer or reception menu, separate from action-item Tasks — with an options count, an optional decide-by date, and a one-click "Mark decided" / "Reopen" flow.',
+      'Website Design now has real layout/template choices (Classic Centered, Photo-Forward, Editorial Split), a handful of curated style presets that set layout, font and spacing together in one click, and reorderable pages — drag the ▲▼ arrows on "Pages Shown to Guests" to change the order guests see them in the nav and on your Home page.',
+      'Bugfix: the dedicated "Home Page Photo" you upload in Website Design never actually reached your live guest site before now — it only ever showed in the preview inside Evera itself. It\'s now wired through properly.'
+    ]
+  },
   {
     version:'1.86.3', date:'2026-11-27',
     title:'Home\'s "Your Next Best Move" banner is thinner',
@@ -3866,6 +3933,14 @@ function defaultDashboardData(){
       {title:'Finalize your florist', meta:'3 strong matches ready to review', tag:'Vendors', done:false, dueBy:'Recommended by Sep 18', rationale:'Floral orders typically need 6+ months of lead time before your date, and you\'re entering that booking window now.', ctaLabel:'Review vendors', ctaRoute:'vendors', priorityPhrase:'finalizing your florist'},
       {title:'Confirm final headcount with Elmsley Estate catering', meta:'Due in 3 weeks', tag:'Budget', done:false, dueBy:'Due in 3 weeks', rationale:'Your catering balance and final seating chart both depend on a locked headcount.', ctaLabel:'Review budget', ctaRoute:'budget', priorityPhrase:'confirming your final headcount with catering'},
       {title:'Follow up with 4 wedding party members on attire', meta:'Measurements still missing', tag:'Wedding Party', done:false, dueBy:'Recommended this week', rationale:'Alterations need lead time — measurements have to be in before dress and suit orders can be finalized.', ctaLabel:'Open Wedding Party', ctaRoute:'wedding-party', priorityPhrase:'following up on wedding party attire'}
+    ],
+    // v1.87.0 — sample Decisions for the demo account: open questions waiting to be settled,
+    // distinct from the action-item nextActions above.
+    decisions:[
+      {id:'dec-photographer', title:'Photographer', optionsCount:2, dueISO:'2026-12-05', decided:false, decidedAt:null, createdAt:'2026-10-01T00:00:00.000Z'},
+      {id:'dec-menu', title:'Reception Menu', optionsCount:3, dueISO:'2027-01-20', decided:false, decidedAt:null, createdAt:'2026-10-14T00:00:00.000Z'},
+      {id:'dec-firstdance', title:'First Dance Song', optionsCount:0, dueISO:null, decided:false, decidedAt:null, createdAt:'2026-10-20T00:00:00.000Z'},
+      {id:'dec-colors', title:'Wedding Colours', optionsCount:0, dueISO:null, decided:true, decidedAt:'2026-09-05T00:00:00.000Z', createdAt:'2026-08-20T00:00:00.000Z'}
     ],
     events:[
       {id:'ev-mehndi', name:'Mehndi', date:'Thu, Apr 22', dateISO:'2027-04-22', startTime:'2:00 PM', endTime:'6:00 PM', accessTime:'11:00 AM (florals & henna station setup)', location:'Hendrick Hall', status:'planning', guestCount:120, dressCode:'Bright colours encouraged — no white or black. Comfortable seating attire.', description:'A traditional henna celebration with a live dhol performance, food stations, and henna artists for the wedding party and guests.', specialRituals:'Henna application for the couple and wedding party; dhol performance; dance floor opens once the couple’s henna is complete.', notes:'Traditional henna celebration with a live dhol performance.', vendorCategories:['Mehndi Artist','Florals','Catering']},
@@ -6093,6 +6168,10 @@ function normalizeDashboardData(d){
   // guest list grows, and previews exactly who matches before anything is applied.
   if(!Array.isArray(d.guestInviteRules)) d.guestInviteRules = [];
   if(!Array.isArray(d.guestTiers) || !d.guestTiers.length) d.guestTiers = DEFAULT_GUEST_TIERS.map(t=>Object.assign({},t));
+  // v1.87.0 — New Request (Home & Events-centricity, cluster C): "Decisions" as their own tracked
+  // concept, separate from Tasks — open questions the couple needs to settle (How many entree
+  // options? Who sings during the ceremony?) rather than action items with a single doer.
+  if(!Array.isArray(d.decisions)) d.decisions = [];
   d.guestHouseholds.forEach(h=>{
     if(!Array.isArray(h.categories)) h.categories = [];
     if(h.tier===undefined || !d.guestTiers.some(t=>t.key===h.tier)) h.tier = d.guestTiers[0].key;
@@ -6128,6 +6207,11 @@ function normalizeDashboardData(d){
       if(invitedToThis && h.eventRsvp[ev.id]===undefined) h.eventRsvp[ev.id] = h.rsvpStatus || 'pending';
     });
     if(!h.surveyResponses || typeof h.surveyResponses !== 'object') h.surveyResponses = {};
+    // v1.87.0 — New Request #78: a real guest-submitted RSVP note, written by the public
+    // submitGuestRsvp Cloud Function. Backfilled here so older/sample households that predate
+    // this version don't need any special-casing anywhere else that reads it.
+    if(h.rsvpGuestNote===undefined) h.rsvpGuestNote = '';
+    if(h.rsvpSubmittedAt===undefined) h.rsvpSubmittedAt = null;
     if(!Array.isArray(h.members)) h.members = [];
     h.members.forEach(m=>{
       if(m.salutation===undefined) m.salutation = '';
@@ -6425,6 +6509,20 @@ function normalizeDashboardData(d){
   if(d.website.design.useCustomPalette===undefined) d.website.design.useCustomPalette = false;
   if(!Array.isArray(d.website.design.customPalette)) d.website.design.customPalette = [];
   if(d.website.design.spacing===undefined) d.website.design.spacing = 'comfortable';
+  // v1.87.0 — New Request #84 (website design options): a real layout/template choice, separate
+  // from the font/spacing/palette controls above — this changes the actual arrangement of the
+  // hero and home page, not just its colours or type. Deliberately NOT a wider colour-palette
+  // picker (Natasha explicitly scoped that out); curated style presets below bundle this with
+  // fontPairing/spacing into a few named looks instead of exposing every knob separately.
+  if(d.website.design.layout===undefined) d.website.design.layout = 'classic';
+  // v1.87.0 — New Request #84 (section reordering): the order guests see Our Story / Wedding
+  // Party / Events / Album / Registry / Travel / FAQ in the nav and on the Home page grid.
+  // Home and RSVP are not reorderable — they're always first/pinned, same as they're always shown.
+  if(!Array.isArray(d.website.sectionOrder)) d.website.sectionOrder = Object.keys(d.website.sections);
+  // keep sectionOrder in sync if a section key was ever added/removed elsewhere (defensive —
+  // no migration should ever actually need this today, but it costs nothing to be safe).
+  d.website.sectionOrder = d.website.sectionOrder.filter(k=>Object.prototype.hasOwnProperty.call(d.website.sections,k));
+  Object.keys(d.website.sections).forEach(k=>{ if(!d.website.sectionOrder.includes(k)) d.website.sectionOrder.push(k); });
   if(d.website.customDomain===undefined) d.website.customDomain = '';
   if(d.website.passwordProtected===undefined) d.website.passwordProtected = false;
   if(d.website.sitePassword===undefined) d.website.sitePassword = '';
@@ -7143,12 +7241,140 @@ function renderFollowUpNudgeCard(){
     </div>
   `;
 }
+// v1.87.0 — cluster C: ports the onboarding Result screen's always-current "Recommended Next"
+// signal (recommendedNextAction(), used on renderResult()) onto Home itself. Deliberately
+// surfaced through the SAME priority-card slot Home already has (home-priority-card), rather
+// than a second, redundant box — it only takes over that slot while genuinely still the most
+// pressing thing in the whole account (no date set, or no venue booked yet), then steps aside
+// for whatever's next in the couple's own nextActions list.
+function homeLiveRecommendedAction(d){
+  if(!d.weddingDateISO){
+    return {title:'Pick a wedding date', rationale:'Many vendors book up fast once you do, and it unlocks your full planning roadmap.', dueBy:null, ctaLabel:'Set your date', ctaRoute:'my-wedding'};
+  }
+  const venueEntry = (d.vendors||[]).find(v=>v.category==='Venue');
+  if(!venueEntry || venueEntry.status!=='booked'){
+    return {title:'Confirm your venue', rationale:'Based on your date, this is usually the most important next decision.', dueBy:null, ctaLabel:'Review vendors', ctaRoute:'vendors'};
+  }
+  return null;
+}
+// v1.87.0 — cluster C: "Decisions" as their own tracked concept, separate from Tasks. A decision
+// is an open question waiting to be settled (How many entree options? Who reads at the ceremony?)
+// rather than an action item with a single doer and a done/not-done state — so it gets its own
+// card on Home with its own vocabulary: options being weighed, a target decide-by date, and a
+// "Mark decided" action instead of a checkbox. Natasha's scoping explicitly ruled out folding
+// this into Tasks' existing "Waiting On" status.
+let decisionsDecidedListOpen = false;
+function decisionStatusSort(list){
+  return [...list].sort((a,b)=>{
+    if(a.dueISO && b.dueISO) return a.dueISO.localeCompare(b.dueISO);
+    if(a.dueISO) return -1;
+    if(b.dueISO) return 1;
+    return (a.createdAt||'').localeCompare(b.createdAt||'');
+  });
+}
+function decisionDaysOut(dueISO){
+  if(!dueISO) return null;
+  return Math.round((new Date(dueISO+'T00:00:00') - new Date())/86400000);
+}
+function decisionDueChip(dueISO){
+  if(!dueISO) return '';
+  const days = decisionDaysOut(dueISO);
+  const urgent = days!==null && days<=14;
+  const label = days<0 ? `${pluralize(Math.abs(days),'day')} past target` : days===0 ? 'Due today' : `By ${fmtShortDateLabel(dueISO)}`;
+  return `<span class="decision-chip ${urgent?'decision-chip-warn':'decision-chip-faint'}">${escapeHtml(label)}</span>`;
+}
+function renderDecisionsCard(){
+  const all = dashboardData.decisions||[];
+  const open = decisionStatusSort(all.filter(dec=>!dec.decided));
+  const decidedList = all.filter(dec=>dec.decided).sort((a,b)=>(b.decidedAt||'').localeCompare(a.decidedAt||''));
+  return `
+    <div class="decisions-card">
+      <div class="card-head"><h4>Decisions</h4></div>
+      ${open.length ? open.map(dec=>`
+        <div class="decision-row" data-id="${escapeAttr(dec.id)}">
+          <div class="decision-main">
+            <div class="decision-title">${escapeHtml(dec.title)}</div>
+            <div class="decision-meta">
+              ${dec.optionsCount ? `<span class="decision-chip decision-chip-faint">${pluralize(dec.optionsCount,'option')} in play</span>` : ''}
+              ${decisionDueChip(dec.dueISO)}
+            </div>
+          </div>
+          <div class="decision-actions">
+            <span class="decision-mark-done" onclick="markDecisionDecided('${escapeAttr(dec.id)}')">Mark decided</span>
+            <span class="decision-remove" onclick="removeDecision('${escapeAttr(dec.id)}')">Remove</span>
+          </div>
+        </div>`).join('') : `<div class="decision-empty-note">No open decisions right now — add one below as soon as something comes up.</div>`}
+      <div class="decision-add-row">
+        <input type="text" class="decision-add-title" id="decisionAddTitle" placeholder="A decision to make (e.g. Reception menu)" onkeydown="if(event.key==='Enter'){ event.preventDefault(); addDecision(); }">
+        <input type="number" min="0" class="decision-add-options" id="decisionAddOptions" placeholder="Options">
+        <input type="date" class="decision-add-due" id="decisionAddDue" title="Decide by (optional)">
+        <button type="button" class="btn-ghost" onclick="addDecision()">+ Add</button>
+      </div>
+      ${decidedList.length ? `
+      <div class="decision-decided-toggle" onclick="toggleDecisionsDecidedList()">${decisionsDecidedListOpen?'▾':'▸'} ${pluralize(decidedList.length,'decision','decisions')} already made</div>
+      ${decisionsDecidedListOpen ? decidedList.map(dec=>`
+        <div class="decision-row decision-row-decided" data-id="${escapeAttr(dec.id)}">
+          <div class="decision-main"><div class="decision-title">${escapeHtml(dec.title)}</div></div>
+          <span class="decision-reopen" onclick="reopenDecision('${escapeAttr(dec.id)}')">Reopen</span>
+        </div>`).join('') : ''}` : ''}
+    </div>
+  `;
+}
+function addDecision(){
+  const titleEl = document.getElementById('decisionAddTitle');
+  const optsEl = document.getElementById('decisionAddOptions');
+  const dueEl = document.getElementById('decisionAddDue');
+  const title = ((titleEl && titleEl.value) || '').trim();
+  if(!title) return;
+  const optionsCount = (optsEl && optsEl.value) ? Math.max(0, parseInt(optsEl.value,10)||0) : 0;
+  const dueISO = (dueEl && dueEl.value) ? dueEl.value : null;
+  if(!Array.isArray(dashboardData.decisions)) dashboardData.decisions = [];
+  dashboardData.decisions.push({
+    id: 'dec'+Date.now().toString(36)+Math.floor(Math.random()*1000),
+    title, optionsCount, dueISO, decided:false, decidedAt:null, createdAt:new Date().toISOString()
+  });
+  reRenderCurrent();
+  persistWeddingRecord();
+}
+function markDecisionDecided(id){
+  const dec = (dashboardData.decisions||[]).find(x=>x.id===id);
+  if(!dec) return;
+  dec.decided = true;
+  dec.decidedAt = new Date().toISOString();
+  reRenderCurrent();
+  persistWeddingRecord();
+}
+function reopenDecision(id){
+  const dec = (dashboardData.decisions||[]).find(x=>x.id===id);
+  if(!dec) return;
+  dec.decided = false;
+  dec.decidedAt = null;
+  reRenderCurrent();
+  persistWeddingRecord();
+}
+function removeDecision(id){
+  const list = dashboardData.decisions||[];
+  const idx = list.findIndex(x=>x.id===id);
+  if(idx<0) return;
+  const removed = list.splice(idx,1)[0];
+  reRenderCurrent();
+  persistWeddingRecord();
+  showUndoToast(`"${removed.title}" removed.`, () => {
+    dashboardData.decisions.splice(idx,0,removed);
+    reRenderCurrent();
+    persistWeddingRecord();
+  });
+}
+function toggleDecisionsDecidedList(){
+  decisionsDecidedListOpen = !decisionsDecidedListOpen;
+  reRenderCurrent();
+}
 function renderHome(){
   const d = dashboardData;
   const totalPlanned = d.budgetBreakdown.reduce((s,c)=>s+categoryPlanned(c),0);
   const totalSpent = d.budgetBreakdown.reduce((s,c)=>s+categorySpent(c),0);
   const days = daysToWedding();
-  const topAction = (d.nextActions||[]).find(a=>!a.done);
+  const topAction = homeLiveRecommendedAction(d) || (d.nextActions||[]).find(a=>!a.done);
   const nextUp = (d.nextActions||[]).filter(a=>!a.done).slice(0,3);
   const vb = vendorsBookedCount();
   const upcomingPayments = (d.deadlines||[])
@@ -7211,6 +7437,8 @@ function renderHome(){
           ${item.ctaRoute ? `<span class="attention-cta" onclick="renderRoute('${item.ctaRoute}')">${escapeHtml(item.ctaLabel)} →</span>` : ''}
         </div>`).join('')}
     </div>` : ''}
+
+    ${renderDecisionsCard()}
 
     <div class="home-section-label">Planning health</div>
     <div class="home-status-grid">
@@ -9932,6 +10160,24 @@ const WEBSITE_SPACING_PRESETS = [
   {id:'comfortable', label:'Comfortable'},
   {id:'airy', label:'Airy'}
 ];
+// v1.87.0 — New Request #84: real layout/template choices for the guest website's hero and
+// home page — distinct from font/spacing (look & feel of the same layout) and from colour
+// (explicitly out of scope for this round). Each option changes how the hero and the home page's
+// section cards are actually arranged, not just their styling.
+const WEBSITE_LAYOUTS = [
+  {id:'classic', label:'Classic Centered', desc:'A timeless centered hero with your names front and center, and an even grid of section cards below.'},
+  {id:'photo-forward', label:'Photo-Forward', desc:'A big, full-width photo leads the page — ideal if you have a favourite shot of the two of you. Falls back to the classic hero if no photo is uploaded yet.'},
+  {id:'editorial', label:'Editorial Split', desc:'An asymmetric, magazine-style hero with your photo alongside the details, and a more minimal home page below.'}
+];
+// v1.87.0 — curated style presets: a few hand-picked, named combinations of font pairing +
+// spacing + layout, so a couple can pick a whole look in one click instead of tuning three
+// separate dropdowns. Deliberately does not touch colour — see the note above WEBSITE_LAYOUTS.
+const WEBSITE_STYLE_PRESETS = [
+  {id:'classic-elegant', label:'Classic & Elegant', desc:'Timeless and traditional.', fontPairing:'classic', spacing:'comfortable', layout:'classic'},
+  {id:'romantic-soft', label:'Romantic & Soft', desc:'Soft, airy, and photo-led.', fontPairing:'romantic', spacing:'airy', layout:'photo-forward'},
+  {id:'modern-minimal', label:'Modern & Minimal', desc:'Clean, tight, and contemporary.', fontPairing:'modern', spacing:'cozy', layout:'editorial'},
+  {id:'bold-editorial', label:'Bold & Editorial', desc:'Confident, magazine-style.', fontPairing:'editorial', spacing:'comfortable', layout:'editorial'}
+];
 const OUR_STORY_PROMPTS = [
   {id:'howMet', q:'How did you two meet?'},
   {id:'proposal', q:'How did the proposal happen?'},
@@ -10225,10 +10471,17 @@ function renderWebsiteModule(){
       </div>
       <div class="card">
         <div class="card-head"><h4>Pages Shown to Guests</h4><span class="d-sub">Anything unchecked is hidden entirely, not just locked</span></div>
-        ${Object.entries(w.sections).map(([key,on])=>`
-          <div class="event-mini-row"><div class="em-name" style="text-transform:capitalize;">${key.replace(/([A-Z])/g,' $1')}</div><input type="checkbox" style="width:16px;height:16px;" ${on?'checked':''} onchange="toggleWebsiteSection('${key}')"></div>
+        ${w.sectionOrder.map((key,i)=>`
+          <div class="event-mini-row website-section-row">
+            <div class="website-section-reorder">
+              <span class="wsr-btn ${i===0?'wsr-disabled':''}" title="Move up" onclick="${i===0?'':`moveWebsiteSectionOrder('${key}',-1)`}">▲</span>
+              <span class="wsr-btn ${i===w.sectionOrder.length-1?'wsr-disabled':''}" title="Move down" onclick="${i===w.sectionOrder.length-1?'':`moveWebsiteSectionOrder('${key}',1)`}">▼</span>
+            </div>
+            <div class="em-name" style="text-transform:capitalize;">${key.replace(/([A-Z])/g,' $1')}</div>
+            <input type="checkbox" style="width:16px;height:16px;" ${w.sections[key]?'checked':''} onchange="toggleWebsiteSection('${key}')">
+          </div>
         `).join('')}
-        <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:8px;">Home and RSVP are always shown. Each Events tab is also individually hidden for guests not invited to that event — see Event Visibility below.</p>
+        <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:8px;">Home and RSVP are always shown first/last. The ▲▼ arrows reorder everything else in the nav and on the Home page grid. Each Events tab is also individually hidden for guests not invited to that event — see Event Visibility below.</p>
       </div>
     </div>
 
@@ -10276,8 +10529,27 @@ function renderWebsiteModule(){
     </div>
 
     <div class="card">
-      <div class="card-head"><h4>Website Design</h4><span class="d-sub">Look &amp; feel — font, colour, and spacing</span></div>
-      <div class="field-grid">
+      <div class="card-head"><h4>Website Design</h4><span class="d-sub">Look &amp; feel — layout, font, colour, and spacing</span></div>
+      <!-- v1.87.0 — New Request #84: curated style presets, a few named looks that set layout +
+           font pairing + spacing together in one click. Deliberately not a colour picker — see
+           WEBSITE_STYLE_PRESETS above for why. -->
+      <div class="style-preset-row">
+        ${WEBSITE_STYLE_PRESETS.map(p=>{
+          const active = w.design.fontPairing===p.fontPairing && w.design.spacing===p.spacing && w.design.layout===p.layout;
+          return `<div class="style-preset-card ${active?'style-preset-active':''}" onclick="applyWebsiteStylePreset('${p.id}')">
+            <div class="spc-name">${escapeHtml(p.label)}</div>
+            <div class="spc-desc">${escapeHtml(p.desc)}</div>
+            ${active ? '<div class="spc-check">✓ Applied</div>' : ''}
+          </div>`;
+        }).join('')}
+      </div>
+      <p style="font-size:11.5px;color:var(--charcoal-faint);margin:10px 0 0;">Or fine-tune each setting individually below — picking a preset is just a shortcut, not a lock.</p>
+      <div class="field-grid" style="margin-top:14px;">
+        <div class="field-cell"><label>Layout</label>
+          <select onchange="updateWebsiteDesignField('layout',this.value)">
+            ${WEBSITE_LAYOUTS.map(l=>`<option value="${l.id}" ${w.design.layout===l.id?'selected':''}>${escapeHtml(l.label)}</option>`).join('')}
+          </select>
+        </div>
         <div class="field-cell"><label>Font Pairing</label>
           <select onchange="updateWebsiteDesignField('fontPairing',this.value)">
             ${FONT_PAIRINGS.map(f=>`<option value="${f.id}" ${w.design.fontPairing===f.id?'selected':''}>${escapeHtml(f.label)}</option>`).join('')}
@@ -10289,6 +10561,7 @@ function renderWebsiteModule(){
           </select>
         </div>
       </div>
+      <p style="font-size:11.5px;color:var(--charcoal-faint);margin-top:8px;">${escapeHtml((WEBSITE_LAYOUTS.find(l=>l.id===w.design.layout)||WEBSITE_LAYOUTS[0]).desc)}</p>
       <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);">
         <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
           <input type="checkbox" ${w.design.useCustomPalette?'checked':''} onchange="toggleWebsiteCustomPalette()">
@@ -10492,6 +10765,17 @@ function timeAgoLabel(ts){
 function updateWebsiteField(field,val){ dashboardData.website[field]=val; document.getElementById('content').innerHTML = renderWebsiteModule(); }
 function toggleWebsitePublished(){ dashboardData.website.published = !dashboardData.website.published; document.getElementById('content').innerHTML = renderWebsiteModule(); }
 function toggleWebsiteSection(key){ dashboardData.website.sections[key] = !dashboardData.website.sections[key]; document.getElementById('content').innerHTML = renderWebsiteModule(); }
+// v1.87.0 — New Request #84 (section reordering): swaps a section with its neighbour in
+// dashboardData.website.sectionOrder — the same order buildWeddingWebsiteExport() hands to the
+// guest site's nav and Home page grid (see SECTION_KEY_TO_NAV_KEY in wedding-website.html).
+function moveWebsiteSectionOrder(key, dir){
+  const order = dashboardData.website.sectionOrder;
+  const i = order.indexOf(key);
+  const j = i + dir;
+  if(i<0 || j<0 || j>=order.length) return;
+  [order[i], order[j]] = [order[j], order[i]];
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
 // v1.65.0 — New Request #47: a standalone RSVP-collection open/closed switch,
 // independent of hiding the whole RSVP page via websiteSections.rsvp.
 function toggleRsvpCollectionEnabled(){ dashboardData.website.rsvpCollectionEnabled = dashboardData.website.rsvpCollectionEnabled===false ? true : false; document.getElementById('content').innerHTML = renderWebsiteModule(); }
@@ -10702,6 +10986,17 @@ function updateWebsiteDesignField(field,val){
   dashboardData.website.design[field] = val;
   document.getElementById('content').innerHTML = renderWebsiteModule();
 }
+// v1.87.0 — New Request #84: applies a curated style preset's layout + fontPairing + spacing in
+// one click. Deliberately leaves colour (useCustomPalette/customPalette) untouched either way —
+// presets are a look shortcut, not a palette picker.
+function applyWebsiteStylePreset(id){
+  const preset = WEBSITE_STYLE_PRESETS.find(p=>p.id===id);
+  if(!preset) return;
+  dashboardData.website.design.layout = preset.layout;
+  dashboardData.website.design.fontPairing = preset.fontPairing;
+  dashboardData.website.design.spacing = preset.spacing;
+  document.getElementById('content').innerHTML = renderWebsiteModule();
+}
 function toggleWebsiteCustomPalette(){
   dashboardData.website.design.useCustomPalette = !dashboardData.website.design.useCustomPalette;
   if(dashboardData.website.design.useCustomPalette && !dashboardData.website.design.customPalette.length){
@@ -10798,8 +11093,15 @@ function buildWeddingWebsiteExport(){
     // per direct feedback that the preview should reflect everything already in the profile.
     couplePhoto: d.couplePhoto || null,
     masterPalette: d.weddingProfile.colorPalette || [],
+    // v1.87.0 bugfix: the Website Design tab's own "Home Page Photo" upload was previewed in the
+    // admin control panel but never actually reached the live guest site — see the matching note
+    // in wedding-website.html's applyLiveWeddingData(). Exported here so it finally does.
+    heroPhoto: w.heroPhoto || null,
     websiteDesign: w.design,
     websiteSections: w.sections,
+    // v1.87.0 — New Request #84 (section reordering): the couple's chosen nav/home-page order
+    // for Our Story / Wedding Party / Events / Album / Registry / Travel / FAQ.
+    websiteSectionOrder: w.sectionOrder || [],
     websiteAccess: {customDomain: w.customDomain||'', passwordProtected: !!w.passwordProtected, sitePassword: w.sitePassword||''},
     // v1.83.0 — configurable RSVP guest search (New Request #83). See RSVP Search Settings
     // in the Website module, and searchRsvpHousehold() in wedding-website.html for how a guest's
@@ -17363,6 +17665,11 @@ function renderHouseholdDetailModal(householdId){
         </div>
         <p class="tier-explain" style="margin-bottom:0;">${(dashboardData.guestTiers||[]).map(t=>`<strong>Tier ${escapeHtml(t.key)}:</strong> ${escapeHtml(t.desc||t.label)}`).join('  ·  ')} — manage tiers any time in <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Settings →</span></p>
         <p class="d-sub" style="margin-top:4px;">${h.labelAuto===false ? `Renamed by you — <a href="#" class="ch-link" onclick="resetHouseholdLabelAuto('${h.id}'); return false;">use the automatic name instead</a>` : 'Name is generated automatically from Family Members below — edit it above any time to set your own.'}</p>
+        ${h.rsvpGuestNote ? `
+        <div class="rsvp-guest-note">
+          <div class="rsvp-guest-note-label">Note from their RSVP${h.rsvpSubmittedAt ? ' · '+escapeHtml(new Date(h.rsvpSubmittedAt).toLocaleDateString()) : ''}</div>
+          <div class="rsvp-guest-note-text">${escapeHtml(h.rsvpGuestNote)}</div>
+        </div>` : ''}
       </div>
       <div class="detail-section-head" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line-soft);"><h4 style="margin:0;">Family Members</h4></div>
       ${(() => {
@@ -19250,6 +19557,29 @@ function eventCompleteness(e){
   const done = checks.filter(Boolean).length;
   return {done, total: checks.length, pct: Math.round(done/checks.length*100), remaining: checks.length-done};
 }
+// v1.87.0 — cluster C: Home's event cards now surface a concrete, single-line "what's most
+// pressing for this event" status (e.g. "Book a vendor") instead of only a generic % complete,
+// per the review's own "Reception 🔴 Photographer decision overdue" example. Deliberately a
+// NEW, standalone function rather than refactoring renderEventOverviewTab's inline next-steps
+// list — same priority order and underlying checks, but kept separate so this couldn't regress
+// the already-shipped, already-tested Event Overview tab. Returns null once nothing's left.
+function eventTopNextStepLabel(e){
+  const d = dashboardData;
+  const vendorBookedAny = (d.vendorBookings||[]).some(v => (v.eventIds||[]).includes(e.id) && v.status==='booked');
+  const steps = [];
+  if(!e.dateISO) steps.push({text:'Set a date'});
+  if(!(e.location && e.location.trim())) steps.push({text:'Add a location'});
+  if(!(effectiveEventBudgetAllocated(e)>0)) steps.push({text:'Set a budget target'});
+  if(!vendorBookedAny) steps.push({text:'Book a vendor'});
+  if(!(e.inviteSentLog||[]).length) steps.push({text:'Send invites'});
+  if(!steps.length) return null;
+  const top = steps[0];
+  // The red dot is reserved for when the event is genuinely coming up soon (within 30 days)
+  // and something is still open — matching the review's framing of "overdue," not just "not done yet."
+  const daysOut = e.dateISO ? Math.round((new Date(e.dateISO+'T00:00:00') - new Date())/86400000) : null;
+  const urgent = daysOut!==null && daysOut>=0 && daysOut<=30;
+  return {text:top.text, urgent};
+}
 function eventCoverGradientStyle(e){
   const pal = (e.colorPalette||[]).filter(Boolean);
   const c1 = pal[0] || '#2F3B2C', c2 = pal[1] || pal[0] || '#4C5F45';
@@ -19366,6 +19696,7 @@ function submitNewEventCategoryPrompt(eventId){
 }
 function renderEventPhotoCard(e, compact){
   const stats = eventCompleteness(e);
+  const nextStep = compact ? eventTopNextStepLabel(e) : null;
   const cls = 'event-photo-card' + (compact ? ' epc-compact' : '');
   // v1.45.0: a photo is a nice-to-have, not something every event is nudged to go add — the
   // upload control now lives quietly in the event's own Details tab instead of as a button
@@ -19377,6 +19708,7 @@ function renderEventPhotoCard(e, compact){
       <div class="epc-content">
         <div class="epc-name">${escapeHtml(e.name)}</div>
         <div class="epc-meta">${escapeHtml(e.date||'Date TBD')}${eventTimeRangeLabel(e) ? ' · '+escapeHtml(eventTimeRangeLabel(e)) : ''}</div>
+        ${compact && nextStep ? `<div class="epc-nextstep${nextStep.urgent?' epc-nextstep-warn':''}"><span class="epc-nextstep-dot"></span>${escapeHtml(nextStep.text)}</div>` : ''}
         <div class="epc-progress-track"><div class="epc-progress-fill" style="width:${stats.pct}%;"></div></div>
         <div class="epc-progress-label">${stats.pct}% planned${stats.remaining>0 ? ` · ${pluralize(stats.remaining,'detail','details')} left` : ' · all set'}</div>
       </div>
