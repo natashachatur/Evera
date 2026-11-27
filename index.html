@@ -610,8 +610,9 @@
      round avatar instead, that leftover 270px floor just produced a huge, mostly-empty dark
      rectangle (reported directly by Natasha) — the box now sizes to its actual content. */
   /* v1.78.0: raised again alongside the avatar bump below, so the box still has room to vertically
-     center a taller photo instead of letting it press into the padding. */
-  .home-photo-hero{position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:22px; box-shadow:var(--shadow-lg); min-height:184px; display:flex; align-items:flex-end;}
+     center a taller photo instead of letting it press into the padding.
+     v1.90.0: raised again alongside the avatar's third bump below — same reasoning as before. */
+  .home-photo-hero{position:relative; border-radius:var(--radius); overflow:hidden; margin-bottom:22px; box-shadow:var(--shadow-lg); min-height:220px; display:flex; align-items:flex-end;}
   .home-photo-hero .hph-bg{position:absolute; inset:0; background:var(--green-deep);}
   /* v1.38.0: flattened to a solid colour — matches the earlier pass that flattened the
      Blueprint hero's gradient, so the app's two main hero moments are treated consistently.
@@ -625,8 +626,10 @@
      directly by Natasha) — sized up so the photo reads as a real feature next to the names,
      not a small icon.
      v1.78.0: bumped again per direct follow-up request ("even bigger... so you can see a little
-     bit more detail") — 88px→128px, with the hero's min-height raised to match. */
-  .home-photo-hero .hph-avatar{position:relative; z-index:1; width:128px; height:128px; min-width:128px; border-radius:50%; overflow:hidden; border:3px solid rgba(244,239,227,0.55); box-shadow:0 2px 10px rgba(0,0,0,0.25); flex-shrink:0;}
+     bit more detail") — 88px→128px, with the hero's min-height raised to match.
+     v1.90.0: bumped a third time per direct request ("make the photo here, bigger") — 128px→160px,
+     with the hero's min-height raised to match again. */
+  .home-photo-hero .hph-avatar{position:relative; z-index:1; width:160px; height:160px; min-width:160px; border-radius:50%; overflow:hidden; border:3px solid rgba(244,239,227,0.55); box-shadow:0 2px 10px rgba(0,0,0,0.25); flex-shrink:0;}
   .home-photo-hero .hph-avatar img{width:100%; height:100%; object-fit:cover; display:block;}
   .home-photo-hero .hph-heading-row{display:flex; align-items:center; gap:16px; min-width:0;}
   .home-photo-hero .hph-content{position:relative; z-index:1; padding:30px 32px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; width:100%;}
@@ -2479,6 +2482,16 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.90.0', date:'2026-11-27',
+    title:'Emergency Kit suggestions & guide, a bigger Home photo, and a real colour-palette fix',
+    items:[
+      'Guides & Tips: a new article, "What to pack in your wedding-day emergency kit," walking through the real categorized packing list (Clothing; Hair, Makeup & Hygiene; Medical; Misc) Natasha gave directly when the Emergency Kit Checklist feature was first built — filed under Day-Of, alongside the existing day-of-logistics article.',
+      'Wedding Playbook\'s Run Book → Emergency Kit Checklist now surfaces those same real items as one-click "✦ Commonly packed" suggestions, the same pattern already used for commonly-missed Wedding Plan tasks — filtered quietly against whatever a couple has already added (under any category, case-insensitive) so nothing is ever suggested twice, and a brand-new account starting from a completely empty kit now has a real starting point instead of a blank "No categories yet."',
+      'The Home couple photo is bigger again, per direct request ("make the photo here, bigger") — 128px → 160px, the third size bump for this photo, with the hero\'s min-height raised to match.',
+      'Fixed a real visual bug Natasha flagged directly: an event\'s own Colour Palette card, when showing the inherited Master Colour Palette as a preview, rendered every swatch at 55% opacity — a washed-out "white cast" next to the same colours shown at full strength in Wedding Blueprint\'s Master Aesthetic card. The opacity was meant to signal "not yet customized for this event," but the existing "Using your Master Colour Palette by default" label and hint text already say that in words — the opacity was a redundant, confusing second signal, now removed. Swatches render identically in both places.'
+    ]
+  },
   {
     version:'1.89.2', date:'2026-11-27',
     title:'"A Little Bit About Us" — a direct follow-up from Natasha, in the same voice',
@@ -8888,6 +8901,13 @@ function copyMasterPaletteToEvent(eventId){
   e.colorPalette = (dashboardData.weddingProfile.colorPalette||[]).slice();
   document.getElementById('content').innerHTML = renderEventsModule();
 }
+/* v1.90.0: the inherited-Master-Palette preview below used to render each swatch at opacity:0.55
+   to signal "these aren't this event's own colours yet" — Natasha flagged this directly as a
+   washed-out "white cast," since the same hex values render fully saturated in Wedding Blueprint's
+   own Master Aesthetic card. The "Using your Master Colour Palette by default" label plus the hint
+   text underneath already carry that same signal in words, so the opacity was a redundant (and
+   confusing) second signal rather than the only one — removed, swatches now render at full strength
+   here too, matching Blueprint exactly. */
 function renderEventPaletteCard(e){
   return `
     <div class="card">
@@ -8903,7 +8923,7 @@ function renderEventPaletteCard(e){
         </div>
       ` : `
         <div class="palette-band">
-          ${(dashboardData.weddingProfile.colorPalette||[]).map(c=>`<div class="palette-swatch" style="background:${c}; opacity:0.55;"><span class="palette-hex" style="color:${contrastTextColor(c)};">${escapeHtml(c.toUpperCase())}</span></div>`).join('')}
+          ${(dashboardData.weddingProfile.colorPalette||[]).map(c=>`<div class="palette-swatch" style="background:${c};"><span class="palette-hex" style="color:${contrastTextColor(c)};">${escapeHtml(c.toUpperCase())}</span></div>`).join('')}
         </div>
         <p class="detail-hint">This event will use the Master Colour Palette until you give it its own below.</p>
       `}
@@ -9212,6 +9232,50 @@ function renderSuggestedTasksCard(){
       <span style="font-weight:700; color:var(--charcoal); flex-shrink:0;">✦ Often missed:</span>
       <div style="display:flex; gap:8px; flex-wrap:wrap; flex:1;">
         ${ideas.map(idea=>`<span class="attach-chip" style="cursor:pointer;" onclick="addSuggestedTask('${idea.key}')" title="Add this task">+ ${escapeHtml(idea.title)}</span>`).join('')}
+      </div>
+    </div>
+  `;
+}
+/* v1.90.0: a real starter packing list for the Emergency Kit Checklist (Playbook → Run Book),
+   from the same reference content Natasha gave directly when this feature was first built
+   (v1.19.0) — Clothing; Hair, Makeup & Hygiene; Medical; and Misc. A brand-new account starts
+   this kit completely empty ("No categories yet"), with no sense of what actually belongs in
+   one — these suggestions close that gap the same way SUGGESTED_TASK_IDEAS already does for
+   Wedding Plan tasks above: one-click to add, filtered quietly against whatever's already there
+   (case-insensitively, across every category, not just the matching one) so nothing's ever
+   suggested twice. */
+const SUGGESTED_EMERGENCY_KIT_ITEMS = {
+  'Clothing':['Micro-stitch gun','Safety pins','Wrinkle release spray','Sewing kit','Body/clothing tape','Stain remover pen'],
+  'Hair, Makeup & Hygiene':['Hair brush','Bobby pins & U-pins','Lash glue','Mouthwash','Mints','Oil-absorbing sheets','Flushable wipes','Deodorant','Breath strips','Chapstick','Hair elastics','Dry shampoo','Hair spray','Makeup remover wipes'],
+  'Medical':['Tums','Polysporin','Reactine','Gravol','Bandaids','Pepto-Bismol'],
+  'Misc':['Gorilla Glue','Lidocaine spray']
+};
+function suggestedMissingKitItems(){
+  const existing = new Set();
+  Object.values(dashboardData.emergencyKit||{}).forEach(items=>(items||[]).forEach(i=>existing.add(String(i).toLowerCase())));
+  const out = [];
+  Object.keys(SUGGESTED_EMERGENCY_KIT_ITEMS).forEach(cat=>{
+    SUGGESTED_EMERGENCY_KIT_ITEMS[cat].forEach(item=>{
+      if(!existing.has(item.toLowerCase())) out.push({cat, item});
+    });
+  });
+  return out;
+}
+function addSuggestedKitItem(cat, item){
+  if(!dashboardData.emergencyKit || typeof dashboardData.emergencyKit!=='object') dashboardData.emergencyKit = {};
+  if(!Array.isArray(dashboardData.emergencyKit[cat])) dashboardData.emergencyKit[cat] = [];
+  const already = dashboardData.emergencyKit[cat].some(i=>String(i).toLowerCase()===item.toLowerCase());
+  if(!already) dashboardData.emergencyKit[cat].push(item);
+  document.getElementById('content').innerHTML = renderPlaybook();
+}
+function renderSuggestedKitItemsCard(){
+  const missing = suggestedMissingKitItems();
+  if(!missing.length) return '';
+  return `
+    <div class="detail-hint" style="background:var(--ivory-deep); border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+      <span style="font-weight:700; color:var(--charcoal); flex-shrink:0;">✦ Commonly packed:</span>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; flex:1;">
+        ${missing.map(({cat,item})=>`<span class="attach-chip" style="cursor:pointer;" onclick="addSuggestedKitItem('${escapeJsAttr(cat)}','${escapeJsAttr(item)}')" title="Add to ${escapeAttr(cat)}">+ ${escapeHtml(item)}</span>`).join('')}
       </div>
     </div>
   `;
@@ -14800,6 +14864,7 @@ function renderEmergencyKitCard(){
   return `
     <div class="card">
       <div class="card-head"><h4>Emergency Kit Checklist</h4><span class="d-sub">Pack this the morning of</span></div>
+      ${renderSuggestedKitItemsCard()}
       ${cats.length ? cats.map((cat,ci)=>`
         <div class="detail-section">
           <div class="detail-section-head"><h4 style="margin:0;">${escapeHtml(cat)}</h4></div>
@@ -22921,6 +22986,14 @@ const KNOWLEDGE_ARTICLES = [
       "Always have a rain plan communicated to vendors in writing, even if the forecast looks clear — and agree in advance on who makes the final call and by when.",
       "Designate one point of contact (a coordinator, or a trusted friend who isn't in the wedding party) for last-minute vendor questions so the couple isn't fielding logistics on the day itself.",
       "Prepare a small emergency kit or have your coordinator carry one: safety pins, stain remover, pain relievers, a phone charger, and copies of the day-of timeline for each vendor."
+    ]},
+  {id:'g-dayof-2', category:'Day-Of', readTime:'4 min', title:'What to pack in your wedding-day emergency kit', summary:'A real, categorized packing list — clothing fixes, hair & hygiene, medical, and the odd miscellaneous item that saves the day.',
+    body:[
+      "A good emergency kit covers four areas: clothing fixes, hair/makeup/hygiene, medical basics, and a small miscellaneous category for the odd thing that doesn't fit anywhere else. Pack it as one bag that stays with the wedding party all day, not scattered across different people's purses.",
+      "Clothing: a micro-stitch gun or a basic sewing kit, safety pins, body/clothing tape, wrinkle-release spray, and a stain remover pen. Between sitting, dancing, and a day of photos, something coming loose or getting a spot on it is close to guaranteed — these fix almost all of it in under a minute.",
+      "Hair, makeup & hygiene: a hair brush, bobby pins and U-pins, hair elastics, dry shampoo and hair spray, lash glue, makeup remover wipes, oil-absorbing sheets, chapstick, deodorant, mouthwash, mints, breath strips, and flushable wipes. This is the biggest category, and worth over-packing slightly — it covers both touch-ups and the general comfort of a long day in formal wear.",
+      "Medical: Tums, Pepto-Bismol, Reactine, Gravol, Polysporin, and bandaids. Nothing exotic — just the handful of over-the-counter basics that cover an upset stomach, a headache, an allergic reaction, or a small cut without anyone having to leave the venue to find a pharmacy.",
+      "Misc: a tube of Gorilla Glue and a lidocaine spray round out the list — a strong adhesive for a last-minute décor or shoe repair, and a numbing spray that can take the edge off a blister or a tight pair of shoes for the rest of the night. Evera's own Emergency Kit Checklist, inside Wedding Playbook's Run Book tab, has this exact list ready to add with one click per item, organized under these same four categories."
     ]},
   {id:'g-legal-1', category:'Legal & Admin', readTime:'6 min', title:'Changing your name after the wedding (Ontario & Canada)', summary:'The real order to do this in, which offices to go to, and the full checklist of what to update where — sourced from Ontario.ca and Canada.ca.',
     body:[
