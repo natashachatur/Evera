@@ -2464,6 +2464,14 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.88.0', date:'2026-11-27',
+    title:'A real Ontario/Canada name-change guide, closing New Request #28',
+    items:[
+      'The Name Change Checklist was quietly US-centric (Social Security card, "state ID," Voter registration) despite Evera being built for a Canadian wedding — rewritten with 16 real steps for Ontario/Canada specifically, in a sensible order: your marriage or legal name-change certificate, confirming which of Ontario\'s two name-change routes applies to you, OHIP, driver\'s licence/Photo Card, passport, your Social Insurance Number record, telling the CRA, then banking, vehicle registration, PR/citizenship, travel & loyalty accounts, insurance, employer records, utilities, online accounts, and your will.',
+      'A new, real Guides & Tips article — "Changing your name after the wedding (Ontario & Canada)" — walks through the whole process in plain language, sourced from ontario.ca and canada.ca, including the one figure (a 90-day free-change window some third-party sites mention) that couldn\'t be confirmed on Ontario\'s own page and is flagged as needing independent verification rather than stated as fact. Linked directly from both the Name Change card and the checklist itself, and also independently browsable from Guides & Tips under a new "Legal & Admin" category.'
+    ]
+  },
+  {
     version:'1.87.1', date:'2026-11-27',
     title:'Sample wedding sanitized for privacy; simpler landing page',
     items:[
@@ -7990,16 +7998,26 @@ function renderModulePlaceholder(key){
    MY WEDDING — master record
 ================================================================== */
 const TRADITION_PRESETS = ['Western','South Asian / Hindu','Muslim','Sikh','Jewish','Catholic / Christian','Chinese','Korean','Persian','Filipino','Nigerian','Jamaican'];
+/* v1.88.0 — rewritten for Ontario/Canada, replacing the earlier US-centric list
+   (Social Security card, state ID, Voter registration, which don't apply here). Sourced from
+   ontario.ca, canada.ca, and settlement.org — see the companion Guides & Tips article
+   "Changing your name after the wedding (Ontario & Canada)" (g-legal-1) for full detail,
+   sources, and the one figure flagged as needing independent verification. */
 const NAME_CHANGE_STEPS = [
-  {id:'certificate', label:'Get certified copies of your marriage certificate', note:'Order 3–5 — most agencies want an original, not a photocopy.'},
-  {id:'ssa', label:'Social Security card (or national ID)', note:'Start here — most other places will ask to see your updated record first.'},
-  {id:'license', label:"Driver's license / state ID"},
-  {id:'passport', label:'Passport'},
-  {id:'bank', label:'Bank accounts & credit cards'},
-  {id:'employer', label:'Employer, payroll & HR records'},
-  {id:'insurance', label:'Health, auto & life insurance'},
-  {id:'voter', label:'Voter registration'},
-  {id:'utilities', label:'Utilities, lease & mortgage'},
+  {id:'certificate', label:'Get certified copies of your marriage certificate (or your legal name-change certificate)', note:'Order a few — most offices want the real marriage certificate itself, not the officiant\'s Record of Solemnization.'},
+  {id:'ontario-route', label:'Confirm which Ontario process applies to you', note:'Assuming a full last name is free with your marriage certificate; anything else (hyphenating part of it, blending names) needs a formal $25 legal name change — see ontario.ca/page/change-your-last-name.'},
+  {id:'ohip', label:'OHIP health card', note:'Via ServiceOntario — a good place to start, since some other updates go smoother once this is done.'},
+  {id:'license', label:"Driver's licence / Ontario Photo Card", note:'Often doable in the same ServiceOntario visit as OHIP.'},
+  {id:'passport', label:'Passport', note:'A name change means a whole new passport application, not an amendment — update any already-booked travel too, since a name mismatch with your ticket can cause problems at the airport.'},
+  {id:'sin', label:'Social Insurance Number (SIN) record', note:'Required by law after a legal name change. Your number stays the same. Free, online at sin-nas.canada.ca or by mail.'},
+  {id:'cra', label:'Tell the CRA (Canada Revenue Agency)', note:"Not available online. Fastest by phone (1-800-959-8281) if this is your only name change; otherwise mail a certified copy of your certificate to your tax centre. The CRA won't notify other departments for you."},
+  {id:'bank', label:'Bank accounts & credit cards', note:'Most banks want to see your updated ID first.'},
+  {id:'vehicle', label:'Vehicle registration & ownership', note:'Via ServiceOntario.'},
+  {id:'pr-citizenship', label:'PR card or Canadian citizenship certificate', note:'Only if this applies to you, through IRCC.'},
+  {id:'travel', label:'Travel & loyalty accounts', note:'Airline/hotel programs, NEXUS/Trusted Traveler, and any travel already booked.'},
+  {id:'insurance', label:'Health, auto, home & life insurance'},
+  {id:'employer', label:'Employer, payroll & benefits records'},
+  {id:'utilities', label:'Utilities, lease or mortgage, and phone/internet accounts'},
   {id:'accounts', label:'Email, social media & professional accounts (e.g. LinkedIn)'},
   {id:'legal', label:'Will, beneficiaries & other legal documents'}
 ];
@@ -8203,6 +8221,7 @@ function renderNameChangeCard(){
         ${partnerBlock('partner1','partner2')}
         ${partnerBlock('partner2','partner1')}
       </div>
+      <a href="#" class="ch-link" style="display:inline-block; margin-top:10px; font-size:13px;" onclick="openNameChangeGuide(); return false;">📖 Read the Ontario &amp; Canada name-change guide &rarr;</a>
       ${planning.length ? `
         <div style="margin-top:16px; padding:14px 16px; background:${past?'var(--green-tint)':'var(--amber-tint)'}; border-radius:var(--radius-sm);">
           ${past ? `
@@ -8220,6 +8239,11 @@ function openNameChangeChecklist(key){
   nameChangeChecklistKey = key;
   document.getElementById('nameChangeOverlay').innerHTML = renderNameChangeChecklistModal(key);
   document.getElementById('nameChangeOverlay').classList.add('open');
+}
+function openNameChangeGuide(){
+  closeNameChangeChecklist();
+  renderRoute('guides');
+  openArticle('g-legal-1');
 }
 function closeNameChangeChecklist(){
   nameChangeChecklistKey = null;
@@ -8243,6 +8267,7 @@ function renderNameChangeChecklistModal(key){
         <span class="d-sub">${nc.newLast ? `New last name: ${escapeHtml(nc.newLast)}` : 'Track each step as you complete it'}</span>
       </div>
       <div class="pm-progress-track" style="margin:10px 0 16px;"><div class="pm-progress-fill" style="width:${pct}%;"></div></div>
+      <a href="#" class="ch-link" style="display:inline-block; margin-bottom:12px;" onclick="openNameChangeGuide(); return false;">📖 Read the full Ontario &amp; Canada name-change guide &rarr;</a>
       ${NAME_CHANGE_STEPS.map(s=>`
         <div class="event-mini-row">
           <div><div class="em-name">${escapeHtml(s.label)}</div>${s.note?`<div class="em-date">${escapeHtml(s.note)}</div>`:''}</div>
@@ -22857,6 +22882,14 @@ const KNOWLEDGE_ARTICLES = [
       "Always have a rain plan communicated to vendors in writing, even if the forecast looks clear — and agree in advance on who makes the final call and by when.",
       "Designate one point of contact (a coordinator, or a trusted friend who isn't in the wedding party) for last-minute vendor questions so the couple isn't fielding logistics on the day itself.",
       "Prepare a small emergency kit or have your coordinator carry one: safety pins, stain remover, pain relievers, a phone charger, and copies of the day-of timeline for each vendor."
+    ]},
+  {id:'g-legal-1', category:'Legal & Admin', readTime:'6 min', title:'Changing your name after the wedding (Ontario & Canada)', summary:'The real order to do this in, which offices to go to, and the full checklist of what to update where — sourced from Ontario.ca and Canada.ca.',
+    body:[
+      "There are two different ways to change your last name after marriage in Ontario, and they lead to different paperwork. \"Assuming\" your spouse's full last name is free and lets you update your health card, driver's licence, and Ontario Photo Card using your real marriage certificate — not the officiant's Record of Solemnization, which isn't accepted. If you're not assuming a full last name — hyphenating only part of it, blending both names, or anything other than taking one partner's name in full — you need a formal legal name change through ServiceOntario instead, which costs $25 and takes about 6–8 weeks, and comes with its own change-of-name certificate (plus a new birth certificate if you were born in Ontario). See ontario.ca/page/change-your-last-name for the current details and to find your nearest ServiceOntario centre.",
+      "Start with your government ID, in roughly this order: OHIP health card, then your driver's licence or Ontario Photo Card (often doable in the same ServiceOntario visit), then your passport. A name change on your passport means applying for an entirely new passport, not an amendment — Canada.ca's passport pages note that the ID you submit needs to already show your new name, and that a mismatch between your ticket and your ID can cause real problems at the airport, so update any already-booked travel too.",
+      "Two federal updates are easy to miss because neither one is automatic. Your Social Insurance Number (SIN) record is required by law to be updated after a legal name change — your number itself never changes, only the name attached to it — and it's free, done either online at sin-nas.canada.ca or by mail. Separately, the CRA has to be told directly; they don't accept name changes online. If this is your only name change (not also changing a first name), the fastest route is by phone with your SIN, full name and date of birth, address, and a recent tax document on hand. Changing more than your last name means mailing a certified copy of your marriage certificate or legal name-change certificate to your tax centre instead, which takes 4–6 weeks. Worth knowing: the CRA will not share your updated name with other government departments on your behalf — each one needs telling separately.",
+      "From there, work through the rest in whatever order makes sense for you: bank accounts and credit cards (most banks want to see updated ID first), vehicle registration, a PR card or citizenship certificate if either applies, travel and airline/hotel loyalty accounts, health/auto/home/life insurance, your employer's payroll and benefits records, utilities and your lease or mortgage, email/social/professional accounts like LinkedIn, and your will and named beneficiaries.",
+      "One figure worth double-checking yourself before you count on it: some third-party guides describe the formal legal name change as free within 90 days of the wedding and $25 after that, but that window isn't confirmed on Ontario's own page as of this writing — check directly with ServiceOntario if the timing affects your decision. Evera's own Name Change Checklist (in Wedding Party, once your wedding date has passed) tracks every step above for each of you individually, so nothing gets missed."
     ]}
 ];
 function guidesCategories(){ return ['All', ...Array.from(new Set(KNOWLEDGE_ARTICLES.map(a=>a.category)))]; }
