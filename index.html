@@ -70,6 +70,30 @@
     .deploy-banner{flex-direction:column; gap:6px; padding:10px 14px; text-align:center;}
     .deploy-banner .db-dot{display:none;}
   }
+  /* v1.86.1 — a second, more urgent banner: this tab's wedding data is out of date because
+     another tab/device saved a newer version of it since this one loaded. See the
+     "multi-tab last-writer-wins" fix in saveWeddingRecordIfCurrent() for why this exists —
+     without it, saving from a stale tab would silently overwrite someone else's newer edits
+     with no warning at all. Takes visual priority over the deploy banner (it replaces it,
+     rather than stacking under/over it) since losing real wedding data is more urgent than
+     a new app version being available. */
+  .data-conflict-banner{
+    position:fixed; top:0; left:0; right:0; z-index:2001;
+    display:none; align-items:center; justify-content:center; gap:14px;
+    min-height:42px; padding:10px 20px; background:var(--terracotta); color:#fff;
+    font-size:12.5px; font-weight:600; letter-spacing:0.01em; box-shadow:0 2px 14px rgba(43,42,38,0.18);
+  }
+  .data-conflict-banner.show{display:flex;}
+  .data-conflict-banner-actions{display:flex; align-items:center; gap:10px; flex-shrink:0;}
+  .data-conflict-banner button{font-size:12px; font-weight:700; border-radius:999px; border:none; padding:5px 14px; cursor:pointer; background:#fff; color:var(--terracotta);}
+  .data-conflict-banner button:hover{opacity:0.9;}
+  body.has-data-conflict-banner{padding-top:var(--data-conflict-banner-h,46px);}
+  body.has-data-conflict-banner .sidebar,
+  body.has-data-conflict-banner .topbar{top:var(--data-conflict-banner-h,46px);}
+  body.has-data-conflict-banner .sidebar{height:calc(100vh - var(--data-conflict-banner-h,46px));}
+  @media (max-width:640px){
+    .data-conflict-banner{flex-direction:column; gap:6px; padding:10px 14px; text-align:center;}
+  }
 
   /* ---------------- VIEW SWITCHING ---------------- */
   .view{display:none; min-height:100vh;}
@@ -100,6 +124,24 @@
   .landing-sample-teaser{margin-top:20px; font-size:12.5px; color:var(--charcoal-faint); line-height:1.7;}
   .landing-foot{margin-top:26px; font-size:13px; color:var(--charcoal-faint);}
   .landing-foot a{color:var(--green); font-weight:600; border-bottom:1px solid var(--champagne);}
+  /* v1.86.0 — a small pre-login nav strip to the About/Story/Pricing placeholder pages,
+     and the static-page layout those three pages themselves use. */
+  .landing-prenav{margin-top:18px; display:flex; gap:18px; justify-content:center; flex-wrap:wrap; font-size:12.5px; font-weight:600; letter-spacing:0.02em; color:var(--charcoal-faint);}
+  .landing-prenav a{color:var(--charcoal-soft); cursor:pointer; border-bottom:1px solid transparent;}
+  .landing-prenav a:hover{color:var(--green); border-bottom-color:var(--champagne);}
+  .static-page{display:none; min-height:100vh; background:linear-gradient(180deg, var(--ivory) 0%, var(--ivory-deep) 100%); padding:60px 24px 80px;}
+  #view-about.active, #view-story.active, #view-pricing.active{display:block;}
+  .static-page-inner{max-width:680px; margin:0 auto; text-align:center;}
+  .static-page-inner .landing-brand{margin-bottom:36px;}
+  .static-page-inner h1{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:clamp(32px,5vw,46px); line-height:1.15;}
+  .static-page-body{margin-top:26px; text-align:left; font-size:16px; line-height:1.8; color:var(--charcoal-soft);}
+  .static-page-body p{margin:0 0 18px;}
+  .static-page-placeholder{margin-top:26px; padding:22px 26px; border-radius:14px; border:1px dashed var(--champagne); background:var(--ivory); text-align:left; font-size:14.5px; line-height:1.7; color:var(--charcoal-faint);}
+  .pricing-tiers{margin-top:30px; display:flex; gap:18px; justify-content:center; flex-wrap:wrap;}
+  .pricing-tile{flex:1 1 180px; max-width:220px; border:1px solid var(--line); border-radius:14px; padding:24px 18px; background:var(--ivory);}
+  .pricing-tile h3{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif; font-size:20px; margin:0 0 8px;}
+  .pricing-tile .pricing-figure{font-size:13px; font-weight:700; letter-spacing:0.03em; color:var(--champagne-dark); text-transform:uppercase;}
+  .static-page-back{display:inline-block; margin-top:34px; font-size:13px; color:var(--charcoal-faint); cursor:pointer; border-bottom:1px solid var(--champagne);}
 
   .btn{display:inline-flex; align-items:center; gap:8px; padding:14px 28px; border-radius:999px; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; font-weight:700; border:1px solid var(--green); transition:transform .18s ease, box-shadow .18s ease;}
   .btn:hover{transform:translateY(-2px); box-shadow:0 12px 24px rgba(38,51,42,0.16);}
@@ -223,6 +265,7 @@
   .save-status-saving{color:var(--amber);}
   .save-status-saved{color:var(--ok);}
   .save-status-error{color:var(--terracotta);}
+  .save-status-conflict{color:var(--terracotta); font-weight:700;}
   .save-status-demo{color:var(--amber); text-transform:uppercase; letter-spacing:0.04em; font-size:11px;}
 
   /* ---- v1.49.0: undo toast — the lightweight alternative to a confirmation modal for
@@ -920,6 +963,18 @@
   .field-cell label{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint);}
   .field-cell input, .field-cell select{padding:8px 11px; border-radius:8px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:var(--charcoal);}
   .notes-field{width:100%; min-height:120px; resize:vertical; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; background:var(--ivory); color:var(--charcoal);}
+  /* v1.85.0 — rich-text composer (Communications Center) */
+  .rte-toolbar{display:flex; gap:4px; margin-top:4px; margin-bottom:6px;}
+  .rte-btn{width:30px; height:30px; border-radius:7px; border:1px solid var(--line); background:var(--ivory); cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; color:var(--charcoal);}
+  .rte-btn:hover{background:var(--champagne);}
+  .rte-link-row{display:flex; gap:6px; align-items:center; margin-bottom:6px;}
+  .rte-link-row input{flex:1; padding:7px 10px; border-radius:7px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:12.5px;}
+  .rte-editor{min-height:120px; overflow-y:auto; line-height:1.6;}
+  .rte-editor:empty:before{content:attr(data-placeholder); color:var(--charcoal-faint);}
+  .rte-editor a{color:var(--green); text-decoration:underline;}
+  .rte-rendered a{color:var(--green); text-decoration:underline;}
+  .rte-rendered p{margin:0 0 10px;}
+  .rte-rendered p:last-child{margin-bottom:0;}
   .notes-field-sm{min-height:64px;}
   .notes-field-lg{min-height:210px;}
   .select-field{width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--line); background:var(--ivory); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:13px; color:var(--charcoal);}
@@ -1680,6 +1735,13 @@
     <button type="button" class="db-dismiss-btn" onclick="dismissDeployBanner()" aria-label="Dismiss">×</button>
   </div>
 </div>
+<!-- ============ DATA CONFLICT BANNER (v1.86.1) ============ -->
+<div class="data-conflict-banner" id="dataConflictBanner" role="alert" aria-live="assertive">
+  <span id="dataConflictBannerText">This tab's wedding data is out of date — another tab or device saved newer changes. Your last edit here wasn't saved, to avoid overwriting them. Refresh to see the latest, then make your edit again.</span>
+  <div class="data-conflict-banner-actions">
+    <button type="button" id="dataConflictRefreshBtn" onclick="performReload()">Refresh Now</button>
+  </div>
+</div>
 <!-- ============ LANDING ============ -->
 <section id="view-landing" class="view active">
   <div class="landing-motif">
@@ -1700,6 +1762,47 @@
     </div>
     <div class="landing-sample-teaser">The sample wedding: <strong>Natasha &amp; Matteo</strong> — King City &amp; Toronto, ON<br>Mehndi · Sangeet · Rehearsal Dinner · Nikkah Ceremony · Church Ceremony · Civil &amp; Reception</div>
     <div class="landing-foot">Already planning with Evera? <a href="#" onclick="showAuth('login'); return false;">Sign in</a></div>
+    <!-- v1.86.0: pre-login nav to the About/Story/Pricing placeholder pages -->
+    <div class="landing-prenav">
+      <a onclick="goTo('about')">About Us</a>
+      <a onclick="goTo('story')">Why We Built Evera</a>
+      <a onclick="goTo('pricing')">Pricing</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT US (placeholder — real copy pending from Natasha) ============ -->
+<section id="view-about" class="view static-page">
+  <div class="static-page-inner">
+    <div class="landing-brand"><span>Evera</span></div>
+    <h1>About Us</h1>
+    <div class="static-page-placeholder">This page is a placeholder — the real About Us copy (who's behind Evera, and what the team is about) is still being written. Check back soon.</div>
+    <a class="static-page-back" onclick="goTo('landing')">← Back to Evera</a>
+  </div>
+</section>
+
+<!-- ============ WHY THIS TOOL WAS CREATED (placeholder — real copy pending from Natasha) ============ -->
+<section id="view-story" class="view static-page">
+  <div class="static-page-inner">
+    <div class="landing-brand"><span>Evera</span></div>
+    <h1>Why We Built Evera</h1>
+    <div class="static-page-placeholder">This page is a placeholder — the real story of why Evera was created is still being written. Check back soon.</div>
+    <a class="static-page-back" onclick="goTo('landing')">← Back to Evera</a>
+  </div>
+</section>
+
+<!-- ============ PRICING (honest placeholder — no real pricing model set yet) ============ -->
+<section id="view-pricing" class="view static-page">
+  <div class="static-page-inner">
+    <div class="landing-brand"><span>Evera</span></div>
+    <h1>Pricing</h1>
+    <div class="static-page-placeholder">We're still finalizing our pricing — Evera is free to explore while we figure that out. Check back soon for details.</div>
+    <div class="pricing-tiers">
+      <div class="pricing-tile"><h3>Explore</h3><div class="pricing-figure">Free, for now</div></div>
+      <div class="pricing-tile"><h3>Plan</h3><div class="pricing-figure">Coming soon</div></div>
+      <div class="pricing-tile"><h3>Planner</h3><div class="pricing-figure">Coming soon</div></div>
+    </div>
+    <a class="static-page-back" onclick="goTo('landing')">← Back to Evera</a>
   </div>
 </section>
 
@@ -2305,6 +2408,27 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.86.1', date:'2026-11-27',
+    title:'Fixed a real data-loss bug: an old tab could silently overwrite newer changes',
+    items:[
+      'Natasha caught this live: two browser tabs open on the same account showed different data, and after refreshing both, the newer edits (full partner names, the real venue, the real date) were gone — only the older, less-complete version remained. Root cause: an open tab never knew if something had been saved from somewhere else since it loaded, so when that older tab made any edit, its autosave wrote its entire old snapshot back over the newer one, with no warning. Saving now checks, at the moment it actually writes, whether another tab or device has saved something newer in the meantime — if so, it refuses to overwrite it and shows a clear banner asking you to refresh and redo that one edit, rather than silently destroying the newer data. Normal single-tab editing is completely unaffected.'
+    ]
+  },
+  {
+    version:'1.86.0', date:'2026-11-27',
+    title:'Placeholder pages for About Us, Why We Built Evera, and Pricing',
+    items:[
+      'A few placeholder pages, reachable before signing in, per Natasha\'s direct request: About Us, a "Why We Built Evera" story page, and Pricing — each linked from a small new nav row on the landing page, each with its own honest "this is a placeholder" note rather than invented company copy. Pricing specifically says pricing is still being finalized, with no fabricated numbers. The real About Us and origin-story copy is still to come, straight from Natasha.'
+    ]
+  },
+  {
+    version:'1.85.0', date:'2026-11-27',
+    title:'Rich-text composing in the Communications Center',
+    items:[
+      'The Communications Center message box is now a real rich-text composer instead of a plain text box — bold, italic, and clickable links, so an email to your guests can actually look like an email. Pasting always lands as plain text (no stray formatting riding in from somewhere else), and the Review & Send preview shows the real formatting before you send. Texts stay plain text either way, since SMS has no formatting of its own. This covers the rich-text half of an earlier request — a notification for guest replies is still a separate, open item.'
+    ]
+  },
   {
     version:'1.84.2', date:'2026-11-27',
     title:'Event tabs reordered: Details now sits right after Overview',
@@ -3378,6 +3502,26 @@ function dismissDeployBanner(){
   if(banner) banner.classList.remove('show');
   document.body.classList.remove('has-deploy-banner');
 }
+// v1.86.1 — shown the moment a save is refused because this tab's data has gone stale (see
+// finishWeddingSave/saveWeddingRecordIfCurrent). Deliberately has no dismiss (×) button — unlike
+// the deploy banner, this isn't just "something new is available whenever you get to it"; the
+// tab is actively wrong right now, so it stays up until a refresh actually fixes that. If the
+// deploy banner also happens to be showing, it's hidden in favor of this one — a stale-data
+// warning is more urgent than a new-version notice, and showing both stacked/overlapping would
+// be more confusing than useful.
+let dataConflictBannerShown = false;
+function showDataConflictBanner(){
+  if(dataConflictBannerShown) return; // already up — don't re-measure/re-announce on every retry
+  dataConflictBannerShown = true;
+  dismissDeployBanner();
+  const banner = document.getElementById('dataConflictBanner');
+  if(!banner) return;
+  banner.classList.add('show');
+  document.body.classList.add('has-data-conflict-banner');
+  requestAnimationFrame(()=>{
+    document.documentElement.style.setProperty('--data-conflict-banner-h', banner.offsetHeight + 'px');
+  });
+}
 
 /* What's New used to be a popup (.item-modal, no max-height/scroll of its own) — with 11+
    releases of content it simply ran off the bottom of the screen with no way to see the rest.
@@ -3537,7 +3681,15 @@ let guestMessageComposeTarget = ''; // the specific eventId / tag / rsvp status 
 // review-before-send confirmation step, on top of the v1.46.0 compose flow above. Still simulated/logged,
 // not real delivery — see Tier 1 #3 in the backlog for the real-sending prerequisite.
 let commsDraftSubject = ''; // persists across audience-type switches so composing a message never loses your text
-let commsDraftBody = '';
+let commsDraftBody = ''; // always a PLAIN-TEXT mirror of the rich draft below — used for SMS (which has no formatting) and as the reliable fallback body everywhere a plain string is still expected
+// v1.85.0 — rich-text composing (New Request #77's still-open first half: "I would like to
+// eventually have rich text so that it's set up like an actual email"). The real source of truth
+// for the compose box's content is this sanitized HTML string; commsDraftBody above is always
+// kept as its plain-text equivalent, synced together on every edit — see syncRichTextDraft().
+let commsDraftBodyHtml = '';
+let richTextSavedRange = null; // the editor's selection, captured right before opening the Add Link row, so inserting the link lands exactly where the cursor was
+let richTextLinkInputOpen = false;
+let richTextPendingLinkUrl = '';
 let commsPreviewOpen = false; // true once "Review & Send" has been clicked, showing the confirm panel instead of the form
 let commsRecipientListOpen = false; // whether the "Review recipients" names list is expanded inside the confirm panel
 let commsPickerOpen = false; // whether the "hand-pick specific people" household checklist is expanded
@@ -5470,7 +5622,25 @@ function getWeddingRecordPayload(){
 // publicWeddingSites, or any other failure here, must never make the main autosave — the one
 // Natasha actually depends on to not lose her edits — look like it failed too.
 async function finishWeddingSave(targetUid){
-  await window.everaFirebase.saveWeddingRecord(targetUid, getWeddingRecordPayload());
+  const payload = getWeddingRecordPayload();
+  // v1.86.1: use the transaction-guarded save, not the plain one, so a tab that's gone stale
+  // (another tab/device has saved something newer since this one loaded) can never silently
+  // overwrite it — see saveWeddingRecordIfCurrent and weddingRecordKnownUpdatedAt above.
+  // Falls back to the plain save if saveWeddingRecordIfCurrent isn't available (only ever true
+  // in a test that stubs window.everaFirebase itself with an older/narrower fake) so this
+  // doesn't require touching every test file that exercises autosave.
+  let result = { conflict: false };
+  if(typeof window.everaFirebase.saveWeddingRecordIfCurrent === 'function'){
+    result = await window.everaFirebase.saveWeddingRecordIfCurrent(targetUid, payload, weddingRecordKnownUpdatedAt);
+  } else {
+    await window.everaFirebase.saveWeddingRecord(targetUid, payload);
+  }
+  if(result && result.conflict){
+    const err = new Error('This tab\'s wedding data is out of date — refresh to see the latest.');
+    err.isStaleTabConflict = true;
+    throw err;
+  }
+  weddingRecordKnownUpdatedAt = payload.updatedAt;
   try{
     await window.everaFirebase.savePublicWeddingSite(targetUid, buildWeddingWebsiteExport());
   } catch(err){
@@ -5484,6 +5654,15 @@ let weddingSaveTimer = null;
 // not yet fired); weddingSaveInFlight covers the gap after it fires but before the write resolves.
 let weddingSavePending = false;
 let weddingSaveInFlight = null;
+// v1.86.1 — multi-tab data-loss fix (Natasha's direct report: two tabs open on the same
+// account showed different data, and after refreshing both, the NEWER edits were gone —
+// an older tab, still holding an earlier in-memory snapshot of the whole record, had saved
+// over the newer one). This tracks the `updatedAt` of the record THIS tab last knew to be
+// the real saved state — set when a record is loaded (loadAndApplyWeddingRecord) and after
+// every successful save (finishWeddingSave) — so a save can check, right before writing,
+// whether some OTHER tab/device has saved something newer in the meantime. null means
+// "no saved record yet" (a brand-new account), which is never treated as a conflict.
+let weddingRecordKnownUpdatedAt = null;
 function persistWeddingRecord(){
   // v1.63.0 bugfix: cancel any previously-scheduled save FIRST, unconditionally — even on a
   // call that's about to no-op below. Otherwise a save queued while viewing one account's data
@@ -5507,8 +5686,17 @@ function persistWeddingRecord(){
         await finishWeddingSave(targetUid);
         setSaveStatus('saved');
       } catch(err){
-        console.error('Failed to save wedding record', err);
-        setSaveStatus('error');
+        if(err && err.isStaleTabConflict){
+          // v1.86.1: don't report this as a generic save error — it's a specific, actionable
+          // situation (this tab is behind another tab/device) with its own clear banner telling
+          // the user exactly what to do, rather than a vague "check your connection" message.
+          console.warn('Not saving — this tab\'s data is out of date', err);
+          setSaveStatus('conflict');
+          showDataConflictBanner();
+        } else {
+          console.error('Failed to save wedding record', err);
+          setSaveStatus('error');
+        }
       } finally {
         weddingSavePending = false;
         weddingSaveInFlight = null;
@@ -5547,8 +5735,16 @@ async function flushPendingSaveThenReload(){
     if(weddingSaveInFlight) await weddingSaveInFlight;
     weddingSaveInFlight = null;
   } catch(err){
-    console.error('Failed to save before refreshing for a new version', err);
     weddingSaveInFlight = null;
+    if(err && err.isStaleTabConflict){
+      // v1.86.1: this tab was already stale (another tab/device saved something newer) —
+      // refreshing is exactly the right next step here, not something to block. The pending
+      // edit in THIS tab wasn't saved, so say so plainly, then let the refresh proceed.
+      alert("This tab's wedding data was out of date, so your last change here couldn't be saved (to avoid overwriting the newer version). Refreshing now to show the latest — you'll need to make that change again.");
+      performReload();
+      return;
+    }
+    console.error('Failed to save before refreshing for a new version', err);
     if(btn){ btn.disabled = false; btn.textContent = 'Refresh Now'; }
     alert("Your last change couldn't be saved — check your connection, then try Refresh Now again once it's saved, so it isn't lost.");
     return;
@@ -5619,7 +5815,7 @@ document.addEventListener('keydown', function(event){
 function setSaveStatus(status){
   const el = document.getElementById('globalSaveStatus');
   if(!el) return;
-  const labels = { saving:'Saving…', saved:'Saved ✓', error:'Couldn\'t save — check your connection' };
+  const labels = { saving:'Saving…', saved:'Saved ✓', error:'Couldn\'t save — check your connection', conflict:'Not saved — refresh needed' };
   el.textContent = labels[status] || '';
   el.className = 'save-status save-status-' + status;
 }
@@ -5646,12 +5842,20 @@ async function loadAndApplyWeddingRecord(uid){
   if(!window.everaFirebase) return false;
   try{
     const data = await window.everaFirebase.loadWeddingRecord(uid);
-    if(!data) return false;
+    if(!data){
+      // v1.86.1: a brand-new account with no saved record yet — there's nothing for a
+      // concurrent save to conflict with until the first save creates it.
+      weddingRecordKnownUpdatedAt = null;
+      return false;
+    }
     // Merge onto the neutral empty shape (not the demo), then normalize —
     // this is what makes it safe for an old, narrower saved record (from
     // before whole-app persistence existed) to load without crashing AND
     // without any sample-wedding content leaking into a real account.
     dashboardData = normalizeDashboardData(Object.assign({}, emptyAccountDashboardData(), data));
+    // v1.86.1: remember exactly which saved version THIS tab just loaded, so a later save
+    // from this tab can tell whether some other tab/device has since saved something newer.
+    weddingRecordKnownUpdatedAt = (typeof data.updatedAt === 'number') ? data.updatedAt : null;
     return true;
   } catch(err){
     console.error('Failed to load wedding record', err);
@@ -17721,6 +17925,149 @@ function guestMessageBodyWithSignature(body){
   if(!sig) return trimmed;
   return `${trimmed}\n\n${sig}`;
 }
+// v1.85.0 — the HTML-aware twin of guestMessageBodyWithSignature above, for the rich-text email
+// body: appends the same signature line as its own paragraph rather than a plain "\n\n" (which
+// would just be invisible whitespace in rendered HTML).
+function guestMessageBodyWithSignatureHtml(html){
+  const sig = guestMessageSignatureLine();
+  if(!sig) return html;
+  return `${html}<p>${escapeHtml(sig)}</p>`;
+}
+/* ================== v1.85.0 — rich-text composing (New Request #77) ==================
+   "I would like to eventually have rich text so that it's set up like an actual email." The
+   plain <textarea> composer is replaced with a small contenteditable editor plus a Bold/Italic/
+   Link toolbar. Two things made this worth doing carefully rather than just swapping the
+   element:
+   1. This app re-renders #content wholesale on almost every state change (reassigning innerHTML),
+      which would destroy a contenteditable element's live cursor/selection mid-edit. So none of
+      the toolbar actions below trigger a full module re-render — they act directly on the live
+      editor DOM node and its own selection, and only sync the result into the commsDraftBody/
+      commsDraftBodyHtml JS variables afterward. The editor is only ever reseeded from those
+      variables when the surrounding module genuinely re-renders for some other reason (switching
+      audience, opening the picker, etc.) — exactly the same "don't fight the user's typing"
+      principle the plain textarea already followed with oninput="commsDraftBody=this.value".
+   2. sendGuestEmail is a signed-in callable Cloud Function, reachable directly by any
+      authenticated account, not only through this UI — so whatever HTML this editor produces is
+      sanitized to a small tag/attribute allowlist (sanitizeRichMessageHtml) before it's ever
+      stored in commsDraftBodyHtml, rendered back as real markup in the Review & Send preview, or
+      sent. The Cloud Function itself (functions/index.js sanitizeEmailHtml) sanitizes again,
+      independently, since client-side sanitization alone is not a real security boundary. */
+const RICH_TEXT_ALLOWED_TAGS = { b:true, strong:true, i:true, em:true, a:true, p:true, div:true, br:true, ul:true, ol:true, li:true };
+function sanitizeRichMessageHtml(dirtyHtml){
+  const template = document.createElement('template');
+  template.innerHTML = String(dirtyHtml || '');
+  function cleanNode(node){
+    if(node.nodeType === Node.TEXT_NODE) return document.createTextNode(node.textContent);
+    if(node.nodeType !== Node.ELEMENT_NODE) return null;
+    const tag = node.tagName.toLowerCase();
+    if(tag === 'script' || tag === 'style') return null; // drop entirely, including their text content
+    const children = Array.from(node.childNodes).map(cleanNode).filter(Boolean);
+    if(!RICH_TEXT_ALLOWED_TAGS[tag]){
+      // Not an allowed element — drop the wrapper itself, but keep its already-cleaned contents,
+      // so e.g. a pasted <span style="..."> still keeps its text, just not the span or its style.
+      const frag = document.createDocumentFragment();
+      children.forEach(c=>frag.appendChild(c));
+      return frag;
+    }
+    const clean = document.createElement(tag);
+    if(tag === 'a'){
+      const href = (node.getAttribute('href')||'').trim();
+      if(/^(https?:|mailto:)/i.test(href)){
+        clean.setAttribute('href', href);
+        clean.setAttribute('rel', 'noopener noreferrer');
+        clean.setAttribute('target', '_blank');
+      }
+      // No safe href -> keep the link's text, just not as a clickable anchor.
+    }
+    children.forEach(c=>clean.appendChild(c));
+    return clean;
+  }
+  const out = document.createElement('div');
+  Array.from(template.content.childNodes).forEach(n=>{
+    const cleaned = cleanNode(n);
+    if(cleaned) out.appendChild(cleaned);
+  });
+  return out.innerHTML;
+}
+// Plain-text mirror of the rich draft — used for SMS (which has no formatting at all) and as the
+// reliable fallback body everywhere a plain string is still expected (Message History's "body"
+// field, Retry on a pre-rich-text log entry, etc.). Block-level elements become line breaks so
+// paragraphs/line breaks in the rich editor still read sensibly as plain text.
+function htmlToPlainText(html){
+  const div = document.createElement('div');
+  div.innerHTML = String(html || '');
+  div.querySelectorAll('br').forEach(br=>br.replaceWith('\n'));
+  div.querySelectorAll('p, div, li').forEach(el=>el.insertAdjacentText('beforeend', '\n'));
+  return (div.textContent || '').replace(/\n{3,}/g, '\n\n').trim();
+}
+// Reads the live editor's current content, sanitizes it, and syncs both draft variables — called
+// on every input/paste/toolbar action, but deliberately never re-renders the module (see the
+// comment block above).
+function syncRichTextDraft(){
+  const el = document.getElementById('guestMsgBody');
+  if(!el) return;
+  commsDraftBodyHtml = sanitizeRichMessageHtml(el.innerHTML);
+  commsDraftBody = htmlToPlainText(commsDraftBodyHtml);
+}
+// Bold/Italic: document.execCommand is deprecated but still the simplest way to toggle inline
+// formatting on the current selection inside a contenteditable element, and every major browser
+// still implements it for exactly this case. The toolbar buttons use onmousedown="event.
+// preventDefault()" so clicking one never steals focus/selection away from the editor first.
+function richTextExec(command){
+  const el = document.getElementById('guestMsgBody');
+  if(!el) return;
+  el.focus();
+  document.execCommand(command, false, null);
+  syncRichTextDraft();
+}
+function toggleRichTextLinkInput(){
+  const sel = window.getSelection();
+  if(sel && sel.rangeCount > 0) richTextSavedRange = sel.getRangeAt(0).cloneRange();
+  richTextLinkInputOpen = !richTextLinkInputOpen;
+  richTextPendingLinkUrl = '';
+  const row = document.getElementById('rteLinkRow');
+  if(row){
+    row.style.display = richTextLinkInputOpen ? 'flex' : 'none';
+    if(richTextLinkInputOpen){
+      const input = document.getElementById('rteLinkUrl');
+      if(input) input.focus();
+    }
+  }
+}
+function cancelRichTextLink(){
+  richTextLinkInputOpen = false;
+  richTextPendingLinkUrl = '';
+  const row = document.getElementById('rteLinkRow');
+  if(row) row.style.display = 'none';
+}
+function applyRichTextLink(){
+  const raw = (richTextPendingLinkUrl||'').trim();
+  if(!raw){ cancelRichTextLink(); return; }
+  const url = /^https?:\/\//i.test(raw) || /^mailto:/i.test(raw) ? raw : `https://${raw}`;
+  const el = document.getElementById('guestMsgBody');
+  const sel = window.getSelection();
+  if(el && sel && richTextSavedRange){
+    el.focus();
+    sel.removeAllRanges();
+    sel.addRange(richTextSavedRange);
+    // A link needs selected text to attach to — if nothing was selected, insert the URL itself as
+    // the link text rather than silently doing nothing.
+    if(sel.isCollapsed) document.execCommand('insertText', false, url);
+    document.execCommand('createLink', false, url);
+  }
+  cancelRichTextLink();
+  syncRichTextDraft();
+}
+// Pasting arbitrary content (e.g. from a webpage) could otherwise carry along styles, scripts, or
+// other markup sanitizeRichMessageHtml would mostly strip anyway — pasting as plain text from the
+// start keeps the editor's own formatting predictable and avoids ever round-tripping anything
+// dangerous through the live DOM in the first place.
+function handleRichTextPaste(event){
+  event.preventDefault();
+  const text = (event.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
+  syncRichTextDraft();
+}
 // v1.78.0: fixed per direct feedback — the "To" field used to just say "1 hand-picked household you
 // chose below" no matter who was actually picked. Now lists the real household/family names, with a
 // "…" when there are too many to read comfortably on one line (the full list is still shown via a
@@ -17834,11 +18181,14 @@ function renderCommsPicker(){
   `;
 }
 function openCommsPreview(){
-  const bodyEl = document.getElementById('guestMsgBody');
+  // v1.85.0: the editor is a contenteditable div now, not a <textarea> with a .value — its live
+  // content is kept synced into commsDraftBody/commsDraftBodyHtml on every input already (see
+  // syncRichTextDraft), but this one last sync right before checking guards against any edit that
+  // somehow didn't fire its input handler.
+  syncRichTextDraft();
   const subjectEl = document.getElementById('guestMsgSubject');
-  commsDraftBody = (bodyEl && bodyEl.value || '').trim();
   commsDraftSubject = (subjectEl && subjectEl.value || '').trim();
-  if(!commsDraftBody) return;
+  if(!commsDraftBody.trim()) return;
   const type = guestMessageComposeType;
   if(type==='specific' ? !commsSpecificSelection.length : (type!=='all' && type!=='weddingParty' && !guestMessageComposeTarget)) return;
   commsPreviewOpen = true;
@@ -17867,7 +18217,10 @@ async function confirmSendGuestMessage(){
   // v1.80.0: the signature is baked into `body` here, once, before it's either sent or logged —
   // so Message History's "what was included" view and any later Retry both show/reuse the exact
   // signed text that actually went out, rather than re-deriving it each time.
+  // v1.85.0: `bodyHtml` is the same thing, rich-formatted, for the real email send and for
+  // Message History's detail view to show the actual formatting that went out.
   const subject = commsDraftSubject, body = guestMessageBodyWithSignature(commsDraftBody), channel = commsSendChannel;
+  const bodyHtml = guestMessageBodyWithSignatureHtml(sanitizeRichMessageHtml(commsDraftBodyHtml));
   const contacts = guestMessageRecipientContacts(type, target);
 
   commsSending = true;
@@ -17876,7 +18229,7 @@ async function confirmSendGuestMessage(){
 
   const logEntry = {
     id:'gmsg-'+Date.now().toString(36), sentAt:new Date().toISOString(),
-    recipientLabel:label, recipientCount:count, subject, body, channel,
+    recipientLabel:label, recipientCount:count, subject, body, bodyHtml, channel,
     // v1.77.0: kept so a failed send can be retried later (retryFailedSend below) without the
     // couple having to re-pick the same audience — a retry needs the exact contacts that were
     // actually targeted, not just the recomputed-live audience (which could have changed since).
@@ -17888,7 +18241,7 @@ async function confirmSendGuestMessage(){
 
   try{
     let emailResult = null, smsResult = null;
-    if(channel==='email' || channel==='both') emailResult = await window.everaFirebase.sendGuestEmail(contacts, subject, body);
+    if(channel==='email' || channel==='both') emailResult = await window.everaFirebase.sendGuestEmail(contacts, subject, body, bodyHtml);
     if(channel==='sms' || channel==='both') smsResult = await window.everaFirebase.sendGuestSms(contacts, body);
     logEntry.emailResult = emailResult;
     logEntry.smsResult = smsResult;
@@ -17946,14 +18299,17 @@ async function retryFailedSend(logId){
   const retryEntry = {
     id:'gmsg-'+Date.now().toString(36), sentAt:new Date().toISOString(),
     recipientLabel:`Resend — failed recipients from "${g.recipientLabel}" (${new Date(g.sentAt).toLocaleDateString()})`,
-    recipientCount:retryContacts.length, subject:g.subject, body:g.body,
+    // v1.85.0: reuse the original bodyHtml unchanged too, when it has one (a send from before this
+    // feature won't — sendGuestEmail falls back to auto-generating one from the plain body, exactly
+    // as it always did).
+    recipientCount:retryContacts.length, subject:g.subject, body:g.body, bodyHtml:g.bodyHtml,
     channel: retryEmail && retrySms ? 'both' : (retryEmail ? 'email' : 'sms'),
     contacts: retryContacts, retryOfId: g.id
   };
 
   try{
     let emailResult = null, smsResult = null;
-    if(retryEmail) emailResult = await window.everaFirebase.sendGuestEmail(emailContacts, g.subject, g.body);
+    if(retryEmail) emailResult = await window.everaFirebase.sendGuestEmail(emailContacts, g.subject, g.body, g.bodyHtml);
     if(retrySms) smsResult = await window.everaFirebase.sendGuestSms(smsContacts, g.body);
     retryEntry.emailResult = emailResult;
     retryEntry.smsResult = smsResult;
@@ -17974,9 +18330,10 @@ async function retryFailedSend(logId){
 function finishCommsSendFlow(){
   commsSendResult = null;
   guestMessageComposeType = 'all'; guestMessageComposeTarget = '';
-  commsDraftSubject = ''; commsDraftBody = ''; commsSendChannel = 'email';
+  commsDraftSubject = ''; commsDraftBody = ''; commsDraftBodyHtml = ''; commsSendChannel = 'email';
   commsSpecificSelection = []; commsPickerOpen = false; commsPickerSearch = '';
   commsPreviewOpen = false; commsRecipientListOpen = false;
+  richTextLinkInputOpen = false; richTextPendingLinkUrl = ''; richTextSavedRange = null;
   document.getElementById('content').innerHTML = renderMessagesModule();
 }
 function renderSendResultSummary(){
@@ -18015,8 +18372,11 @@ function renderCommsConfirmPanel(){
       </div>` : ''}
       <div class="detail-section" style="margin-top:14px;background:var(--ivory-deep);padding:12px;border-radius:var(--radius-sm);">
         ${commsDraftSubject ? `<div style="font-weight:700;font-size:13px;margin-bottom:4px;">${escapeHtml(commsDraftSubject)}</div>` : ''}
-        <div style="font-size:13px;white-space:pre-wrap;">${escapeHtml(guestMessageBodyWithSignature(commsDraftBody))}</div>
-        <div class="d-sub" style="margin-top:6px;font-style:italic;">Your signature is added automatically — no need to type it yourself.</div>
+        <!-- v1.85.0: this is already-sanitized output from sanitizeRichMessageHtml (allowlisted
+             tags/attributes only), so it's rendered as real markup here deliberately — showing the
+             actual bold/italic/links the couple composed, not just the plain text. -->
+        <div class="rte-rendered" style="font-size:13px;line-height:1.6;">${guestMessageBodyWithSignatureHtml(sanitizeRichMessageHtml(commsDraftBodyHtml))}</div>
+        <div class="d-sub" style="margin-top:6px;font-style:italic;">Your signature is added automatically — no need to type it yourself.${(commsSendChannel==='sms'||commsSendChannel==='both') ? ' Texts are always plain text, so any bold, italics, or links above won’t appear in the SMS.' : ''}</div>
       </div>
       <div style="margin-top:14px;display:flex;gap:10px;">
         <button type="button" class="btn btn-outline btn-sm" ${commsSending?'disabled':''} onclick="closeCommsPreview()">← Edit Message</button>
@@ -18087,7 +18447,24 @@ function renderGuestMessageComposeCard(){
         <p class="d-sub" style="margin-top:4px;">Real delivery now — only reaches people who have an email and/or phone number on file for the channel(s) you pick. Anyone missing it is skipped and shown in the result.</p>
       </div>
       <div class="field-cell" style="margin-top:4px;"><label>Subject ${commsSendChannel==='sms'?'(email only — ignored for text)':'(optional)'}</label><input type="text" id="guestMsgSubject" placeholder="e.g. A quick update about parking" value="${escapeAttr(commsDraftSubject)}" oninput="commsDraftSubject=this.value"></div>
-      <div class="field-cell" style="margin-top:10px;"><label>Message</label><textarea class="notes-field" id="guestMsgBody" placeholder="What would you like to tell them?" oninput="commsDraftBody=this.value">${escapeHtml(commsDraftBody)}</textarea></div>
+      <div class="field-cell" style="margin-top:10px;">
+        <label>Message</label>
+        <div class="rte-toolbar">
+          <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="richTextExec('bold')" title="Bold"><b>B</b></button>
+          <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="richTextExec('italic')" title="Italic"><i>I</i></button>
+          <button type="button" class="rte-btn" onmousedown="event.preventDefault()" onclick="toggleRichTextLinkInput()" title="Add a link">🔗 Link</button>
+        </div>
+        <div class="rte-link-row" id="rteLinkRow" style="display:none;">
+          <input type="text" id="rteLinkUrl" placeholder="example.com or https://..." value="${escapeAttr(richTextPendingLinkUrl)}" oninput="richTextPendingLinkUrl=this.value">
+          <button type="button" class="btn btn-solid btn-sm" onclick="applyRichTextLink()">Insert</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="cancelRichTextLink()">Cancel</button>
+        </div>
+        <!-- v1.85.0: a real rich-text composer, not a plain textarea — bold/italic/links, written
+             as actual HTML. Seeded once from commsDraftBodyHtml here; never overwritten by a
+             re-render while the couple is actively typing in it — see the big comment above
+             syncRichTextDraft() for why. -->
+        <div class="rte-editor notes-field" id="guestMsgBody" contenteditable="true" data-placeholder="What would you like to tell them?" oninput="syncRichTextDraft()" onpaste="handleRichTextPaste(event)">${sanitizeRichMessageHtml(commsDraftBodyHtml)}</div>
+      </div>
       <div style="margin-top:12px;"><button class="btn btn-solid btn-sm" ${canSend?'':'disabled'} onclick="openCommsPreview()">Review &amp; Send →</button></div>
     </div>
   `;
@@ -18191,7 +18568,9 @@ function renderMessageDetailModal(g){
       <p style="margin:6px 0 2px;">${resultLine}</p>
 
       <div class="detail-section-head" style="margin-top:16px;"><h4 style="margin:0;">Message</h4></div>
-      <p style="font-size:13.5px; margin:6px 0 2px; white-space:pre-wrap; line-height:1.55;">${escapeHtml(g.body||'')}</p>
+      ${g.bodyHtml && g.channel!=='sms'
+        ? `<div class="rte-rendered" style="font-size:13.5px; margin:6px 0 2px; line-height:1.6;">${sanitizeRichMessageHtml(g.bodyHtml)}</div>${g.channel==='both' ? '<p class="d-sub" style="margin-top:2px;">Shown here as it was emailed — the text version sent as plain text, with formatting removed.</p>' : ''}`
+        : `<p style="font-size:13.5px; margin:6px 0 2px; white-space:pre-wrap; line-height:1.55;">${escapeHtml(g.body||'')}</p>`}
 
       <div class="d-sub" style="margin-top:16px;">Sent ${new Date(g.sentAt).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}</div>
     </div>
@@ -22221,7 +22600,7 @@ updateStageUI();
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import {
     getFirestore, doc, getDoc, setDoc, deleteDoc, updateDoc, collection, query, where, getDocs, orderBy, limit,
-    arrayUnion, arrayRemove
+    arrayUnion, arrayRemove, runTransaction
   } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
   // v1.73.0 — real Communications Center sending (Twilio SMS + email via the Twilio Email API,
   // see functions/index.js v1.76.0 notes), via two Cloud Functions (sendGuestEmail/sendGuestSms,
@@ -22318,6 +22697,27 @@ updateStageUI();
     },
     async saveWeddingRecord(uid, data){
       await setDoc(doc(db, 'weddings', uid), data, { merge: true });
+    },
+    // v1.86.1 — the multi-tab-safe save path. A plain setDoc({merge:true}) (saveWeddingRecord,
+    // above) still blindly overwrites every field with whatever THIS tab's in-memory record
+    // holds — merge:true only protects fields this tab never loaded at all, not a field another
+    // tab already changed more recently. This wraps the write in a transaction: it re-reads the
+    // document's real current `updatedAt` and ONLY writes if that still matches what this tab
+    // last knew to be true (expectedUpdatedAt) — atomically, so there's no gap between checking
+    // and writing for another save to land in. If it's moved on (another tab/device saved
+    // something newer since), this refuses to write and reports a conflict instead of silently
+    // destroying that newer save — see weddingRecordKnownUpdatedAt and finishWeddingSave.
+    async saveWeddingRecordIfCurrent(uid, data, expectedUpdatedAt){
+      const ref = doc(db, 'weddings', uid);
+      return await runTransaction(db, async (tx)=>{
+        const snap = await tx.get(ref);
+        const serverUpdatedAt = snap.exists() && typeof snap.data().updatedAt === 'number' ? snap.data().updatedAt : null;
+        if(expectedUpdatedAt != null && serverUpdatedAt != null && serverUpdatedAt !== expectedUpdatedAt){
+          return { conflict: true, serverUpdatedAt };
+        }
+        tx.set(ref, data, { merge: true });
+        return { conflict: false };
+      });
     },
     // v1.83.0 — Live Firestore publishing (New Request #85). "publicWeddingSites/{uid}" is a
     // SEPARATE, deliberately narrow document from "weddings/{uid}": the master record above holds
@@ -22498,9 +22898,11 @@ updateStageUI();
        Function itself does the actual email/phone validity filtering, so this layer doesn't
        duplicate that logic, it just passes everything through and returns the real per-recipient
        result ({ sent, skipped, failed, failures }) for the UI to report honestly. */
-    async sendGuestEmail(recipients, subject, body){
+    async sendGuestEmail(recipients, subject, body, html){
       const call = httpsCallable(functionsClient, 'sendGuestEmail');
-      const res = await call({ recipients, subject, body });
+      // v1.85.0: `html` is the real rich-text composition (already sanitized client-side) — the
+      // Cloud Function itself sanitizes it again before using it, so this is a plain passthrough.
+      const res = await call({ recipients, subject, body, html });
       return res.data;
     },
     async sendGuestSms(recipients, body){
