@@ -1818,38 +1818,46 @@
     </div>
     <div class="landing-cta-secondary"><a onclick="skipToDashboard()">or explore a sample wedding</a></div>
     <div class="landing-foot">Already planning with Evera? <a href="#" onclick="showAuth('login'); return false;">Sign in</a></div>
-    <!-- v1.86.0: pre-login nav to the About/Story/Pricing placeholder pages -->
+    <!-- v1.89.1: merged "Why We Built Evera" into "A little bit about us" per Natasha's direct
+         request — one founder-story page instead of two, since a 2-person team doesn't need a
+         separate formal "About Us" and origin-story page. The old view-story route/section is
+         left in place, reverted to its original placeholder, rather than deleted. -->
     <div class="landing-prenav">
-      <a onclick="goTo('about')">About Us</a>
-      <a onclick="goTo('story')">Why We Built Evera</a>
+      <a onclick="goTo('about')">A Little Bit About Us</a>
       <a onclick="goTo('pricing')">Pricing</a>
     </div>
   </div>
 </section>
 
-<!-- ============ ABOUT US (placeholder — real copy pending from Natasha) ============ -->
+<!-- ============ A LITTLE BIT ABOUT US (real copy from Natasha — merged with the former
+     "Why We Built Evera" page per her direct request, v1.89.1) ============ -->
 <section id="view-about" class="view static-page">
   <div class="static-page-inner">
     <div class="landing-brand"><span>Evera</span></div>
-    <h1>About Us</h1>
-    <div class="static-page-placeholder">This page is a placeholder — the real About Us copy (who's behind Evera, and what the team is about) is still being written. Check back soon.</div>
+    <h1>A Little Bit About Us</h1>
+    <div class="static-page-body">
+      <p>We got engaged in 2022, and almost right away it felt like information overload. There was a lot out there, but it was coming from everywhere: wedding Facebook groups, Reddit threads, TikToks we'd saved at midnight, and a pamphlet or two from an expo we wandered into on a whim. None of it lived in one place, and none of it talked to each other.</p>
+      <p>Vendors were one of the hardest parts. The bigger, well known names were easy enough to find online. The smaller, more boutique vendors, the ones that often end up being someone's favourite part of the day, were a lot harder to track down without going from expo to expo.</p>
+      <p>Our first attempt at organizing everything was Excel spreadsheets. A lot of them. They worked, for a while, but we knew pretty quickly there had to be a better way.</p>
+      <p>Somewhere in there we also looked into hiring a wedding planner, and realized the cost just doesn't fit everyone's budget. So we started building something that could take all of the moving parts, your RSVPs, your seating chart, your wedding website, and bring them into one place instead of ten different tools.</p>
+      <p>What makes Evera different is that it doesn't treat your wedding like one event on one day. Most weddings aren't. There's a Mehndi, a Sangeet, a rehearsal dinner, a ceremony, a reception, and each one has its own guests, its own vendors, its own timeline. Evera lets you get specific, right down to which guest is invited to which event, and it looks at your wedding holistically: before it, during it, and after it, including things like your name change once it's all done.</p>
+      <p>One thing we're especially proud of is the Playbook. It takes everything you've planned and turns it into something you can hand straight to a day-of coordinator, so nothing gets lost on the one day it actually matters.</p>
+      <p>We also wanted a place for all the group chats and the different email threads that were starting to blend together, without asking you to go manage yet another inbox.</p>
+      <p>We're building Evera Canadian first, for couples planning weddings of every size, and we're listening to real feedback from real couples as we go. Down the road, we'd love to bring wedding planners onto Evera to support their clients, and eventually vendors too.</p>
+      <p>At the end of the day, we just want you to feel excited when you open Evera, relieved that nothing's slipping through the cracks, and confident that it's going to walk you through exactly what you need to do next.</p>
+    </div>
     <a class="static-page-back" onclick="goTo('landing')">← Back to Evera</a>
   </div>
 </section>
 
-<!-- ============ WHY THIS TOOL WAS CREATED (placeholder — real copy pending from Natasha) ============ -->
+<!-- ============ WHY THIS TOOL WAS CREATED (retired from nav in v1.89.1 — its content merged
+     into "A Little Bit About Us" above, per Natasha's request. Route/section left in place,
+     reverted to its original placeholder, rather than deleted. ============ -->
 <section id="view-story" class="view static-page">
   <div class="static-page-inner">
     <div class="landing-brand"><span>Evera</span></div>
     <h1>Why We Built Evera</h1>
-    <div class="static-page-body">
-      <p>It started the way most of this does — with a ring, in 2022, and almost immediately, a flood of everything else.</p>
-      <p>Between us, we had wedding boards, saved Reddit threads, a growing list of TikToks bookmarked at midnight, pamphlets from an expo we'd wandered into on a whim, and a few group chats that had somehow become the actual nerve center of our planning. The big, easy-to-find vendors were a Google search away. The smaller, more boutique ones — often someone's favourite part of their whole day — took real digging, usually traded hand-to-hand between couples online or discovered by chance at an expo booth. None of it lived in one place, and none of it talked to any of the rest of it.</p>
-      <p>Our first real system was a spreadsheet. Then a few more spreadsheets. It held, mostly, but it was a patch, not a plan — and somewhere in the middle of colour-coding budget tabs, we looked at what a professional wedding planner would actually cost. For a lot of couples, including us, that number just doesn't fit the budget it's supposed to help protect — which meant everything a planner would normally hold together was still ours to hold together by hand, across a dozen tools that were never built to talk to each other.</p>
-      <p>That's the gap Evera is built to close: one place for everything that's usually scattered — budget, guests, vendors, your wedding website, RSVPs, your seating chart, and yes, even the group chats and the email threads that otherwise start blending into each other. Not a replacement for a planner's expertise, but a real alternative to the spreadsheet-and-sticky-notes system most couples end up building for themselves.</p>
-      <p>What we think actually sets Evera apart is that it doesn't treat a wedding like one event on one day. Ours wasn't, and most aren't — there's a Mehndi, a Sangeet, a rehearsal dinner, a ceremony, a reception, each with its own guest list, its own vendors, its own timeline. Evera lets you plan down to exactly which guest is invited to which event, and looks at the whole arc of it — before the wedding and after it, right down to practical things like a name change — instead of just the ceremony and reception in isolation. And when the day actually arrives, the Playbook Evera builds along the way can be handed straight to a day-of coordinator, so nothing that took months to plan gets lost in translation on the one day it matters most.</p>
-      <p>We're building this Canadian-first, for couples planning weddings of every size and shape — and we're building it on real feedback from real couples, not just our own experience, shaping what comes next. Eventually, we'd love wedding planners to run their clients through Evera, and vendors to be part of it too. But at the core, it's always been simple: we want you to feel excited opening Evera, relieved that nothing's about to fall through the cracks, and confident it's actually going to walk you through exactly what you need to do — not just hand you a blank page and wish you luck.</p>
-    </div>
+    <div class="static-page-placeholder">This page is a placeholder — the real story of why Evera was created is still being written. Check back soon.</div>
     <a class="static-page-back" onclick="goTo('landing')">← Back to Evera</a>
   </div>
 </section>
@@ -2470,6 +2478,14 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.89.1', date:'2026-11-27',
+    title:'"Why We Built Evera" merged into "A Little Bit About Us," rewritten in Natasha\'s voice',
+    items:[
+      'Natasha\'s direct feedback on the v1.89.0 story copy: it should live under "About Us" rather than as its own separate page, since a two-person founder team doesn\'t need a formal About Us page and a separate origin-story page saying much the same thing. The two pages are now one — retitled "A Little Bit About Us" in the pre-login nav — and the old standalone "Why We Built Evera" link is gone (its route and section are left in place, reverted to an honest placeholder, rather than deleted).',
+      'Also rewritten at Natasha\'s request to sound more like her, not like polished marketing copy — shorter, plainer sentences, and every em dash removed in favour of periods and commas, since the original draft leaned on them heavily.'
+    ]
+  },
   {
     version:'1.89.0', date:'2026-11-27',
     title:'Real "Why We Built Evera" copy, from Natasha directly',
