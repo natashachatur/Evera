@@ -2483,6 +2483,14 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.91.1', date:'2026-11-27',
+    title:'A real bug fix: wedding party survey answers were never actually saving',
+    items:[
+      'Found and fixed a genuinely significant, previously-undiscovered bug: nothing typed into a wedding party member\'s own "get to know you" survey — their name, email, Team Bride/Team Groom answer, attire sizes, dress budget, travel preferences, any of it — has ever actually been saved. Two unrelated functions in the codebase shared the exact same name (one for this survey, a completely different one for RSVP Surveys), and since JavaScript doesn\'t support that kind of overloading, the second one silently won out everywhere, every time, making every save on the wedding party survey a silent no-op. This has been flagged release after release as a harmless "already-known duplicate" in this project\'s standard testing checks — this time it was actually tested for real-world impact instead of waved through, and the real impact turned out to be serious. Renamed the wedding party version to its own distinct name; the RSVP Surveys feature itself was never affected and is confirmed still working exactly as before.',
+      'A real defensive fix for a gap flagged earlier (New Request #80): if a wedding profile is ever previewed or published before the couple enters their real names, the public wedding website now shows a graceful "The Happy Couple" instead of the literal, slightly alarming "Partner 1 & Partner 2" placeholder text — across the page title, hero heading, logo/photo alt text, and calendar exports. A couple\'s real names, once entered, are completely unaffected.'
+    ]
+  },
+  {
     version:'1.91.0', date:'2026-11-27',
     title:'Every new wedding now starts with a real Wedding Plan checklist',
     items:[
@@ -14140,18 +14148,30 @@ function closePortalPreview(){
 }
 /* ---- wedding-party "get to know you" survey — filled in from the member's own portal ---- */
 function surveyInputField(memberId, field, label, value, placeholder){
-  return `<div class="survey-field"><label>${escapeHtml(label)}</label><input type="text" value="${escapeAttr(value||'')}" placeholder="${escapeAttr(placeholder||'')}" onchange="updateSurveyField('${memberId}','${field}',this.value)"></div>`;
+  return `<div class="survey-field"><label>${escapeHtml(label)}</label><input type="text" value="${escapeAttr(value||'')}" placeholder="${escapeAttr(placeholder||'')}" onchange="updateMemberSurveyField('${memberId}','${field}',this.value)"></div>`;
 }
 function surveyTextareaField(memberId, field, label, value, placeholder){
-  return `<div class="survey-field"><label>${escapeHtml(label)}</label><textarea placeholder="${escapeAttr(placeholder||'')}" onchange="updateSurveyField('${memberId}','${field}',this.value)">${escapeHtml(value||'')}</textarea></div>`;
+  return `<div class="survey-field"><label>${escapeHtml(label)}</label><textarea placeholder="${escapeAttr(placeholder||'')}" onchange="updateMemberSurveyField('${memberId}','${field}',this.value)">${escapeHtml(value||'')}</textarea></div>`;
 }
 function surveyRadioRow(memberId, field, options, current){
-  return `<div class="survey-radio-row">${options.map(opt=>`<label><input type="radio" name="rg-${memberId}-${field}" value="${escapeAttr(opt)}" ${current===opt?'checked':''} onchange="updateSurveyField('${memberId}','${field}',this.value)">${escapeHtml(opt)}</label>`).join('')}</div>`;
+  return `<div class="survey-radio-row">${options.map(opt=>`<label><input type="radio" name="rg-${memberId}-${field}" value="${escapeAttr(opt)}" ${current===opt?'checked':''} onchange="updateMemberSurveyField('${memberId}','${field}',this.value)">${escapeHtml(opt)}</label>`).join('')}</div>`;
 }
 function surveyNumberedList(memberId, field, values, placeholder){
   return `<div class="survey-field"><label>What would you like to get done professionally for the ceremony?</label><div class="survey-numbered-list">${values.map((v,i)=>`<div class="snl-row"><span class="snl-num">${i+1}.</span><input type="text" value="${escapeAttr(v||'')}" placeholder="${escapeAttr(placeholder||'')}" onchange="updateSurveyListField('${memberId}','${field}',${i},this.value)"></div>`).join('')}</div></div>`;
 }
-function updateSurveyField(memberId, field, val){
+// v1.91.1 — renamed from updateSurveyField to updateMemberSurveyField. A second, unrelated
+// function also named updateSurveyField(id, field, val) exists further down for RSVP Surveys
+// (dashboardData.rsvpSurveys) — JS function declarations don't overload, so the later one in
+// source order silently wins for every call anywhere in the file. That meant every onchange
+// handler on the Wedding Party member's own "get to know you" survey (name, email, Team
+// Bride/Groom, attire sizes, dress budget, travel preferences — everything in
+// renderMemberSurveyBlock) was actually calling the RSVP-survey version instead, which looks up
+// dashboardData.rsvpSurveys by id, finds nothing (a member id never matches a survey id), and
+// silently no-ops. In other words: nothing typed into a wedding party member's survey has ever
+// actually been saved. Found by testing the duplicate-function-name check's long-accepted
+// "already-known updateSurveyField duplicate" for real impact rather than assuming it was
+// harmless, after so many prior releases waved it through unverified.
+function updateMemberSurveyField(memberId, field, val){
   const m = dashboardData.weddingParty.find(x=>x.id===memberId);
   if(!m || !m.survey) return;
   m.survey[field] = val;

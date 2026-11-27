@@ -372,6 +372,22 @@
 ================================================================== */
 let COUPLE = { partner1:'Natasha', partner2:'Matteo', weddingDateISO:'2027-04-25', location:'King City & Toronto, ON', hashtag:'#NatashaAndMatteo2027' };
 
+/* v1.91.1 — New Request #80's deferred defensive fix. A brand-new Evera account whose couple
+   never filled in their names during onboarding gets the literal unfilled placeholder strings
+   'Partner 1'/'Partner 2' baked into dashboardData (see buildFromOnboarding in index.html) — fine
+   as an obviously-editable placeholder inside the app, but if that account's wedding website were
+   ever previewed or published before the couple entered real names, every one of these call sites
+   would show that literal text to a real guest. isPlaceholderCoupleNames() detects exactly that
+   unfilled-default case (never a real couple's actual chosen names, which can't collide with this
+   specific pair of strings), and coupleNamesPlain() is the one shared fallback every call site below
+   uses instead of reading COUPLE.partner1/partner2 directly. */
+function isPlaceholderCoupleNames(){
+  return COUPLE.partner1==='Partner 1' && COUPLE.partner2==='Partner 2';
+}
+function coupleNamesPlain(){
+  return isPlaceholderCoupleNames() ? 'The Happy Couple' : `${COUPLE.partner1} & ${COUPLE.partner2}`;
+}
+
 /* Set by the couple in Evera's Website module — mirrors dashboardData.coupleLogo.
    Leave null to fall back to the script wordmark, same as when no logo is designed yet. */
 let COUPLE_LOGO = null;
@@ -769,7 +785,7 @@ function applyWebsiteTheme(){
   root.setProperty('--space-unit', SPACING_SCALE[WEBSITE_DESIGN.spacing]!==undefined ? SPACING_SCALE[WEBSITE_DESIGN.spacing] : 1);
   const brandLink = document.getElementById('brandLink');
   if(COUPLE_LOGO){
-    brandLink.innerHTML = `<img class="brand-logo" src="${COUPLE_LOGO}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
+    brandLink.innerHTML = `<img class="brand-logo" src="${COUPLE_LOGO}" alt="${escapeHtml(coupleNamesPlain())}">`;
   }
   // v1.87.0 — New Request #84 (website design options): a real layout/template choice, applied as
   // a class on <body> so CSS alone can rearrange the hero and home page per layout — see
@@ -793,7 +809,7 @@ function applyWebsiteTheme(){
     // Photo-Forward: the photo leads the whole page as a full-width banner, not a small avatar.
     const banner = document.createElement('div');
     banner.className = 'hero-photo-banner';
-    banner.innerHTML = `<img src="${photoSrc}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
+    banner.innerHTML = `<img src="${photoSrc}" alt="${escapeHtml(coupleNamesPlain())}">`;
     heroSection.insertBefore(banner, heroSection.firstChild);
   } else if(photoSrc){
     // Classic and Editorial Split both use the smaller photo treatment — Editorial's own grid
@@ -801,7 +817,7 @@ function applyWebsiteTheme(){
     // of stacking it above, without needing a different element here.
     const wrap = document.createElement('div');
     wrap.className = 'hero-photo';
-    wrap.innerHTML = `<img src="${photoSrc}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
+    wrap.innerHTML = `<img src="${photoSrc}" alt="${escapeHtml(coupleNamesPlain())}">`;
     heroSection.insertBefore(wrap, heroSection.firstChild);
   } else if(COUPLE_LOGO){
     const img = document.createElement('img');
@@ -1002,7 +1018,7 @@ function icsDate(dateISO, timeStr){
 function buildGoogleCalendarUrl(e){
   const start = icsDate(e.dateISO, e.startTime), end = icsDate(e.dateISO, e.endTime);
   const params = new URLSearchParams({
-    action:'TEMPLATE', text:`${COUPLE.partner1} & ${COUPLE.partner2} — ${e.name}`,
+    action:'TEMPLATE', text:`${coupleNamesPlain()} — ${e.name}`,
     dates:`${start}/${end}`, details:e.description, location:e.address
   });
   return 'https://calendar.google.com/calendar/render?'+params.toString();
@@ -1017,7 +1033,7 @@ function downloadIcs(eventId){
   const ics = [
     'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Evera//Wedding Website//EN','BEGIN:VEVENT',
     `UID:${e.id}@evera-wedding`, `DTSTART:${start}`, `DTEND:${end}`,
-    `SUMMARY:${COUPLE.partner1} & ${COUPLE.partner2} — ${e.name}`,
+    `SUMMARY:${coupleNamesPlain()} — ${e.name}`,
     `DESCRIPTION:${e.description.replace(/,/g,'\\,')}`, `LOCATION:${e.address.replace(/,/g,'\\,')}`,
     'END:VEVENT','END:VCALENDAR'
   ].join('\r\n');
@@ -1317,7 +1333,7 @@ function downloadCombinedIcs(eventIds){
   const blocks = events.map(e=>{
     const start = icsDate(e.dateISO, e.startTime), end = icsDate(e.dateISO, e.endTime);
     return ['BEGIN:VEVENT', `UID:${e.id}@evera-wedding`, `DTSTART:${start}`, `DTEND:${end}`,
-      `SUMMARY:${COUPLE.partner1} & ${COUPLE.partner2} — ${e.name}`,
+      `SUMMARY:${coupleNamesPlain()} — ${e.name}`,
       `DESCRIPTION:${e.description.replace(/,/g,'\\,')}`, `LOCATION:${e.address.replace(/,/g,'\\,')}`,
       'END:VEVENT'].join('\r\n');
   }).join('\r\n');
@@ -1334,8 +1350,10 @@ function downloadCombinedIcs(eventIds){
    INIT
 ================================================================== */
 function applyHeroAndChrome(){
-  document.title = `${COUPLE.partner1} & ${COUPLE.partner2}`;
-  document.getElementById('heroH1').innerHTML = `${escapeHtml(COUPLE.partner1)} <span class="amp">&amp;</span> ${escapeHtml(COUPLE.partner2)}`;
+  document.title = coupleNamesPlain();
+  document.getElementById('heroH1').innerHTML = isPlaceholderCoupleNames()
+    ? escapeHtml('The Happy Couple')
+    : `${escapeHtml(COUPLE.partner1)} <span class="amp">&amp;</span> ${escapeHtml(COUPLE.partner2)}`;
   const dateLabel = COUPLE.weddingDateISO ? new Date(COUPLE.weddingDateISO+'T00:00:00').toLocaleDateString('en-US',{weekday:'long', year:'numeric', month:'long', day:'numeric'}) : '';
   document.getElementById('heroDatestr').textContent = dateLabel;
   document.getElementById('heroDatestr').style.display = dateLabel ? '' : 'none';
@@ -1344,7 +1362,7 @@ function applyHeroAndChrome(){
   document.getElementById('heroHashtag').textContent = COUPLE.hashtag || '';
   document.getElementById('heroHashtag').style.display = COUPLE.hashtag ? '' : 'none';
   if(!COUPLE_LOGO){
-    document.getElementById('brandLink').textContent = `${COUPLE.partner1} & ${COUPLE.partner2}`;
+    document.getElementById('brandLink').textContent = coupleNamesPlain();
   }
   // The "Viewing as" bar is a couple-only tool for previewing per-event gating while building
   // the site — real guests (LIVE_MODE) never see it, since there's no real guest login here.
