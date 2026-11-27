@@ -2483,6 +2483,16 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.91.0', date:'2026-11-27',
+    title:'Every new wedding now starts with a real Wedding Plan checklist',
+    items:[
+      'Brand-new wedding accounts no longer start with an empty Wedding Plan. A real, 29-item standard checklist — covering everything from drafting the guest list and booking the venue all the way through final vendor payments and packing the emergency kit — is now seeded automatically the moment a wedding profile is created, whether the couple signs up and completes onboarding themselves or a planner creates the account on their behalf.',
+      'Each standard task gets a real due date worked backward from the wedding date (or no due date yet, honestly, if a date hasn\'t been set), and is sorted into the correct Wedding Plan phase section automatically, just like any other task. If the couple already told onboarding their venue is booked, "Book your venue & sign contract" starts checked off rather than asking them to re-confirm something they already did.',
+      'This also fixes a small honesty gap on the onboarding Result screen: the "tasks" count shown there was previously just an estimate, and now reflects the real number of tasks actually waiting in the account.',
+      'Built carefully so it can never affect an existing account: the standard checklist is only ever added at the two real moments a wedding profile is first created, never inside the shared fallback logic every account (old or new) runs through on every sign-in. A couple\'s own real tasks always take priority and are never overwritten.'
+    ]
+  },
+  {
     version:'1.90.0', date:'2026-11-27',
     title:'Emergency Kit suggestions & guide, a bigger Home photo, and a real colour-palette fix',
     items:[
@@ -5331,13 +5341,21 @@ async function createCoupleAccountFromPlanner(){
   btn.disabled = true; btn.textContent = 'Creating…';
   try{
     const tempPassword = generateTempPassword();
-    // JSON round-trip strips any stray `undefined` values (same reason getWeddingRecordPayload
-    // does it for a normal autosave) — the Firestore SDK rejects undefined outright.
-    const seed = JSON.parse(JSON.stringify(Object.assign({}, normalizeDashboardData(emptyAccountDashboardData()), {
+    const preSeed = Object.assign({}, normalizeDashboardData(emptyAccountDashboardData()), {
       partner1: p1, partner2: p2,
       activePlannerUids: [currentUser.uid],
       linkedPlanners: [{ plannerUid:currentUser.uid, plannerEmail:currentUser.email, plannerName:plannerRecord.name, status:'active', invitedBy:'planner', invitedAtISO:isoFromDate(new Date()) }]
-    })));
+    });
+    // v1.90.0: this is the other real moment a brand-new wedding profile comes into existence —
+    // give it the same real starter Wedding Plan checklist a self-signup couple gets via
+    // runGenerate(), rather than the couple's first login landing on a completely empty to-do
+    // list. No wedding date exists yet at this point (the planner hasn't entered one), so every
+    // task seeds with no due date / 'unphased', same as it would for a self-signup couple who
+    // skipped the date question — fully normal, already-handled state elsewhere in this app.
+    seedStandardWeddingPlanTasks(preSeed, {venueBooked:false});
+    // JSON round-trip strips any stray `undefined` values (same reason getWeddingRecordPayload
+    // does it for a normal autosave) — the Firestore SDK rejects undefined outright.
+    const seed = JSON.parse(JSON.stringify(preSeed));
     const newUid = await window.everaFirebase.createCoupleAccountAsPlanner(email, tempPassword, seed);
     plannerRecord.linkedCouples.push({ weddingUid:newUid, coupleEmail:email.toLowerCase(), coupleDisplayName:`${p1} & ${p2}`, status:'active', invitedBy:'planner', invitedAtISO:isoFromDate(new Date()) });
     await window.everaFirebase.savePlannerRecord(currentUser.uid, plannerRecord);
@@ -6966,6 +6984,13 @@ function runGenerate(){
   document.getElementById('generatingScreen').classList.add('active');
   setTimeout(()=>{
     dashboardData = normalizeDashboardData(buildFromOnboarding(onboardAnswers));
+    // v1.90.0: seed the real starter Wedding Plan checklist now, at the one moment this wedding
+    // profile is actually being created — see seedStandardWeddingPlanTasks()'s own comment for why
+    // this can't live inside buildFromOnboarding() itself. Also replaces the old synthetic
+    // tasksCount estimate on the Result screen below with the real seeded count, so the number
+    // shown right after signup actually matches what's waiting in Wedding Plan.
+    seedStandardWeddingPlanTasks(dashboardData, {venueBooked: onboardAnswers.venue==='booked'});
+    dashboardData.tasksCount = dashboardData.tasks.length;
     renderResult();
     goTo('result');
     // reset onboarding UI for potential re-entry
@@ -9201,6 +9226,82 @@ const PLAN_PHASES = [
   {key:'finalmonth', label:'Final Month', hint:'Final walkthroughs & payments'},
   {key:'weekof', label:'Week Of & Day-Of', hint:'The home stretch'}
 ];
+/* v1.90.0: Natasha's direct request — "when a new wedding profile is created, always add a set
+   of standard wedding plan items in the to-do list." Before this, a brand-new real wedding
+   started with a literally empty Wedding Plan tab (zero tasks), even though the Result screen
+   right after onboarding already displayed a projected task count — real, but with nothing behind
+   it until this. This list mirrors the same realistic planning arc already written up in Guides &
+   Tips' "A realistic 12-month planning timeline" article and the same six PLAN_PHASES bands the
+   rest of this tab groups by, so a new couple's to-do list is immediately organized and sorted
+   correctly, not a flat unordered pile.
+   Deliberately NOT wired into buildFromOnboarding()/emptyAccountDashboardData() themselves — see
+   seedStandardWeddingPlanTasks() below for why that would be unsafe. */
+const STANDARD_WEDDING_PLAN_TASKS = [
+  {title:'Draft your guest list', role:'Couple', priority:'High', daysBefore:300},
+  {title:'Book your venue & sign contract', role:'Couple', priority:'High', daysBefore:290},
+  {title:'Create your wedding website', role:'Couple', priority:'Medium', daysBefore:280},
+  {title:'Choose your wedding party', role:'Couple', priority:'Medium', daysBefore:270},
+  {title:'Book photography & videography', role:'Couple', priority:'High', daysBefore:260},
+  {title:'Book your caterer (if not already included with your venue)', role:'Couple', priority:'High', daysBefore:250},
+  {title:'Get florist quotes & book your florist', role:'Couple', priority:'Medium', daysBefore:240},
+  {title:'Book your music or entertainment', role:'Couple', priority:'Medium', daysBefore:220},
+  {title:'Start wedding attire shopping', role:'Couple', priority:'Medium', daysBefore:200},
+  {title:'Book a hair & makeup trial', role:'Couple', priority:'Medium', daysBefore:190},
+  {title:'Send save-the-dates', role:'Couple', priority:'Medium', daysBefore:170},
+  {title:'Finalize your guest list', role:'Couple', priority:'High', daysBefore:150},
+  {title:'Purchase your wedding rings', role:'Couple', priority:'Medium', daysBefore:140},
+  {title:'Confirm a hotel room block for out-of-town guests', role:'Couple', priority:'Medium', daysBefore:130},
+  {title:'Cake tasting & finalize your dessert design', role:'Couple', priority:'Medium', daysBefore:110},
+  {title:'Send your wedding invitations', role:'Couple', priority:'High', daysBefore:100},
+  {title:'Apply for your marriage licence', role:'Couple', priority:'High', daysBefore:80},
+  {title:"Confirm officiant script & readings", role:'Couple', priority:'Medium', daysBefore:70},
+  {title:'Final dress / suit fittings', role:'Wedding Party', priority:'Medium', daysBefore:60},
+  {title:'Confirm final headcount with catering', role:'Couple', priority:'High', daysBefore:45},
+  {title:'Finalize your seating chart', role:'Couple', priority:'High', daysBefore:40},
+  {title:'Final venue walkthrough', role:'Couple', priority:'High', daysBefore:20},
+  {title:'Confirm & send final vendor payments', role:'Couple', priority:'High', daysBefore:15},
+  {title:'Confirm transportation & pickup times', role:'Planner', priority:'Medium', daysBefore:12},
+  {title:'Pack for the honeymoon', role:'Couple', priority:'Low', daysBefore:10},
+  {title:'Delegate a day-of point of contact', role:'Couple', priority:'Medium', daysBefore:5},
+  {title:'Pack your wedding-day emergency kit', role:'Wedding Party', priority:'Low', daysBefore:3},
+  {title:'Confirm the final timeline with every vendor', role:'Vendor', priority:'Medium', daysBefore:2},
+  {title:'Pick up wedding attire', role:'Wedding Party', priority:'Medium', daysBefore:2}
+];
+/* Builds the real starter task list for a NEWLY CREATED wedding record and sets it onto
+   record.tasks directly (overwriting, never merging — this only ever runs once, right at
+   creation, on a record that has no tasks yet). Call this explicitly at the two real moments a
+   new wedding profile comes into existence — inside runGenerate() right after onboarding builds
+   the record, and inside createCoupleAccountFromPlanner() right before the seed is sent to
+   Firestore — never from buildFromOnboarding() or emptyAccountDashboardData() themselves, since
+   those two also double as the neutral "merge fallback" shape loadAndApplyWeddingRecord() uses on
+   EVERY sign-in (see its own comment above). Seeding tasks in there would silently re-inject this
+   whole list into any old, already-existing account whose saved record happens to be missing a
+   `tasks` field — exactly the stale-data class of bug that fallback shape exists to avoid, not
+   something to go reintroduce further down the same file.
+   Takes the wedding date as a plain parameter (not read off the live dashboardData global) so it
+   phases correctly even when seeding a record that isn't the currently-loaded wedding — e.g. a
+   planner creating a brand-new couple while a completely different couple's data is what's
+   actually loaded in dashboardData right now. */
+function seedStandardWeddingPlanTasks(record, opts){
+  opts = opts || {};
+  const wed = record.weddingDateISO || null;
+  record.tasks = STANDARD_WEDDING_PLAN_TASKS.map((t,i)=>{
+    let dueDateISO = null;
+    if(wed){
+      const d = new Date(wed+'T00:00:00');
+      d.setDate(d.getDate() - t.daysBefore);
+      dueDateISO = isoFromDate(d);
+    }
+    const isVenueTask = t.title==='Book your venue & sign contract';
+    return {
+      id:'task-std-'+i, title:t.title, eventId:null, role:t.role, assignedTo:null,
+      priority:t.priority, done: isVenueTask ? !!opts.venueBooked : false,
+      dueDateISO, notes:'', dependsOn:null, milestone:false,
+      phase: phaseForDueDateAgainst(wed, dueDateISO)
+    };
+  });
+  return record;
+}
 // v1.45.0: a short list of commonly-forgotten tasks, each with a simple title-keyword match so
 // it stops suggesting one the couple already has on their list (under any reasonable wording) —
 // not a hard-coded "you're missing X," just a quiet nudge toward real gaps.
@@ -9280,10 +9381,17 @@ function renderSuggestedKitItemsCard(){
     </div>
   `;
 }
-function phaseForDueDate(dueISO){
-  const wed = dashboardData.weddingDateISO;
-  if(!dueISO || !wed) return 'unphased';
-  const diffDays = Math.round((new Date(wed+'T00:00:00') - new Date(dueISO+'T00:00:00'))/86400000);
+/* v1.90.0: pulled the actual day-threshold logic out of phaseForDueDate() into this pure
+   function, parameterized by whichever wedding date you give it rather than always reading the
+   live dashboardData global. phaseForDueDate() below still exists and still reads the global, for
+   every existing caller that's computing a phase for the currently-loaded wedding — but
+   seedStandardWeddingPlanTasks() needs to compute phases for a record that ISN'T necessarily the
+   live dashboardData yet (e.g. a brand-new couple a planner is creating from Planner Home, while
+   dashboardData still holds the planner's currently-open OTHER couple's data) — calling the global
+   version there would silently phase the new tasks against the wrong wedding entirely. */
+function phaseForDueDateAgainst(weddingDateISO, dueISO){
+  if(!dueISO || !weddingDateISO) return 'unphased';
+  const diffDays = Math.round((new Date(weddingDateISO+'T00:00:00') - new Date(dueISO+'T00:00:00'))/86400000);
   if(diffDays>=270) return 'foundations';
   if(diffDays>=180) return 'p6to9';
   if(diffDays>=90) return 'p3to6';
@@ -9291,6 +9399,9 @@ function phaseForDueDate(dueISO){
   if(diffDays>=8) return 'finalmonth';
   if(diffDays>=0) return 'weekof';
   return 'unphased';
+}
+function phaseForDueDate(dueISO){
+  return phaseForDueDateAgainst(dashboardData.weddingDateISO, dueISO);
 }
 function filteredTasks(){
   const d = dashboardData;
