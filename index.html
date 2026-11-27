@@ -807,6 +807,30 @@
   .elc-arrow-wrap{flex:0 0 auto; display:flex; align-items:center; padding:0 22px;}
   .elc-arrow{width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--ivory-deep); display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--green-deep); cursor:pointer;}
   @media (max-width:640px){ .event-list-card{flex-direction:column;} .elc-photo{flex-basis:160px; width:100%;} .elc-arrow-wrap{display:none;} }
+  /* v1.92.0 — Operations View: a denser, table-style alternative to the card list above, for
+     anyone (couple or planner) who wants every event as one scannable row rather than a photo
+     card. Built from flex rows, not a real <table> element, to match this app's existing
+     component language (see .vendor-row/.pc-row) rather than introducing a second styling system. */
+  .ops-table{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);}
+  .ops-row{display:flex; align-items:center; gap:14px; padding:12px 18px; border-top:1px solid var(--line-soft); font-size:13px;}
+  .ops-row:first-child{border-top:none;}
+  .ops-row:not(.ops-head){cursor:pointer;}
+  .ops-row:not(.ops-head):hover{background:var(--ivory-deep);}
+  .ops-head{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--charcoal-faint); background:var(--ivory-deep);}
+  .ops-col{min-width:0;}
+  .ops-col-name{flex:2 1 180px;}
+  .ops-col-date{flex:1 1 110px;}
+  .ops-col-guests{flex:0 1 70px; text-align:right;}
+  .ops-col-budget{flex:1 1 110px; text-align:right; font-variant-numeric:tabular-nums;}
+  .ops-col-vendors{flex:1 1 100px; text-align:right;}
+  .ops-col-ready{flex:1 1 110px;}
+  .ops-col-next{flex:1 1 140px; text-align:right;}
+  .ops-sub{font-size:11.5px; color:var(--charcoal-faint); margin-top:2px;}
+  .ops-ready-track{height:5px; border-radius:4px; background:var(--line-soft); overflow:hidden; margin-bottom:3px;}
+  .ops-ready-fill{height:100%; background:var(--green); border-radius:4px;}
+  .ops-ready-label{font-size:11px; color:var(--charcoal-faint);}
+  @media (max-width:880px){ .ops-col-vendors, .ops-col-budget{display:none;} }
+  @media (max-width:640px){ .ops-col-date, .ops-col-guests{display:none;} }
 
   /* ---- My Wedding Blueprint redesign (Sep 25 2026): a visual vision hero + guided details ---- */
   /* v1.45.0: trimmed down across the board — this hero was carrying a lot of vertical weight for
@@ -2483,6 +2507,15 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.92.0', date:'2026-11-27',
+    title:'A new Operations View for Events — a table alongside the card list',
+    items:[
+      'The Events page now has a real Cards/Table toggle. Table view shows every event as one dense, scannable row — date, guest count, budget allocated, vendors booked, a readiness percentage, and the single most pressing next step — instead of clicking through photo cards one at a time. Pulled directly from the same review that shaped several earlier releases this year: a planner managing a multi-day wedding wanted an operational, at-a-glance portfolio view of every celebration, not just the couple-friendly card grid.',
+      'Built to be useful to anyone, not just a planner account — the toggle is just a different way of looking at the exact same event list, so a couple who prefers a denser view can use it too, and nobody who never touches it will notice any difference (it still opens on Cards by default, same as always).',
+      'This is the first of four pieces from that same review\'s "Planner Operations View" cluster — a Master Timeline, visible ownership on tasks and vendor confirmations, and letting a Decision attach to a specific event, vendor, or guest are scoped and queued up next, each as its own release rather than one large batch.'
+    ]
+  },
+  {
     version:'1.91.1', date:'2026-11-27',
     title:'A real bug fix: wedding party survey answers were never actually saving',
     items:[
@@ -3741,6 +3774,12 @@ let playbookVendorCategory = null;
 let playbookExportRole = 'couple';
 let runbookCollapsedEvents = {}; // eventId -> collapsed boolean, defaults to collapsed the first time each event is seen (Run Book Phase 2, v1.25.0)
 let eventsView = 'list';     // 'list' | 'detail'
+// v1.92.0 — New Request #69 cluster F, the Operations View: a cards-vs-table toggle for the
+// events list, scoped to everyone (couple or planner), not gated to planner accounts — see the
+// v1.92.0 Delivered section in the project backlog for the full scoping conversation. Deliberately
+// a session-only view preference (not persisted to dashboardData) — this is how you're looking at
+// the list right now, not a wedding-level setting, same as planViewMode and budgetOverviewView.
+let eventsViewMode = 'cards'; // 'cards' | 'table'
 let selectedEventId = null;
 // v1.39.0: every event's workspace is now standardized into the same seven tabs.
 let eventDetailTab = 'overview'; // 'overview' | 'guests' | 'budget' | 'vendors' | 'design' | 'timeline' | 'details'
@@ -20018,6 +20057,49 @@ function renderEventListCard(e){
     </div>
   `;
 }
+function switchEventsViewMode(mode){ eventsViewMode = mode; document.getElementById('content').innerHTML = renderEventsModule(); }
+/* ---- v1.92.0 — Operations View (New Request #69 cluster F, part 1 of 4). A denser portfolio
+   row per event, for anyone who wants to scan every celebration's operational status at once
+   rather than click through photo cards one at a time. Reuses the exact same readiness/next-step
+   logic the card view already computes (eventCompleteness, eventTopNextStepLabel) so the two
+   views can never silently disagree about where an event actually stands. Scoped to everyone
+   (couple or planner) per direct confirmation, not gated to planner accounts — this is a view
+   preference, not a planner-only tool. ---- */
+function renderEventsTable(shown){
+  return `
+    <div class="ops-table">
+      <div class="ops-row ops-head">
+        <div class="ops-col ops-col-name">Event</div>
+        <div class="ops-col ops-col-date">Date</div>
+        <div class="ops-col ops-col-guests">Guests</div>
+        <div class="ops-col ops-col-budget">Budget</div>
+        <div class="ops-col ops-col-vendors">Vendors</div>
+        <div class="ops-col ops-col-ready">Ready</div>
+        <div class="ops-col ops-col-next">Next Step</div>
+      </div>
+      ${shown.map(e=>{
+        const stats = eventCompleteness(e);
+        const next = eventTopNextStepLabel(e);
+        const vendorsForEvent = (dashboardData.vendorBookings||[]).filter(v=>(v.eventIds||[]).includes(e.id));
+        const vendorsBooked = vendorsForEvent.filter(v=>v.status==='booked').length;
+        return `
+          <div class="ops-row" onclick="openEventDetail('${e.id}')">
+            <div class="ops-col ops-col-name"><b>${escapeHtml(e.name)}</b>${e.location ? `<div class="ops-sub">${escapeHtml(e.location)}</div>` : ''}</div>
+            <div class="ops-col ops-col-date">${escapeHtml(e.date||'Date TBD')}</div>
+            <div class="ops-col ops-col-guests">${effectiveEventGuestCount(e)}</div>
+            <div class="ops-col ops-col-budget">${effectiveEventBudgetAllocated(e)>0 ? fmtMoney(effectiveEventBudgetAllocated(e)) : '—'}</div>
+            <div class="ops-col ops-col-vendors">${vendorsForEvent.length ? `${vendorsBooked} of ${vendorsForEvent.length}` : '—'}</div>
+            <div class="ops-col ops-col-ready">
+              <div class="ops-ready-track"><div class="ops-ready-fill" style="width:${stats.pct}%;"></div></div>
+              <span class="ops-ready-label">${stats.pct}% planned</span>
+            </div>
+            <div class="ops-col ops-col-next">${next ? `<span class="pill ${next.urgent?'pill-warn':'pill-neutral'}">${escapeHtml(next.text)}</span>` : '<span class="pill pill-ok">All set</span>'}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
 function eventsSortedByDate(list){
   // v1.37.4: always show events nearest-date-first, regardless of the order they were added
   // in — events with no date yet (dateISO unset) sort to the end rather than breaking the sort.
@@ -20053,12 +20135,18 @@ function renderEventsList(){
         <button class="seg-btn ${eventsCategoryFilter==='all'?'active':''}" onclick="switchEventsCategoryFilter('all')">All Events</button>
         ${categories.map(c=>`<button class="seg-btn ${eventsCategoryFilter===c?'active':''}" onclick="switchEventsCategoryFilter('${escapeJsAttr(c)}')">${escapeHtml(c)}</button>`).join('')}
       </div>
-      <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Manage categories →</span>
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        <div class="seg-control" title="How you're viewing this list right now">
+          <button class="seg-btn ${eventsViewMode==='cards'?'active':''}" onclick="switchEventsViewMode('cards')">▦ Cards</button>
+          <button class="seg-btn ${eventsViewMode==='table'?'active':''}" onclick="switchEventsViewMode('table')">☰ Table</button>
+        </div>
+        <span class="ch-link" style="cursor:pointer;" onclick="renderRoute('settings')">Manage categories →</span>
+      </div>
     </div>
-    ${shown.length ? `
+    ${shown.length ? (eventsViewMode==='table' ? renderEventsTable(shown) : `
     <div class="event-list">
       ${shown.map(e=>renderEventListCard(e)).join('')}
-    </div>` : `<p style="font-size:13px;color:var(--charcoal-faint);">No events in this view yet.</p>`}
+    </div>`) : `<p style="font-size:13px;color:var(--charcoal-faint);">No events in this view yet.</p>`}
     ` : `
     <div class="empty-state">
       <svg class="icon" viewBox="0 0 24 24">${ICONS.events}</svg>
