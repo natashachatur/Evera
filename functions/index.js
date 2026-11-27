@@ -133,6 +133,17 @@ async function sendSmsBatch(twilioClient, fromNumber, recipients, body) {
   return { sent, skipped: recipients.length - validRecipients.length, failed: failures.length, failures };
 }
 
+/** Turns a plain-text message body into minimal HTML (escaped, newlines as <br>) for the
+ * Twilio Email API's required `content.html` field — see the v1.77.0 comment on its call site.
+ * Not a rich editor output; just enough structure that the HTML version reads the same as the
+ * plain-text one most guests' mail clients will actually render. */
+function textToSimpleHtml(text) {
+  const escaped = String(text)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  return `<div style="font-family:sans-serif; white-space:pre-wrap;">${escaped}</div>`;
+}
+
 /** Builds the real email-sending client that sendEmailBatch calls .send() on — a thin wrapper
  * around the Twilio Email API (comms.twilio.com/v1/Emails), kept to the exact same { send(msg) }
  * shape the classic @sendgrid/mail client had so sendEmailBatch (and its tests, which mock this
@@ -147,7 +158,11 @@ function makeTwilioEmailClient(apiKeySid, apiKeySecret) {
         body: JSON.stringify({
           from: { address: from.email, name: from.name },
           to: [{ address: to }],
-          content: { subject, text },
+          // v1.77.0: the Twilio Email API rejected a text-only `content` with a 400 ("Invalid
+          // value provided for field 'content'") — every example in its docs includes `html`
+          // alongside `text`, so this sends a simple auto-generated HTML version of the same
+          // plain-text body rather than text alone.
+          content: { subject, text, html: textToSimpleHtml(text) },
         }),
       });
       if (!resp.ok) {
@@ -182,9 +197,26 @@ exports.sendGuestSms = onCall({
   requireSignedIn(request);
   const { recipients, body } = validateSendRequest(request.data);
 
-  const twilio = require('twilio');
-  const client = twilio(TWILIO_ACCOUNT_SID.value(), TWILIO_AUTH_TOKEN.value());
+  // v1.78.0: a real test SMS send came back as a bare "INTERNAL" error with no detail — the exact
+  // same class of bug the v1.76.0 email rewrite fixed for sendGuestEmail. Cause: anything thrown
+  // here that ISN'T an HttpsError gets swallowed by Firebase Functions and replaced with an opaque
+  // generic "internal" error client-side, so a missing/malformed secret or a `twilio()` constructor
+  // validation error (it throws synchronously, e.g. "accountSid must start with AC...") never
+  // reached the UI. Both failure points are now wrapped so the real reason actually surfaces.
+  const accountSid = TWILIO_ACCOUNT_SID.value();
+  const authToken = TWILIO_AUTH_TOKEN.value();
   const fromNumber = TWILIO_PHONE_NUMBER.value();
+  if (!accountSid || !authToken || !fromNumber) {
+    throw new HttpsError('failed-precondition', "Text sending isn't set up yet — one or more of the TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, or TWILIO_PHONE_NUMBER secrets hasn't been set. Run `firebase functions:secrets:set <NAME>` for each one, then redeploy.");
+  }
+
+  let client;
+  try {
+    const twilio = require('twilio');
+    client = twilio(accountSid, authToken);
+  } catch (err) {
+    throw new HttpsError('failed-precondition', `Couldn't set up the Twilio SMS client: ${(err && err.message) || 'Unknown error'}. Double-check TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN are correct in the Twilio Console.`);
+  }
 
   const result = await sendSmsBatch(client, fromNumber, recipients, body);
   if (result.failures.length) logger.warn('sendGuestSms: some sends failed', { failures: result.failures });
@@ -194,4 +226,4 @@ exports.sendGuestSms = onCall({
 // Exported for functions/test/send.test.js only — Firebase's deploy step only picks up exports
 // that are actual CloudFunction objects (the onCall-wrapped exports above), so these plain
 // functions are simply ignored at deploy time, not shipped as extra endpoints.
-exports._internal = { validateSendRequest, sendEmailBatch, sendSmsBatch, makeTwilioEmailClient, MAX_RECIPIENTS_PER_CALL, TWILIO_EMAIL_API_URL };
+exports._internal = { validateSendRequest, sendEmailBatch, sendSmsBatch, makeTwilioEmailClient, textToSimpleHtml, MAX_RECIPIENTS_PER_CALL, TWILIO_EMAIL_API_URL };

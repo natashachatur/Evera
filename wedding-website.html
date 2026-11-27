@@ -35,6 +35,13 @@
   .brand-logo{height:34px; display:block;}
   .hero-logo{max-height:90px; margin:0 auto 14px; display:block;}
 
+  /* ---------- couple photo (v1.78.0) — mirrors the round avatar treatment on Evera's own Home
+     hero (.hph-avatar), the one place the couple's own photo already appears. Previously this
+     page only ever showed the optional uploaded logo graphic, never the couple's actual photo,
+     even though it's a real piece of the couple's profile by the time they're ready to preview. */
+  .hero-photo{width:120px; height:120px; border-radius:50%; overflow:hidden; margin:0 auto 16px; box-shadow:0 4px 18px rgba(0,0,0,0.18); border:3px solid var(--paper,#fff);}
+  .hero-photo img{width:100%; height:100%; object-fit:cover; display:block;}
+
   /* ---------- registry ---------- */
   .registry-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;}
   .registry-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius-sm); padding:22px; text-align:center;}
@@ -328,6 +335,12 @@ let COUPLE = { partner1:'Natasha', partner2:'Matteo', weddingDateISO:'2027-04-25
    Leave null to fall back to the script wordmark, same as when no logo is designed yet. */
 let COUPLE_LOGO = null;
 
+/* v1.78.0: mirrors dashboardData.couplePhoto — the couple's own photo already shown on their
+   Home hero inside Evera. Previously this page only ever rendered the optional COUPLE_LOGO
+   graphic above and never the couple's actual photo, so a guest never saw it even when one
+   existed. Null when the couple hasn't uploaded one yet. */
+let COUPLE_PHOTO = null;
+
 /* Mirrors dashboardData.weddingProfile.colorPalette (the Master Colour Palette) —
    drives the whole site's colour theme unless the couple sets a website-only palette below. */
 let MASTER_PALETTE = ['#38473B','#CBB2A6','#C7A467','#FAF6EE'];
@@ -535,6 +548,7 @@ function guessDressCodeKey(text){
 function applyLiveWeddingData(data){
   COUPLE = Object.assign({}, COUPLE, data.couple||{});
   COUPLE_LOGO = data.coupleLogo || null;
+  COUPLE_PHOTO = data.couplePhoto || null;
   if(data.masterPalette && data.masterPalette.length) MASTER_PALETTE = data.masterPalette;
   WEBSITE_DESIGN = Object.assign({}, WEBSITE_DESIGN, data.websiteDesign||{});
   WEBSITE_SECTIONS = Object.assign({}, WEBSITE_SECTIONS, data.websiteSections||{});
@@ -617,7 +631,19 @@ function applyWebsiteTheme(){
     brandLink.innerHTML = `<img class="brand-logo" src="${COUPLE_LOGO}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
   }
   const heroSection = document.getElementById('heroSection');
-  if(COUPLE_LOGO){
+  // v1.78.0: the couple's actual photo takes the prominent hero spot when one exists — it's a
+  // real part of their profile by the time they're previewing, same as it already is on their
+  // Home dashboard inside Evera. The uploaded logo graphic (a separate, optional thing) still
+  // shows as its own small image above the names only when there's no couple photo to lead with.
+  if(COUPLE_PHOTO){
+    let existingPhoto = heroSection.querySelector('.hero-photo');
+    if(!existingPhoto){
+      const wrap = document.createElement('div');
+      wrap.className = 'hero-photo';
+      wrap.innerHTML = `<img src="${COUPLE_PHOTO}" alt="${escapeHtml(COUPLE.partner1)} & ${escapeHtml(COUPLE.partner2)}">`;
+      heroSection.insertBefore(wrap, heroSection.firstChild);
+    }
+  } else if(COUPLE_LOGO){
     const existing = heroSection.querySelector('.hero-logo');
     if(!existing){
       const img = document.createElement('img');
@@ -932,16 +958,20 @@ function renderRsvp(){
 }
 function renderRsvpSearch(){
   document.getElementById('rsvpSearchCard').innerHTML = `
-    <div class="field-row"><label>First or Last Name</label><input type="text" id="rsvpSearchInput" placeholder="e.g. Anand or Priya" onkeydown="if(event.key==='Enter'){searchRsvpHousehold();}"></div>
+    <div class="field-row"><label>First Name, Last Name, or Email</label><input type="text" id="rsvpSearchInput" placeholder="e.g. Anand, Priya, or your email" onkeydown="if(event.key==='Enter'){searchRsvpHousehold();}"></div>
     <button class="btn btn-solid" onclick="searchRsvpHousehold()">Find My Invitation</button>
     <div class="rsvp-search-results" id="rsvpSearchResults"></div>
   `;
 }
+// v1.78.0: guests can now also search by email, not just first/last name — per direct request.
 function searchRsvpHousehold(){
   const q = (document.getElementById('rsvpSearchInput').value||'').trim().toLowerCase();
   const resultsBox = document.getElementById('rsvpSearchResults');
   if(!q){ resultsBox.innerHTML = ''; return; }
-  const matches = HOUSEHOLDS.filter(h => h.members.some(m => m.firstName.toLowerCase().includes(q) || m.lastName.toLowerCase().includes(q)));
+  const matches = HOUSEHOLDS.filter(h =>
+    h.members.some(m => m.firstName.toLowerCase().includes(q) || m.lastName.toLowerCase().includes(q))
+    || (h.email && h.email.toLowerCase().includes(q))
+  );
   if(!matches.length){
     resultsBox.innerHTML = `<div class="empty-note">We couldn't find an invitation under that name — please double-check the spelling, or reach out to the couple directly.</div>`;
     return;

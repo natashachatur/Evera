@@ -2147,6 +2147,7 @@
 <div class="item-overlay" id="nameChangeOverlay" onclick="if(event.target===this) closeNameChangeChecklist();"><!-- injected --></div>
 <div class="item-overlay" id="logoBuilderOverlay" onclick="if(event.target===this) closeLogoBuilder();"><!-- injected --></div>
 <div class="item-overlay" id="calendarItemOverlay" onclick="if(event.target===this) closeCalendarItemDetail();"><!-- injected --></div>
+<div class="item-overlay" id="messageDetailOverlay" onclick="if(event.target===this) closeMessageDetail();"><!-- injected --></div>
 <div class="item-overlay" id="moodBoardOverlay" onclick="if(event.target===this) closeGeneratedMoodBoard();"><!-- injected --></div>
 <div class="item-overlay" id="playbookExportOverlay" onclick="if(event.target===this) closePlaybookExportPreview();"><!-- injected --></div>
 <div class="item-overlay" id="rsvpDrilldownOverlay" onclick="if(event.target===this) closeEventRsvpDrilldown();"><!-- injected --></div>
@@ -2304,6 +2305,18 @@ const MODULE_INFO = {
    CURRENT_VERSION always matches CHANGELOG[0].version, which should
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
+  {
+    version:'1.78.0', date:'2026-11-26',
+    title:'Real SMS sending fixed, Communications Center polish, and your profile photo finally reaching the website',
+    items:[
+      'Fixed: a real test text message failed with a bare "Send failed — INTERNAL" error with no detail at all. Same root cause as the earlier email fix — anything thrown here that wasn\'t a properly-typed error got swallowed and replaced with that generic message. The Twilio SMS setup now surfaces the real reason (a missing secret, a bad Account SID, etc.) instead of hiding it, so the next attempt tells you exactly what\'s wrong if it fails again.',
+      'Communications Center: the "To" field in Message History now lists the real household or family names you hand-picked, instead of just "1 hand-picked household you chose below" no matter who you actually chose. More than a few names truncates with "…", with the full list available on hover.',
+      'Communications Center: Message History now shows a distinct icon for text messages (💬) versus email (✉️), instead of always showing the mail icon regardless of channel.',
+      'Communications Center: you can now click any sent guest message in Message History to open it and see exactly what was included — the full subject, full message body, the real recipient list, and the real send result — instead of only a short truncated preview.',
+      'Website: your own couple photo (shown on Home since v1.73.0) now actually reaches the guest-facing website and the in-app Preview — it was never part of that export at all before, so a guest never saw it even when you\'d uploaded one. It now leads the site\'s hero, the same way it leads your Home dashboard.',
+      'Website: guests looking up their invitation to RSVP can now search by email address, in addition to first or last name.'
+    ]
+  },
   {
     version:'1.77.0', date:'2026-11-26',
     title:'Resend failed sends, a real fix for the Twilio Email 400 error, and five smaller fixes',
@@ -3462,6 +3475,7 @@ let commsSendChannel = 'email'; // 'email' | 'sms' | 'both' — v1.73.0, now tha
 let commsSending = false; // true while a real send is in flight, to disable the Confirm button and avoid double-sends
 let commsSendResult = null; // { ok, emailResult?, smsResult?, error? } — set once a real send completes, shown in place of the Review & Send form until dismissed
 let commsRetryingId = null; // v1.77.0: guestMessageLog id currently being retried from Message History — separate from commsSending/commsSendResult (the compose-flow state) since a retry is triggered from History, not the compose form, and its result panel only renders while commsPreviewOpen is true. The new log entry a retry creates is the visible confirmation instead — see retryFailedSend.
+let messageDetailLogId = null; // v1.78.0: guestMessageLog id currently open in the Message History detail view (openMessageDetail/closeMessageDetail) — null when closed.
 let partyAddDraft = null; // v1.45.0: "+ Add Wedding Party Member" modal draft — null when closed. {mode:'existing'|'new', lockGuest:bool, householdId, memberId, firstName, lastName, email}
 
 /* Blank "get to know you" survey every wedding-party member (except Parents) gets when added —
@@ -10148,6 +10162,11 @@ function buildWeddingWebsiteExport(){
       hashtag: d.weddingProfile.hashtag || ''
     },
     coupleLogo: d.coupleLogo || null,
+    // v1.78.0: the couple's own photo (shown on Home since v1.73.0) was never part of this export
+    // at all — wedding-website.html only ever knew about the separate, optional uploaded logo
+    // graphic, so a guest previewing/visiting the site never saw it even when one existed. Fixed
+    // per direct feedback that the preview should reflect everything already in the profile.
+    couplePhoto: d.couplePhoto || null,
     masterPalette: d.weddingProfile.colorPalette || [],
     websiteDesign: w.design,
     websiteSections: w.sections,
@@ -10186,6 +10205,10 @@ function buildWeddingWebsiteExport(){
     albumNotifications: w.albumNotifications||[],
     households: (d.guestHouseholds||[]).map(h=>({
       id:h.id,
+      // v1.78.0: the household's contact email, so guests can look up their invitation by email
+      // too, not just first/last name — per direct request. Evera stores one contact email per
+      // household (not per person), same as everywhere else this field is used.
+      email: h.email||'',
       invitedEventIds: (h.invitedEvents||[]).filter(id=>visibleEvents.some(e=>e.id===id)),
       members: (h.members||[]).filter(m=>m.firstName||m.lastName).map(m=>({id:m.id, firstName:m.firstName||'', lastName:m.lastName||''}))
     }))
@@ -17271,11 +17294,23 @@ function guestMessageRecipientLabel(type, target){
   }
   if(type==='tier') return `Everyone in ${commsTierLabel(target)}`;
   if(type==='weddingParty') return 'Your whole Wedding Party';
-  if(type==='specific'){
-    const n = commsSpecificSelection.length;
-    return `${pluralize(n,'hand-picked household','hand-picked households')} you chose below`;
-  }
+  if(type==='specific') return formatRecipientNameListLabel(guestMessageHandPickedHouseholdNames());
   return 'Everyone on your guest list';
+}
+// v1.78.0: the hand-picked household names behind guestMessageRecipientLabel's 'specific' case —
+// its own function since confirmSendGuestMessage also needs the full, untruncated list to store on
+// the log entry for the "To" field's hover tooltip (see renderMessageHistoryCard).
+function guestMessageHandPickedHouseholdNames(){
+  return (dashboardData.guestHouseholds||[]).filter(h=>commsSpecificSelection.includes(h.id)).map(h=>h.label);
+}
+// v1.78.0: fixed per direct feedback — the "To" field used to just say "1 hand-picked household you
+// chose below" no matter who was actually picked. Now lists the real household/family names, with a
+// "…" when there are too many to read comfortably on one line (the full list is still shown via a
+// hover tooltip — see where recipientNamesFull is used in renderMessageHistoryCard below).
+function formatRecipientNameListLabel(names){
+  if(!names || !names.length) return 'No households selected';
+  if(names.length<=3) return names.join(', ');
+  return `${names.slice(0,3).join(', ')}, …`;
 }
 /* The real names behind the count — what "Review recipients" actually shows, so the preview is a
    genuine list of who receives this, not just a number. */
@@ -17424,7 +17459,10 @@ async function confirmSendGuestMessage(){
     // v1.77.0: kept so a failed send can be retried later (retryFailedSend below) without the
     // couple having to re-pick the same audience — a retry needs the exact contacts that were
     // actually targeted, not just the recomputed-live audience (which could have changed since).
-    contacts
+    contacts,
+    // v1.78.0: the full, untruncated hand-picked household list, so Message History can show it on
+    // hover when recipientLabel above had to truncate with "…" — see renderMessageHistoryCard.
+    recipientNamesFull: type==='specific' ? guestMessageHandPickedHouseholdNames() : null
   };
 
   try{
@@ -17652,7 +17690,12 @@ function renderMessageHistoryCard(){
     } else {
       sub = `${pluralize(g.recipientCount,'person','people')}`; // pre-v1.73.0 simulated sends — no real result to show
     }
-    log.push({at:g.sentAt, icon:'✉️', label:g.recipientLabel, sub, preview:(g.subject?`${g.subject} — `:'')+g.body, id:g.id, canRetry:guestMessageLogIsRetryable(g), retrying:commsRetryingId===g.id});
+    // v1.78.0: a separate icon per channel, per direct feedback ("the mail icon should be for
+    // anything emailed, but there should be a separate icon for SMS") — was always ✉️ regardless.
+    const channelIcon = g.channel==='sms' ? '💬' : g.channel==='both' ? '✉️💬' : '✉️';
+    // v1.78.0: the full name list for the "To" field's hover tooltip, when it had to truncate.
+    const namesTitle = (g.recipientNamesFull && g.recipientNamesFull.length>3) ? g.recipientNamesFull.join(', ') : '';
+    log.push({at:g.sentAt, icon:channelIcon, label:g.recipientLabel, labelTitle:namesTitle, sub, preview:(g.subject?`${g.subject} — `:'')+g.body, id:g.id, canRetry:guestMessageLogIsRetryable(g), retrying:commsRetryingId===g.id, openable:true});
   });
   (d.events||[]).forEach(e=>{
     (e.inviteSentLog||[]).forEach(x=> log.push({at:x.sentAt, icon:'📨', label:`${e.name} — Invites`, sub:'Invite send', preview:`Invitation to ${e.name}, sent to everyone invited.`}));
@@ -17664,19 +17707,71 @@ function renderMessageHistoryCard(){
   log.sort((a,b)=> new Date(b.at) - new Date(a.at));
   return `
     <div class="card">
-      <div class="card-head"><div><h4>Message History</h4><span class="d-sub">Every guest message, invite, and survey send — most recent first, with a preview of what actually went out</span></div></div>
+      <div class="card-head"><div><h4>Message History</h4><span class="d-sub">Every guest message, invite, and survey send — most recent first, with a preview of what actually went out. Click a guest message row to see the full content.</span></div></div>
       ${log.length ? `
       <div class="budget-items" style="padding-left:0;">
         <div class="budget-items-head" style="grid-template-columns:0.3fr 1.5fr 1.7fr 0.9fr;"><span></span><span>To</span><span>Preview</span><span>Sent</span></div>
         ${log.map(x=>`
-          <div class="budget-item-row" style="grid-template-columns:0.3fr 1.5fr 1.7fr 0.9fr; align-items:center;">
+          <div class="budget-item-row" style="grid-template-columns:0.3fr 1.5fr 1.7fr 0.9fr; align-items:center; ${x.openable?'cursor:pointer;':''}" ${x.openable?`onclick="openMessageDetail('${x.id}')"`:''}>
             <span>${x.icon}</span>
-            <span class="readonly-cell">${escapeHtml(x.label)}<br><span class="d-sub">${escapeHtml(x.sub)}</span>${x.canRetry ? `<br><button type="button" class="ch-link" style="background:none;border:none;padding:0;cursor:pointer;font-size:11.5px;font-weight:700;" ${x.retrying?'disabled':''} onclick="retryFailedSend('${x.id}')">${x.retrying ? 'Retrying…' : '↻ Retry failed'}</button>` : ''}</span>
+            <span class="readonly-cell"${x.labelTitle?` title="${escapeAttr(x.labelTitle)}"`:''}>${escapeHtml(x.label)}<br><span class="d-sub">${escapeHtml(x.sub)}</span>${x.canRetry ? `<br><button type="button" class="ch-link" style="background:none;border:none;padding:0;cursor:pointer;font-size:11.5px;font-weight:700;" ${x.retrying?'disabled':''} onclick="event.stopPropagation(); retryFailedSend('${x.id}')">${x.retrying ? 'Retrying…' : '↻ Retry failed'}</button>` : ''}</span>
             <span class="d-sub">${escapeHtml((x.preview||'').slice(0,90))}${(x.preview||'').length>90?'…':''}</span>
             <span class="d-sub">${new Date(x.at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}</span>
           </div>
         `).join('')}
       </div>` : `<p style="font-size:13px;color:var(--charcoal-faint);">Nothing sent yet — compose a message above, or a send from an event's Guest List &amp; Invites card or a survey below will show up here.</p>`}
+    </div>
+  `;
+}
+// v1.78.0: "I should be able to open up the emails that I've sent historically to see what was
+// included in that" — Message History previously only showed a 90-character preview with no way
+// to see the rest. Clicking a guest-message row (invite/survey rows don't have a log id, so they
+// stay non-clickable for now) opens a modal with the full subject, full body, the real recipient
+// list, and the real send result, using the same item-overlay pattern as every other detail view.
+function openMessageDetail(logId){
+  const g = (dashboardData.guestMessageLog||[]).find(x=>x.id===logId);
+  if(!g) return;
+  messageDetailLogId = logId;
+  document.getElementById('messageDetailOverlay').innerHTML = renderMessageDetailModal(g);
+  document.getElementById('messageDetailOverlay').classList.add('open');
+}
+function closeMessageDetail(){
+  messageDetailLogId = null;
+  document.getElementById('messageDetailOverlay').classList.remove('open');
+}
+function renderMessageDetailModal(g){
+  const channelLabel = g.channel==='sms' ? 'Text message' : g.channel==='both' ? 'Email + Text message' : 'Email';
+  const recipientNames = (g.contacts||[]).map(c=>c.label).filter(Boolean);
+  let resultLine;
+  if(g.sendError) resultLine = `<span class="pill pill-alert">⚠️ Send failed</span> <span class="d-sub">${escapeHtml(g.sendError)}</span>`;
+  else if(g.emailResult || g.smsResult){
+    const parts = [];
+    if(g.emailResult) parts.push(`${g.emailResult.sent} emailed${g.emailResult.skipped?`, ${g.emailResult.skipped} skipped`:''}${g.emailResult.failed?`, ${g.emailResult.failed} failed`:''}`);
+    if(g.smsResult) parts.push(`${g.smsResult.sent} texted${g.smsResult.skipped?`, ${g.smsResult.skipped} skipped`:''}${g.smsResult.failed?`, ${g.smsResult.failed} failed`:''}`);
+    resultLine = `<span class="pill pill-ok">✅ Sent</span> <span class="d-sub">${escapeHtml(parts.join(' · '))}</span>`;
+  } else {
+    resultLine = `<span class="d-sub">${pluralize(g.recipientCount,'person','people')} (simulated send — this was sent before real delivery was wired up)</span>`;
+  }
+  return `
+    <div class="item-modal" style="max-width:600px;">
+      <button class="im-close" onclick="closeMessageDetail()">✕</button>
+      <div class="eyebrow">Sent Message</div>
+      <h3 style="margin-top:4px;">${escapeHtml(g.subject || (g.channel==='sms'?'Text message':'Message'))}</h3>
+
+      <div class="detail-section-head" style="margin-top:14px;"><h4 style="margin:0;">To</h4></div>
+      <p style="font-size:13.5px; margin:6px 0 2px;">${escapeHtml(g.recipientLabel)}</p>
+      ${recipientNames.length ? `<p class="d-sub" style="margin-top:2px;">${recipientNames.map(escapeHtml).join(', ')}</p>` : ''}
+
+      <div class="detail-section-head" style="margin-top:16px;"><h4 style="margin:0;">Channel</h4></div>
+      <p style="font-size:13.5px; margin:6px 0 2px;">${escapeHtml(channelLabel)}</p>
+
+      <div class="detail-section-head" style="margin-top:16px;"><h4 style="margin:0;">Result</h4></div>
+      <p style="margin:6px 0 2px;">${resultLine}</p>
+
+      <div class="detail-section-head" style="margin-top:16px;"><h4 style="margin:0;">Message</h4></div>
+      <p style="font-size:13.5px; margin:6px 0 2px; white-space:pre-wrap; line-height:1.55;">${escapeHtml(g.body||'')}</p>
+
+      <div class="d-sub" style="margin-top:16px;">Sent ${new Date(g.sentAt).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}</div>
     </div>
   `;
 }
