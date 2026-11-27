@@ -2306,6 +2306,13 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.84.2', date:'2026-11-27',
+    title:'Event tabs reordered: Details now sits right after Overview',
+    items:[
+      'Natasha asked whether the Overview and Details tabs on an event\'s page should be merged, for a more logical flow. They serve different jobs (Overview is a glanceable status dashboard, Details is the actual edit form) so they stay separate — but there was a real flow issue worth fixing: Overview\'s own "Next Steps" list often points straight at Details (e.g. "Add a location" for a brand-new event), yet Details sat all the way at the end of the tab row. Details now comes immediately after Overview, so it\'s always the very next tab rather than a hunt across the row. The first-event guided tour was also reordered to match, so it still walks the tabs left to right.'
+    ]
+  },
+  {
     version:'1.84.1', date:'2026-11-27',
     title:'A real alternate when your wedding website link is already taken',
     items:[
@@ -3430,14 +3437,17 @@ let eventDetailTab = 'overview'; // 'overview' | 'guests' | 'budget' | 'vendors'
 // creates their very first event, so they know what each tab is for before diving in.
 let firstEventTourActive = false;
 let firstEventTourStep = 0;
+// v1.84.2: reordered to match the real tab bar's new order (Details now sits right after
+// Overview — see the TABS array in renderEventDetail() below) so the guided tour still
+// highlights tabs left-to-right as it walks through them, instead of jumping backward on step 2.
 const FIRST_EVENT_TOUR_STEPS = [
   {tab:'overview', title:'This is your command center', body:'Every event opens here — see what\'s done, what\'s still missing, and the one next best step, at a glance.'},
+  {tab:'details', title:'Fill in the logistics', body:'Location, times, dress code, and any special rituals or traditions this celebration should include.'},
   {tab:'guests', title:'Decide who\'s invited', body:'Every event starts invited to your whole guest list. Narrow it down here for something smaller, like a rehearsal dinner or a bridal shower.'},
   {tab:'budget', title:'Set and track the budget', body:'Give this event a target, then link real line items from your budget — its spending rolls up into your overall wedding total automatically.'},
   {tab:'vendors', title:'Book your vendors', body:'Shortlist or book whoever\'s working this event — caterer, photographer, DJ, officiant, and anyone else.'},
   {tab:'design', title:'Capture the look', body:'Save a color palette, dress code, and style notes here so everyone involved is working from the same vision.'},
-  {tab:'timeline', title:'Build the day-of schedule', body:'Lay out the run of show for the day — from the first moment to the last dance.'},
-  {tab:'details', title:'Fill in the logistics', body:'Location, times, dress code, and any special rituals or traditions this celebration should include.'}
+  {tab:'timeline', title:'Build the day-of schedule', body:'Lay out the run of show for the day — from the first moment to the last dance.'}
 ];
 function startFirstEventTour(eventId){
   selectedEventId = eventId; eventsView = 'detail'; eventDetailTab = FIRST_EVENT_TOUR_STEPS[0].tab;
@@ -19335,7 +19345,14 @@ function renderEventDetail(id){
   const d = dashboardData;
   const e = d.events.find(x=>x.id===id);
   if(!e) return renderEventsList();
-  const TABS = [['overview','Overview'],['guests','Guests'],['budget','Budget'],['vendors','Vendors'],['design','Design'],['timeline','Timeline'],['details','Details']];
+  // v1.84.2 — New Request #79: Natasha's "logical flow" concern was that Overview's own Next
+  // Steps list often points straight at Details (e.g. "Add a location" on a brand-new event),
+  // so a new user's very first click already bounces them to Details anyway — but Details sat
+  // all the way at the end of the tab bar, several clicks past where Overview's own cues pointed.
+  // Moving Details to sit right after Overview makes that the very next tab, not a hunt across
+  // the row. Natasha explicitly chose this over the alternative (an "auto-open Details when
+  // empty" behavior) for its simplicity and predictability.
+  const TABS = [['overview','Overview'],['details','Details'],['guests','Guests'],['budget','Budget'],['vendors','Vendors'],['design','Design'],['timeline','Timeline']];
   return `
     <button class="back-link" onclick="backToEventsList()" style="background:none;border:none;cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>Back to Events</button>
     <div class="member-detail-head" style="margin-bottom:18px;">
