@@ -697,7 +697,7 @@ function renderHomeGrid(){
 function renderRegistry(){
   document.getElementById('registryGrid').innerHTML = REGISTRY_LINKS.length ? REGISTRY_LINKS.map(r=>`
     <div class="registry-card"><h5>${escapeHtml(r.label)}</h5><a class="btn btn-outline" href="${r.url}" target="_blank" rel="noopener">View Registry →</a></div>
-  `).join('') : `<div class="empty-note" style="grid-column:1/-1;">The couple hasn't added any registries yet.</div>`;
+  `).join('') : `<div class="empty-note" style="grid-column:1/-1;">Coming soon — check back closer to the date.</div>`;
 }
 function onGuestChange(id){
   currentGuestId = id;
@@ -730,7 +730,7 @@ function renderStory(){
   const answered = Object.values(OUR_STORY).filter(p=>p && (p.a||'').trim());
   document.getElementById('storyContent').innerHTML = answered.length ? answered.map(p=>`
     <div class="story-block"><div class="story-q">${escapeHtml(p.q)}</div><div class="story-a">${escapeHtml(p.a)}</div></div>
-  `).join('') : `<div class="empty-note">The couple hasn't written their story yet — check back soon!</div>`;
+  `).join('') : `<div class="empty-note">Coming soon — check back closer to the date!</div>`;
   document.getElementById('milestoneGrid').innerHTML = MILESTONES.map(m=>`
     <div class="ms-photo">${m.photo ? `<img src="${m.photo}">` : ''}<div class="ms-caption">${escapeHtml(m.caption)}<br><span style="opacity:0.85;">${escapeHtml(m.dateLabel)}</span></div></div>
   `).join('');
@@ -739,7 +739,7 @@ function renderStory(){
 /* ---------- wedding party ---------- */
 function renderParty(){
   if(!WEDDING_PARTY.length){
-    document.getElementById('partyContent').innerHTML = `<div class="empty-note">The couple hasn't added their wedding party yet — check back soon!</div>`;
+    document.getElementById('partyContent').innerHTML = `<div class="empty-note">Coming soon — check back closer to the date!</div>`;
     return;
   }
   // Group by whatever "side" values the couple actually used (e.g. "Natasha's side"), in the
@@ -905,7 +905,7 @@ function renderTravel(){
   ].filter(([,text])=>(text||'').trim());
   document.getElementById('travelGrid').innerHTML = cards.length
     ? cards.map(([label,text])=>`<div class="travel-card card"><h4>${label}</h4><p>${escapeHtml(text)}</p></div>`).join('')
-    : `<div class="empty-note" style="grid-column:1/-1;">The couple hasn't added travel details yet — check back soon!</div>`;
+    : `<div class="empty-note" style="grid-column:1/-1;">Coming soon — check back closer to the date!</div>`;
   document.getElementById('thingsToDoGrid').innerHTML = THINGS_TO_DO.map(t=>`
     <div class="rec-card"><h5>${escapeHtml(t.title)}</h5><p>${escapeHtml(t.description)}</p>${t.url?`<a href="${t.url}" target="_blank" rel="noopener">Learn more →</a>`:''}</div>
   `).join('');
@@ -921,7 +921,7 @@ function renderFaq(){
       <div class="faq-q" onclick="toggleFaq(${i})"><span>${escapeHtml(f.q)}</span><span class="faq-chevron">▾</span></div>
       <div class="faq-a">${escapeHtml(f.a)}</div>
     </div>
-  `).join('') : `<div class="empty-note">The couple hasn't added any FAQs yet.</div>`;
+  `).join('') : `<div class="empty-note">Coming soon — check back closer to the date!</div>`;
 }
 function toggleFaq(i){ document.getElementById('faq-'+i).classList.toggle('open'); }
 

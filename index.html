@@ -2306,6 +2306,22 @@ const MODULE_INFO = {
    match the most recent git tag (vX.Y.Z) once that batch is pushed. */
 const CHANGELOG = [
   {
+    version:'1.82.0', date:'2026-11-27',
+    title:'Removed the "Ask Evera" button from Home',
+    items:[
+      'The small "Ask Evera" button on the Home hero is gone, per direct request. The Evera Assistant is still fully reachable — the topbar icon and the floating ✦ button in the corner both still open it, as does the "Ask Evera for personalized recommendations" card further down Home.'
+    ]
+  },
+  {
+    version:'1.81.0', date:'2026-11-27',
+    title:'One Communications Center, a searchable Feedback & Roadmap board, and kinder website empty states',
+    items:[
+      'Messages is now just the Communications Center, per direct request — the All / Wedding Party & Family / Vendors tab switcher is gone, so you land straight on the real tool (pick an audience, preview who it reaches, send, see History) instead of an extra click to get there. Nothing about Vendor message history or Wedding Party threads was removed from the app, they\'re just not shown here anymore.',
+      'Feedback & Roadmap now has a search box, so you can check whether a feature or bug has already been submitted before posting a possible duplicate — it searches both the title and the full description, live as you type, and still works together with the existing Features/Bugs filter.',
+      'Website: the guest-facing site\'s "nothing here yet" messages (Our Story, Wedding Party, Registry, Travel, FAQ) now read "Coming soon — check back closer to the date" instead of pointing out that the couple hasn\'t filled something in yet.'
+    ]
+  },
+  {
     version:'1.80.0', date:'2026-11-27',
     title:'Every guest email and text now signs off with the couple\'s names',
     items:[
@@ -3472,7 +3488,7 @@ let addTaskPresetAssignee = null; // v1.46.0: lets "+ Add a Task" be opened pre-
 let planCollapsedPhases = {}; // phase key -> collapsed boolean, lazily defaulted the first time each phase is seen
 let calendarAddFormOpen = false; // toggles the "+ Add an Event" inline form on Calendar at a Glance
 let unavailAddFormOpen = false; // toggles the "+ Add Unavailability" inline form on Calendar at a Glance
-let messagesFilter = 'all'; // 'all' | 'threads' | 'vendor' | 'guest' — Messages module view
+let messagesFilter = 'all'; // v1.81.0: no longer read anywhere — Messages is just the Communications Center now (see renderMessagesModule). Left in place, unused, rather than removed, since nothing depends on deleting it.
 let guestMessageComposeType = 'all'; // v1.67.0: 'all' | 'event' | 'tag' | 'status' | 'tier' | 'weddingParty' | 'specific' — who a new Communications Center message goes to
 let guestMessageComposeTarget = ''; // the specific eventId / tag / rsvp status / tier key, when composeType needs one
 // v1.67.0 — Communications Center: audience presets, a hand-pick-people recipient picker, and a
@@ -6595,7 +6611,6 @@ function renderRoute(key){
   } else if(key==='inspiration'){
     document.getElementById('content').innerHTML = renderInspirationModule();
   } else if(key==='messages'){
-    messagesFilter='all';
     document.getElementById('content').innerHTML = renderMessagesModule();
   } else if(key==='website'){
     document.getElementById('content').innerHTML = renderWebsiteModule();
@@ -6761,7 +6776,6 @@ function renderHome(){
           </div>
         </div>
         <div class="hph-actions">
-          <button class="home-ask-btn" onclick="toggleAssistant()"><svg viewBox="0 0 24 24">${ICONS.assistant}</svg> Ask Evera</button>
           <label class="hph-photo-btn" onclick="event.stopPropagation();" title="A small round photo next to your names — close-up, square-ish photos work best.">
             ${d.couplePhoto ? 'Change photo' : '+ Add a photo'}
             <input type="file" accept="image/*" style="position:absolute; inset:0; opacity:0; cursor:pointer;" onchange="handleCouplePhotoUpload(event)">
@@ -9406,22 +9420,21 @@ function allMessageItems(){
   return {vendorMsgs};
 }
 function renderMessagesModule(){
-  const {vendorMsgs} = allMessageItems();
+  // v1.81.0: Natasha's direct request — "I want to have the comms center and remove these buttons
+  // as it should be just one center." The old All / Wedding Party & Family / Vendors / Communications
+  // Center tab switcher is gone; this module is now just the Communications Center, the one real,
+  // actively-used tool here. The Wedding Party & Family Threads view and the Vendor Communication
+  // History roll-up are no longer shown here — vendor comms are still viewable per-vendor, in Vendors,
+  // exactly as before (nothing was duplicated here, so nothing is lost there). Their render functions
+  // and the underlying thread data are deliberately left in the file rather than deleted, in case
+  // either is worth resurfacing later — same pattern as the old Inspiration Intro screen in v1.64.0.
   return `
     <div class="card">
       <div class="card-head">
-        <h4>Messages</h4>
-        <div class="seg-control seg-control-xs" style="flex-wrap:wrap;">
-          <button class="seg-btn ${messagesFilter==='all'?'active':''}" onclick="switchMessagesFilter('all')">All</button>
-          <button class="seg-btn ${messagesFilter==='threads'?'active':''}" onclick="switchMessagesFilter('threads')">Wedding Party &amp; Family</button>
-          <button class="seg-btn ${messagesFilter==='vendor'?'active':''}" onclick="switchMessagesFilter('vendor')">Vendors</button>
-          <button class="seg-btn ${messagesFilter==='guest'?'active':''}" onclick="switchMessagesFilter('guest')">Communications Center</button>
-        </div>
+        <h4>Communications Center</h4>
       </div>
-      ${messagesFilter==='guest' ? `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Everything guests receive from you, in one place — pick a real audience (or hand-pick specific people), preview exactly who it reaches before anything goes out, see when each event's invites went out, build the RSVP message and questions guests get alongside it, and review a full history of everything sent with previews.</p>` : `<p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Vendor messages are pulled straight from each vendor's communication history in Vendors — nothing is duplicated here.</p>`}
-      ${messagesFilter==='guest' ? renderGuestMessagesTab() : ''}
-      ${messagesFilter!=='vendor' && messagesFilter!=='guest' ? renderThreadsSection() : ''}
-      ${messagesFilter!=='threads' && messagesFilter!=='guest' ? renderVendorMessagesSection(vendorMsgs) : ''}
+      <p style="font-size:13px;color:var(--charcoal-faint);margin-top:0;">Everything guests receive from you, in one place — pick a real audience (or hand-pick specific people), preview exactly who it reaches before anything goes out, see when each event's invites went out, build the RSVP message and questions guests get alongside it, and review a full history of everything sent with previews.</p>
+      ${renderGuestMessagesTab()}
     </div>
   `;
 }
@@ -17948,6 +17961,9 @@ let feedbackBoardCache = [];
 let feedbackBoardLoaded = false;
 let feedbackBoardLoading = false;
 let feedbackBoardFilter = 'all'; // 'all' | 'feature' | 'bug'
+let feedbackBoardSearch = ''; // v1.81.0: "people should also be able to search to see if there's
+  // already been a feature or a bug that's been documented" — Natasha's direct request, so people
+  // check before submitting a possible duplicate rather than after.
 let feedbackRepliesCache = {}; // id -> array of replies, fetched on demand
 let feedbackExpandedId = null; // which item currently has its replies/admin panel open
 let feedbackReplyPosting = false; // true while an admin reply is in flight — disables the composer
@@ -17984,14 +18000,35 @@ function setFeedbackBoardFilter(type){
   feedbackBoardFilter = type;
   renderFeedbackPanel();
 }
+// v1.81.0: the search box re-renders only the items list, not the whole panel, so typing doesn't
+// steal focus out of the search field itself (the same class of bug the guest-form Tab fix in
+// v1.75.0 addressed for re-renders racing user input).
+function feedbackBoardFilteredItems(){
+  const q = (feedbackBoardSearch||'').trim().toLowerCase();
+  return feedbackBoardCache
+    .filter(f => feedbackBoardFilter==='all' || f.type===feedbackBoardFilter)
+    .filter(f => !q || (f.title||'').toLowerCase().includes(q) || (f.description||'').toLowerCase().includes(q))
+    .slice()
+    .sort((a,b)=> (b.upvoterUids||[]).length - (a.upvoterUids||[]).length || new Date(b.submittedAt) - new Date(a.submittedAt));
+}
+function renderFeedbackItemsList(){
+  const uid = currentUser ? currentUser.uid : null;
+  const items = feedbackBoardFilteredItems();
+  const q = (feedbackBoardSearch||'').trim();
+  if(feedbackBoardLoading && !feedbackBoardLoaded) return `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">Loading the board…</p>`;
+  if(!feedbackBoardLoading && feedbackBoardLoaded && !items.length){
+    return `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">${q ? `No existing feature requests or bug reports match "${escapeHtml(q)}" — looks like this hasn't been reported yet.` : 'Nothing here yet — be the first to submit a feature request or bug report.'}</p>`;
+  }
+  return items.length ? `<div style="margin-top:14px; display:flex; flex-direction:column; gap:10px;">${items.map(f=>renderFeedbackBoardItem(f, uid)).join('')}</div>` : '';
+}
+function filterFeedbackBoardBySearch(v){
+  feedbackBoardSearch = v;
+  const el = document.getElementById('feedbackItemsList');
+  if(el) el.innerHTML = renderFeedbackItemsList();
+}
 function renderFeedbackPanel(){
   const el = document.getElementById('feedbackPanelBody');
   if(!el) return;
-  const uid = currentUser ? currentUser.uid : null;
-  const items = feedbackBoardCache
-    .filter(f => feedbackBoardFilter==='all' || f.type===feedbackBoardFilter)
-    .slice()
-    .sort((a,b)=> (b.upvoterUids||[]).length - (a.upvoterUids||[]).length || new Date(b.submittedAt) - new Date(a.submittedAt));
   el.innerHTML = `
     <div class="field-grid">
       <div class="field-cell">
@@ -18006,15 +18043,19 @@ function renderFeedbackPanel(){
     <div class="field-cell" style="margin-top:12px;"><label>Details</label><textarea class="notes-field notes-field-sm" id="fbDescription" placeholder="What happened, or what would help?"></textarea></div>
     <div style="margin-top:12px;"><button class="btn btn-solid btn-sm" onclick="submitFeedback()">Submit</button></div>
 
-    <div class="seg-control" style="margin:20px 0 4px;">
+    <div class="field-cell" style="margin-top:20px;">
+      <label>Search existing feedback</label>
+      <input type="text" id="fbSearch" placeholder="e.g. RSVP, signature, dark mode..." value="${escapeAttr(feedbackBoardSearch)}" oninput="filterFeedbackBoardBySearch(this.value)">
+    </div>
+    <p style="font-size:12px;color:var(--charcoal-faint);margin:4px 0 0;">Worth a quick search before submitting — if it's already here, an upvote carries more weight than a duplicate.</p>
+
+    <div class="seg-control" style="margin:14px 0 4px;">
       <button class="seg-btn ${feedbackBoardFilter==='all'?'active':''}" onclick="setFeedbackBoardFilter('all')">All</button>
       <button class="seg-btn ${feedbackBoardFilter==='feature'?'active':''}" onclick="setFeedbackBoardFilter('feature')">💡 Features</button>
       <button class="seg-btn ${feedbackBoardFilter==='bug'?'active':''}" onclick="setFeedbackBoardFilter('bug')">🐛 Bugs</button>
     </div>
 
-    ${feedbackBoardLoading && !feedbackBoardLoaded ? `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">Loading the board…</p>` : ''}
-    ${!feedbackBoardLoading && feedbackBoardLoaded && !items.length ? `<p style="font-size:13px;color:var(--charcoal-faint); margin-top:16px;">Nothing here yet — be the first to submit a feature request or bug report.</p>` : ''}
-    ${items.length ? `<div style="margin-top:14px; display:flex; flex-direction:column; gap:10px;">${items.map(f=>renderFeedbackBoardItem(f, uid)).join('')}</div>` : ''}
+    <div id="feedbackItemsList">${renderFeedbackItemsList()}</div>
     <p style="font-size:12px;color:var(--charcoal-faint);margin-top:16px;">This is a shared board — everyone signed in sees the same list and can upvote. Submissions are anonymous; only the Evera team can change status or reply.</p>
   `;
 }
